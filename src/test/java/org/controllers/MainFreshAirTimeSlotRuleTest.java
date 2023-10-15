@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class MainFreshAirTimeSlotRuleTest {
 
     @ParameterizedTest(name = "{index} => dateTime={0}, expectedResult={1}")
-    @ArgumentsSource(CustomArgumentProvider.class)
-    void testMainFreshAirRules(LocalDateTime dateTime, boolean expectedResult) {
+    @ArgumentsSource(MainFreshAirArgumentProvider.class)
+    void testMainFreshAirRule(LocalDateTime dateTime, boolean expectedResult) {
         final MainFreshAirTimeSlotRule testee = new MainFreshAirTimeSlotRule(dateTime);
 
         final boolean result = testee.turnFreshAirOn();
@@ -23,7 +23,7 @@ class MainFreshAirTimeSlotRuleTest {
         assertEquals(expectedResult, result);
     }
 
-    static class CustomArgumentProvider implements ArgumentsProvider {
+    static class MainFreshAirArgumentProvider implements ArgumentsProvider {
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {

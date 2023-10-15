@@ -33,4 +33,9 @@ public class Humidity {
 
         return (4.2431796244 * Math.exp(0.0666427637 * temperature.getCelsius()) * relativHumidity / 100.0);
     }
+
+    @Override
+    public String toString() {
+        return "relativHumidity=" + relativHumidity;
+    }
 }

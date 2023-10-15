@@ -8,4 +8,16 @@ public class AirValues {
         this.humidity = humidity;
         this.temperature = temperature;
     }
+
+    public double getAbsoluteHumidity(){
+        return humidity.getAbsoluteHumidity(temperature);
+    }
+
+    @Override
+    public String toString() {
+        return "AirValues{" +
+                "humidity=" + humidity +
+                ", temperature=" + temperature +
+                '}';
+    }
 }

@@ -10,4 +10,9 @@ public class Temperature {
     public double getCelsius() {
         return celsius;
     }
+
+    @Override
+    public String toString() {
+        return "TemperatureCelsius=" + celsius;
+    }
 }

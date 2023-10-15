@@ -20,9 +20,9 @@ class AirControllingSystemTest {
     void testWhenInitalizedThenRotiIsOff() {
         final AirControllingSystem testee = new AirControllingSystem();
 
-        final boolean rotiOn = testee.isRotiOn();
+        final boolean result = testee.isHumidityExchangerOn();
 
-        assertThat(rotiOn, is(false));
+        assertThat(result, is(false));
     }
 
 }

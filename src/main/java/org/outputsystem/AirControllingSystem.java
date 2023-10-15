@@ -3,7 +3,7 @@ package org.outputsystem;
 public class AirControllingSystem {
 
     private boolean airFlowOn = true;
-    private boolean rotiOn = false;
+    private boolean humidityExchangerOn = false;
 
     public boolean isAirFlowOn(){
         return airFlowOn;
@@ -13,11 +13,11 @@ public class AirControllingSystem {
         airFlowOn = on;
     }
 
-    public boolean isRotiOn(){
-        return rotiOn;
+    public boolean isHumidityExchangerOn(){
+        return humidityExchangerOn;
     }
 
-    public void setRotiOn(boolean on) {
-        rotiOn = on;
+    public void setHumidityExchangerOn(boolean on) {
+        humidityExchangerOn = on;
     }
 }
