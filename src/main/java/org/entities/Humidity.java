@@ -1,14 +1,14 @@
 package org.entities;
 
 public class Humidity {
-    private final double relativHumidity;
+    private final double relativeHumidity;
 
-    public Humidity(double relativHumidity) {
-        this.relativHumidity = relativHumidity;
+    public Humidity(double relativeHumidity) {
+        this.relativeHumidity = relativeHumidity;
     }
 
     public double getRelativHumidity() {
-        return relativHumidity;
+        return relativeHumidity;
     }
 
     /**
@@ -31,11 +31,11 @@ public class Humidity {
         //  35	           39.6
         //  40	           51.1
 
-        return (4.2431796244 * Math.exp(0.0666427637 * temperature.getCelsius()) * relativHumidity / 100.0);
+        return (4.2431796244 * Math.exp(0.0666427637 * temperature.getCelsius()) * relativeHumidity / 100.0);
     }
 
     @Override
     public String toString() {
-        return "relativHumidity=" + relativHumidity;
+        return "relativeHumidity=" + relativeHumidity;
     }
 }

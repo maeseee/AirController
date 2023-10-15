@@ -1,23 +1,28 @@
 package org.entities;
 
 public class AirValues {
-    private final Humidity humidity;
     private final Temperature temperature;
+    private final Humidity humidity;
 
-    public AirValues(Humidity humidity, Temperature temperature) {
-        this.humidity = humidity;
+    public AirValues(Temperature temperature, Humidity humidity) {
         this.temperature = temperature;
+        this.humidity = humidity;
     }
 
-    public double getAbsoluteHumidity(){
+    public AirValues(double temperatureCelsius, double relativeHumidity) {
+        this.temperature = new Temperature(temperatureCelsius);
+        this.humidity = new Humidity(relativeHumidity);
+    }
+
+    public double getAbsoluteHumidity() {
         return humidity.getAbsoluteHumidity(temperature);
     }
 
     @Override
     public String toString() {
         return "AirValues{" +
-                "humidity=" + humidity +
-                ", temperature=" + temperature +
+                "temperature=" + temperature +
+                ", humidity=" + humidity +
                 '}';
     }
 }

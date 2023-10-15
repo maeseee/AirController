@@ -13,7 +13,7 @@ public class IndoorAirValues implements SensorValues {
     }
 
     public IndoorAirValues(Humidity humidity, Temperature temperature) {
-        this.airValues = new AirValues(humidity, temperature);
+        this.airValues = new AirValues(temperature, humidity);
     }
 
     @Override

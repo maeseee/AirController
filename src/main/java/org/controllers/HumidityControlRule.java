@@ -6,11 +6,10 @@ import org.entities.Temperature;
 import org.sensors.IndoorAirValues;
 import org.sensors.OutdoorAirValues;
 
-public class HumidityControlRule implements HumidityExchangerRule {
+class HumidityControlRule {
 
-    private static final AirValues GOAL_AIR_VALUES = new AirValues(new Humidity(50), new Temperature(23));
+    private static final AirValues GOAL_AIR_VALUES = new AirValues(new Temperature(23), new Humidity(50));
 
-    @Override
     public boolean turnHumidityExchangerOn(IndoorAirValues indoorAirValues, OutdoorAirValues outdoorAirValues) {
         final double indoorAbsoluteHumidity = indoorAirValues.getAirValues().getAbsoluteHumidity();
         final double outdoorAbsoluteHumidity = outdoorAirValues.getAirValues().getAbsoluteHumidity();

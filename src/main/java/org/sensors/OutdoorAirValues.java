@@ -13,7 +13,7 @@ public class OutdoorAirValues implements SensorValues {
     }
 
     public OutdoorAirValues(Humidity humidity, Temperature temperature) {
-        this.airValues = new AirValues(humidity, temperature);
+        this.airValues = new AirValues(temperature, humidity);
     }
 
     @Override

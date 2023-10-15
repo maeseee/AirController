@@ -19,7 +19,7 @@ class HumidityControlRuleTest {
     @ParameterizedTest(name = "{index} => indoor={0}, outdoor={1}, expectedResult={2}")
     @ArgumentsSource(HumidityControlArgumentProvider.class)
     void testHumidityControlRule(IndoorAirValues indoorAirValues, OutdoorAirValues outdoorAirValues, boolean expectedResult) {
-        final HumidityExchangerRule testee = new HumidityControlRule();
+        final HumidityControlRule testee = new HumidityControlRule();
 
         final boolean result = testee.turnHumidityExchangerOn(indoorAirValues, outdoorAirValues);
 
