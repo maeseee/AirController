@@ -1,13 +1,12 @@
 package org.controllers;
 
 import org.entities.AirValues;
-import org.entities.Temperature;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
-import org.outputsystem.AirControllingSystem;
+import org.outputsystem.ControlledVentilationSystem;
 import org.sensors.IndoorAirValues;
 import org.sensors.OutdoorAirValues;
 
@@ -28,7 +27,7 @@ class AirControllerTest {
         when(indoorAirValues.getAirValues()).thenReturn(airValues);
         final OutdoorAirValues outdoorAirValues = mock(OutdoorAirValues.class);
         when(outdoorAirValues.getAirValues()).thenReturn(airValues);
-        final AirControllingSystem airControllingSystem = mock(AirControllingSystem.class);
+        final ControlledVentilationSystem controlledVentilationSystem = mock(ControlledVentilationSystem.class);
         final MainFreshAirTimeSlotRule mainFreshAirTimeSlotRule = mock(MainFreshAirTimeSlotRule.class);
         final HourlyFreshAirTimeSlotRule hourlyFreshAirTimeSlotRule = mock(HourlyFreshAirTimeSlotRule.class);
         final HumidityControlRule humidityControlRule = mock(HumidityControlRule.class);
@@ -36,20 +35,19 @@ class AirControllerTest {
         when(hourlyFreshAirTimeSlotRule.turnFreshAirOn(any())).thenReturn(hourlyFreshAirOn);
         when(humidityControlRule.turnHumidityExchangerOn(indoorAirValues, outdoorAirValues)).thenReturn(humidityExchangeOn);
         final AirController testee =
-                new AirController(indoorAirValues, outdoorAirValues, airControllingSystem, mainFreshAirTimeSlotRule, hourlyFreshAirTimeSlotRule,
+                new AirController(indoorAirValues, outdoorAirValues, controlledVentilationSystem, mainFreshAirTimeSlotRule, hourlyFreshAirTimeSlotRule,
                         humidityControlRule);
 
         testee.runOneLoop();
 
-        verify(airControllingSystem).setAirFlowOn(shouldFreshAirBeOn);
-        verify(airControllingSystem).setHumidityExchangerOn(shouldHumidityExchangeBeOn);
+        verify(controlledVentilationSystem).setAirFlowOn(shouldFreshAirBeOn);
+        verify(controlledVentilationSystem).setHumidityExchangerOn(shouldHumidityExchangeBeOn);
     }
 
     static class AirControllerArgumentProvider implements ArgumentsProvider {
 
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
-            final Temperature temperature = new Temperature(23);
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(
                     Arguments.of(false, false, false, false, false),
                     Arguments.of(true, false, false, true, false),

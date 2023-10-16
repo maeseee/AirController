@@ -7,7 +7,7 @@ public class Humidity {
         this.relativeHumidity = relativeHumidity;
     }
 
-    public double getRelativHumidity() {
+    public double getRelativeHumidity() {
         return relativeHumidity;
     }
 

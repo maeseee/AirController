@@ -1,6 +1,6 @@
 package org.outputsystem;
 
-public class AirControllingSystem {
+public class ControlledVentilationSystem {
 
     private boolean airFlowOn = true;
     private boolean humidityExchangerOn = false;

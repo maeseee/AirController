@@ -1,6 +1,5 @@
 package org.entities;
 
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -16,7 +15,7 @@ class HumidityTest {
         final double relativeHumidity = 50.0;
         final Humidity testee = new Humidity(relativeHumidity);
 
-        final double result = testee.getRelativHumidity();
+        final double result = testee.getRelativeHumidity();
 
         assertThat(result, is(relativeHumidity));
     }
