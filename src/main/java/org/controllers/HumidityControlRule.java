@@ -11,8 +11,12 @@ class HumidityControlRule {
     private static final AirValues GOAL_AIR_VALUES = new AirValues(new Temperature(23), new Humidity(50));
 
     public boolean turnHumidityExchangerOn(IndoorAirValues indoorAirValues, OutdoorAirValues outdoorAirValues) {
-        final double indoorAbsoluteHumidity = indoorAirValues.getAirValues().getAbsoluteHumidity();
-        final double outdoorAbsoluteHumidity = outdoorAirValues.getAirValues().getAbsoluteHumidity();
+        if (indoorAirValues.getAirValues().isEmpty() || outdoorAirValues.getAirValues().isEmpty()) {
+            return false;
+        }
+
+        final double indoorAbsoluteHumidity = indoorAirValues.getAirValues().get().getAbsoluteHumidity();
+        final double outdoorAbsoluteHumidity = outdoorAirValues.getAirValues().get().getAbsoluteHumidity();
         final double goalAbsoluteHumidity = GOAL_AIR_VALUES.getAbsoluteHumidity();
 
         final double diffIndoorToGoal = indoorAbsoluteHumidity - goalAbsoluteHumidity;

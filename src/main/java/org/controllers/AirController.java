@@ -8,30 +8,24 @@ import java.time.LocalDateTime;
 
 public class AirController {
 
-    private final IndoorAirValues indoorAirValues;
-    private final OutdoorAirValues outdoorAirValues;
     private final ControlledVentilationSystem controlledVentilationSystem;
     private final MainFreshAirTimeSlotRule mainFreshAirTimeSlotRule;
     private final HourlyFreshAirTimeSlotRule hourlyFreshAirTimeSlotRule;
     private final HumidityControlRule humidityControlRule;
 
+    private IndoorAirValues indoorAirValues;
+    private OutdoorAirValues outdoorAirValues;
 
-    public AirController(IndoorAirValues indoorAirValues, OutdoorAirValues outdoorAirValues,
-                         ControlledVentilationSystem controlledVentilationSystem) {
-        this(indoorAirValues, outdoorAirValues, controlledVentilationSystem, new MainFreshAirTimeSlotRule(), new HourlyFreshAirTimeSlotRule(),
-                new HumidityControlRule());
+    public AirController(ControlledVentilationSystem controlledVentilationSystem) {
+        this(controlledVentilationSystem, new MainFreshAirTimeSlotRule(), new HourlyFreshAirTimeSlotRule(), new HumidityControlRule());
     }
 
-    AirController(IndoorAirValues indoorAirValues, OutdoorAirValues outdoorAirValues, ControlledVentilationSystem controlledVentilationSystem,
-                  MainFreshAirTimeSlotRule mainFreshAirTimeSlotRule, HourlyFreshAirTimeSlotRule hourlyFreshAirTimeSlotRule,
-                  HumidityControlRule humidityControlRule) {
-        this.indoorAirValues = indoorAirValues;
-        this.outdoorAirValues = outdoorAirValues;
+    AirController(ControlledVentilationSystem controlledVentilationSystem, MainFreshAirTimeSlotRule mainFreshAirTimeSlotRule,
+                  HourlyFreshAirTimeSlotRule hourlyFreshAirTimeSlotRule, HumidityControlRule humidityControlRule) {
         this.controlledVentilationSystem = controlledVentilationSystem;
         this.mainFreshAirTimeSlotRule = mainFreshAirTimeSlotRule;
         this.hourlyFreshAirTimeSlotRule = hourlyFreshAirTimeSlotRule;
         this.humidityControlRule = humidityControlRule;
-
     }
 
     public void runOneLoop() {

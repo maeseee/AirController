@@ -4,21 +4,23 @@ import org.entities.AirValues;
 import org.entities.Humidity;
 import org.entities.Temperature;
 
+import java.util.Optional;
+
 public class OutdoorAirValues implements SensorValues {
 
     private final AirValues airValues;
+
+    public OutdoorAirValues(Humidity humidity, Temperature temperature) {
+        this(new AirValues(temperature, humidity));
+    }
 
     public OutdoorAirValues(AirValues airValues) {
         this.airValues = airValues;
     }
 
-    public OutdoorAirValues(Humidity humidity, Temperature temperature) {
-        this.airValues = new AirValues(temperature, humidity);
-    }
-
     @Override
-    public AirValues getAirValues() {
-        return airValues;
+    public Optional<AirValues> getAirValues() {
+        return Optional.ofNullable(airValues);
     }
 
     @Override

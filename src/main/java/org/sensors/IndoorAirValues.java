@@ -4,21 +4,23 @@ import org.entities.AirValues;
 import org.entities.Humidity;
 import org.entities.Temperature;
 
+import java.util.Optional;
+
 public class IndoorAirValues implements SensorValues {
 
     private final AirValues airValues;
+
+    public IndoorAirValues(Temperature temperature, Humidity humidity) {
+        this(new AirValues(temperature, humidity));
+    }
 
     public IndoorAirValues(AirValues airValues) {
         this.airValues = airValues;
     }
 
-    public IndoorAirValues(Humidity humidity, Temperature temperature) {
-        this.airValues = new AirValues(temperature, humidity);
-    }
-
     @Override
-    public AirValues getAirValues() {
-        return airValues;
+    public Optional<AirValues> getAirValues() {
+        return Optional.ofNullable(airValues);
     }
 
     @Override
