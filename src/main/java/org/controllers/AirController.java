@@ -1,12 +1,14 @@
 package org.controllers;
 
 import org.outputsystem.ControlledVentilationSystem;
+import org.sensors.IndoorAirMeasurementObserver;
 import org.sensors.IndoorAirValues;
+import org.sensors.OutdoorAirMeasurementObserver;
 import org.sensors.OutdoorAirValues;
 
 import java.time.LocalDateTime;
 
-public class AirController {
+public class AirController implements IndoorAirMeasurementObserver, OutdoorAirMeasurementObserver {
 
     private final ControlledVentilationSystem controlledVentilationSystem;
     private final MainFreshAirTimeSlotRule mainFreshAirTimeSlotRule;
@@ -34,5 +36,15 @@ public class AirController {
         final boolean humidityExchangerOn = humidityControlRule.turnHumidityExchangerOn(indoorAirValues, outdoorAirValues);
         controlledVentilationSystem.setAirFlowOn(freshAirOn || humidityExchangerOn);
         controlledVentilationSystem.setHumidityExchangerOn(humidityExchangerOn);
+    }
+
+    @Override
+    public void updateAirMeasurement(IndoorAirValues indoorAirValues) {
+        this.indoorAirValues = indoorAirValues;
+    }
+
+    @Override
+    public void updateAirMeasurement(OutdoorAirValues outdoorAirValues) {
+        this.outdoorAirValues = outdoorAirValues;
     }
 }
