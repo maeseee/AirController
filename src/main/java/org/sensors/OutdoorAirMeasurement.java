@@ -27,13 +27,13 @@ public class OutdoorAirMeasurement {
         return new OutdoorAirValues(airValues);
     }
 
-    private final List<IndoorAirMeasurementObserver> observers = new ArrayList<>();
+    private final List<OutdoorAirMeasurementObserver> observers = new ArrayList<>();
 
-    public void addObserver(IndoorAirMeasurementObserver observer) {
+    public void addObserver(OutdoorAirMeasurementObserver observer) {
         observers.add(observer);
     }
 
-    private void notifyObservers(IndoorAirValues indoorAirValues) {
-        observers.forEach(observer -> observer.updateAirMeasurement(indoorAirValues));
+    private void notifyObservers(OutdoorAirValues outdoorAirValues) {
+        observers.forEach(observer -> observer.updateAirMeasurement(outdoorAirValues));
     }
 }
