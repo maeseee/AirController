@@ -34,12 +34,12 @@ class HumidityControlRuleTest {
             final Temperature temperature = new Temperature(23);
             final Humidity humidity = new Humidity(50);
             return Stream.of(
-                    Arguments.of(new IndoorAirValues(temperature, new Humidity(40)), new OutdoorAirValues(new Humidity(60), temperature), false),
-                    Arguments.of(new IndoorAirValues(temperature, new Humidity(60)), new OutdoorAirValues(new Humidity(40), temperature), false),
-                    Arguments.of(new IndoorAirValues(temperature, new Humidity(30)), new OutdoorAirValues(new Humidity(40), temperature), false),
-                    Arguments.of(new IndoorAirValues(temperature, new Humidity(40)), new OutdoorAirValues(new Humidity(30), temperature), true),
-                    Arguments.of(new IndoorAirValues(temperature, new Humidity(70)), new OutdoorAirValues(new Humidity(60), temperature), false),
-                    Arguments.of(new IndoorAirValues(temperature, new Humidity(60)), new OutdoorAirValues(new Humidity(70), temperature), true),
+                    Arguments.of(new IndoorAirValues(temperature, new Humidity(40)), new OutdoorAirValues(temperature, new Humidity(60)), false),
+                    Arguments.of(new IndoorAirValues(temperature, new Humidity(60)), new OutdoorAirValues(temperature, new Humidity(40)), false),
+                    Arguments.of(new IndoorAirValues(temperature, new Humidity(30)), new OutdoorAirValues(temperature, new Humidity(40)), false),
+                    Arguments.of(new IndoorAirValues(temperature, new Humidity(40)), new OutdoorAirValues(temperature, new Humidity(30)), true),
+                    Arguments.of(new IndoorAirValues(temperature, new Humidity(70)), new OutdoorAirValues(temperature, new Humidity(60)), false),
+                    Arguments.of(new IndoorAirValues(temperature, new Humidity(60)), new OutdoorAirValues(temperature, new Humidity(70)), true),
                     Arguments.of(new IndoorAirValues(null), new OutdoorAirValues(null), false),
                     Arguments.of(new IndoorAirValues(null), new OutdoorAirValues(new AirValues(temperature, humidity)), false),
                     Arguments.of(new IndoorAirValues(new AirValues(temperature, humidity)), new OutdoorAirValues(null), false)

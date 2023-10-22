@@ -17,14 +17,14 @@ public class OutdoorAirMeasurement {
         this.httpsRequest = httpsRequest;
     }
 
-    public OutdoorAirValues measureValues() {
+    public void measureValue() {
         final Optional<String> request = httpsRequest.sendRequest();
         if (request.isEmpty()) {
-            return new OutdoorAirValues(null);
+            return;
         }
 
         final AirValues airValues = JsonParser.parse(request.get());
-        return new OutdoorAirValues(airValues);
+        notifyObservers(new OutdoorAirValues(airValues));
     }
 
     private final List<OutdoorAirMeasurementObserver> observers = new ArrayList<>();

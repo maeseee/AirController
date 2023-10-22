@@ -10,7 +10,7 @@ public class OutdoorAirValues implements SensorValues {
 
     private final AirValues airValues;
 
-    public OutdoorAirValues(Humidity humidity, Temperature temperature) {
+    public OutdoorAirValues(Temperature temperature, Humidity humidity) {
         this(new AirValues(temperature, humidity));
     }
 
