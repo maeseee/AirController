@@ -9,12 +9,17 @@ import java.util.List;
 import java.util.Optional;
 
 
-public class OutdoorAirMeasurement {
+public class OutdoorAirMeasurement implements Runnable{
 
     private final HttpsRequest httpsRequest;
 
     public OutdoorAirMeasurement(HttpsRequest httpsRequest) {
         this.httpsRequest = httpsRequest;
+    }
+
+    @Override
+    public void run() {
+        measureValue();
     }
 
     public void measureValue() {
