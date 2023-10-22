@@ -14,6 +14,14 @@ public class AirValues {
         this.humidity = new Humidity(relativeHumidity);
     }
 
+    public Temperature getTemperature() {
+        return temperature;
+    }
+
+    public Humidity getHumidity() {
+        return humidity;
+    }
+
     public double getAbsoluteHumidity() {
         return humidity.getAbsoluteHumidity(temperature);
     }
