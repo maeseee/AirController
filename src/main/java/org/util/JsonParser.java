@@ -1,6 +1,6 @@
 package org.util;
 
-import org.entities.AirValues;
+import org.entities.AirVO;
 import org.entities.Humidity;
 import org.entities.Temperature;
 import org.json.JSONObject;
@@ -8,7 +8,7 @@ import org.json.JSONTokener;
 
 public class JsonParser {
 
-    public static AirValues parse(String jsonString) {
+    public static AirVO parse(String jsonString) {
         Temperature temperature;
         Humidity humidity;
         try {
@@ -16,13 +16,12 @@ public class JsonParser {
             final JSONObject jsonObject = new JSONObject(tokener);
             final JSONObject main = jsonObject.getJSONObject("main");
             final double temperatureKelvin = main.getDouble("temp");
-            temperature = Temperature.createTemperatureFromKelvin(temperatureKelvin);
+            temperature = Temperature.createFromKelvin(temperatureKelvin);
             final double humidityRelative = main.getDouble("humidity");
-            humidity = new Humidity(humidityRelative);
+            humidity = Humidity.createFromRelative(humidityRelative);
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
-        return new AirValues(temperature, humidity);
+        return new AirVO(temperature, humidity);
     }
 }

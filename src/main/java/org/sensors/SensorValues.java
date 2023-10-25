@@ -1,9 +1,9 @@
 package org.sensors;
 
-import org.entities.AirValues;
+import org.entities.AirVO;
 
 import java.util.Optional;
 
 public interface SensorValues {
-    Optional<AirValues> getAirValues();
+    Optional<AirVO> getAirValues();
 }

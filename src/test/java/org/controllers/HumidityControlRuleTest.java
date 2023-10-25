@@ -1,6 +1,6 @@
 package org.controllers;
 
-import org.entities.AirValues;
+import org.entities.AirVO;
 import org.entities.Humidity;
 import org.entities.Temperature;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -31,19 +31,21 @@ class HumidityControlRuleTest {
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-            final Temperature temperature = new Temperature(23);
-            final Humidity humidity = new Humidity(50);
-            return Stream.of(
-                    Arguments.of(new IndoorAirValues(temperature, new Humidity(40)), new OutdoorAirValues(temperature, new Humidity(60)), false),
-                    Arguments.of(new IndoorAirValues(temperature, new Humidity(60)), new OutdoorAirValues(temperature, new Humidity(40)), false),
-                    Arguments.of(new IndoorAirValues(temperature, new Humidity(30)), new OutdoorAirValues(temperature, new Humidity(40)), false),
-                    Arguments.of(new IndoorAirValues(temperature, new Humidity(40)), new OutdoorAirValues(temperature, new Humidity(30)), true),
-                    Arguments.of(new IndoorAirValues(temperature, new Humidity(70)), new OutdoorAirValues(temperature, new Humidity(60)), false),
-                    Arguments.of(new IndoorAirValues(temperature, new Humidity(60)), new OutdoorAirValues(temperature, new Humidity(70)), true),
+            final Temperature temperature = Temperature.createFromCelsius(23);
+            final Humidity humidity = Humidity.createFromRelative(50);
+            final Humidity humidityLow = Humidity.createFromRelative(40);
+            final Humidity humidityLowLow = Humidity.createFromRelative(30);
+            final Humidity humidityHigh = Humidity.createFromRelative(60);
+            final Humidity humidityHighHigh = Humidity.createFromRelative(70);
+            return Stream.of(Arguments.of(new IndoorAirValues(temperature, humidityLow), new OutdoorAirValues(temperature, humidityHigh), false),
+                    Arguments.of(new IndoorAirValues(temperature, humidityHigh), new OutdoorAirValues(temperature, humidityLow), false),
+                    Arguments.of(new IndoorAirValues(temperature, humidityLowLow), new OutdoorAirValues(temperature, humidityLow), false),
+                    Arguments.of(new IndoorAirValues(temperature, humidityLow), new OutdoorAirValues(temperature, humidityLowLow), true),
+                    Arguments.of(new IndoorAirValues(temperature, humidityHighHigh), new OutdoorAirValues(temperature, humidityHigh), false),
+                    Arguments.of(new IndoorAirValues(temperature, humidityHigh), new OutdoorAirValues(temperature, humidityHighHigh), true),
                     Arguments.of(new IndoorAirValues(null), new OutdoorAirValues(null), false),
-                    Arguments.of(new IndoorAirValues(null), new OutdoorAirValues(new AirValues(temperature, humidity)), false),
-                    Arguments.of(new IndoorAirValues(new AirValues(temperature, humidity)), new OutdoorAirValues(null), false)
-            );
+                    Arguments.of(new IndoorAirValues(null), new OutdoorAirValues(new AirVO(temperature, humidity)), false),
+                    Arguments.of(new IndoorAirValues(new AirVO(temperature, humidity)), new OutdoorAirValues(null), false));
         }
     }
 

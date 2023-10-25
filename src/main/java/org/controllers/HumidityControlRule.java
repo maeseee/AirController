@@ -1,14 +1,12 @@
 package org.controllers;
 
-import org.entities.AirValues;
-import org.entities.Humidity;
-import org.entities.Temperature;
+import org.entities.AirVO;
 import org.sensors.IndoorAirValues;
 import org.sensors.OutdoorAirValues;
 
 class HumidityControlRule {
 
-    private static final AirValues GOAL_AIR_VALUES = new AirValues(new Temperature(23), new Humidity(50));
+    private static final AirVO GOAL_AIR_VALUES = new AirVO(23.0, 50.0);
 
     public boolean turnHumidityExchangerOn(IndoorAirValues indoorAirValues, OutdoorAirValues outdoorAirValues) {
         if (indoorAirValues.getAirValues().isEmpty() || outdoorAirValues.getAirValues().isEmpty()) {

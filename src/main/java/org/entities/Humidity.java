@@ -1,9 +1,10 @@
 package org.entities;
 
 public class Humidity {
+
     private final double relativeHumidity;
 
-    public Humidity(double relativeHumidity) {
+    private Humidity(double relativeHumidity) {
         this.relativeHumidity = relativeHumidity;
     }
 
@@ -38,4 +39,9 @@ public class Humidity {
     public String toString() {
         return "relativeHumidity=" + relativeHumidity;
     }
+
+    public static Humidity createFromRelative(double relativeHumidity) {
+        return new Humidity(relativeHumidity);
+    }
+
 }

@@ -9,27 +9,26 @@ import java.util.Optional;
 
 public class HttpsRequest {
 
-    final URI uri;
+    private final URI uri;
 
     public HttpsRequest(URI uri) {
         this.uri = uri;
     }
 
     public Optional<String> sendRequest() {
-        Optional<String> responseFromUrl = Optional.empty();
+        String responseFromUrl = "";
         try {
-            //final URI uri = new URI(url);
             final HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
             connection.setRequestMethod("GET");
 
             final int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                responseFromUrl = Optional.of(readResponseFromServer(connection));
+                responseFromUrl = readResponseFromServer(connection);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            return Optional.empty();
         }
-        return responseFromUrl;
+        return Optional.of(responseFromUrl);
     }
 
     private String readResponseFromServer(HttpURLConnection connection) throws IOException {

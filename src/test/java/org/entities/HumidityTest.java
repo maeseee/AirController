@@ -13,7 +13,7 @@ class HumidityTest {
     @Test
     void testRelativHumidity() {
         final double relativeHumidity = 50.0;
-        final Humidity testee = new Humidity(relativeHumidity);
+        final Humidity testee = Humidity.createFromRelative(relativeHumidity);
 
         final double result = testee.getRelativeHumidity();
 
@@ -26,8 +26,8 @@ class HumidityTest {
             "15.0, 12.8", "20.0, 17.3", "25.0, 23.0", "30.0, 30.3", "35.0, 39.6", "40.0, 51.1"})
     void testCalculationOfAbsoluteHumidity(double temperatureCelsius, double weightFor100Procent) {
         final double relativeHumidity = 100.0;
-        final Temperature temperature = new Temperature(temperatureCelsius);
-        final Humidity testee = new Humidity(relativeHumidity);
+        final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
+        final Humidity testee = Humidity.createFromRelative(relativeHumidity);
 
         final double result = testee.getAbsoluteHumidity(temperature);
 

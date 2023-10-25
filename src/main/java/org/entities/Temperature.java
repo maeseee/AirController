@@ -6,7 +6,7 @@ public class Temperature {
 
     private final double celsius;
 
-    public Temperature(double celsius) {
+    private Temperature(double celsius) {
         this.celsius = celsius;
     }
 
@@ -19,7 +19,11 @@ public class Temperature {
         return "TemperatureCelsius=" + celsius;
     }
 
-    public static Temperature createTemperatureFromKelvin(double kelvin) {
+    public static Temperature createFromCelsius(double celsius) {
+        return new Temperature(celsius);
+    }
+
+    public static Temperature createFromKelvin(double kelvin) {
         return new Temperature(kelvin - KELVIN_TO_CELSIUS);
     }
 }

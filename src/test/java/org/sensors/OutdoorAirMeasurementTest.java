@@ -1,6 +1,6 @@
 package org.sensors;
 
-import org.entities.AirValues;
+import org.entities.AirVO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -51,7 +51,7 @@ class OutdoorAirMeasurementTest {
 
         verify(observer).updateAirMeasurement(outdoorAirValuesArgumentCaptor.capture());
         final OutdoorAirValues outdoorAirValues = outdoorAirValuesArgumentCaptor.getValue();
-        final Optional<AirValues> airValues = outdoorAirValues.getAirValues();
+        final Optional<AirVO> airValues = outdoorAirValues.getAirValues();
         assertTrue(airValues.isPresent());
         assertEquals(10.53, airValues.get().getTemperature().getCelsius(), 0.1);
         assertEquals(87.0, airValues.get().getHumidity().getRelativeHumidity(), 0.1);

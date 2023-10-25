@@ -1,17 +1,17 @@
 package org.entities;
 
-public class AirValues {
+public class AirVO {
     private final Temperature temperature;
     private final Humidity humidity;
 
-    public AirValues(Temperature temperature, Humidity humidity) {
+    public AirVO(Temperature temperature, Humidity humidity) {
         this.temperature = temperature;
         this.humidity = humidity;
     }
 
-    public AirValues(double temperatureCelsius, double relativeHumidity) {
-        this.temperature = new Temperature(temperatureCelsius);
-        this.humidity = new Humidity(relativeHumidity);
+    public AirVO(double temperatureCelsius, double relativeHumidity) {
+        this.temperature = Temperature.createFromCelsius(temperatureCelsius);
+        this.humidity = Humidity.createFromRelative(relativeHumidity);
     }
 
     public Temperature getTemperature() {

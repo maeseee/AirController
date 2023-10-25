@@ -1,6 +1,6 @@
 package org.sensors;
 
-import org.entities.AirValues;
+import org.entities.AirVO;
 import org.entities.Humidity;
 import org.entities.Temperature;
 
@@ -8,18 +8,18 @@ import java.util.Optional;
 
 public class IndoorAirValues implements SensorValues {
 
-    private final AirValues airValues;
+    private final AirVO airValues;
 
     public IndoorAirValues(Temperature temperature, Humidity humidity) {
-        this(new AirValues(temperature, humidity));
+        this(new AirVO(temperature, humidity));
     }
 
-    public IndoorAirValues(AirValues airValues) {
+    public IndoorAirValues(AirVO airValues) {
         this.airValues = airValues;
     }
 
     @Override
-    public Optional<AirValues> getAirValues() {
+    public Optional<AirVO> getAirValues() {
         return Optional.ofNullable(airValues);
     }
 

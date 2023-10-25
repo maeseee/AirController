@@ -1,6 +1,6 @@
 package org.sensors;
 
-import org.entities.AirValues;
+import org.entities.AirVO;
 import org.util.HttpsRequest;
 import org.util.JsonParser;
 
@@ -28,7 +28,7 @@ public class OutdoorAirMeasurement implements Runnable{
             return;
         }
 
-        final AirValues airValues = JsonParser.parse(request.get());
+        final AirVO airValues = JsonParser.parse(request.get());
         notifyObservers(new OutdoorAirValues(airValues));
     }
 
