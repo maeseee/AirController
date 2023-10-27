@@ -2,8 +2,9 @@ package org.application;
 
 import org.controllers.AirController;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
-import org.outputsystem.ControlledVentilationSystem;
+import org.outputsystem.ControlledVentilationSystemImpl;
 import org.sensors.OutdoorAirMeasurement;
+import org.systemAdapter.ControlledVentilationSystem;
 import org.util.HttpsRequest;
 import org.util.SecretsEncryption;
 
@@ -35,7 +36,7 @@ public class Main {
             return;
         }
 
-        final ControlledVentilationSystem ventilationSystem = new ControlledVentilationSystem();
+        final ControlledVentilationSystem ventilationSystem = new ControlledVentilationSystemImpl();
 
         final AirController airController = new AirController(ventilationSystem);
 

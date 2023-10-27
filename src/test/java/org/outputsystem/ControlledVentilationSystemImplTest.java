@@ -5,11 +5,11 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-class ControlledVentilationSystemTest {
+class ControlledVentilationSystemImplTest {
 
     @Test
     void testWhenInitalizedThenAirFlowIsOn() {
-        final ControlledVentilationSystem testee = new ControlledVentilationSystem();
+        final ControlledVentilationSystemImpl testee = new ControlledVentilationSystemImpl();
 
         final boolean airFlowOn = testee.isAirFlowOn();
 
@@ -18,7 +18,7 @@ class ControlledVentilationSystemTest {
 
     @Test
     void testWhenInitalizedThenRotiIsOff() {
-        final ControlledVentilationSystem testee = new ControlledVentilationSystem();
+        final ControlledVentilationSystemImpl testee = new ControlledVentilationSystemImpl();
 
         final boolean result = testee.isHumidityExchangerOn();
 

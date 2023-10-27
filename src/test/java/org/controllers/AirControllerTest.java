@@ -6,7 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
-import org.outputsystem.ControlledVentilationSystem;
+import org.outputsystem.ControlledVentilationSystemImpl;
 
 import java.util.stream.Stream;
 
@@ -19,7 +19,7 @@ class AirControllerTest {
             name = "{index} => mainFreshOn={0}, hourlyFreshAirOn={1}, shouldFreshAirBeOn={2}")
     @ArgumentsSource(FreshAirArgumentProvider.class)
     void testFreshAirControllerOutput(boolean mainFreshOn, boolean hourlyFreshAirOn, boolean shouldFreshAirBeOn) {
-        final ControlledVentilationSystem controlledVentilationSystem = mock(ControlledVentilationSystem.class);
+        final ControlledVentilationSystemImpl controlledVentilationSystem = mock(ControlledVentilationSystemImpl.class);
         final MainFreshAirTimeSlotRule mainFreshAirTimeSlotRule = mock(MainFreshAirTimeSlotRule.class);
         final HourlyFreshAirTimeSlotRule hourlyFreshAirTimeSlotRule = mock(HourlyFreshAirTimeSlotRule.class);
         final HumidityControlRule humidityControlRule = mock(HumidityControlRule.class);
@@ -50,7 +50,7 @@ class AirControllerTest {
 
     @Test
     void testWhenHumidityExchangeOnThenHumidityExchangerAndAirFlowOn() {
-        final ControlledVentilationSystem controlledVentilationSystem = mock(ControlledVentilationSystem.class);
+        final ControlledVentilationSystemImpl controlledVentilationSystem = mock(ControlledVentilationSystemImpl.class);
         final MainFreshAirTimeSlotRule mainFreshAirTimeSlotRule = mock(MainFreshAirTimeSlotRule.class);
         final HourlyFreshAirTimeSlotRule hourlyFreshAirTimeSlotRule = mock(HourlyFreshAirTimeSlotRule.class);
         final HumidityControlRule humidityControlRule = mock(HumidityControlRule.class);

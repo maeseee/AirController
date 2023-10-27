@@ -1,10 +1,10 @@
 package org.controllers;
 
-import org.outputsystem.ControlledVentilationSystem;
 import org.sensorAdapter.IndoorAirMeasurementObserver;
 import org.sensorAdapter.IndoorAirValues;
 import org.sensorAdapter.OutdoorAirMeasurementObserver;
 import org.sensorAdapter.OutdoorAirValues;
+import org.systemAdapter.ControlledVentilationSystem;
 
 import java.time.LocalDateTime;
 
