@@ -1,5 +1,8 @@
 package org.sensors;
 
+import org.sensorAdapter.IndoorAirMeasurementObserver;
+import org.sensorAdapter.IndoorAirValues;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,8 +1,8 @@
 package org.controllers;
 
 import org.entities.AirVO;
-import org.sensors.IndoorAirValues;
-import org.sensors.OutdoorAirValues;
+import org.sensorAdapter.IndoorAirValues;
+import org.sensorAdapter.OutdoorAirValues;
 
 class HumidityControlRule {
 

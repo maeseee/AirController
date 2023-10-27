@@ -1,6 +1,8 @@
 package org.sensors;
 
 import org.entities.AirVO;
+import org.sensorAdapter.OutdoorAirMeasurementObserver;
+import org.sensorAdapter.OutdoorAirValues;
 import org.util.HttpsRequest;
 import org.util.JsonParser;
 

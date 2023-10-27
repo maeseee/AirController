@@ -1,4 +1,4 @@
-package org.sensors;
+package org.sensorAdapter;
 
 import org.entities.AirVO;
 

@@ -6,6 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.sensorAdapter.OutdoorAirMeasurementObserver;
+import org.sensorAdapter.OutdoorAirValues;
 import org.util.HttpsRequest;
 
 import java.util.Optional;

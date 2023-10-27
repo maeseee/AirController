@@ -1,4 +1,4 @@
-package org.sensors;
+package org.sensorAdapter;
 
 import org.entities.AirVO;
 import org.entities.Humidity;
@@ -6,15 +6,15 @@ import org.entities.Temperature;
 
 import java.util.Optional;
 
-public class IndoorAirValues implements SensorValues {
+public class OutdoorAirValues implements SensorValues {
 
     private final AirVO airValues;
 
-    public IndoorAirValues(Temperature temperature, Humidity humidity) {
+    public OutdoorAirValues(Temperature temperature, Humidity humidity) {
         this(new AirVO(temperature, humidity));
     }
 
-    public IndoorAirValues(AirVO airValues) {
+    public OutdoorAirValues(AirVO airValues) {
         this.airValues = airValues;
     }
 
