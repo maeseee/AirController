@@ -1,4 +1,4 @@
-package org.outputsystem;
+package org.system;
 
 import org.junit.jupiter.api.Test;
 

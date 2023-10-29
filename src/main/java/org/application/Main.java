@@ -2,7 +2,7 @@ package org.application;
 
 import org.controllers.AirController;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
-import org.outputsystem.ControlledVentilationSystemImpl;
+import org.system.ControlledVentilationSystemImpl;
 import org.sensors.OutdoorAirMeasurement;
 import org.systemAdapter.ControlledVentilationSystem;
 import org.util.HttpsRequest;
