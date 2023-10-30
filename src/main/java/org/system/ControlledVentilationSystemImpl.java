@@ -1,29 +1,38 @@
 package org.system;
 
+import org.gpio.GpioPin;
 import org.systemAdapter.ControlledVentilationSystem;
 
 public class ControlledVentilationSystemImpl implements ControlledVentilationSystem {
 
-    private boolean airFlowOn = true;
-    private boolean humidityExchangerOn = false;
+    private final GpioPin airFlow;
+    private final GpioPin humidityExchanger;
+
+    public ControlledVentilationSystemImpl(GpioPin airFlow, GpioPin humidityExchanger) {
+        this.airFlow = airFlow;
+        this.humidityExchanger = humidityExchanger;
+
+        setAirFlowOn(true);
+        setHumidityExchangerOn(false);
+    }
 
     @Override
-    public boolean isAirFlowOn(){
-        return airFlowOn;
+    public boolean isAirFlowOn() {
+        return airFlow.getGpioState();
     }
 
     @Override
     public void setAirFlowOn(boolean on) {
-        airFlowOn = on;
+        airFlow.setGpioState(on);
     }
 
     @Override
-    public boolean isHumidityExchangerOn(){
-        return humidityExchangerOn;
+    public boolean isHumidityExchangerOn() {
+        return humidityExchanger.getGpioState();
     }
 
     @Override
     public void setHumidityExchangerOn(boolean on) {
-        humidityExchangerOn = on;
+        humidityExchanger.setGpioState(on);
     }
 }

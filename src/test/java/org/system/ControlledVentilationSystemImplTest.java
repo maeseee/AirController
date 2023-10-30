@@ -1,28 +1,22 @@
 package org.system;
 
+import org.gpio.GpioPin;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 class ControlledVentilationSystemImplTest {
 
     @Test
-    void testWhenInitalizedThenAirFlowIsOn() {
-        final ControlledVentilationSystemImpl testee = new ControlledVentilationSystemImpl();
+    void testWhenInitalizedThenAirFlowIsOnAndHumididyExchangerOff() {
+        final GpioPin airFlow = mock(GpioPin.class);
+        final GpioPin humidityExchanger = mock(GpioPin.class);
+        final ControlledVentilationSystemImpl testee = new ControlledVentilationSystemImpl(airFlow, humidityExchanger);
 
-        final boolean airFlowOn = testee.isAirFlowOn();
+        testee.isAirFlowOn();
 
-        assertThat(airFlowOn, is(true));
+        verify(airFlow).setGpioState(true);
+        verify(humidityExchanger).setGpioState(false);
     }
-
-    @Test
-    void testWhenInitalizedThenRotiIsOff() {
-        final ControlledVentilationSystemImpl testee = new ControlledVentilationSystemImpl();
-
-        final boolean result = testee.isHumidityExchangerOn();
-
-        assertThat(result, is(false));
-    }
-
 }

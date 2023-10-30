@@ -1,9 +1,11 @@
 package org.application;
 
 import org.controllers.AirController;
+import org.gpio.GpioFunction;
+import org.gpio.GpioPin;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
-import org.system.ControlledVentilationSystemImpl;
 import org.sensors.OutdoorAirMeasurement;
+import org.system.ControlledVentilationSystemImpl;
 import org.systemAdapter.ControlledVentilationSystem;
 import org.util.HttpsRequest;
 import org.util.SecretsEncryption;
@@ -36,7 +38,9 @@ public class Main {
             return;
         }
 
-        final ControlledVentilationSystem ventilationSystem = new ControlledVentilationSystemImpl();
+        final GpioPin airFlow = new GpioPin(GpioFunction.MAIN_SYSTEM);
+        final GpioPin humidityExchanger = new GpioPin(GpioFunction.HUMIDITY_EXCHANGER);
+        final ControlledVentilationSystem ventilationSystem = new ControlledVentilationSystemImpl(airFlow, humidityExchanger);
 
         final AirController airController = new AirController(ventilationSystem);
 
