@@ -14,6 +14,10 @@ public class GpioPin {
         outputPin = gpioController.provisionDigitalOutputPin(pin, name, PinState.LOW);
     }
 
+    GpioPin(GpioPinDigitalOutput outputPin) {
+        this.outputPin = outputPin;
+    }
+
     public boolean getGpioState() {
         final PinState pinState = outputPin.getState();
         return mapToStateOn(pinState);
