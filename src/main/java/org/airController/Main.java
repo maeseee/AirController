@@ -1,4 +1,4 @@
-package org.airController.application;
+package org.airController;
 
 import org.airController.controllers.AirController;
 import org.airController.gpio.GpioFunction;
