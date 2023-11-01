@@ -1,6 +1,5 @@
 package org.airController.util;
 
-import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,7 +10,7 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class SecretsEncryptionTest {
 
@@ -58,8 +57,10 @@ class SecretsEncryptionTest {
         final SecretsEncryption encryptionTestee = new SecretsEncryption(MASTER_TEST_PASSWORD);
         final String secret = "secret";
         final String encryptedSecret = encryptionTestee.encrypt(secret);
-
         final SecretsEncryption decryptionTestee = new SecretsEncryption("Wrong password");
-        assertThrows(EncryptionOperationNotPossibleException.class, () -> decryptionTestee.decrypt(encryptedSecret));
+
+        final String decryptedSecret = decryptionTestee.decrypt(encryptedSecret);
+
+        assertNull(decryptedSecret);
     }
 }

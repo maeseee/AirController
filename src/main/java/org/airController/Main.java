@@ -8,7 +8,6 @@ import org.airController.system.ControlledVentilationSystemImpl;
 import org.airController.systemAdapter.ControlledVentilationSystem;
 import org.airController.util.HttpsRequest;
 import org.airController.util.SecretsEncryption;
-import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,20 +22,19 @@ public class Main {
 
     private static final String LAT = "47.127459";
     private static final String LON = "8.245553";
-    private static final String ENCRYPTED_API_KEY = "6DiM9NdAMx8V9M6/CSBC7wzUDcs2nJqmZsG5DzM6jya+FJIvxPrOWrpfuJe2Mph3";
+    private static final String ENCRYPTED_API_KEY = "JWHqsiARWGfnwhAp/qvt7aWlmhsyXvOtnsYN32HH5J2m2/QGb/OnuhnGzooxh1onTK+ynB9f038EMbUnOZMjNw==";
 
     public static void main(String[] args) throws URISyntaxException, InterruptedException, IOException {
         System.out.println("Enter the master password:");
         final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         final String masterPassword = reader.readLine();
-        String decryptedApiKey;
-        try {
-            final SecretsEncryption secretsEncryption = new SecretsEncryption(masterPassword);
-            decryptedApiKey = secretsEncryption.decrypt(ENCRYPTED_API_KEY);
-        } catch (EncryptionOperationNotPossibleException exception) {
-            System.out.println("Wrong master password entered!");
+        final SecretsEncryption secretsEncryption = new SecretsEncryption(masterPassword);
+        final String decryptedApiKey = secretsEncryption.decrypt(ENCRYPTED_API_KEY);
+        if (decryptedApiKey == null) {
+            System.err.println("Wrong master password entered!");
             return;
         }
+        System.out.println("API_KEY is " + decryptedApiKey);
 
         final GpioPin airFlow = new GpioPin(GpioFunction.MAIN_SYSTEM);
         final GpioPin humidityExchanger = new GpioPin(GpioFunction.HUMIDITY_EXCHANGER);
