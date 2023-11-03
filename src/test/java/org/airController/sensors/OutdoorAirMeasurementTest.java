@@ -48,7 +48,7 @@ class OutdoorAirMeasurementTest {
         final OutdoorAirMeasurement testee = new OutdoorAirMeasurement(httpsRequest);
         testee.addObserver(observer);
 
-        testee.measureValue();
+        testee.run();
 
         verify(observer).updateAirMeasurement(outdoorAirValuesArgumentCaptor.capture());
         final OutdoorAirValues outdoorAirValues = outdoorAirValuesArgumentCaptor.getValue();
@@ -66,7 +66,7 @@ class OutdoorAirMeasurementTest {
         final OutdoorAirMeasurement testee = new OutdoorAirMeasurement(httpsRequest);
         testee.addObserver(observer);
 
-        testee.measureValue();
+        testee.run();
 
         verifyNoInteractions(observer);
     }

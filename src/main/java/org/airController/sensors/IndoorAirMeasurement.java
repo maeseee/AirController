@@ -6,9 +6,15 @@ import org.airController.sensorAdapter.IndoorAirValues;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IndoorAirMeasurement {
+public class IndoorAirMeasurement implements Runnable {
 
     private final List<IndoorAirMeasurementObserver> observers = new ArrayList<>();
+
+    @Override
+    public void run() {
+        // TODO
+        notifyObservers(new IndoorAirValues(null));
+    }
 
     public void addObserver(IndoorAirMeasurementObserver observer) {
         observers.add(observer);

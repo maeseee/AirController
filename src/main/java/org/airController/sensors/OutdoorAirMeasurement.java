@@ -30,10 +30,6 @@ public class OutdoorAirMeasurement implements Runnable {
 
     @Override
     public void run() {
-        measureValue();
-    }
-
-    public void measureValue() {
         final Optional<String> request = httpsRequest.sendRequest();
         if (request.isEmpty()) {
             return;

@@ -4,6 +4,7 @@ import org.airController.controllers.AirController;
 import org.airController.gpio.GpioPinImpl;
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
+import org.airController.sensors.IndoorAirMeasurement;
 import org.airController.sensors.OutdoorAirMeasurement;
 import org.airController.system.ControlledVentilationSystemImpl;
 import org.airController.systemAdapter.ControlledVentilationSystem;
@@ -25,6 +26,7 @@ public class Application {
     private final ControlledVentilationSystem ventilationSystem;
 
     private OutdoorAirMeasurement outdoorAirMeasurement;
+    private IndoorAirMeasurement indoorAirMeasurement;
 
     public Application() {
         this(new GpioPinImpl(GpioFunction.MAIN_SYSTEM), new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER));
@@ -36,8 +38,10 @@ public class Application {
 
     public void init() throws IOException, URISyntaxException {
         final AirController airController = new AirController(ventilationSystem);
-        initHttpsRequest();
+        initOutdoorMeasurement();
         outdoorAirMeasurement.addObserver(airController);
+        initIndoorMeasurement();
+        indoorAirMeasurement.addObserver(airController);
     }
 
     public void run() {
@@ -47,7 +51,7 @@ public class Application {
         logger.info("All setup and running...");
     }
 
-    private void initHttpsRequest() throws IOException, URISyntaxException {
+    private void initOutdoorMeasurement() throws IOException, URISyntaxException {
         final String decryptedApiKey = getApiKeyForHttpRequest();
         outdoorAirMeasurement = new OutdoorAirMeasurement(decryptedApiKey);
     }
@@ -64,5 +68,9 @@ public class Application {
         }
         System.out.println("API_KEY is " + decryptedApiKey);
         return decryptedApiKey;
+    }
+
+    private void initIndoorMeasurement() {
+        indoorAirMeasurement = new IndoorAirMeasurement();
     }
 }
