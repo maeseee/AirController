@@ -31,9 +31,11 @@ public class GpioPinImpl implements GpioPin {
 
     @Override
     public void setGpioState(boolean stateOn) {
-        logger.info(outputPin.getName() + " set to " + (stateOn ? "on" : "off"));
-        final PinState pinState = mapToPinState(stateOn);
-        outputPin.setState(pinState);
+        if (getGpioState() != stateOn) {
+            logger.info(outputPin.getName() + " set to " + (stateOn ? "on" : "off"));
+            final PinState pinState = mapToPinState(stateOn);
+            outputPin.setState(pinState);
+        }
     }
 
     private Pin mapToPin(GpioFunction function) {

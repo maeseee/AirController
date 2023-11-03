@@ -1,5 +1,7 @@
 package org.airController.controllers;
 
+import org.airController.entities.Humidity;
+import org.airController.entities.Temperature;
 import org.airController.sensorAdapter.IndoorAirMeasurementObserver;
 import org.airController.sensorAdapter.IndoorAirValues;
 import org.airController.sensorAdapter.OutdoorAirMeasurementObserver;
@@ -20,6 +22,8 @@ public class AirController implements IndoorAirMeasurementObserver, OutdoorAirMe
 
     public AirController(ControlledVentilationSystem controlledVentilationSystem) {
         this(controlledVentilationSystem, new MainFreshAirTimeSlotRule(), new HourlyFreshAirTimeSlotRule(), new HumidityControlRule());
+        indoorAirValues = new IndoorAirValues(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(50.0));
+        outdoorAirValues = new OutdoorAirValues(Temperature.createFromCelsius(15), Humidity.createFromRelative(50.0));
     }
 
     AirController(ControlledVentilationSystem controlledVentilationSystem, MainFreshAirTimeSlotRule mainFreshAirTimeSlotRule,
@@ -41,10 +45,12 @@ public class AirController implements IndoorAirMeasurementObserver, OutdoorAirMe
     @Override
     public void updateAirMeasurement(IndoorAirValues indoorAirValues) {
         this.indoorAirValues = indoorAirValues;
+        runOneLoop();
     }
 
     @Override
     public void updateAirMeasurement(OutdoorAirValues outdoorAirValues) {
         this.outdoorAirValues = outdoorAirValues;
+        runOneLoop();
     }
 }
