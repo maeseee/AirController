@@ -12,7 +12,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class GpioPinTest {
+class GpioPinImplTest {
 
     @Mock
     private GpioPinDigitalOutput outputPin;
@@ -20,7 +20,7 @@ class GpioPinTest {
     @Test
     void testGetter() {
         when(outputPin.getState()).thenReturn(PinState.HIGH);
-        final GpioPin testee = new GpioPin(outputPin);
+        final GpioPinImpl testee = new GpioPinImpl(outputPin);
 
         final boolean gpioState = testee.getGpioState();
 
@@ -30,7 +30,7 @@ class GpioPinTest {
 
     @Test
     void testSetter() {
-        final GpioPin testee = new GpioPin(outputPin);
+        final GpioPinImpl testee = new GpioPinImpl(outputPin);
 
         testee.setGpioState(true);
 

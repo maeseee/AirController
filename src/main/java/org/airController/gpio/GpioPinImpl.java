@@ -1,29 +1,37 @@
 package org.airController.gpio;
 
 import com.pi4j.io.gpio.*;
+import org.airController.gpioAdapter.GpioFunction;
+import org.airController.gpioAdapter.GpioPin;
+
+import java.util.logging.Logger;
 
 
-public class GpioPin {
+public class GpioPinImpl implements GpioPin {
+    private static final Logger logger = Logger.getLogger(GpioPinImpl.class.getName());
 
     private final GpioPinDigitalOutput outputPin;
 
-    public GpioPin(GpioFunction pinFunction) {
+    public GpioPinImpl(GpioFunction pinFunction) {
         final Pin pin = mapToPin(pinFunction);
         final String name = pinFunction.name();
         final GpioController gpioController = GpioFactory.getInstance();
         outputPin = gpioController.provisionDigitalOutputPin(pin, name, PinState.LOW);
     }
 
-    GpioPin(GpioPinDigitalOutput outputPin) {
+    GpioPinImpl(GpioPinDigitalOutput outputPin) {
         this.outputPin = outputPin;
     }
 
+    @Override
     public boolean getGpioState() {
         final PinState pinState = outputPin.getState();
         return mapToStateOn(pinState);
     }
 
+    @Override
     public void setGpioState(boolean stateOn) {
+        logger.info(outputPin.getName() + " set to " + (stateOn ? "on" : "off"));
         final PinState pinState = mapToPinState(stateOn);
         outputPin.setState(pinState);
     }

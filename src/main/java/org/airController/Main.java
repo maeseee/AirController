@@ -1,8 +1,9 @@
 package org.airController;
 
 import org.airController.controllers.AirController;
-import org.airController.gpio.GpioFunction;
-import org.airController.gpio.GpioPin;
+import org.airController.gpio.GpioPinImpl;
+import org.airController.gpioAdapter.GpioFunction;
+import org.airController.gpioAdapter.GpioPin;
 import org.airController.sensors.OutdoorAirMeasurement;
 import org.airController.system.ControlledVentilationSystemImpl;
 import org.airController.systemAdapter.ControlledVentilationSystem;
@@ -36,8 +37,8 @@ public class Main {
         }
         System.out.println("API_KEY is " + decryptedApiKey);
 
-        final GpioPin airFlow = new GpioPin(GpioFunction.MAIN_SYSTEM);
-        final GpioPin humidityExchanger = new GpioPin(GpioFunction.HUMIDITY_EXCHANGER);
+        final GpioPin airFlow = new GpioPinImpl(GpioFunction.MAIN_SYSTEM);
+        final GpioPin humidityExchanger = new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER);
         final ControlledVentilationSystem ventilationSystem = new ControlledVentilationSystemImpl(airFlow, humidityExchanger);
 
         final AirController airController = new AirController(ventilationSystem);

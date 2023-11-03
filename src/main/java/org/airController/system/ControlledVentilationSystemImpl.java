@@ -1,6 +1,6 @@
 package org.airController.system;
 
-import org.airController.gpio.GpioPin;
+import org.airController.gpioAdapter.GpioPin;
 import org.airController.systemAdapter.ControlledVentilationSystem;
 
 public class ControlledVentilationSystemImpl implements ControlledVentilationSystem {

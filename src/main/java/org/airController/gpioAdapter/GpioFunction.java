@@ -1,4 +1,4 @@
-package org.airController.gpio;
+package org.airController.gpioAdapter;
 
 public enum GpioFunction {
     DHT22_SENSOR,
