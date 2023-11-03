@@ -1,4 +1,4 @@
-package org.airController.util;
+package org.airController.sensors;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.Optional;
 
-public class HttpsRequest {
+class HttpsRequest {
 
     private final URI uri;
 

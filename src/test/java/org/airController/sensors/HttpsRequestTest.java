@@ -1,4 +1,4 @@
-package org.airController.util;
+package org.airController.sensors;
 
 import org.junit.jupiter.api.Test;
 

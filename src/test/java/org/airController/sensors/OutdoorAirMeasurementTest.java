@@ -3,7 +3,6 @@ package org.airController.sensors;
 import org.airController.entities.AirVO;
 import org.airController.sensorAdapter.OutdoorAirMeasurementObserver;
 import org.airController.sensorAdapter.OutdoorAirValues;
-import org.airController.util.HttpsRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
