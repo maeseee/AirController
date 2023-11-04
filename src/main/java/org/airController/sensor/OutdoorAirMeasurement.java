@@ -1,4 +1,4 @@
-package org.airController.sensors;
+package org.airController.sensor;
 
 import org.airController.entities.AirVO;
 import org.airController.sensorAdapter.OutdoorAirMeasurementObserver;

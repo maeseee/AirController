@@ -1,4 +1,4 @@
-package org.airController.sensors;
+package org.airController.sensor;
 
 import java.io.BufferedReader;
 import java.io.IOException;

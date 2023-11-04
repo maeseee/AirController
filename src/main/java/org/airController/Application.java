@@ -4,8 +4,8 @@ import org.airController.controllers.AirController;
 import org.airController.gpio.GpioPinImpl;
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
-import org.airController.sensors.IndoorAirMeasurement;
-import org.airController.sensors.OutdoorAirMeasurement;
+import org.airController.sensor.IndoorAirMeasurement;
+import org.airController.sensor.OutdoorAirMeasurement;
 import org.airController.system.ControlledVentilationSystemImpl;
 import org.airController.systemAdapter.ControlledVentilationSystem;
 import org.airController.util.SecretsEncryption;
@@ -47,6 +47,7 @@ public class Application {
     public void run() {
         final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         executor.scheduleAtFixedRate(outdoorAirMeasurement, 0, 10, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(indoorAirMeasurement, 0, 2, TimeUnit.MINUTES);
 
         logger.info("All setup and running...");
     }
