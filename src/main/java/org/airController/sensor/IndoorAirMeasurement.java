@@ -30,7 +30,7 @@ public class IndoorAirMeasurement implements Runnable {
     public static void main(String[] args) {
         final IndoorAirMeasurement indoorAirMeasurement = new IndoorAirMeasurement();
         indoorAirMeasurement.addObserver(System.out::println);
-        final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(indoorAirMeasurement, 0, 20, TimeUnit.SECONDS);
+        final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(indoorAirMeasurement, 0, 10, TimeUnit.SECONDS);
     }
 }

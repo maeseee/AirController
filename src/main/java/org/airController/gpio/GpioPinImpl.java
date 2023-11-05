@@ -4,6 +4,9 @@ import com.pi4j.io.gpio.*;
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 
@@ -60,5 +63,11 @@ public class GpioPinImpl implements GpioPin {
             case LOW -> false;
             case HIGH -> true;
         };
+    }
+
+    public static void main(String[] args) {
+        final GpioPinImpl gpioPin = new GpioPinImpl(GpioFunction.MAIN_SYSTEM);
+        final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(() -> gpioPin.setGpioState(!gpioPin.getGpioState()), 0, 2, TimeUnit.SECONDS);
     }
 }
