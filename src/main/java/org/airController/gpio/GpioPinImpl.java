@@ -5,6 +5,7 @@ import com.pi4j.wiringpi.GpioUtil;
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
 
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -16,12 +17,11 @@ public class GpioPinImpl implements GpioPin {
 
     private final GpioFunction pinFunction;
 
-    public GpioPinImpl(GpioFunction pinFunction) {
+    public GpioPinImpl(GpioFunction pinFunction) throws IOException {
         this.pinFunction = pinFunction;
 
         if (Gpio.wiringPiSetup() == -1) {
-            System.out.println(" ==>> GPIO SETUP FAILED");
-//            throw new IOException("GPIO SETUP FAILED");
+            throw new IOException("GPIO SETUP FAILED");
         }
         GpioUtil.export(pinFunction.getGpio(), GpioUtil.DIRECTION_OUT);
     }
@@ -48,7 +48,7 @@ public class GpioPinImpl implements GpioPin {
         return state != 0;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         final GpioPinImpl gpioPin = new GpioPinImpl(GpioFunction.MAIN_SYSTEM);
         final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(() -> gpioPin.setGpioState(!gpioPin.getGpioState()), 0, 2, TimeUnit.SECONDS);

@@ -28,7 +28,7 @@ public class Application {
     private OutdoorAirMeasurement outdoorAirMeasurement;
     private IndoorAirMeasurement indoorAirMeasurement;
 
-    public Application() {
+    public Application() throws IOException {
         this(new GpioPinImpl(GpioFunction.MAIN_SYSTEM), new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER));
     }
 
@@ -71,7 +71,7 @@ public class Application {
         return decryptedApiKey;
     }
 
-    private void initIndoorMeasurement() {
+    private void initIndoorMeasurement() throws IOException {
         indoorAirMeasurement = new IndoorAirMeasurement();
     }
 }
