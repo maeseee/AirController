@@ -28,9 +28,6 @@ public class AirVO {
 
     @Override
     public String toString() {
-        return "AirValues{" +
-                "temperature=" + temperature +
-                ", humidity=" + humidity +
-                '}';
+        return "AirVO{" + temperature + ", " + humidity + '}';
     }
 }

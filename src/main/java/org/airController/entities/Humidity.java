@@ -37,7 +37,7 @@ public class Humidity {
 
     @Override
     public String toString() {
-        return "relativeHumidity=" + relativeHumidity;
+        return "Humidity=" + relativeHumidity + "%";
     }
 
     public static Humidity createFromRelative(double relativeHumidity) {

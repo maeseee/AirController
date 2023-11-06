@@ -16,7 +16,7 @@ public class Temperature {
 
     @Override
     public String toString() {
-        return "TemperatureCelsius=" + celsius;
+        return "Temperature=" + celsius + "°C";
     }
 
     public static Temperature createFromCelsius(double celsius) {
