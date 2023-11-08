@@ -4,6 +4,7 @@ import org.airController.controllers.AirController;
 import org.airController.gpio.GpioPinImpl;
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
+import org.airController.sensor.Dht22;
 import org.airController.sensor.IndoorAirMeasurement;
 import org.airController.sensor.OutdoorAirMeasurement;
 import org.airController.system.ControlledVentilationSystemImpl;
@@ -25,22 +26,20 @@ public class Application {
 
     private final ControlledVentilationSystem ventilationSystem;
 
-    private OutdoorAirMeasurement outdoorAirMeasurement;
-    private IndoorAirMeasurement indoorAirMeasurement;
+    private final OutdoorAirMeasurement outdoorAirMeasurement;
+    private final IndoorAirMeasurement indoorAirMeasurement;
 
-    public Application() throws IOException {
-        this(new GpioPinImpl(GpioFunction.MAIN_SYSTEM), new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER));
+    public Application() throws IOException, URISyntaxException {
+        this(new GpioPinImpl(GpioFunction.MAIN_SYSTEM), new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER), new Dht22(GpioFunction.DHT22_SENSOR));
     }
 
-    Application(GpioPin airFlow, GpioPin humidityExchanger) {
+    Application(GpioPin airFlow, GpioPin humidityExchanger, Dht22 dht22) throws IOException, URISyntaxException {
         this.ventilationSystem = new ControlledVentilationSystemImpl(airFlow, humidityExchanger);
-    }
+        this.outdoorAirMeasurement = createOutdoorMeasurement();
+        this.indoorAirMeasurement = createIndoorMeasurement(dht22);
 
-    public void init() throws IOException, URISyntaxException {
         final AirController airController = new AirController(ventilationSystem);
-        initOutdoorMeasurement();
         outdoorAirMeasurement.addObserver(airController);
-        initIndoorMeasurement();
         indoorAirMeasurement.addObserver(airController);
     }
 
@@ -50,11 +49,6 @@ public class Application {
         executor.scheduleAtFixedRate(indoorAirMeasurement, 0, 2, TimeUnit.MINUTES);
 
         logger.info("All setup and running...");
-    }
-
-    private void initOutdoorMeasurement() throws IOException, URISyntaxException {
-        final String decryptedApiKey = getApiKeyForHttpRequest();
-        outdoorAirMeasurement = new OutdoorAirMeasurement(decryptedApiKey);
     }
 
     private String getApiKeyForHttpRequest() throws IOException {
@@ -71,7 +65,12 @@ public class Application {
         return decryptedApiKey;
     }
 
-    private void initIndoorMeasurement() throws IOException {
-        indoorAirMeasurement = new IndoorAirMeasurement();
+    private OutdoorAirMeasurement createOutdoorMeasurement() throws IOException, URISyntaxException {
+        final String decryptedApiKey = getApiKeyForHttpRequest();
+        return new OutdoorAirMeasurement(decryptedApiKey);
+    }
+
+    private IndoorAirMeasurement createIndoorMeasurement(Dht22 dht22) {
+        return new IndoorAirMeasurement(dht22);
     }
 }

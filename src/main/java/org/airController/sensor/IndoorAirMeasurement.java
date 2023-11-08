@@ -16,9 +16,10 @@ import java.util.concurrent.TimeUnit;
 public class IndoorAirMeasurement implements Runnable {
 
     private final List<IndoorAirMeasurementObserver> observers = new ArrayList<>();
-    private final Dht22 dht22 = new Dht22(GpioFunction.DHT22_SENSOR);
+    private final Dht22 dht22;
 
-    public IndoorAirMeasurement() throws IOException {
+    public IndoorAirMeasurement(Dht22 dht22) {
+        this.dht22 = dht22;
     }
 
     @Override
@@ -36,7 +37,8 @@ public class IndoorAirMeasurement implements Runnable {
     }
 
     public static void main(String[] args) throws IOException {
-        final IndoorAirMeasurement indoorAirMeasurement = new IndoorAirMeasurement();
+        final Dht22 dht22 = new Dht22(GpioFunction.DHT22_SENSOR);
+        final IndoorAirMeasurement indoorAirMeasurement = new IndoorAirMeasurement(dht22);
         indoorAirMeasurement.addObserver(System.out::println);
         final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(indoorAirMeasurement, 0, 10, TimeUnit.SECONDS);

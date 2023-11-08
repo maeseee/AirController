@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 
-class Dht22 {
+public class Dht22 {
     private static final int MAX_TIMINGS = 85;
     private final int[] dht22_dat = {0, 0, 0, 0, 0};
     private final GpioFunction gpioFunction;
