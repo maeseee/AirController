@@ -8,12 +8,14 @@ import org.airController.sensor.IndoorAirMeasurement;
 import org.airController.sensor.OutdoorAirMeasurement;
 import org.airController.system.ControlledVentilationSystemImpl;
 import org.airController.systemAdapter.ControlledVentilationSystem;
+import org.airController.util.EnvironmentVariable;
 import org.airController.util.SecretsEncryption;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +23,7 @@ import java.util.logging.Logger;
 
 public class Application {
     private static final Logger logger = Logger.getLogger(Application.class.getName());
+    private static final String ENVIRONMENT_VARIABLE_API_KEY = "weather_api_key";
     private static final String ENCRYPTED_API_KEY = "JWHqsiARWGfnwhAp/qvt7aWlmhsyXvOtnsYN32HH5J2m2/QGb/OnuhnGzooxh1onTK+ynB9f038EMbUnOZMjNw==";
     private static final int OUTDOOR_SENSOR_READ_PERIOD_MINUTES = 10;
     private static final int INDOOR_SENSOR_READ_PERIOD_MINUTES = 3;
@@ -50,7 +53,7 @@ public class Application {
         logger.info("All setup and running...");
     }
 
-    private String getApiKeyForHttpRequest() throws IOException {
+    private String getApiKeyForHttpRequestFromMasterPassword() throws IOException {
         System.out.println("Enter the master password:");
         final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         final String masterPassword = reader.readLine();
@@ -65,7 +68,8 @@ public class Application {
     }
 
     private OutdoorAirMeasurement createOutdoorMeasurement() throws IOException, URISyntaxException {
-        final String decryptedApiKey = getApiKeyForHttpRequest();
-        return new OutdoorAirMeasurement(decryptedApiKey);
+        final Optional<String> apiKeyOptional = EnvironmentVariable.readEnvironmentVariable(ENVIRONMENT_VARIABLE_API_KEY);
+        final String apiKeyForHttpRequest = apiKeyOptional.orElse(getApiKeyForHttpRequestFromMasterPassword());
+        return new OutdoorAirMeasurement(apiKeyForHttpRequest);
     }
 }
