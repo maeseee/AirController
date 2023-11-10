@@ -4,14 +4,14 @@ import org.airController.gpioAdapter.GpioPin;
 
 import java.util.logging.Logger;
 
-public class GpioPinSpy implements GpioPin {
+public class GpioPinMock implements GpioPin {
     private static final Logger logger = Logger.getLogger(GpioPinImpl.class.getName());
 
     private final String name;
 
     private boolean stateOn = false;
 
-    public GpioPinSpy(String name) {
+    public GpioPinMock(String name) {
         this.name = name;
     }
     @Override

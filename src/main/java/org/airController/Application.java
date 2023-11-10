@@ -25,7 +25,6 @@ public class Application {
     private static final int OUTDOOR_SENSOR_READ_PERIOD_MINUTES = 10;
     private static final int INDOOR_SENSOR_READ_PERIOD_MINUTES = 3;
 
-    private final ControlledVentilationSystem ventilationSystem;
     private final OutdoorAirMeasurement outdoorAirMeasurement;
     private final IndoorAirMeasurement indoorAirMeasurement;
 
@@ -34,7 +33,7 @@ public class Application {
     }
 
     Application(GpioPin airFlow, GpioPin humidityExchanger, IndoorAirMeasurement indoorAirMeasurement) throws IOException, URISyntaxException {
-        this.ventilationSystem = new ControlledVentilationSystemImpl(airFlow, humidityExchanger);
+        final ControlledVentilationSystem ventilationSystem = new ControlledVentilationSystemImpl(airFlow, humidityExchanger);
         this.outdoorAirMeasurement = createOutdoorMeasurement();
         this.indoorAirMeasurement = indoorAirMeasurement;
 
