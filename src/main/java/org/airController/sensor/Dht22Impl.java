@@ -9,9 +9,12 @@ import org.airController.gpioAdapter.GpioFunction;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 class Dht22Impl implements Dht22 {
     private static final int MAX_TIMINGS = 85;
+    private static final int MAX_NR_OF_RETRIES = 3;
+
     private final int[] dht22_dat = {0, 0, 0, 0, 0};
     private final GpioFunction gpioFunction;
 
@@ -25,8 +28,21 @@ class Dht22Impl implements Dht22 {
 
     @Override
     public Optional<AirVO> refreshData() {
-        final int pollDataCheck = pollDHT22();
-        if (pollDataCheck < 40 || !checkParity()) {
+        boolean successful = false;
+        for (int retry = 0; retry < MAX_NR_OF_RETRIES; retry++) {
+            final int pollDataCheck = pollDHT22();
+            if (pollDataCheck >= 40 && checkParity()) {
+                successful = true;
+                break;
+            }
+            try {
+                TimeUnit.SECONDS.sleep(5);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if (!successful) {
             return Optional.empty();
         }
 

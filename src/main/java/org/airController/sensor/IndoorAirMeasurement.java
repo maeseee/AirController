@@ -32,7 +32,7 @@ public class IndoorAirMeasurement implements Runnable {
     @Override
     public void run() {
         final Optional<AirVO> indoorAirValues = dht22.refreshData();
-        indoorAirValues.ifPresent(airVO -> notifyObservers(new IndoorAirValues(airVO)));
+        indoorAirValues.ifPresentOrElse(airVO -> notifyObservers(new IndoorAirValues(airVO)), () -> logger.warning("Indoor sensor out of order"));
     }
 
     public void addObserver(IndoorAirMeasurementObserver observer) {
