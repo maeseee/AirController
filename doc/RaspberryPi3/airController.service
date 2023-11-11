@@ -1,0 +1,8 @@
+[Unit]
+Description=AirController
+After=network.target
+[Service]
+ExecStart=/home/pi/AirController/run.sh
+ExecStart=/bin/sh -c 'export weather_api_key=cd8e0c532bcbc0976d8cf55350591ec0; sh /home/pi/AirController/run.sh'
+[Install]
+WantedBy=default.target
