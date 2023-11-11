@@ -8,16 +8,15 @@ import org.airController.sensor.IndoorAirMeasurement;
 import org.airController.sensor.OutdoorAirMeasurement;
 import org.airController.system.ControlledVentilationSystemImpl;
 import org.airController.systemAdapter.ControlledVentilationSystem;
+import org.airController.util.Logging;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 public class Application {
-    private static final Logger logger = Logger.getLogger(Application.class.getName());
     private static final int OUTDOOR_SENSOR_READ_PERIOD_MINUTES = 10;
     private static final int INDOOR_SENSOR_READ_PERIOD_MINUTES = 3;
 
@@ -43,6 +42,6 @@ public class Application {
         executor.scheduleAtFixedRate(outdoorAirMeasurement, 0, OUTDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
         executor.scheduleAtFixedRate(indoorAirMeasurement, 0, INDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
 
-        logger.info("All setup and running...");
+        Logging.getLogger().info("All setup and running...");
     }
 }

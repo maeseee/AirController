@@ -1,11 +1,11 @@
 package org.airController.sensor;
 
 import org.airController.entities.AirVO;
-import org.airController.gpio.GpioPinImpl;
 import org.airController.sensorAdapter.OutdoorAirMeasurementObserver;
 import org.airController.sensorAdapter.OutdoorAirValues;
 import org.airController.util.EnvironmentVariable;
 import org.airController.util.JsonParser;
+import org.airController.util.Logging;
 import org.airController.util.SecretsEncryption;
 
 import java.io.BufferedReader;
@@ -16,11 +16,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 
 public class OutdoorAirMeasurement implements Runnable {
-    private static final Logger logger = Logger.getLogger(GpioPinImpl.class.getName());
     private static final String LAT = "47.127459";
     private static final String LON = "8.245553";
     private static final String ENVIRONMENT_VARIABLE_API_KEY = "weather_api_key";
@@ -83,7 +81,7 @@ public class OutdoorAirMeasurement implements Runnable {
     }
 
     private void notifyObservers(OutdoorAirValues outdoorAirValues) {
-        logger.info("New outdoor measurement: " + outdoorAirValues);
+        Logging.getLogger().info("New outdoor measurement: " + outdoorAirValues);
         observers.forEach(observer -> observer.updateAirMeasurement(outdoorAirValues));
     }
 }

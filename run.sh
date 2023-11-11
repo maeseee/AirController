@@ -1,13 +1,7 @@
 #!/bin/sh
 cd /home/pi/AirController || exit
-mkdir -p "log"
-now=$(date +"%Y_%m_%d")
-log_filename="log/log_${now}.log"
-echo "AirController started on ${now}" | tee "${log_filename}"
-
 while true; do
-mvn exec:java -Dexec.mainClass="org.airController.Main" | tee -a "${log_filename}"
-echo "AirController has been restarted on $(date)" | tee -a "${log_filename}"
+mvn exec:java -Dexec.mainClass="org.airController.Main"
 sleep 5s # just sleep a little before restart again
 done
 

@@ -4,17 +4,14 @@ import com.pi4j.wiringpi.Gpio;
 import com.pi4j.wiringpi.GpioUtil;
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
+import org.airController.util.Logging;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
-
 
 public class GpioPinImpl implements GpioPin {
-    private static final Logger logger = Logger.getLogger(GpioPinImpl.class.getName());
-
     private final GpioFunction pinFunction;
 
     public GpioPinImpl(GpioFunction pinFunction) throws IOException {
@@ -35,7 +32,7 @@ public class GpioPinImpl implements GpioPin {
     @Override
     public void setGpioState(boolean stateOn) {
         if (getGpioState() != stateOn) {
-            logger.info(pinFunction.name() + " set to " + (stateOn ? "on" : "off"));
+            Logging.getLogger().info(pinFunction.name() + " set to " + (stateOn ? "on" : "off"));
             Gpio.digitalWrite(pinFunction.getGpio(), mapToPinState(stateOn));
         }
     }
