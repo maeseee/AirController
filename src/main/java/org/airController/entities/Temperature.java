@@ -14,6 +14,10 @@ public class Temperature {
         return celsius;
     }
 
+    public double getKelvin() {
+        return celsius + KELVIN_TO_CELSIUS;
+    }
+
     @Override
     public String toString() {
         return "Temperature=" + celsius + "°C";
