@@ -8,31 +8,21 @@ public class Humidity {
         this.relativeHumidity = relativeHumidity;
     }
 
+    /**
+     * @return absolute humidity in [%]
+     */
     public double getRelativeHumidity() {
         return relativeHumidity;
     }
 
     /**
-     * @return absulute humdidity in [g/m3]
+     * @return absolute humidity in [g/m3]
      */
     public double getAbsoluteHumidity(Temperature temperature) {
-        // function calculated for
-        // Temperatur [°C]  water for 100 % [g/m3]
-        // -20              0.9
-        // -15	            1.4
-        // -10	            2.1
-        //  -5	            3.3
-        //   0	            4.8
-        //   5	            6.8
-        //  10	            9.4
-        //  15	           12.8
-        //  20	           17.3
-        //  25	           23.0
-        //  30	           30.3
-        //  35	           39.6
-        //  40	           51.1
-
-        return (4.2431796244 * Math.exp(0.0666427637 * temperature.getCelsius()) * relativeHumidity / 100.0);
+        final double saturationVaporPressure =
+                0.61078 * Math.exp(17.27 * temperature.getCelsius() / (temperature.getCelsius() + 237.3)) * 1000; // Tetens equation [Pa]
+        final double specificGasConstantForWater = 461.5; // [J/(kg*K)
+        return relativeHumidity * saturationVaporPressure * 1000 / (specificGasConstantForWater * temperature.getKelvin() * 100);
     }
 
     @Override
