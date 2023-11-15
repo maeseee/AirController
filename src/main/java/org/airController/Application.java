@@ -24,7 +24,7 @@ public class Application {
     private final IndoorAirMeasurement indoorAirMeasurement;
 
     public Application() throws IOException, URISyntaxException {
-        this(new GpioPinImpl(GpioFunction.MAIN_SYSTEM), new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER), new IndoorAirMeasurement());
+        this(new GpioPinImpl(GpioFunction.MAIN_SYSTEM, true), new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER, false), new IndoorAirMeasurement());
     }
 
     Application(GpioPin airFlow, GpioPin humidityExchanger, IndoorAirMeasurement indoorAirMeasurement) throws URISyntaxException {
