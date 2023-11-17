@@ -2,7 +2,7 @@ package org.airController.sensor;
 
 import org.airController.entities.AirVO;
 import org.airController.sensorAdapter.OutdoorAirMeasurementObserver;
-import org.airController.sensorAdapter.OutdoorAirValues;
+import org.airController.sensorAdapter.SensorValue;
 import org.airController.util.EnvironmentVariable;
 import org.airController.util.JsonParser;
 import org.airController.util.Logging;
@@ -43,7 +43,7 @@ public class OutdoorAirMeasurement implements Runnable {
         }
 
         final AirVO airValues = JsonParser.parse(request.get());
-        notifyObservers(new OutdoorAirValues(airValues));
+        notifyObservers(new SensorValueImpl(airValues));
     }
 
     public void addObserver(OutdoorAirMeasurementObserver observer) {
@@ -80,8 +80,8 @@ public class OutdoorAirMeasurement implements Runnable {
         return new HttpsRequest(uri);
     }
 
-    private void notifyObservers(OutdoorAirValues outdoorAirValues) {
-        Logging.getLogger().info("New outdoor measurement: " + outdoorAirValues);
-        observers.forEach(observer -> observer.updateAirMeasurement(outdoorAirValues));
+    private void notifyObservers(SensorValue outdoorsensorValue) {
+        Logging.getLogger().info("New outdoor sensor value: " + outdoorsensorValue);
+        observers.forEach(observer -> observer.updateOutdoorSensorValue(outdoorsensorValue));
     }
 }

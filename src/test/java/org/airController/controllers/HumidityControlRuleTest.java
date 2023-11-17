@@ -3,8 +3,8 @@ package org.airController.controllers;
 import org.airController.entities.AirVO;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
-import org.airController.sensorAdapter.IndoorAirValues;
-import org.airController.sensorAdapter.OutdoorAirValues;
+import org.airController.sensor.SensorValueImpl;
+import org.airController.sensorAdapter.SensorValue;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -19,10 +19,10 @@ class HumidityControlRuleTest {
 
     @ParameterizedTest(name = "{index} => indoor={0}, outdoor={1}, expectedResult={2}")
     @ArgumentsSource(HumidityControlArgumentProvider.class)
-    void testHumidityControlRule(IndoorAirValues indoorAirValues, OutdoorAirValues outdoorAirValues, boolean expectedResult) {
+    void testHumidityControlRule(SensorValue indoorSensorValue, SensorValue outdoorSensorValue, boolean expectedResult) {
         final HumidityControlRule testee = new HumidityControlRule();
 
-        final boolean result = testee.turnHumidityExchangerOn(indoorAirValues, outdoorAirValues);
+        final boolean result = testee.turnHumidityExchangerOn(indoorSensorValue, outdoorSensorValue);
 
         assertEquals(expectedResult, result);
     }
@@ -37,15 +37,16 @@ class HumidityControlRuleTest {
             final Humidity humidityLowLow = Humidity.createFromRelative(30);
             final Humidity humidityHigh = Humidity.createFromRelative(60);
             final Humidity humidityHighHigh = Humidity.createFromRelative(70);
-            return Stream.of(Arguments.of(new IndoorAirValues(temperature, humidityLow), new OutdoorAirValues(temperature, humidityHigh), false),
-                    Arguments.of(new IndoorAirValues(temperature, humidityHigh), new OutdoorAirValues(temperature, humidityLow), false),
-                    Arguments.of(new IndoorAirValues(temperature, humidityLowLow), new OutdoorAirValues(temperature, humidityLow), false),
-                    Arguments.of(new IndoorAirValues(temperature, humidityLow), new OutdoorAirValues(temperature, humidityLowLow), true),
-                    Arguments.of(new IndoorAirValues(temperature, humidityHighHigh), new OutdoorAirValues(temperature, humidityHigh), false),
-                    Arguments.of(new IndoorAirValues(temperature, humidityHigh), new OutdoorAirValues(temperature, humidityHighHigh), true),
-                    Arguments.of(new IndoorAirValues(null), new OutdoorAirValues(null), false),
-                    Arguments.of(new IndoorAirValues(null), new OutdoorAirValues(new AirVO(temperature, humidity)), false),
-                    Arguments.of(new IndoorAirValues(new AirVO(temperature, humidity)), new OutdoorAirValues(null), false));
+            return Stream.of(
+                    Arguments.of(new SensorValueImpl(temperature, humidityLow), new SensorValueImpl(temperature, humidityHigh), false),
+                    Arguments.of(new SensorValueImpl(temperature, humidityHigh), new SensorValueImpl(temperature, humidityLow), false),
+                    Arguments.of(new SensorValueImpl(temperature, humidityLowLow), new SensorValueImpl(temperature, humidityLow), false),
+                    Arguments.of(new SensorValueImpl(temperature, humidityLow), new SensorValueImpl(temperature, humidityLowLow), true),
+                    Arguments.of(new SensorValueImpl(temperature, humidityHighHigh), new SensorValueImpl(temperature, humidityHigh), false),
+                    Arguments.of(new SensorValueImpl(temperature, humidityHigh), new SensorValueImpl(temperature, humidityHighHigh), true),
+                    Arguments.of(new SensorValueImpl(null), new SensorValueImpl(null), false),
+                    Arguments.of(new SensorValueImpl(null), new SensorValueImpl(new AirVO(temperature, humidity)), false),
+                    Arguments.of(new SensorValueImpl(temperature, humidity), new SensorValueImpl(null), false));
         }
     }
 

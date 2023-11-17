@@ -1,16 +1,15 @@
 package org.airController.sensor;
 
 import org.airController.entities.AirVO;
-
-import java.util.Optional;
+import org.airController.sensorAdapter.SensorValue;
 
 public class Dht22Mock implements Dht22 {
 
     private AirVO data;
 
     @Override
-    public Optional<AirVO> refreshData() {
-        return Optional.ofNullable(data);
+    public SensorValue refreshData() {
+        return new SensorValueImpl(data);
     }
 
     public void setData(AirVO data) {

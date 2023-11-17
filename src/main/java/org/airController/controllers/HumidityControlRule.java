@@ -1,20 +1,19 @@
 package org.airController.controllers;
 
 import org.airController.entities.AirVO;
-import org.airController.sensorAdapter.IndoorAirValues;
-import org.airController.sensorAdapter.OutdoorAirValues;
+import org.airController.sensorAdapter.SensorValue;
 
 class HumidityControlRule {
 
     private static final AirVO GOAL_AIR_VALUES = new AirVO(23.0, 50.0);
 
-    public boolean turnHumidityExchangerOn(IndoorAirValues indoorAirValues, OutdoorAirValues outdoorAirValues) {
-        if (indoorAirValues.getAirValues().isEmpty() || outdoorAirValues.getAirValues().isEmpty()) {
+    public boolean turnHumidityExchangerOn(SensorValue indoorSensorValue, SensorValue outdoorSensorValue) {
+        if (indoorSensorValue.getValue().isEmpty() || outdoorSensorValue.getValue().isEmpty()) {
             return false;
         }
 
-        final double indoorAbsoluteHumidity = indoorAirValues.getAirValues().get().getAbsoluteHumidity();
-        final double outdoorAbsoluteHumidity = outdoorAirValues.getAirValues().get().getAbsoluteHumidity();
+        final double indoorAbsoluteHumidity = indoorSensorValue.getValue().get().getAbsoluteHumidity();
+        final double outdoorAbsoluteHumidity = outdoorSensorValue.getValue().get().getAbsoluteHumidity();
         final double goalAbsoluteHumidity = GOAL_AIR_VALUES.getAbsoluteHumidity();
 
         final double diffIndoorToGoal = indoorAbsoluteHumidity - goalAbsoluteHumidity;

@@ -5,10 +5,10 @@ import org.airController.entities.AirVO;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
 import org.airController.gpioAdapter.GpioFunction;
+import org.airController.sensorAdapter.SensorValue;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 class Dht22Impl implements Dht22 {
@@ -27,7 +27,7 @@ class Dht22Impl implements Dht22 {
     }
 
     @Override
-    public Optional<AirVO> refreshData() {
+    public SensorValue refreshData() {
         boolean successful = false;
         for (int retry = 0; retry < MAX_NR_OF_RETRIES; retry++) {
             final int pollDataCheck = pollDHT22();
@@ -42,15 +42,14 @@ class Dht22Impl implements Dht22 {
             }
         }
 
-        if (!successful) {
-            return Optional.empty();
-        }
+        final AirVO airVO = successful ? getSensorValueFromData() : null;
+        return new SensorValueImpl(airVO);
+    }
 
+    private AirVO getSensorValueFromData() {
         final float humidity = getHumidityFromData();
         final float temperature = getTemperatureFromData();
-
-        final AirVO airVO = new AirVO(Temperature.createFromCelsius(temperature), Humidity.createFromRelative(humidity));
-        return Optional.of(airVO);
+        return new AirVO(Temperature.createFromCelsius(temperature), Humidity.createFromRelative(humidity));
     }
 
     private int pollDHT22() {

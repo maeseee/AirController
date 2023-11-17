@@ -1,15 +1,13 @@
 package org.airController.sensor;
 
-import org.airController.entities.AirVO;
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.sensorAdapter.IndoorAirMeasurementObserver;
-import org.airController.sensorAdapter.IndoorAirValues;
+import org.airController.sensorAdapter.SensorValue;
 import org.airController.util.Logging;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -28,9 +26,9 @@ public class IndoorAirMeasurement implements Runnable {
 
     @Override
     public void run() {
-        final Optional<AirVO> indoorAirValues = dht22.refreshData();
-        indoorAirValues.ifPresentOrElse(
-                airVO -> notifyObservers(new IndoorAirValues(airVO)),
+        final SensorValue indoorSensorValue = dht22.refreshData();
+        indoorSensorValue.getValue().ifPresentOrElse(
+                airVO -> notifyObservers(indoorSensorValue),
                 () -> Logging.getLogger().severe("Indoor sensor out of order"));
     }
 
@@ -38,9 +36,9 @@ public class IndoorAirMeasurement implements Runnable {
         observers.add(observer);
     }
 
-    private void notifyObservers(IndoorAirValues indoorAirValues) {
-        Logging.getLogger().info("New indoor measurement: " + indoorAirValues);
-        observers.forEach(observer -> observer.updateAirMeasurement(indoorAirValues));
+    private void notifyObservers(SensorValue indoorSensorValue) {
+        Logging.getLogger().info("New indoor sensor value: " + indoorSensorValue);
+        observers.forEach(observer -> observer.updateIndoorSensorValue(indoorSensorValue));
     }
 
     public static void main(String[] args) throws IOException {
