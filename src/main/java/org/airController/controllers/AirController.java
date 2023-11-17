@@ -5,7 +5,7 @@ import org.airController.systemAdapter.ControlledVentilationSystem;
 
 import java.time.LocalDateTime;
 
-public class AirController implements IndoorAirMeasurementObserver, OutdoorAirMeasurementObserver {
+public class AirController implements IndoorSensorObserver, OutdoorSensorObserver {
 
     private final ControlledVentilationSystem controlledVentilationSystem;
     private final MainFreshAirTimeSlotRule mainFreshAirTimeSlotRule;

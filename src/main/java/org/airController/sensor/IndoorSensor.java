@@ -1,7 +1,7 @@
 package org.airController.sensor;
 
 import org.airController.gpioAdapter.GpioFunction;
-import org.airController.sensorAdapter.IndoorAirMeasurementObserver;
+import org.airController.sensorAdapter.IndoorSensorObserver;
 import org.airController.sensorAdapter.SensorValue;
 import org.airController.util.Logging;
 
@@ -12,15 +12,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class IndoorAirMeasurement implements Runnable {
-    private final List<IndoorAirMeasurementObserver> observers = new ArrayList<>();
+public class IndoorSensor implements Runnable {
+    private final List<IndoorSensorObserver> observers = new ArrayList<>();
     private final Dht22 dht22;
 
-    public IndoorAirMeasurement() throws IOException {
+    public IndoorSensor() throws IOException {
         this.dht22 = new Dht22Impl(GpioFunction.DHT22_SENSOR);
     }
 
-    public IndoorAirMeasurement(Dht22 dht22) {
+    public IndoorSensor(Dht22 dht22) {
         this.dht22 = dht22;
     }
 
@@ -32,7 +32,7 @@ public class IndoorAirMeasurement implements Runnable {
                 () -> Logging.getLogger().severe("Indoor sensor out of order"));
     }
 
-    public void addObserver(IndoorAirMeasurementObserver observer) {
+    public void addObserver(IndoorSensorObserver observer) {
         observers.add(observer);
     }
 
@@ -43,9 +43,9 @@ public class IndoorAirMeasurement implements Runnable {
 
     public static void main(String[] args) throws IOException {
         final Dht22Impl dht22 = new Dht22Impl(GpioFunction.DHT22_SENSOR);
-        final IndoorAirMeasurement indoorAirMeasurement = new IndoorAirMeasurement(dht22);
-        indoorAirMeasurement.addObserver(System.out::println);
+        final IndoorSensor indoorSensor = new IndoorSensor(dht22);
+        indoorSensor.addObserver(System.out::println);
         final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(indoorAirMeasurement, 0, 10, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(indoorSensor, 0, 10, TimeUnit.SECONDS);
     }
 }

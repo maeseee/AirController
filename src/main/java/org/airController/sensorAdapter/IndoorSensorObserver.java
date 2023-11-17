@@ -1,5 +1,5 @@
 package org.airController.sensorAdapter;
 
-public interface IndoorAirMeasurementObserver {
+public interface IndoorSensorObserver {
     void updateIndoorSensorValue(SensorValue indoorSensorValue);
 }

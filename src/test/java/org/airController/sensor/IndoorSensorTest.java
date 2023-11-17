@@ -1,7 +1,7 @@
 package org.airController.sensor;
 
 import org.airController.entities.AirVO;
-import org.airController.sensorAdapter.IndoorAirMeasurementObserver;
+import org.airController.sensorAdapter.IndoorSensorObserver;
 import org.airController.sensorAdapter.SensorValue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class IndoorAirMeasurementTest {
+class IndoorSensorTest {
 
     @Captor
     ArgumentCaptor<SensorValue> indoorSensorValueArgumentCaptor;
@@ -26,8 +26,8 @@ class IndoorAirMeasurementTest {
         final Dht22 dht22 = mock(Dht22.class);
         final AirVO data = new AirVO(23.0, 50.0);
         when(dht22.refreshData()).thenReturn(new SensorValueImpl(data));
-        final IndoorAirMeasurement testee = new IndoorAirMeasurement(dht22);
-        final IndoorAirMeasurementObserver observer = mock(IndoorAirMeasurementObserver.class);
+        final IndoorSensor testee = new IndoorSensor(dht22);
+        final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
 
         testee.run();
@@ -43,8 +43,8 @@ class IndoorAirMeasurementTest {
     void testWhenInvalidSensorDataThenDoNotNotifyObservers() {
         final Dht22 dht22 = mock(Dht22.class);
         when(dht22.refreshData()).thenReturn(new SensorValueImpl(null));
-        final IndoorAirMeasurement testee = new IndoorAirMeasurement(dht22);
-        final IndoorAirMeasurementObserver observer = mock(IndoorAirMeasurementObserver.class);
+        final IndoorSensor testee = new IndoorSensor(dht22);
+        final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
 
         testee.run();

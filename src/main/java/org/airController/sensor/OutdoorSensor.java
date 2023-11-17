@@ -1,7 +1,7 @@
 package org.airController.sensor;
 
 import org.airController.entities.AirVO;
-import org.airController.sensorAdapter.OutdoorAirMeasurementObserver;
+import org.airController.sensorAdapter.OutdoorSensorObserver;
 import org.airController.sensorAdapter.SensorValue;
 import org.airController.util.EnvironmentVariable;
 import org.airController.util.JsonParser;
@@ -18,20 +18,20 @@ import java.util.List;
 import java.util.Optional;
 
 
-public class OutdoorAirMeasurement implements Runnable {
+public class OutdoorSensor implements Runnable {
     private static final String LAT = "47.127459";
     private static final String LON = "8.245553";
     private static final String ENVIRONMENT_VARIABLE_API_KEY = "weather_api_key";
     private static final String ENCRYPTED_API_KEY = "JWHqsiARWGfnwhAp/qvt7aWlmhsyXvOtnsYN32HH5J2m2/QGb/OnuhnGzooxh1onTK+ynB9f038EMbUnOZMjNw==";
 
-    private final List<OutdoorAirMeasurementObserver> observers = new ArrayList<>();
+    private final List<OutdoorSensorObserver> observers = new ArrayList<>();
     private final HttpsRequest httpsRequest;
 
-    public OutdoorAirMeasurement() throws URISyntaxException {
+    public OutdoorSensor() throws URISyntaxException {
         this(createHttpRequest(getApiKeyForHttpRequest()));
     }
 
-    OutdoorAirMeasurement(HttpsRequest httpsRequest) {
+    OutdoorSensor(HttpsRequest httpsRequest) {
         this.httpsRequest = httpsRequest;
     }
 
@@ -46,13 +46,13 @@ public class OutdoorAirMeasurement implements Runnable {
         notifyObservers(new SensorValueImpl(airValues));
     }
 
-    public void addObserver(OutdoorAirMeasurementObserver observer) {
+    public void addObserver(OutdoorSensorObserver observer) {
         observers.add(observer);
     }
 
     private static String getApiKeyForHttpRequest() {
         final Optional<String> apiKeyOptional = EnvironmentVariable.readEnvironmentVariable(ENVIRONMENT_VARIABLE_API_KEY);
-        return apiKeyOptional.orElseGet(OutdoorAirMeasurement::getApiKeyForHttpRequestFromMasterPassword);
+        return apiKeyOptional.orElseGet(OutdoorSensor::getApiKeyForHttpRequestFromMasterPassword);
     }
 
     private static String getApiKeyForHttpRequestFromMasterPassword() {

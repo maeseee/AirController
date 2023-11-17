@@ -1,7 +1,7 @@
 package org.airController.sensor;
 
 import org.airController.entities.AirVO;
-import org.airController.sensorAdapter.OutdoorAirMeasurementObserver;
+import org.airController.sensorAdapter.OutdoorSensorObserver;
 import org.airController.sensorAdapter.SensorValue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class OutdoorAirMeasurementTest {
+class OutdoorSensorTest {
 
     private final static String SAMPLE_HTTP_RESPONSE = """
             {
@@ -44,8 +44,8 @@ class OutdoorAirMeasurementTest {
     void testWhenMeasureValuesThenCallObservers() {
         final HttpsRequest httpsRequest = mock(HttpsRequest.class);
         when(httpsRequest.sendRequest()).thenReturn(Optional.of(SAMPLE_HTTP_RESPONSE));
-        final OutdoorAirMeasurementObserver observer = mock(OutdoorAirMeasurementObserver.class);
-        final OutdoorAirMeasurement testee = new OutdoorAirMeasurement(httpsRequest);
+        final OutdoorSensorObserver observer = mock(OutdoorSensorObserver.class);
+        final OutdoorSensor testee = new OutdoorSensor(httpsRequest);
         testee.addObserver(observer);
 
         testee.run();
@@ -62,8 +62,8 @@ class OutdoorAirMeasurementTest {
     void testWhenMeasureValuesEmptyThenDontCallObservers() {
         final HttpsRequest httpsRequest = mock(HttpsRequest.class);
         when(httpsRequest.sendRequest()).thenReturn(Optional.empty());
-        final OutdoorAirMeasurementObserver observer = mock(OutdoorAirMeasurementObserver.class);
-        final OutdoorAirMeasurement testee = new OutdoorAirMeasurement(httpsRequest);
+        final OutdoorSensorObserver observer = mock(OutdoorSensorObserver.class);
+        final OutdoorSensor testee = new OutdoorSensor(httpsRequest);
         testee.addObserver(observer);
 
         testee.run();
