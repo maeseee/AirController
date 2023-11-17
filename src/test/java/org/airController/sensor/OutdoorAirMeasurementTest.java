@@ -52,10 +52,10 @@ class OutdoorAirMeasurementTest {
 
         verify(observer).updateOutdoorSensorValue(outdoorSensorValueArgumentCaptor.capture());
         final SensorValue outdoorSensorValue = outdoorSensorValueArgumentCaptor.getValue();
-        final Optional<AirVO> airValues = outdoorSensorValue.getValue();
-        assertTrue(airValues.isPresent());
-        assertEquals(10.53, airValues.get().getTemperature().getCelsius(), 0.1);
-        assertEquals(87.0, airValues.get().getHumidity().getRelativeHumidity(), 0.1);
+        final Optional<AirVO> sensorValues = outdoorSensorValue.getValue();
+        assertTrue(sensorValues.isPresent());
+        assertEquals(10.53, sensorValues.get().getTemperature().getCelsius(), 0.1);
+        assertEquals(87.0, sensorValues.get().getHumidity().getRelativeHumidity(), 0.1);
     }
 
     @Test
