@@ -1,6 +1,5 @@
 package org.airController.sensor;
 
-import org.airController.gpioAdapter.GpioFunction;
 import org.airController.sensorAdapter.IndoorSensor;
 import org.airController.sensorAdapter.IndoorSensorObserver;
 import org.airController.sensorAdapter.SensorValue;
@@ -18,7 +17,7 @@ public class IndoorSensorImpl implements IndoorSensor {
     private final Dht22 dht22;
 
     public IndoorSensorImpl() throws IOException {
-        this.dht22 = new Dht22Impl(GpioFunction.DHT22_SENSOR);
+        this.dht22 = new Dht22Impl();
     }
 
     public IndoorSensorImpl(Dht22 dht22) {
@@ -44,7 +43,7 @@ public class IndoorSensorImpl implements IndoorSensor {
     }
 
     public static void main(String[] args) throws IOException {
-        final Dht22Impl dht22 = new Dht22Impl(GpioFunction.DHT22_SENSOR);
+        final Dht22Impl dht22 = new Dht22Impl();
         final IndoorSensorImpl indoorSensor = new IndoorSensorImpl(dht22);
         indoorSensor.addObserver(System.out::println);
         final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
