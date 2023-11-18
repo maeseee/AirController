@@ -16,3 +16,6 @@ done
 
 # Read Environment test
 # mvn exec:java -Dexec.mainClass="org.airController.util.EnvironmentVariable"
+
+# Restart service
+# sudo systemctl restart airController.service

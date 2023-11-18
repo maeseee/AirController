@@ -20,47 +20,48 @@ class Dht22Impl implements Dht22 {
 
     public Dht22Impl(GpioFunction gpioFunction) throws IOException {
         this.gpioFunction = gpioFunction;
+        setupWiringPi();
+    }
 
-        if (Gpio.wiringPiSetup() == -1) {
+    private void setupWiringPi() throws IOException {
+        final int wiringPiStatus = Gpio.wiringPiSetup();
+        if (wiringPiStatus == -1) {
             throw new IOException("GPIO SETUP FAILED");
         }
     }
 
     @Override
     public SensorValue refreshData() {
-        boolean successful = false;
-        for (int retry = 0; retry < MAX_NR_OF_RETRIES; retry++) {
-            final int pollDataCheck = pollDHT22();
-            if (pollDataCheck >= 40 && checkParity()) {
-                successful = true;
-                break;
+        AirVO airVO = null;
+        int retryCounter = 0;
+        while (airVO == null && retryCounter < MAX_NR_OF_RETRIES) {
+            final int nrOfReadPolls = readSensorData();
+            if (readSuccessful(nrOfReadPolls)) {
+                airVO = getSensorValueFromData();
+            } else {
+                sleepAFew();
             }
-            try {
-                TimeUnit.SECONDS.sleep(5);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            retryCounter++;
         }
-
-        final AirVO airVO = successful ? getSensorValueFromData() : null;
         return new SensorValueImpl(airVO);
+    }
+
+    private void sleepAFew() {
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean readSuccessful(int nrOfReadPolls) {
+        return nrOfReadPolls >= 40 && checkParity();
     }
 
     private AirVO getSensorValueFromData() {
         final float humidity = getHumidityFromData();
         final float temperature = getTemperatureFromData();
         return new AirVO(Temperature.createFromCelsius(temperature), Humidity.createFromRelative(humidity));
-    }
-
-    private int pollDHT22() {
-        int lastState = Gpio.HIGH;
-        Arrays.fill(dht22_dat, 0);
-
-        sendStartSignal();
-
-        Gpio.pinMode(gpioFunction.getGpio(), Gpio.INPUT);
-
-        return readSensorData(lastState);
     }
 
     private void sendStartSignal() {
@@ -72,17 +73,18 @@ class Dht22Impl implements Dht22 {
 
     private int waitUntilStateChanges(int lastState) {
         int counter = 0;
-        while (Gpio.digitalRead(gpioFunction.getGpio()) == lastState) {
+        while (Gpio.digitalRead(gpioFunction.getGpio()) == lastState && counter < 255) {
             counter++;
             Gpio.delayMicroseconds(1);
-            if (counter == 255) {
-                break;
-            }
         }
         return counter;
     }
 
-    private int readSensorData(int lastState) {
+    private int readSensorData() {
+        Arrays.fill(dht22_dat, 0);
+        sendStartSignal();
+        Gpio.pinMode(gpioFunction.getGpio(), Gpio.INPUT);
+        int lastState = Gpio.HIGH;
         int pollPosition = 0;
         for (int i = 0; i < MAX_TIMINGS; i++) {
             final int counter = waitUntilStateChanges(lastState);
