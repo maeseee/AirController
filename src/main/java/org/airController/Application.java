@@ -4,8 +4,10 @@ import org.airController.controllers.AirController;
 import org.airController.gpio.GpioPinImpl;
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
-import org.airController.sensor.IndoorSensor;
-import org.airController.sensor.OutdoorSensor;
+import org.airController.sensor.IndoorSensorImpl;
+import org.airController.sensor.OutdoorSensorImpl;
+import org.airController.sensorAdapter.IndoorSensor;
+import org.airController.sensorAdapter.OutdoorSensor;
 import org.airController.system.ControlledVentilationSystemImpl;
 import org.airController.systemAdapter.ControlledVentilationSystem;
 import org.airController.util.Logging;
@@ -24,12 +26,12 @@ public class Application {
     private final IndoorSensor indoorSensor;
 
     public Application() throws IOException, URISyntaxException {
-        this(new GpioPinImpl(GpioFunction.MAIN_SYSTEM, true), new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER, false), new IndoorSensor());
+        this(new GpioPinImpl(GpioFunction.MAIN_SYSTEM, true), new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER, false), new IndoorSensorImpl());
     }
 
     Application(GpioPin airFlow, GpioPin humidityExchanger, IndoorSensor indoorSensor) throws URISyntaxException {
         final ControlledVentilationSystem ventilationSystem = new ControlledVentilationSystemImpl(airFlow, humidityExchanger);
-        this.outdoorSensor = new OutdoorSensor();
+        this.outdoorSensor = new OutdoorSensorImpl();
         this.indoorSensor = indoorSensor;
 
         final AirController airController = new AirController(ventilationSystem);

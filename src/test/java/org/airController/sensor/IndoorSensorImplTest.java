@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class IndoorSensorTest {
+class IndoorSensorImplTest {
 
     @Captor
     ArgumentCaptor<SensorValue> indoorSensorValueArgumentCaptor;
@@ -26,7 +26,7 @@ class IndoorSensorTest {
         final Dht22 dht22 = mock(Dht22.class);
         final AirVO data = new AirVO(23.0, 50.0);
         when(dht22.refreshData()).thenReturn(new SensorValueImpl(data));
-        final IndoorSensor testee = new IndoorSensor(dht22);
+        final IndoorSensorImpl testee = new IndoorSensorImpl(dht22);
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
 
@@ -43,7 +43,7 @@ class IndoorSensorTest {
     void testWhenInvalidSensorDataThenDoNotNotifyObservers() {
         final Dht22 dht22 = mock(Dht22.class);
         when(dht22.refreshData()).thenReturn(new SensorValueImpl(null));
-        final IndoorSensor testee = new IndoorSensor(dht22);
+        final IndoorSensorImpl testee = new IndoorSensorImpl(dht22);
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
 

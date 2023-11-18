@@ -1,6 +1,7 @@
 package org.airController.sensor;
 
 import org.airController.entities.AirVO;
+import org.airController.sensorAdapter.OutdoorSensor;
 import org.airController.sensorAdapter.OutdoorSensorObserver;
 import org.airController.sensorAdapter.SensorValue;
 import org.airController.util.EnvironmentVariable;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public class OutdoorSensor implements Runnable {
+public class OutdoorSensorImpl implements OutdoorSensor {
     private static final String LAT = "47.127459";
     private static final String LON = "8.245553";
     private static final String ENVIRONMENT_VARIABLE_API_KEY = "weather_api_key";
@@ -27,11 +28,11 @@ public class OutdoorSensor implements Runnable {
     private final List<OutdoorSensorObserver> observers = new ArrayList<>();
     private final HttpsRequest httpsRequest;
 
-    public OutdoorSensor() throws URISyntaxException {
+    public OutdoorSensorImpl() throws URISyntaxException {
         this(createHttpRequest(getApiKeyForHttpRequest()));
     }
 
-    OutdoorSensor(HttpsRequest httpsRequest) {
+    OutdoorSensorImpl(HttpsRequest httpsRequest) {
         this.httpsRequest = httpsRequest;
     }
 
@@ -46,13 +47,14 @@ public class OutdoorSensor implements Runnable {
         notifyObservers(new SensorValueImpl(airValues));
     }
 
+    @Override
     public void addObserver(OutdoorSensorObserver observer) {
         observers.add(observer);
     }
 
     private static String getApiKeyForHttpRequest() {
         final Optional<String> apiKeyOptional = EnvironmentVariable.readEnvironmentVariable(ENVIRONMENT_VARIABLE_API_KEY);
-        return apiKeyOptional.orElseGet(OutdoorSensor::getApiKeyForHttpRequestFromMasterPassword);
+        return apiKeyOptional.orElseGet(OutdoorSensorImpl::getApiKeyForHttpRequestFromMasterPassword);
     }
 
     private static String getApiKeyForHttpRequestFromMasterPassword() {

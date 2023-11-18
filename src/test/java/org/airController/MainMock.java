@@ -4,7 +4,8 @@ import org.airController.entities.AirVO;
 import org.airController.gpio.GpioPinMock;
 import org.airController.gpioAdapter.GpioPin;
 import org.airController.sensor.Dht22Mock;
-import org.airController.sensor.IndoorSensor;
+import org.airController.sensor.IndoorSensorImpl;
+import org.airController.sensorAdapter.IndoorSensor;
 
 import java.net.URISyntaxException;
 
@@ -16,7 +17,7 @@ class MainMock {
         final Dht22Mock dht22Mock = new Dht22Mock();
         final AirVO airVo = new AirVO(23.0, 50.0);
         dht22Mock.setData(airVo);
-        final IndoorSensor indoorSensor = new IndoorSensor(dht22Mock);
+        final IndoorSensor indoorSensor = new IndoorSensorImpl(dht22Mock);
         final Application application = new Application(airFlow, humidityExchanger, indoorSensor);
         application.run();
         Thread.currentThread().join();

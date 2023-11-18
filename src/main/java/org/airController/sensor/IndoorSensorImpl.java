@@ -1,6 +1,7 @@
 package org.airController.sensor;
 
 import org.airController.gpioAdapter.GpioFunction;
+import org.airController.sensorAdapter.IndoorSensor;
 import org.airController.sensorAdapter.IndoorSensorObserver;
 import org.airController.sensorAdapter.SensorValue;
 import org.airController.util.Logging;
@@ -12,15 +13,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class IndoorSensor implements Runnable {
+public class IndoorSensorImpl implements IndoorSensor {
     private final List<IndoorSensorObserver> observers = new ArrayList<>();
     private final Dht22 dht22;
 
-    public IndoorSensor() throws IOException {
+    public IndoorSensorImpl() throws IOException {
         this.dht22 = new Dht22Impl(GpioFunction.DHT22_SENSOR);
     }
 
-    public IndoorSensor(Dht22 dht22) {
+    public IndoorSensorImpl(Dht22 dht22) {
         this.dht22 = dht22;
     }
 
@@ -32,6 +33,7 @@ public class IndoorSensor implements Runnable {
                 () -> Logging.getLogger().severe("Indoor sensor out of order"));
     }
 
+    @Override
     public void addObserver(IndoorSensorObserver observer) {
         observers.add(observer);
     }
@@ -43,7 +45,7 @@ public class IndoorSensor implements Runnable {
 
     public static void main(String[] args) throws IOException {
         final Dht22Impl dht22 = new Dht22Impl(GpioFunction.DHT22_SENSOR);
-        final IndoorSensor indoorSensor = new IndoorSensor(dht22);
+        final IndoorSensorImpl indoorSensor = new IndoorSensorImpl(dht22);
         indoorSensor.addObserver(System.out::println);
         final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(indoorSensor, 0, 10, TimeUnit.SECONDS);

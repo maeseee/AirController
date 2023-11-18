@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class OutdoorSensorTest {
+class OutdoorSensorImplTest {
 
     private final static String SAMPLE_HTTP_RESPONSE = """
             {
@@ -45,7 +45,7 @@ class OutdoorSensorTest {
         final HttpsRequest httpsRequest = mock(HttpsRequest.class);
         when(httpsRequest.sendRequest()).thenReturn(Optional.of(SAMPLE_HTTP_RESPONSE));
         final OutdoorSensorObserver observer = mock(OutdoorSensorObserver.class);
-        final OutdoorSensor testee = new OutdoorSensor(httpsRequest);
+        final OutdoorSensorImpl testee = new OutdoorSensorImpl(httpsRequest);
         testee.addObserver(observer);
 
         testee.run();
@@ -63,7 +63,7 @@ class OutdoorSensorTest {
         final HttpsRequest httpsRequest = mock(HttpsRequest.class);
         when(httpsRequest.sendRequest()).thenReturn(Optional.empty());
         final OutdoorSensorObserver observer = mock(OutdoorSensorObserver.class);
-        final OutdoorSensor testee = new OutdoorSensor(httpsRequest);
+        final OutdoorSensorImpl testee = new OutdoorSensorImpl(httpsRequest);
         testee.addObserver(observer);
 
         testee.run();
