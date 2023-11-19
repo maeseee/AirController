@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.io.IOException;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class HumidityTest {
 
     @Test
-    void testRelativHumidity() {
+    void testRelativHumidity() throws IOException {
         final double relativeHumidity = 50.0;
         final Humidity testee = Humidity.createFromRelative(relativeHumidity);
 
@@ -36,7 +38,7 @@ class HumidityTest {
             "35.0, 39.58",
             "40.0, 51.1",
             "45.0, 65.35",})
-    void testCalculationOfAbsoluteHumidity100Percent(double temperatureCelsius, double weightFor100Percent) {
+    void testCalculationOfAbsoluteHumidity100Percent(double temperatureCelsius, double weightFor100Percent) throws IOException {
         final double relativeHumidity = 100.0;
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
         final Humidity testee = Humidity.createFromRelative(relativeHumidity);
@@ -64,7 +66,7 @@ class HumidityTest {
             "35.0, 39.58",
             "40.0, 51.1",
             "45.0, 65.35",})
-    void testCalculationOfAbsoluteHumidity50Percent(double temperatureCelsius, double weightFor100Percent) {
+    void testCalculationOfAbsoluteHumidity50Percent(double temperatureCelsius, double weightFor100Percent) throws IOException {
         final double relativeHumidity = 50.0;
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
         final Humidity testee = Humidity.createFromRelative(relativeHumidity);

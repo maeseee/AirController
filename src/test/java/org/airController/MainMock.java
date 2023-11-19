@@ -1,6 +1,8 @@
 package org.airController;
 
 import org.airController.entities.AirVO;
+import org.airController.entities.Humidity;
+import org.airController.entities.Temperature;
 import org.airController.gpio.GpioPinMock;
 import org.airController.gpioAdapter.GpioPin;
 import org.airController.sensor.Dht22;
@@ -9,6 +11,7 @@ import org.airController.sensor.SensorValueImpl;
 import org.airController.sensorAdapter.IndoorSensor;
 import org.airController.sensorAdapter.SensorValue;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 
 import static org.mockito.Mockito.mock;
@@ -16,10 +19,10 @@ import static org.mockito.Mockito.when;
 
 class MainMock {
 
-    public static void main(String[] args) throws InterruptedException, URISyntaxException {
+    public static void main(String[] args) throws InterruptedException, URISyntaxException, IOException {
         final GpioPin airFlow = new GpioPinMock("AirFlow");
         final GpioPin humidityExchanger = new GpioPinMock("HumidityExchanger");
-        final AirVO airVo = new AirVO(23.0, 50.0);
+        final AirVO airVo = new AirVO(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(50.0));
         final SensorValue sensorValue = new SensorValueImpl(airVo);
         final Dht22 dht22 = mock(Dht22.class);
         when(dht22.refreshData()).thenReturn(sensorValue);

@@ -9,11 +9,6 @@ public class AirVO {
         this.humidity = humidity;
     }
 
-    public AirVO(double temperatureCelsius, double relativeHumidity) {
-        this.temperature = Temperature.createFromCelsius(temperatureCelsius);
-        this.humidity = Humidity.createFromRelative(relativeHumidity);
-    }
-
     public Temperature getTemperature() {
         return temperature;
     }

@@ -1,23 +1,36 @@
 package org.airController.controllers;
 
 import org.airController.entities.AirVO;
+import org.airController.entities.Humidity;
 import org.airController.sensorAdapter.SensorValue;
+
+import java.io.IOException;
 
 class HumidityControlRule {
 
-    private static final AirVO GOAL_AIR_VALUES = new AirVO(23.0, 50.0);
+    private static final Humidity TARGET_HUMIDITY;
+
+    static {
+        try {
+            TARGET_HUMIDITY = Humidity.createFromRelative(50.0);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public boolean turnHumidityExchangerOn(SensorValue indoorSensorValue, SensorValue outdoorSensorValue) {
         if (indoorSensorValue.getValue().isEmpty() || outdoorSensorValue.getValue().isEmpty()) {
             return false;
         }
+        final AirVO indoor = indoorSensorValue.getValue().get();
+        final AirVO outdoor = outdoorSensorValue.getValue().get();
 
-        final double indoorAbsoluteHumidity = indoorSensorValue.getValue().get().getAbsoluteHumidity();
-        final double outdoorAbsoluteHumidity = outdoorSensorValue.getValue().get().getAbsoluteHumidity();
-        final double goalAbsoluteHumidity = GOAL_AIR_VALUES.getAbsoluteHumidity();
+        final double indoorAbsoluteHumidity = indoor.getAbsoluteHumidity();
+        final double outdoorAbsoluteHumidity = outdoor.getAbsoluteHumidity();
+        final double targetAbsoluteHumidity = TARGET_HUMIDITY.getAbsoluteHumidity(indoor.getTemperature());
 
-        final double diffIndoorToGoal = indoorAbsoluteHumidity - goalAbsoluteHumidity;
-        final double diffOutdoorToGoal = outdoorAbsoluteHumidity - goalAbsoluteHumidity;
+        final double diffIndoorToGoal = indoorAbsoluteHumidity - targetAbsoluteHumidity;
+        final double diffOutdoorToGoal = outdoorAbsoluteHumidity - targetAbsoluteHumidity;
 
         if (numbersWithDifferentSigns(diffIndoorToGoal, diffOutdoorToGoal)) {
             return false;

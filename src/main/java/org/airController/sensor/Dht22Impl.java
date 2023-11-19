@@ -52,13 +52,18 @@ class Dht22Impl implements Dht22 {
     }
 
     private AirVO getSensorValueFromData(int[] sensorData) {
-        final float humidity = getHumidityFromData(sensorData);
-        final float temperature = getTemperatureFromData(sensorData);
-        return new AirVO(Temperature.createFromCelsius(temperature), Humidity.createFromRelative(humidity));
+        try {
+            final Humidity humidity = getHumidityFromData(sensorData);
+            final float temperature = getTemperatureFromData(sensorData);
+            return new AirVO(Temperature.createFromCelsius(temperature), humidity);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
-    private float getHumidityFromData(int[] sensorData) {
-        return (float) ((sensorData[0] << 8) + sensorData[1]) / 10;
+    private Humidity getHumidityFromData(int[] sensorData) throws IOException {
+        final float humidity = (float) ((sensorData[0] << 8) + sensorData[1]) / 10;
+        return Humidity.createFromRelative(humidity);
     }
 
     private float getTemperatureFromData(int[] sensorData) {

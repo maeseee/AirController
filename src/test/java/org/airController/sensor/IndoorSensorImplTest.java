@@ -1,6 +1,8 @@
 package org.airController.sensor;
 
 import org.airController.entities.AirVO;
+import org.airController.entities.Humidity;
+import org.airController.entities.Temperature;
 import org.airController.sensorAdapter.IndoorSensorObserver;
 import org.airController.sensorAdapter.SensorValue;
 import org.junit.jupiter.api.Test;
@@ -9,6 +11,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,9 +25,9 @@ class IndoorSensorImplTest {
     ArgumentCaptor<SensorValue> indoorSensorValueArgumentCaptor;
 
     @Test
-    void testWhenRunThenNotifyObservers() {
+    void testWhenRunThenNotifyObservers() throws IOException {
         final Dht22 dht22 = mock(Dht22.class);
-        final AirVO data = new AirVO(23.0, 50.0);
+        final AirVO data = new AirVO(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(50.0));
         when(dht22.refreshData()).thenReturn(new SensorValueImpl(data));
         final IndoorSensorImpl testee = new IndoorSensorImpl(dht22);
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);

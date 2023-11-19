@@ -1,5 +1,7 @@
 package org.airController.entities;
 
+import java.io.IOException;
+
 public class Humidity {
 
     private final double relativeHumidity;
@@ -30,7 +32,10 @@ public class Humidity {
         return "Humidity=" + relativeHumidity + "%";
     }
 
-    public static Humidity createFromRelative(double relativeHumidity) {
+    public static Humidity createFromRelative(double relativeHumidity) throws IOException {
+        if (relativeHumidity < 0.0 || relativeHumidity > 100.0) {
+            throw new IOException();
+        }
         return new Humidity(relativeHumidity);
     }
 

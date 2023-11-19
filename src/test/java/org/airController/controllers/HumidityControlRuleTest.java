@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
+import java.io.IOException;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,7 +31,7 @@ class HumidityControlRuleTest {
     static class HumidityControlArgumentProvider implements ArgumentsProvider {
 
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws IOException {
             final Temperature temperature = Temperature.createFromCelsius(23);
             final Humidity humidity = Humidity.createFromRelative(50);
             final Humidity humidityLow = Humidity.createFromRelative(40);
