@@ -13,35 +13,38 @@ class Dht22Impl implements Dht22 {
     private static final int MAX_NR_OF_RETRIES = 3;
 
     private final OneWireCommunication communication;
+    private final int retryBaseTime;
 
     public Dht22Impl() throws IOException {
-        this(new OneWireCommunication(GpioFunction.DHT22_SENSOR));
+        this(new OneWireCommunication(GpioFunction.DHT22_SENSOR), 5);
     }
 
-    Dht22Impl(OneWireCommunication communication) {
+    Dht22Impl(OneWireCommunication communication, int retryBaseTime) {
         this.communication = communication;
+        this.retryBaseTime = retryBaseTime;
     }
 
     @Override
     public SensorValue refreshData() {
         AirVO airVO = null;
         int retryCounter = 0;
-        while (airVO == null && retryCounter < MAX_NR_OF_RETRIES) {
+        while (airVO == null && retryCounter <= MAX_NR_OF_RETRIES) {
             final int nrOfReadPolls = communication.readSensorData();
             final int[] sensorData = communication.getSensorData();
             if (readSuccessful(nrOfReadPolls, sensorData)) {
                 airVO = getSensorValueFromData(sensorData);
             } else {
-                sleepAFew();
+                retryCounter++;
+                sleepABit(retryCounter);
             }
-            retryCounter++;
         }
         return new SensorValueImpl(airVO);
     }
 
-    private void sleepAFew() {
+    private void sleepABit(int retryCounter) {
+        final int sleepDurraction = retryBaseTime * retryCounter;
         try {
-            TimeUnit.SECONDS.sleep(5);
+            TimeUnit.SECONDS.sleep(sleepDurraction);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

@@ -2,15 +2,68 @@ package org.airController.sensor;
 
 import org.airController.entities.AirVO;
 import org.airController.sensorAdapter.SensorValue;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class Dht22ImplTest {
+
+    @Test
+    void testWhenAllChecksAreValidThenValueIsPresent() {
+        final OneWireCommunication communication = mock(OneWireCommunication.class);
+        final int[] sensorData = {0x1, 0xF4, 0x0, 0xE6, 0xDB}; // T=23, H=50
+        when(communication.readSensorData()).thenReturn(40);
+        when(communication.getSensorData()).thenReturn(sensorData);
+        final Dht22Impl testee = new Dht22Impl(communication, 0);
+
+        final SensorValue sensorValue = testee.refreshData();
+
+        assertTrue(sensorValue.getValue().isPresent());
+    }
+
+    @Test
+    void testWhenCheckInvalidThenRetry3Times() {
+        final OneWireCommunication communication = mock(OneWireCommunication.class);
+        final int[] sensorData = {0x1, 0xF4, 0x0, 0xE6, 0xDB}; // T=23, H=50
+        when(communication.readSensorData()).thenReturn(39, 39, 39, 40); // 40 is good
+        when(communication.getSensorData()).thenReturn(sensorData);
+        final Dht22Impl testee = new Dht22Impl(communication, 0);
+
+        final SensorValue sensorValue = testee.refreshData();
+
+        assertTrue(sensorValue.getValue().isPresent());
+    }
+
+    @Test
+    void testWhenTooLessPollingThenInvalid() {
+        final OneWireCommunication communication = mock(OneWireCommunication.class);
+        final int[] sensorData = {0x1, 0xF4, 0x0, 0xE6, 0xDB}; // T=23, H=50
+        when(communication.readSensorData()).thenReturn(36, 37, 38, 39);
+        when(communication.getSensorData()).thenReturn(sensorData);
+        final Dht22Impl testee = new Dht22Impl(communication, 0);
+
+        final SensorValue sensorValue = testee.refreshData();
+
+        assertFalse(sensorValue.getValue().isPresent());
+    }
+
+
+    @Test
+    void testWhenWrongChecksumThenInvalid() {
+        final OneWireCommunication communication = mock(OneWireCommunication.class);
+        final int[] sensorData = {0x2, 0xF4, 0x0, 0xE6, 0xDB}; // T=23, H=50
+        when(communication.readSensorData()).thenReturn(40);
+        when(communication.getSensorData()).thenReturn(sensorData);
+        final Dht22Impl testee = new Dht22Impl(communication, 0);
+
+        final SensorValue sensorValue = testee.refreshData();
+
+        assertFalse(sensorValue.getValue().isPresent());
+    }
 
     @ParameterizedTest
     @CsvSource({
