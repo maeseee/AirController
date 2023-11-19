@@ -1,6 +1,5 @@
 package org.airController.entities;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -9,17 +8,31 @@ import java.io.IOException;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class HumidityTest {
 
-    @Test
-    void testRelativHumidity() throws IOException {
-        final double relativeHumidity = 50.0;
+    @ParameterizedTest
+    @CsvSource({
+            "50.0",
+            "10.0",
+            "90.0",
+            "100.0",
+            "-0.0"})
+    void testRelativHumidity(double relativeHumidity) throws IOException {
         final Humidity testee = Humidity.createFromRelative(relativeHumidity);
 
         final double result = testee.getRelativeHumidity();
 
         assertThat(result, is(relativeHumidity));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "100.1, false",
+            "-0.1"})
+    void testEdgeCases(double relativeHumidity) {
+        assertThrows(IOException.class, () -> Humidity.createFromRelative(relativeHumidity));
     }
 
     @ParameterizedTest
