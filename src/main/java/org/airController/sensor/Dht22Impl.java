@@ -7,6 +7,7 @@ import org.airController.gpioAdapter.GpioFunction;
 import org.airController.sensorAdapter.SensorValue;
 
 import java.io.IOException;
+import java.util.OptionalLong;
 import java.util.concurrent.TimeUnit;
 
 class Dht22Impl implements Dht22 {
@@ -29,10 +30,9 @@ class Dht22Impl implements Dht22 {
         AirVO airVO = null;
         int retryCounter = 0;
         while (airVO == null && retryCounter <= MAX_NR_OF_RETRIES) {
-            final int nrOfReadPolls = communication.readSensorData();
-            final int[] sensorData = communication.getSensorData();
-            if (readSuccessful(nrOfReadPolls, sensorData)) {
-                airVO = getSensorValueFromData(sensorData);
+            final OptionalLong sensorData = communication.readSensorData();
+            if (sensorData.isPresent() && checkParity(sensorData.getAsLong())) {
+                airVO = getSensorValueFromData(sensorData.getAsLong());
             } else {
                 retryCounter++;
                 sleepABit(retryCounter);
@@ -50,11 +50,7 @@ class Dht22Impl implements Dht22 {
         }
     }
 
-    private boolean readSuccessful(int nrOfReadPolls, int[] sensorData) {
-        return nrOfReadPolls >= 40 && checkParity(sensorData);
-    }
-
-    private AirVO getSensorValueFromData(int[] sensorData) {
+    private AirVO getSensorValueFromData(long sensorData) {
         try {
             final Humidity humidity = getHumidityFromData(sensorData);
             final Temperature temperature = getTemperatureFromData(sensorData);
@@ -64,18 +60,25 @@ class Dht22Impl implements Dht22 {
         }
     }
 
-    private Humidity getHumidityFromData(int[] sensorData) throws IOException {
-        final double humidity = (double) ((sensorData[0] << 8) + sensorData[1]) / 10;
+    private Humidity getHumidityFromData(long sensorData) throws IOException {
+        final long humidityData = (sensorData >> 24) & 0xFFFF;
+        final double humidity = (double) humidityData / 10.0;
         return Humidity.createFromRelative(humidity);
     }
 
-    private Temperature getTemperatureFromData(int[] sensorData) {
-        final double sign = (sensorData[2] & 0x80) == 0 ? 1 : -1;
-        final double temperature = (double) (((sensorData[2] & 0x7F) << 8) + sensorData[3]) / 10.0 * sign;
+    private Temperature getTemperatureFromData(long sensorData) {
+        final long temperatureData = (sensorData >> 8) & 0xFFFF;
+        final double sign = (temperatureData & 0x8000) == 0 ? 1 : -1;
+        final double temperature = (double) (temperatureData & 0x7FFF) / 10.0 * sign;
         return Temperature.createFromCelsius(temperature);
     }
 
-    private boolean checkParity(int[] sensorData) {
-        return sensorData[4] == (sensorData[0] + sensorData[1] + sensorData[2] + sensorData[3] & 0xFF);
+    private boolean checkParity(long sensorData) {
+        final long humidity1 = (sensorData >> 32) & 0xFF;
+        final long humidity0 = (sensorData >> 24) & 0xFF;
+        final long temperature1 = (sensorData >> 16) & 0xFF;
+        final long temperature0 = (sensorData >> 8) & 0xFF;
+        final long parityByte = sensorData & 0xFF;
+        return parityByte == ((humidity1 + humidity0 + temperature1 + temperature0) & 0xFF);
     }
 }

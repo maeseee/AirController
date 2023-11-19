@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.OptionalLong;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -15,9 +17,8 @@ class Dht22ImplTest {
     @Test
     void testWhenAllChecksAreValidThenValueIsPresent() {
         final OneWireCommunication communication = mock(OneWireCommunication.class);
-        final int[] sensorData = {0x1, 0xF4, 0x0, 0xE6, 0xDB}; // T=23, H=50
-        when(communication.readSensorData()).thenReturn(40);
-        when(communication.getSensorData()).thenReturn(sensorData);
+        final OptionalLong sensorData = createSensorData(23.0, 50.0);
+        when(communication.readSensorData()).thenReturn(sensorData);
         final Dht22Impl testee = new Dht22Impl(communication, 0);
 
         final SensorValue sensorValue = testee.refreshData();
@@ -28,9 +29,8 @@ class Dht22ImplTest {
     @Test
     void testWhenCheckInvalidThenRetry3Times() {
         final OneWireCommunication communication = mock(OneWireCommunication.class);
-        final int[] sensorData = {0x1, 0xF4, 0x0, 0xE6, 0xDB}; // T=23, H=50
-        when(communication.readSensorData()).thenReturn(39, 39, 39, 40); // 40 is good
-        when(communication.getSensorData()).thenReturn(sensorData);
+        final OptionalLong sensorData = createSensorData(23.0, 50.0);
+        when(communication.readSensorData()).thenReturn(OptionalLong.empty(), OptionalLong.empty(), OptionalLong.empty(), sensorData);
         final Dht22Impl testee = new Dht22Impl(communication, 0);
 
         final SensorValue sensorValue = testee.refreshData();
@@ -39,25 +39,11 @@ class Dht22ImplTest {
     }
 
     @Test
-    void testWhenTooLessPollingThenInvalid() {
-        final OneWireCommunication communication = mock(OneWireCommunication.class);
-        final int[] sensorData = {0x1, 0xF4, 0x0, 0xE6, 0xDB}; // T=23, H=50
-        when(communication.readSensorData()).thenReturn(36, 37, 38, 39);
-        when(communication.getSensorData()).thenReturn(sensorData);
-        final Dht22Impl testee = new Dht22Impl(communication, 0);
-
-        final SensorValue sensorValue = testee.refreshData();
-
-        assertFalse(sensorValue.getValue().isPresent());
-    }
-
-
-    @Test
     void testWhenWrongChecksumThenInvalid() {
         final OneWireCommunication communication = mock(OneWireCommunication.class);
-        final int[] sensorData = {0x2, 0xF4, 0x0, 0xE6, 0xDB}; // T=23, H=50
-        when(communication.readSensorData()).thenReturn(40);
-        when(communication.getSensorData()).thenReturn(sensorData);
+        final OptionalLong sensorData = createSensorData(23.0, 50.0);
+        final OptionalLong sensorDataInvalid = OptionalLong.of(sensorData.orElse(0) + 1);
+        when(communication.readSensorData()).thenReturn(sensorDataInvalid);
         final Dht22Impl testee = new Dht22Impl(communication, 0);
 
         final SensorValue sensorValue = testee.refreshData();
@@ -78,12 +64,7 @@ class Dht22ImplTest {
     })
     void testGetValuesFromData(double temperature, double humidity) {
         final OneWireCommunication communication = mock(OneWireCommunication.class);
-        final int[] sensorData = {0, 0, 0, 0, 0};
-        setTemperature(sensorData, temperature);
-        setHumidity(sensorData, humidity);
-        setParity(sensorData);
-        when(communication.readSensorData()).thenReturn(40);
-        when(communication.getSensorData()).thenReturn(sensorData);
+        when(communication.readSensorData()).thenReturn(createSensorData(temperature, humidity));
         final Dht22Impl testee = new Dht22Impl(communication, 0);
 
         final SensorValue sensorValue = testee.refreshData();
@@ -94,23 +75,21 @@ class Dht22ImplTest {
         assertEquals(humidity, airVO.getHumidity().getRelativeHumidity());
     }
 
-    private void setTemperature(int[] sensorData, double temperature) {
-        final int intTemperature = (int) Math.abs(temperature * 10);
-        sensorData[3] = intTemperature & 0xFF;
-        sensorData[2] = (intTemperature >> 8) & 0x7F;
+    private OptionalLong createSensorData(double temperature, double humidity) {
+        long temperatureData = (long) Math.abs(temperature * 10);
         if (temperature < 0) {
-            sensorData[2] |= 0x80;
+            temperatureData |= (1 << 15);
         }
-    }
+        final long humidityData = (long) (humidity * 10);
+        long sensorData = 0;
+        sensorData |= (temperatureData << 8);
+        sensorData |= (humidityData << 24);
 
-    private void setHumidity(int[] sensorData, double humidity) {
-        final int intHumidity = (int) (humidity * 10);
-        sensorData[1] = intHumidity & 0xFF;
-        sensorData[0] = (intHumidity >> 8) & 0xFF;
+        final long byte0 = (temperatureData >> 8) & 0xFF;
+        final long byte1 = temperatureData & 0xFF;
+        final long byte2 = (humidityData >> 8) & 0xFF;
+        final long byte3 = humidityData & 0xFF;
+        sensorData |= ((byte0 + byte1 + byte2 + byte3) & 0xFF);
+        return OptionalLong.of(sensorData);
     }
-
-    private void setParity(int[] sensorData) {
-        sensorData[4] = (sensorData[0] + sensorData[1] + sensorData[2] + sensorData[3]) & 0xFF;
-    }
-
 }

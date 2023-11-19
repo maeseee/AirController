@@ -40,7 +40,7 @@ public class Application {
     }
 
     public void run() {
-        final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        final ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
         executor.scheduleAtFixedRate(outdoorSensor, 0, OUTDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
         executor.scheduleAtFixedRate(indoorSensor, 0, INDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
 

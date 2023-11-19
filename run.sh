@@ -12,7 +12,7 @@ done
 # mvn exec:java -Dexec.mainClass="org.airController.gpio.GpioPinImpl"
 
 # DHT22 test
-# mvn exec:java -Dexec.mainClass="org.airController.sensor.IndoorAirMeasurement"
+# mvn exec:java -Dexec.mainClass="org.airController.sensor.IndoorSensorImpl"
 
 # Read Environment test
 # mvn exec:java -Dexec.mainClass="org.airController.util.EnvironmentVariable"

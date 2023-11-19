@@ -4,12 +4,13 @@ import com.pi4j.wiringpi.Gpio;
 import org.airController.gpioAdapter.GpioFunction;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.OptionalLong;
 
 class OneWireCommunication {
     private static final int MAX_TIMINGS = 85;
+    private static final int NR_OF_BITS = 40;
+    private static final int MIN_HIGH_DURATION = 16;
 
-    private final int[] sensorData = {0, 0, 0, 0, 0};
     private final GpioFunction gpioFunction;
 
     public OneWireCommunication(GpioFunction gpioFunction) throws IOException {
@@ -17,35 +18,36 @@ class OneWireCommunication {
         setupWiringPi();
     }
 
-    public int readSensorData() {
-        Arrays.fill(sensorData, 0);
+    public OptionalLong readSensorData() {
         sendStartSignal();
         Gpio.pinMode(gpioFunction.getGpio(), Gpio.INPUT);
         int lastState = Gpio.HIGH;
-        int pollPosition = 0;
-        for (int i = 0; i < MAX_TIMINGS; i++) {
-            final int counter = waitUntilStateChanges(lastState);
-
+        int bitPosition = 0;
+        long sensorData = 0;
+        for (int transition = 0; transition < MAX_TIMINGS; transition++) {
+            final int microsecondsToStateChange = waitUntilStateChanges(lastState);
             lastState = Gpio.digitalRead(gpioFunction.getGpio());
-
-            if (counter == 255) {
+            if (microsecondsToStateChange == 255) {
                 break;
             }
 
-            /* ignore first 3 transitions */
-            if (i >= 4 && i % 2 == 0) {
-                /* shove each bit into the storage bytes */
-                sensorData[pollPosition / 8] <<= 1;
-                if (counter > 16) {
-                    sensorData[pollPosition / 8] |= 1;
-                }
-                pollPosition++;
+            if (isBitReadState(transition)) {
+                sensorData = setBit(isBitHigh(microsecondsToStateChange), sensorData, bitPosition);
+                bitPosition++;
             }
         }
-        return pollPosition;
+
+        if (bitPosition != 40) {
+            return OptionalLong.empty();
+        }
+
+        return OptionalLong.of(sensorData);
     }
 
-    public int[] getSensorData() {
+    private long setBit(boolean bitHigh, long sensorData, int bitPosition) {
+        if(bitHigh) {
+            sensorData |= (1L << (NR_OF_BITS - bitPosition - 1));
+        }
         return sensorData;
     }
 
@@ -64,11 +66,20 @@ class OneWireCommunication {
     }
 
     private int waitUntilStateChanges(int lastState) {
-        int counter = 0;
-        while (Gpio.digitalRead(gpioFunction.getGpio()) == lastState && counter < 255) {
-            counter++;
+        int microsecondCounter = 0;
+        while (Gpio.digitalRead(gpioFunction.getGpio()) == lastState && microsecondCounter < 255) {
+            microsecondCounter++;
             Gpio.delayMicroseconds(1);
         }
-        return counter;
+        return microsecondCounter;
+    }
+
+    private boolean isBitReadState(int transition) {
+        // ignore first 3 transitions
+        return transition >= 4 && transition % 2 == 0;
+    }
+
+    private boolean isBitHigh(long microsecondsToStateChange) {
+        return microsecondsToStateChange > MIN_HIGH_DURATION;
     }
 }
