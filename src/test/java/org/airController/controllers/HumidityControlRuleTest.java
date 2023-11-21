@@ -20,7 +20,10 @@ class HumidityControlRuleTest {
 
     @ParameterizedTest(name = "{index} => indoor={0}, outdoor={1}, expectedResult={2}")
     @ArgumentsSource(HumidityControlArgumentProvider.class)
-    void testHumidityControlRule(SensorValue indoorSensorValue, SensorValue outdoorSensorValue, boolean expectedResult) {
+    void testHumidityControlRule(Humidity indoorHumidity, Humidity outdoorHumidity, boolean expectedResult) {
+        final Temperature temperature = Temperature.createFromCelsius(23);
+        final SensorValueImpl indoorSensorValue = new SensorValueImpl(temperature, indoorHumidity);
+        final SensorValueImpl outdoorSensorValue = new SensorValueImpl(temperature, outdoorHumidity);
         final HumidityControlRule testee = new HumidityControlRule();
 
         final boolean result = testee.turnHumidityExchangerOn(indoorSensorValue, outdoorSensorValue);
@@ -32,23 +35,41 @@ class HumidityControlRuleTest {
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws IOException {
-            final Temperature temperature = Temperature.createFromCelsius(23);
-            final Humidity humidity = Humidity.createFromRelative(50);
             final Humidity humidityLow = Humidity.createFromRelative(40);
             final Humidity humidityLowLow = Humidity.createFromRelative(30);
             final Humidity humidityHigh = Humidity.createFromRelative(60);
             final Humidity humidityHighHigh = Humidity.createFromRelative(70);
             return Stream.of(
-                    Arguments.of(new SensorValueImpl(temperature, humidityLow), new SensorValueImpl(temperature, humidityHigh), false),
-                    Arguments.of(new SensorValueImpl(temperature, humidityHigh), new SensorValueImpl(temperature, humidityLow), false),
-                    Arguments.of(new SensorValueImpl(temperature, humidityLowLow), new SensorValueImpl(temperature, humidityLow), false),
-                    Arguments.of(new SensorValueImpl(temperature, humidityLow), new SensorValueImpl(temperature, humidityLowLow), true),
-                    Arguments.of(new SensorValueImpl(temperature, humidityHighHigh), new SensorValueImpl(temperature, humidityHigh), false),
-                    Arguments.of(new SensorValueImpl(temperature, humidityHigh), new SensorValueImpl(temperature, humidityHighHigh), true),
+                    Arguments.of(humidityLow, humidityHigh, false),
+                    Arguments.of(humidityHigh, humidityLow, false),
+                    Arguments.of(humidityLowLow, humidityLow, false),
+                    Arguments.of(humidityLow, humidityLowLow, true),
+                    Arguments.of(humidityHighHigh, humidityHigh, false),
+                    Arguments.of(humidityHigh, humidityHighHigh, true));
+        }
+    }
+
+
+    @ParameterizedTest(name = "{index} => indoor={0}, outdoor={1}, expectedResult={2}")
+    @ArgumentsSource(EmptySensorValuesArgumentProvider.class)
+    void testEmptySensorValues(SensorValue indoorSensorValue, SensorValue outdoorSensorValue, boolean expectedResult) {
+        final HumidityControlRule testee = new HumidityControlRule();
+
+        final boolean result = testee.turnHumidityExchangerOn(indoorSensorValue, outdoorSensorValue);
+
+        assertEquals(expectedResult, result);
+    }
+
+    static class EmptySensorValuesArgumentProvider implements ArgumentsProvider {
+
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws IOException {
+            final Temperature temperature = Temperature.createFromCelsius(23);
+            final Humidity humidity = Humidity.createFromRelative(50);
+            return Stream.of(
                     Arguments.of(new SensorValueImpl(null), new SensorValueImpl(null), false),
                     Arguments.of(new SensorValueImpl(null), new SensorValueImpl(new AirVO(temperature, humidity)), false),
                     Arguments.of(new SensorValueImpl(temperature, humidity), new SensorValueImpl(null), false));
         }
     }
-
 }
