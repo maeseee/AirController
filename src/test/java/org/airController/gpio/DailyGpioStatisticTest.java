@@ -44,10 +44,12 @@ class DailyGpioStatisticTest {
 
         final double onPercentage1 = testee.stateChange(true, LocalTime.of(6, 0, 0));
         final double onPercentage2 = testee.stateChange(false, LocalTime.of(8, 0, 0));
-        final double onPercentageFullDay = testee.stateChange(false, LocalTime.of(7, 0, 0));
+        final double onPercentage3 = testee.stateChange(true, LocalTime.of(7, 0, 0));
+        final double onPercentage4 = testee.stateChange(false, LocalTime.of(12, 0, 0));
 
         assertThat(onPercentage1, is(0.0));
-        assertThat(onPercentage2, is(2.0 / 8 * 100));
-        assertThat(onPercentageFullDay, is(Math.round(2.0 / 24 * 1000) / 10.0));
+        assertThat(onPercentage2, is(2.0 / 8 * 100)); // on 2h, total 8h
+        assertThat(onPercentage3, is(0.0));
+        assertThat(onPercentage4, is(Math.round(5.0 / 12 * 1000) / 10.0)); // on 5h, total 12h
     }
 }

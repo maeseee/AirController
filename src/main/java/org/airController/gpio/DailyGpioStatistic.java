@@ -22,7 +22,7 @@ class DailyGpioStatistic {
 
     public double stateChange(boolean newState, LocalTime now) {
         if (now.isBefore(lastTimeStamp)) {
-            return startNewDay(newState);
+            startNewDay();
         }
 
         if (newState != lastState) {
@@ -37,12 +37,11 @@ class DailyGpioStatistic {
 
     }
 
-    private double startNewDay(boolean initialState) {
+    private void startNewDay() {
         final double onPercentage = getOnPercentage(SECONDS_PER_DAY);
-        Logging.getLogger().info("Daily on time of " + name + " is " + onPercentage);
+        Logging.getLogger().info("Daily on time of " + name + " is " + onPercentage + "%");
         lastTimeStamp = NEW_DAY;
-        lastState = initialState;
-        return onPercentage;
+        totalDailyOnTime = 0;
     }
 
     private double getOnPercentage(long totalSeconds) {
