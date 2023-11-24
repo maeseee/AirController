@@ -1,6 +1,6 @@
 package org.airController.sensor;
 
-import org.airController.entities.AirVO;
+import org.airController.entities.AirValue;
 import org.airController.sensorAdapter.SensorValue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -70,9 +70,9 @@ class Dht22ImplTest {
         final SensorValue sensorValue = testee.refreshData();
 
         assertTrue(sensorValue.getValue().isPresent());
-        final AirVO airVO = sensorValue.getValue().get();
-        assertEquals(temperature, airVO.getTemperature().getCelsius());
-        assertEquals(humidity, airVO.getHumidity().getRelativeHumidity());
+        final AirValue airValue = sensorValue.getValue().get();
+        assertEquals(temperature, airValue.getTemperature().getCelsius());
+        assertEquals(humidity, airValue.getHumidity().getRelativeHumidity());
     }
 
     private OptionalLong createSensorData(double temperature, double humidity) {

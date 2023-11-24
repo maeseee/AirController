@@ -1,6 +1,6 @@
 package org.airController.util;
 
-import org.airController.entities.AirVO;
+import org.airController.entities.AirValue;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +28,7 @@ class JsonParserTest {
                 }
                 """;
 
-        final AirVO result = JsonParser.parse(sampleHttpResponse);
+        final AirValue result = JsonParser.parse(sampleHttpResponse);
 
         assertNotNull(result);
         assertEquals(10.53, result.getTemperature().getCelsius(), 0.1);
@@ -55,7 +55,7 @@ class JsonParserTest {
                 }
                 """;
 
-        final AirVO result = JsonParser.parse(sampleHttpResponse);
+        final AirValue result = JsonParser.parse(sampleHttpResponse);
 
         assertNull(result);
     }
@@ -81,7 +81,7 @@ class JsonParserTest {
                 }
                 """;
 
-        final AirVO result = JsonParser.parse(sampleHttpResponse);
+        final AirValue result = JsonParser.parse(sampleHttpResponse);
 
         assertNull(result);
     }

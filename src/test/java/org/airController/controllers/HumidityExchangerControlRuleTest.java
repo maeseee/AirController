@@ -1,6 +1,6 @@
 package org.airController.controllers;
 
-import org.airController.entities.AirVO;
+import org.airController.entities.AirValue;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
 import org.airController.sensor.SensorValueImpl;
@@ -67,7 +67,7 @@ class HumidityExchangerControlRuleTest {
             final Humidity humidity = Humidity.createFromRelative(50);
             return Stream.of(
                     Arguments.of(new SensorValueImpl(null), new SensorValueImpl(null), false),
-                    Arguments.of(new SensorValueImpl(null), new SensorValueImpl(new AirVO(temperature, humidity)), false),
+                    Arguments.of(new SensorValueImpl(null), new SensorValueImpl(new AirValue(temperature, humidity)), false),
                     Arguments.of(new SensorValueImpl(temperature, humidity), new SensorValueImpl(null), false));
         }
     }

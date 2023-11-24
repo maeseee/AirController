@@ -1,10 +1,10 @@
 package org.airController.entities;
 
-public class AirVO {
+public class AirValue {
     private final Temperature temperature;
     private final Humidity humidity;
 
-    public AirVO(Temperature temperature, Humidity humidity) {
+    public AirValue(Temperature temperature, Humidity humidity) {
         this.temperature = temperature;
         this.humidity = humidity;
     }

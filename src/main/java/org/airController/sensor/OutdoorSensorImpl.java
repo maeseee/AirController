@@ -1,6 +1,6 @@
 package org.airController.sensor;
 
-import org.airController.entities.AirVO;
+import org.airController.entities.AirValue;
 import org.airController.sensorAdapter.OutdoorSensor;
 import org.airController.sensorAdapter.OutdoorSensorObserver;
 import org.airController.sensorAdapter.SensorValue;
@@ -43,7 +43,7 @@ public class OutdoorSensorImpl implements OutdoorSensor {
             return;
         }
 
-        final AirVO airValues = JsonParser.parse(request.get());
+        final AirValue airValues = JsonParser.parse(request.get());
         notifyObservers(new SensorValueImpl(airValues));
     }
 

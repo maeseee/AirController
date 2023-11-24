@@ -1,6 +1,6 @@
 package org.airController.sensor;
 
-import org.airController.entities.AirVO;
+import org.airController.entities.AirValue;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
 import org.airController.sensorAdapter.IndoorSensorObserver;
@@ -27,7 +27,7 @@ class IndoorSensorImplTest {
     @Test
     void testWhenRunThenNotifyObservers() throws IOException {
         final Dht22 dht22 = mock(Dht22.class);
-        final AirVO data = new AirVO(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(50.0));
+        final AirValue data = new AirValue(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(50.0));
         when(dht22.refreshData()).thenReturn(new SensorValueImpl(data));
         final IndoorSensorImpl testee = new IndoorSensorImpl(dht22);
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
@@ -37,7 +37,7 @@ class IndoorSensorImplTest {
 
         verify(observer).updateIndoorSensorValue(indoorSensorValueArgumentCaptor.capture());
         final SensorValue indoorSensorValue = indoorSensorValueArgumentCaptor.getValue();
-        final Optional<AirVO> sensorValue = indoorSensorValue.getValue();
+        final Optional<AirValue> sensorValue = indoorSensorValue.getValue();
         assertTrue(sensorValue.isPresent());
         assertEquals(sensorValue.get(), data);
     }

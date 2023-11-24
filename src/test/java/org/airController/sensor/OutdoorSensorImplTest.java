@@ -1,6 +1,6 @@
 package org.airController.sensor;
 
-import org.airController.entities.AirVO;
+import org.airController.entities.AirValue;
 import org.airController.sensorAdapter.OutdoorSensorObserver;
 import org.airController.sensorAdapter.SensorValue;
 import org.junit.jupiter.api.Test;
@@ -52,7 +52,7 @@ class OutdoorSensorImplTest {
 
         verify(observer).updateOutdoorSensorValue(outdoorSensorValueArgumentCaptor.capture());
         final SensorValue outdoorSensorValue = outdoorSensorValueArgumentCaptor.getValue();
-        final Optional<AirVO> sensorValues = outdoorSensorValue.getValue();
+        final Optional<AirValue> sensorValues = outdoorSensorValue.getValue();
         assertTrue(sensorValues.isPresent());
         assertEquals(10.53, sensorValues.get().getTemperature().getCelsius(), 0.1);
         assertEquals(87.0, sensorValues.get().getHumidity().getRelativeHumidity(), 0.1);

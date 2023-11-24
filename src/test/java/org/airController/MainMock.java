@@ -1,6 +1,6 @@
 package org.airController;
 
-import org.airController.entities.AirVO;
+import org.airController.entities.AirValue;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
 import org.airController.gpio.GpioPinMock;
@@ -22,8 +22,8 @@ class MainMock {
     public static void main(String[] args) throws InterruptedException, URISyntaxException, IOException {
         final GpioPin airFlow = new GpioPinMock("AirFlow");
         final GpioPin humidityExchanger = new GpioPinMock("HumidityExchanger");
-        final AirVO airVo = new AirVO(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(50.0));
-        final SensorValue sensorValue = new SensorValueImpl(airVo);
+        final AirValue airValue = new AirValue(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(50.0));
+        final SensorValue sensorValue = new SensorValueImpl(airValue);
         final Dht22 dht22 = mock(Dht22.class);
         when(dht22.refreshData()).thenReturn(sensorValue);
         final IndoorSensor indoorSensor = new IndoorSensorImpl(dht22);

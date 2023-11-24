@@ -1,6 +1,6 @@
 package org.airController.controllers;
 
-import org.airController.entities.AirVO;
+import org.airController.entities.AirValue;
 import org.airController.entities.Humidity;
 import org.airController.sensorAdapter.SensorValue;
 
@@ -22,8 +22,8 @@ class HumidityExchangerControlRule {
         if (indoorSensorValue.getValue().isEmpty() || outdoorSensorValue.getValue().isEmpty()) {
             return false;
         }
-        final AirVO indoor = indoorSensorValue.getValue().get();
-        final AirVO outdoor = outdoorSensorValue.getValue().get();
+        final AirValue indoor = indoorSensorValue.getValue().get();
+        final AirValue outdoor = outdoorSensorValue.getValue().get();
 
         final double indoorAbsoluteHumidity = indoor.getAbsoluteHumidity();
         final double outdoorAbsoluteHumidity = outdoor.getAbsoluteHumidity();
