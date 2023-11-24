@@ -85,6 +85,6 @@ public class OutdoorSensorImpl implements OutdoorSensor {
 
     private void notifyObservers(AirValue outdoorAirValue) {
         Logging.getLogger().info("New outdoor sensor value: " + outdoorAirValue);
-        observers.forEach(observer -> observer.updateOutdoorSensorValue(outdoorAirValue));
+        observers.forEach(observer -> observer.updateOutdoorAirValue(outdoorAirValue));
     }
 }

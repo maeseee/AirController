@@ -30,7 +30,7 @@ class Dht22Impl implements Dht22 {
         for (int retryCounter = 0; retryCounter <= MAX_NR_OF_RETRIES; retryCounter++) {
             final OptionalLong sensorData = communication.readSensorData();
             if (sensorData.isPresent() && checkParity(sensorData.getAsLong())) {
-                return getSensorValueFromData(sensorData.getAsLong());
+                return getAirValueFromData(sensorData.getAsLong());
             }
             sleepABit(retryCounter);
         }
@@ -46,7 +46,7 @@ class Dht22Impl implements Dht22 {
         }
     }
 
-    private Optional<AirValue> getSensorValueFromData(long sensorData) {
+    private Optional<AirValue> getAirValueFromData(long sensorData) {
         try {
             final Humidity humidity = getHumidityFromData(sensorData);
             final Temperature temperature = getTemperatureFromData(sensorData);

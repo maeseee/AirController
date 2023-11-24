@@ -40,7 +40,7 @@ public class IndoorSensorImpl implements IndoorSensor {
 
     private void notifyObservers(AirValue indoorAirValue) {
         Logging.getLogger().info("New indoor sensor value: " + indoorAirValue);
-        observers.forEach(observer -> observer.updateIndoorSensorValue(indoorAirValue));
+        observers.forEach(observer -> observer.updateIndoorAirValue(indoorAirValue));
     }
 
     public static void main(String[] args) throws IOException {

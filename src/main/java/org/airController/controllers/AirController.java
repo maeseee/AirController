@@ -43,13 +43,13 @@ public class AirController implements IndoorSensorObserver, OutdoorSensorObserve
     }
 
     @Override
-    public void updateIndoorSensorValue(AirValue indoorAirValue) {
+    public void updateIndoorAirValue(AirValue indoorAirValue) {
         this.indoorAirValue = indoorAirValue;
         runOneLoop();
     }
 
     @Override
-    public void updateOutdoorSensorValue(AirValue outdoorAirValue) {
+    public void updateOutdoorAirValue(AirValue outdoorAirValue) {
         this.outdoorAirValue = outdoorAirValue;
         runOneLoop();
     }

@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,7 +48,7 @@ class OutdoorSensorImplTest {
 
         testee.run();
 
-        verify(observer).updateOutdoorSensorValue(outdoorAirValueArgumentCaptor.capture());
+        verify(observer).updateOutdoorAirValue(outdoorAirValueArgumentCaptor.capture());
         final AirValue outdoorAirValue = outdoorAirValueArgumentCaptor.getValue();
         assertEquals(10.53, outdoorAirValue.getTemperature().getCelsius(), 0.1);
         assertEquals(87.0, outdoorAirValue.getHumidity().getRelativeHumidity(), 0.1);

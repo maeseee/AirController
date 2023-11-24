@@ -33,7 +33,7 @@ class IndoorSensorImplTest {
 
         testee.run();
 
-        verify(observer).updateIndoorSensorValue(indoorAirValueArgumentCaptor.capture());
+        verify(observer).updateIndoorAirValue(indoorAirValueArgumentCaptor.capture());
         final AirValue indoorAirValueCapture = indoorAirValueArgumentCaptor.getValue();
         assertEquals(indoorAirValue, indoorAirValueCapture);
     }
