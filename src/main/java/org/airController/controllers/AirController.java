@@ -1,9 +1,12 @@
 package org.airController.controllers;
 
-import org.airController.sensorAdapter.*;
+import org.airController.sensorAdapter.IndoorSensorObserver;
+import org.airController.sensorAdapter.OutdoorSensorObserver;
+import org.airController.sensorAdapter.SensorValue;
 import org.airController.systemAdapter.ControlledVentilationSystem;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public class AirController implements IndoorSensorObserver, OutdoorSensorObserver {
 
@@ -12,8 +15,8 @@ public class AirController implements IndoorSensorObserver, OutdoorSensorObserve
     private final HourlyFreshAirRule hourlyFreshAirRule;
     private final HumidityExchangerControlRule humidityExchangerControlRule;
 
-    private SensorValue indoorSensorValue;
-    private SensorValue outdoorSensorValue;
+    private SensorValue indoorSensorValue = Optional::empty;
+    private SensorValue outdoorSensorValue = Optional::empty;
 
     public AirController(ControlledVentilationSystem controlledVentilationSystem) {
         this(controlledVentilationSystem, new DailyFreshAirRule(), new HourlyFreshAirRule(), new HumidityExchangerControlRule());
