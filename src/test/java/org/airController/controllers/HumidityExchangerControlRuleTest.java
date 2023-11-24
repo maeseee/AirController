@@ -46,27 +46,4 @@ class HumidityExchangerControlRuleTest {
                     Arguments.of(humidityHigh, humidityHighHigh, true));
         }
     }
-
-    @ParameterizedTest(name = "{index} => indoor={0}, outdoor={1}, expectedResult={2}")
-    @ArgumentsSource(EmptySensorValuesArgumentProvider.class)
-    void testEmptySensorValues(AirValue indoorAirValue, AirValue outdoorAirValue, boolean expectedResult) {
-        final HumidityExchangerControlRule testee = new HumidityExchangerControlRule();
-
-        final boolean result = testee.turnHumidityExchangerOn(indoorAirValue, outdoorAirValue);
-
-        assertEquals(expectedResult, result);
-    }
-
-    static class EmptySensorValuesArgumentProvider implements ArgumentsProvider {
-
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws IOException {
-            final Temperature temperature = Temperature.createFromCelsius(23);
-            final Humidity humidity = Humidity.createFromRelative(50);
-            return Stream.of(
-                    Arguments.of(null, null, false),
-                    Arguments.of(null, new AirValue(temperature, humidity), false),
-                    Arguments.of(new AirValue(temperature, humidity), null, false));
-        }
-    }
 }

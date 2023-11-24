@@ -18,22 +18,26 @@ public class AirController implements IndoorSensorObserver, OutdoorSensorObserve
     private AirValue outdoorAirValue;
 
     public AirController(ControlledVentilationSystem controlledVentilationSystem) {
-        this(controlledVentilationSystem, new DailyFreshAirRule(), new HourlyFreshAirRule(), new HumidityExchangerControlRule());
+        this(controlledVentilationSystem, new DailyFreshAirRule(), new HourlyFreshAirRule(), new HumidityExchangerControlRule(), null);
     }
 
     AirController(ControlledVentilationSystem controlledVentilationSystem, DailyFreshAirRule dailyFreshAirRule,
-                  HourlyFreshAirRule hourlyFreshAirRule, HumidityExchangerControlRule humidityExchangerControlRule) {
+                  HourlyFreshAirRule hourlyFreshAirRule, HumidityExchangerControlRule humidityExchangerControlRule, AirValue airValue) {
         this.controlledVentilationSystem = controlledVentilationSystem;
         this.dailyFreshAirRule = dailyFreshAirRule;
         this.hourlyFreshAirRule = hourlyFreshAirRule;
         this.humidityExchangerControlRule = humidityExchangerControlRule;
+        this.indoorAirValue = airValue;
+        this.outdoorAirValue = airValue;
     }
 
     public void runOneLoop() {
         final LocalDateTime now = LocalDateTime.now();
         final boolean freshAirOn = dailyFreshAirRule.turnFreshAirOn(now) || hourlyFreshAirRule.turnFreshAirOn(now.toLocalTime());
-        final boolean humidityExchangerOn = humidityExchangerControlRule.turnHumidityExchangerOn(indoorAirValue, outdoorAirValue);
-        final boolean canHumidityBeOptimized = !humidityExchangerOn;
+        final boolean sensorValuesAvailable = areSensorValuesAvailable();
+        final boolean humidityExchangerOn =
+                sensorValuesAvailable && humidityExchangerControlRule.turnHumidityExchangerOn(indoorAirValue, outdoorAirValue);
+        final boolean canHumidityBeOptimized = sensorValuesAvailable && !humidityExchangerOn;
         controlledVentilationSystem.setAirFlowOn(freshAirOn || canHumidityBeOptimized);
         controlledVentilationSystem.setHumidityExchangerOn(humidityExchangerOn);
     }
@@ -49,4 +53,10 @@ public class AirController implements IndoorSensorObserver, OutdoorSensorObserve
         this.outdoorAirValue = outdoorAirValue;
         runOneLoop();
     }
+
+    private boolean areSensorValuesAvailable() {
+        return indoorAirValue != null && outdoorAirValue != null;
+    }
+
+
 }

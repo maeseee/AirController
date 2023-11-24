@@ -18,10 +18,6 @@ class HumidityExchangerControlRule {
     }
 
     public boolean turnHumidityExchangerOn(AirValue indoorAirValue, AirValue outdoorAirValue) {
-        if (indoorAirValue == null || outdoorAirValue == null) {
-            return false;
-        }
-
         final double indoorAbsoluteHumidity = indoorAirValue.getAbsoluteHumidity();
         final double outdoorAbsoluteHumidity = outdoorAirValue.getAbsoluteHumidity();
         final double targetAbsoluteHumidity = TARGET_HUMIDITY.getAbsoluteHumidity(indoorAirValue.getTemperature());
