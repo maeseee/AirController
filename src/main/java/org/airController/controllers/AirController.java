@@ -31,7 +31,8 @@ public class AirController implements IndoorSensorObserver, OutdoorSensorObserve
         final LocalDateTime now = LocalDateTime.now();
         final boolean freshAirOn = dailyFreshAirRule.turnFreshAirOn(now) || hourlyFreshAirRule.turnFreshAirOn(now.toLocalTime());
         final boolean humidityExchangerOn = humidityExchangerControlRule.turnHumidityExchangerOn(indoorSensorValue, outdoorSensorValue);
-        controlledVentilationSystem.setAirFlowOn(freshAirOn || humidityExchangerOn);
+        final boolean canHumidityBeOptimized = !humidityExchangerOn;
+        controlledVentilationSystem.setAirFlowOn(freshAirOn || canHumidityBeOptimized);
         controlledVentilationSystem.setHumidityExchangerOn(humidityExchangerOn);
     }
 
