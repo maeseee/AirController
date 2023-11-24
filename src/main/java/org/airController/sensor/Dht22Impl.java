@@ -4,9 +4,9 @@ import org.airController.entities.AirValue;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
 import org.airController.gpioAdapter.GpioFunction;
-import org.airController.sensorAdapter.SensorValue;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.concurrent.TimeUnit;
 
@@ -26,19 +26,15 @@ class Dht22Impl implements Dht22 {
     }
 
     @Override
-    public SensorValue refreshData() {
-        AirValue airValue = null;
-        int retryCounter = 0;
-        while (airValue == null && retryCounter <= MAX_NR_OF_RETRIES) {
+    public Optional<AirValue> refreshData() {
+        for (int retryCounter = 0; retryCounter <= MAX_NR_OF_RETRIES; retryCounter++) {
             final OptionalLong sensorData = communication.readSensorData();
             if (sensorData.isPresent() && checkParity(sensorData.getAsLong())) {
-                airValue = getSensorValueFromData(sensorData.getAsLong());
-            } else {
-                retryCounter++;
-                sleepABit(retryCounter);
+                return getSensorValueFromData(sensorData.getAsLong());
             }
+            sleepABit(retryCounter);
         }
-        return new SensorValueImpl(airValue);
+        return Optional.empty();
     }
 
     private void sleepABit(int retryCounter) {
@@ -50,13 +46,14 @@ class Dht22Impl implements Dht22 {
         }
     }
 
-    private AirValue getSensorValueFromData(long sensorData) {
+    private Optional<AirValue> getSensorValueFromData(long sensorData) {
         try {
             final Humidity humidity = getHumidityFromData(sensorData);
             final Temperature temperature = getTemperatureFromData(sensorData);
-            return new AirValue(temperature, humidity);
+            final AirValue airValue = new AirValue(temperature, humidity);
+            return Optional.of(airValue);
         } catch (IOException e) {
-            return null;
+            return Optional.empty();
         }
     }
 

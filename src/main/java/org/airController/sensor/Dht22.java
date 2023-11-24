@@ -1,7 +1,9 @@
 package org.airController.sensor;
 
-import org.airController.sensorAdapter.SensorValue;
+import org.airController.entities.AirValue;
+
+import java.util.Optional;
 
 public interface Dht22 {
-    SensorValue refreshData();
+    Optional<AirValue> refreshData();
 }

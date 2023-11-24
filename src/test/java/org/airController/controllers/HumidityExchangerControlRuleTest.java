@@ -3,8 +3,6 @@ package org.airController.controllers;
 import org.airController.entities.AirValue;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
-import org.airController.sensor.SensorValueImpl;
-import org.airController.sensorAdapter.SensorValue;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -22,11 +20,11 @@ class HumidityExchangerControlRuleTest {
     @ArgumentsSource(HumidityControlArgumentProvider.class)
     void testHumidityControlRule(Humidity indoorHumidity, Humidity outdoorHumidity, boolean expectedResult) {
         final Temperature temperature = Temperature.createFromCelsius(23);
-        final SensorValueImpl indoorSensorValue = new SensorValueImpl(temperature, indoorHumidity);
-        final SensorValueImpl outdoorSensorValue = new SensorValueImpl(temperature, outdoorHumidity);
+        final AirValue indoorAirValue = new AirValue(temperature, indoorHumidity);
+        final AirValue outdoorAirValue = new AirValue(temperature, outdoorHumidity);
         final HumidityExchangerControlRule testee = new HumidityExchangerControlRule();
 
-        final boolean result = testee.turnHumidityExchangerOn(indoorSensorValue, outdoorSensorValue);
+        final boolean result = testee.turnHumidityExchangerOn(indoorAirValue, outdoorAirValue);
 
         assertEquals(expectedResult, result);
     }
@@ -51,10 +49,10 @@ class HumidityExchangerControlRuleTest {
 
     @ParameterizedTest(name = "{index} => indoor={0}, outdoor={1}, expectedResult={2}")
     @ArgumentsSource(EmptySensorValuesArgumentProvider.class)
-    void testEmptySensorValues(SensorValue indoorSensorValue, SensorValue outdoorSensorValue, boolean expectedResult) {
+    void testEmptySensorValues(AirValue indoorAirValue, AirValue outdoorAirValue, boolean expectedResult) {
         final HumidityExchangerControlRule testee = new HumidityExchangerControlRule();
 
-        final boolean result = testee.turnHumidityExchangerOn(indoorSensorValue, outdoorSensorValue);
+        final boolean result = testee.turnHumidityExchangerOn(indoorAirValue, outdoorAirValue);
 
         assertEquals(expectedResult, result);
     }
@@ -66,9 +64,9 @@ class HumidityExchangerControlRuleTest {
             final Temperature temperature = Temperature.createFromCelsius(23);
             final Humidity humidity = Humidity.createFromRelative(50);
             return Stream.of(
-                    Arguments.of(new SensorValueImpl(null), new SensorValueImpl(null), false),
-                    Arguments.of(new SensorValueImpl(null), new SensorValueImpl(new AirValue(temperature, humidity)), false),
-                    Arguments.of(new SensorValueImpl(temperature, humidity), new SensorValueImpl(null), false));
+                    Arguments.of(null, null, false),
+                    Arguments.of(null, new AirValue(temperature, humidity), false),
+                    Arguments.of(new AirValue(temperature, humidity), null, false));
         }
     }
 }

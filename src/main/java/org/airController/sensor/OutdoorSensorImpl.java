@@ -3,7 +3,6 @@ package org.airController.sensor;
 import org.airController.entities.AirValue;
 import org.airController.sensorAdapter.OutdoorSensor;
 import org.airController.sensorAdapter.OutdoorSensorObserver;
-import org.airController.sensorAdapter.SensorValue;
 import org.airController.util.EnvironmentVariable;
 import org.airController.util.JsonParser;
 import org.airController.util.Logging;
@@ -43,8 +42,10 @@ public class OutdoorSensorImpl implements OutdoorSensor {
             return;
         }
 
-        final AirValue airValues = JsonParser.parse(request.get());
-        notifyObservers(new SensorValueImpl(airValues));
+        final Optional<AirValue> airValue = JsonParser.parse(request.get());
+        airValue.ifPresentOrElse(
+                this::notifyObservers,
+                () -> Logging.getLogger().severe("Outdoor sensor out of order"));
     }
 
     @Override
@@ -82,8 +83,8 @@ public class OutdoorSensorImpl implements OutdoorSensor {
         return new HttpsRequest(uri);
     }
 
-    private void notifyObservers(SensorValue outdoorsensorValue) {
-        Logging.getLogger().info("New outdoor sensor value: " + outdoorsensorValue);
-        observers.forEach(observer -> observer.updateOutdoorSensorValue(outdoorsensorValue));
+    private void notifyObservers(AirValue outdoorAirValue) {
+        Logging.getLogger().info("New outdoor sensor value: " + outdoorAirValue);
+        observers.forEach(observer -> observer.updateOutdoorSensorValue(outdoorAirValue));
     }
 }

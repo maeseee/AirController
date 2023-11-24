@@ -1,11 +1,11 @@
 package org.airController.sensor;
 
 import org.airController.entities.AirValue;
-import org.airController.sensorAdapter.SensorValue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.Optional;
 import java.util.OptionalLong;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,9 +21,9 @@ class Dht22ImplTest {
         when(communication.readSensorData()).thenReturn(sensorData);
         final Dht22Impl testee = new Dht22Impl(communication, 0);
 
-        final SensorValue sensorValue = testee.refreshData();
+        final Optional<AirValue> airValue = testee.refreshData();
 
-        assertTrue(sensorValue.getValue().isPresent());
+        assertTrue(airValue.isPresent());
     }
 
     @Test
@@ -33,9 +33,9 @@ class Dht22ImplTest {
         when(communication.readSensorData()).thenReturn(OptionalLong.empty(), OptionalLong.empty(), OptionalLong.empty(), sensorData);
         final Dht22Impl testee = new Dht22Impl(communication, 0);
 
-        final SensorValue sensorValue = testee.refreshData();
+        final Optional<AirValue> airValue = testee.refreshData();
 
-        assertTrue(sensorValue.getValue().isPresent());
+        assertTrue(airValue.isPresent());
     }
 
     @Test
@@ -46,9 +46,9 @@ class Dht22ImplTest {
         when(communication.readSensorData()).thenReturn(sensorDataInvalid);
         final Dht22Impl testee = new Dht22Impl(communication, 0);
 
-        final SensorValue sensorValue = testee.refreshData();
+        final Optional<AirValue> airValue = testee.refreshData();
 
-        assertFalse(sensorValue.getValue().isPresent());
+        assertFalse(airValue.isPresent());
     }
 
     @ParameterizedTest
@@ -67,12 +67,11 @@ class Dht22ImplTest {
         when(communication.readSensorData()).thenReturn(createSensorData(temperature, humidity));
         final Dht22Impl testee = new Dht22Impl(communication, 0);
 
-        final SensorValue sensorValue = testee.refreshData();
+        final Optional<AirValue> airValue = testee.refreshData();
 
-        assertTrue(sensorValue.getValue().isPresent());
-        final AirValue airValue = sensorValue.getValue().get();
-        assertEquals(temperature, airValue.getTemperature().getCelsius());
-        assertEquals(humidity, airValue.getHumidity().getRelativeHumidity());
+        assertTrue(airValue.isPresent());
+        assertEquals(temperature, airValue.get().getTemperature().getCelsius());
+        assertEquals(humidity, airValue.get().getHumidity().getRelativeHumidity());
     }
 
     private OptionalLong createSensorData(double temperature, double humidity) {

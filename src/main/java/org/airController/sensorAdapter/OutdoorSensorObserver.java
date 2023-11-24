@@ -1,5 +1,7 @@
 package org.airController.sensorAdapter;
 
+import org.airController.entities.AirValue;
+
 public interface OutdoorSensorObserver {
-    void updateOutdoorSensorValue(SensorValue outdoorSensorValue);
+    void updateOutdoorSensorValue(AirValue outdoorAirValue);
 }

@@ -3,7 +3,10 @@ package org.airController.util;
 import org.airController.entities.AirValue;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JsonParserTest {
 
@@ -28,11 +31,11 @@ class JsonParserTest {
                 }
                 """;
 
-        final AirValue result = JsonParser.parse(sampleHttpResponse);
+        final Optional<AirValue> result = JsonParser.parse(sampleHttpResponse);
 
-        assertNotNull(result);
-        assertEquals(10.53, result.getTemperature().getCelsius(), 0.1);
-        assertEquals(87.0, result.getHumidity().getRelativeHumidity(), 0.1);
+        assertTrue(result.isPresent());
+        assertEquals(10.53, result.get().getTemperature().getCelsius(), 0.1);
+        assertEquals(87.0, result.get().getHumidity().getRelativeHumidity(), 0.1);
     }
 
     @Test
@@ -55,9 +58,9 @@ class JsonParserTest {
                 }
                 """;
 
-        final AirValue result = JsonParser.parse(sampleHttpResponse);
+        final Optional<AirValue> result = JsonParser.parse(sampleHttpResponse);
 
-        assertNull(result);
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -81,8 +84,8 @@ class JsonParserTest {
                 }
                 """;
 
-        final AirValue result = JsonParser.parse(sampleHttpResponse);
+        final Optional<AirValue> result = JsonParser.parse(sampleHttpResponse);
 
-        assertNull(result);
+        assertTrue(result.isEmpty());
     }
 }

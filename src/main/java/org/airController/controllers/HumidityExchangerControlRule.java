@@ -2,7 +2,6 @@ package org.airController.controllers;
 
 import org.airController.entities.AirValue;
 import org.airController.entities.Humidity;
-import org.airController.sensorAdapter.SensorValue;
 
 import java.io.IOException;
 
@@ -18,16 +17,14 @@ class HumidityExchangerControlRule {
         }
     }
 
-    public boolean turnHumidityExchangerOn(SensorValue indoorSensorValue, SensorValue outdoorSensorValue) {
-        if (indoorSensorValue.getValue().isEmpty() || outdoorSensorValue.getValue().isEmpty()) {
+    public boolean turnHumidityExchangerOn(AirValue indoorAirValue, AirValue outdoorAirValue) {
+        if (indoorAirValue == null || outdoorAirValue == null) {
             return false;
         }
-        final AirValue indoor = indoorSensorValue.getValue().get();
-        final AirValue outdoor = outdoorSensorValue.getValue().get();
 
-        final double indoorAbsoluteHumidity = indoor.getAbsoluteHumidity();
-        final double outdoorAbsoluteHumidity = outdoor.getAbsoluteHumidity();
-        final double targetAbsoluteHumidity = TARGET_HUMIDITY.getAbsoluteHumidity(indoor.getTemperature());
+        final double indoorAbsoluteHumidity = indoorAirValue.getAbsoluteHumidity();
+        final double outdoorAbsoluteHumidity = outdoorAirValue.getAbsoluteHumidity();
+        final double targetAbsoluteHumidity = TARGET_HUMIDITY.getAbsoluteHumidity(indoorAirValue.getTemperature());
 
         final double diffIndoorToGoal = indoorAbsoluteHumidity - targetAbsoluteHumidity;
         final double diffOutdoorToGoal = outdoorAbsoluteHumidity - targetAbsoluteHumidity;
