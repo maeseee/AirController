@@ -6,7 +6,7 @@ import org.airController.sensorAdapter.SensorValue;
 
 import java.io.IOException;
 
-class HumidityControlRule {
+class HumidityExchangerControlRule {
 
     private static final Humidity TARGET_HUMIDITY;
 

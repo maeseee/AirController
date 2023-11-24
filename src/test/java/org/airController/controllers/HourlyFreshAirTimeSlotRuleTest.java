@@ -16,7 +16,7 @@ class HourlyFreshAirTimeSlotRuleTest {
     @ParameterizedTest(name = "{index} => dateTime={0}, expectedResult={1}")
     @ArgumentsSource(HourlyFreshAirArgumentProvider.class)
     void testHourlyFreshAirRule(LocalTime time, boolean expectedResult) {
-        final HourlyFreshAirTimeSlotRule testee = new HourlyFreshAirTimeSlotRule();
+        final HourlyFreshAirRule testee = new HourlyFreshAirRule();
 
         final boolean result = testee.turnFreshAirOn(time);
 

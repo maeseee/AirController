@@ -8,29 +8,29 @@ import java.time.LocalDateTime;
 public class AirController implements IndoorSensorObserver, OutdoorSensorObserver {
 
     private final ControlledVentilationSystem controlledVentilationSystem;
-    private final MainFreshAirTimeSlotRule mainFreshAirTimeSlotRule;
-    private final HourlyFreshAirTimeSlotRule hourlyFreshAirTimeSlotRule;
-    private final HumidityControlRule humidityControlRule;
+    private final DailyFreshAirRule dailyFreshAirRule;
+    private final HourlyFreshAirRule hourlyFreshAirRule;
+    private final HumidityExchangerControlRule humidityExchangerControlRule;
 
     private SensorValue indoorSensorValue;
     private SensorValue outdoorSensorValue;
 
     public AirController(ControlledVentilationSystem controlledVentilationSystem) {
-        this(controlledVentilationSystem, new MainFreshAirTimeSlotRule(), new HourlyFreshAirTimeSlotRule(), new HumidityControlRule());
+        this(controlledVentilationSystem, new DailyFreshAirRule(), new HourlyFreshAirRule(), new HumidityExchangerControlRule());
     }
 
-    AirController(ControlledVentilationSystem controlledVentilationSystem, MainFreshAirTimeSlotRule mainFreshAirTimeSlotRule,
-                  HourlyFreshAirTimeSlotRule hourlyFreshAirTimeSlotRule, HumidityControlRule humidityControlRule) {
+    AirController(ControlledVentilationSystem controlledVentilationSystem, DailyFreshAirRule dailyFreshAirRule,
+                  HourlyFreshAirRule hourlyFreshAirRule, HumidityExchangerControlRule humidityExchangerControlRule) {
         this.controlledVentilationSystem = controlledVentilationSystem;
-        this.mainFreshAirTimeSlotRule = mainFreshAirTimeSlotRule;
-        this.hourlyFreshAirTimeSlotRule = hourlyFreshAirTimeSlotRule;
-        this.humidityControlRule = humidityControlRule;
+        this.dailyFreshAirRule = dailyFreshAirRule;
+        this.hourlyFreshAirRule = hourlyFreshAirRule;
+        this.humidityExchangerControlRule = humidityExchangerControlRule;
     }
 
     public void runOneLoop() {
         final LocalDateTime now = LocalDateTime.now();
-        final boolean freshAirOn = mainFreshAirTimeSlotRule.turnFreshAirOn(now) || hourlyFreshAirTimeSlotRule.turnFreshAirOn(now.toLocalTime());
-        final boolean humidityExchangerOn = humidityControlRule.turnHumidityExchangerOn(indoorSensorValue, outdoorSensorValue);
+        final boolean freshAirOn = dailyFreshAirRule.turnFreshAirOn(now) || hourlyFreshAirRule.turnFreshAirOn(now.toLocalTime());
+        final boolean humidityExchangerOn = humidityExchangerControlRule.turnHumidityExchangerOn(indoorSensorValue, outdoorSensorValue);
         controlledVentilationSystem.setAirFlowOn(freshAirOn || humidityExchangerOn);
         controlledVentilationSystem.setHumidityExchangerOn(humidityExchangerOn);
     }

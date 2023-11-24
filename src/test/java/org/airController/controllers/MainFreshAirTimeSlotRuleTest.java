@@ -16,7 +16,7 @@ class MainFreshAirTimeSlotRuleTest {
     @ParameterizedTest(name = "{index} => dateTime={0}, expectedResult={1}")
     @ArgumentsSource(MainFreshAirArgumentProvider.class)
     void testMainFreshAirRule(LocalDateTime dateTime, boolean expectedResult) {
-        final MainFreshAirTimeSlotRule testee = new MainFreshAirTimeSlotRule();
+        final DailyFreshAirRule testee = new DailyFreshAirRule();
 
         final boolean result = testee.turnFreshAirOn(dateTime);
 

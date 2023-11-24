@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class HumidityControlRuleTest {
+class HumidityExchangerControlRuleTest {
 
     @ParameterizedTest(name = "{index} => indoor={0}, outdoor={1}, expectedResult={2}")
     @ArgumentsSource(HumidityControlArgumentProvider.class)
@@ -24,7 +24,7 @@ class HumidityControlRuleTest {
         final Temperature temperature = Temperature.createFromCelsius(23);
         final SensorValueImpl indoorSensorValue = new SensorValueImpl(temperature, indoorHumidity);
         final SensorValueImpl outdoorSensorValue = new SensorValueImpl(temperature, outdoorHumidity);
-        final HumidityControlRule testee = new HumidityControlRule();
+        final HumidityExchangerControlRule testee = new HumidityExchangerControlRule();
 
         final boolean result = testee.turnHumidityExchangerOn(indoorSensorValue, outdoorSensorValue);
 
@@ -49,11 +49,10 @@ class HumidityControlRuleTest {
         }
     }
 
-
     @ParameterizedTest(name = "{index} => indoor={0}, outdoor={1}, expectedResult={2}")
     @ArgumentsSource(EmptySensorValuesArgumentProvider.class)
     void testEmptySensorValues(SensorValue indoorSensorValue, SensorValue outdoorSensorValue, boolean expectedResult) {
-        final HumidityControlRule testee = new HumidityControlRule();
+        final HumidityExchangerControlRule testee = new HumidityExchangerControlRule();
 
         final boolean result = testee.turnHumidityExchangerOn(indoorSensorValue, outdoorSensorValue);
 
