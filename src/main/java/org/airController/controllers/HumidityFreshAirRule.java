@@ -5,7 +5,7 @@ import org.airController.entities.Humidity;
 
 import java.io.IOException;
 
-class HumidityExchangerControlRule {
+class HumidityFreshAirRule {
 
     private static final Humidity TARGET_HUMIDITY;
 
@@ -17,7 +17,7 @@ class HumidityExchangerControlRule {
         }
     }
 
-    public boolean turnHumidityExchangerOn(AirValue indoorAirValue, AirValue outdoorAirValue) {
+    public boolean turnFreshAirOn(AirValue indoorAirValue, AirValue outdoorAirValue) {
         final double indoorAbsoluteHumidity = indoorAirValue.getAbsoluteHumidity();
         final double outdoorAbsoluteHumidity = outdoorAirValue.getAbsoluteHumidity();
         final double targetAbsoluteHumidity = TARGET_HUMIDITY.getAbsoluteHumidity(indoorAirValue.getTemperature());
@@ -25,18 +25,10 @@ class HumidityExchangerControlRule {
         final double diffIndoorToGoal = indoorAbsoluteHumidity - targetAbsoluteHumidity;
         final double diffOutdoorToGoal = outdoorAbsoluteHumidity - targetAbsoluteHumidity;
 
-        if (numbersWithDifferentSigns(diffIndoorToGoal, diffOutdoorToGoal)) {
-            return false;
-        }
-
-        return isIndoorCloserToGoal(diffOutdoorToGoal, diffIndoorToGoal);
+        return numbersWithDifferentSigns(diffIndoorToGoal, diffOutdoorToGoal);
     }
 
     private boolean numbersWithDifferentSigns(double diffIndoorToGoal, double diffOutdoorToGoal) {
         return Math.signum(diffIndoorToGoal) * Math.signum(diffOutdoorToGoal) < 0;
-    }
-
-    private boolean isIndoorCloserToGoal(double diffOutdoorToGoal, double diffIndoorToGoal) {
-        return Math.abs(diffOutdoorToGoal) > Math.abs(diffIndoorToGoal);
     }
 }
