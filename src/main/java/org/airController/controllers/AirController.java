@@ -44,7 +44,7 @@ public class AirController implements IndoorSensorObserver, OutdoorSensorObserve
         final boolean humidityExchangerOn =
                 sensorValuesAvailable && humidityExchangerControlRule.turnHumidityExchangerOn(indoorAirValue, outdoorAirValue);
         controlledVentilationSystem.setAirFlowOn(freshAirOn);
-        controlledVentilationSystem.setHumidityExchangerOn(humidityExchangerOn);
+        controlledVentilationSystem.setHumidityExchangerOn(humidityExchangerOn && freshAirOn);
     }
 
     @Override
