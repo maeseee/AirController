@@ -35,10 +35,10 @@ public class GpioPinImpl implements GpioPin {
 
     @Override
     public void setGpioState(boolean stateOn) {
+        dailyGpioStatistic.stateChange(stateOn, LocalTime.now());
         if (getGpioState() != stateOn) {
             Logging.getLogger().info(pinFunction.name() + " set to " + (stateOn ? "on" : "off"));
             Gpio.digitalWrite(pinFunction.getGpio(), mapToPinState(stateOn));
-            dailyGpioStatistic.stateChange(stateOn, LocalTime.now());
         }
     }
 
