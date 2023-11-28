@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -86,5 +87,6 @@ public class OutdoorSensorImpl implements OutdoorSensor {
     private void notifyObservers(AirValue outdoorAirValue) {
         Logging.getLogger().info("New outdoor sensor value: " + outdoorAirValue);
         observers.forEach(observer -> observer.updateOutdoorAirValue(outdoorAirValue));
+        observers.forEach(OutdoorSensorObserver::runOneLoop);
     }
 }

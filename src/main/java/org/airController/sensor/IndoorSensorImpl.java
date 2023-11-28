@@ -41,12 +41,22 @@ public class IndoorSensorImpl implements IndoorSensor {
     private void notifyObservers(AirValue indoorAirValue) {
         Logging.getLogger().info("New indoor sensor value: " + indoorAirValue);
         observers.forEach(observer -> observer.updateIndoorAirValue(indoorAirValue));
+        observers.forEach(IndoorSensorObserver::runOneLoop);
     }
 
     public static void main(String[] args) throws IOException {
         final Dht22Impl dht22 = new Dht22Impl();
         final IndoorSensorImpl indoorSensor = new IndoorSensorImpl(dht22);
-        indoorSensor.addObserver(System.out::println);
+        indoorSensor.addObserver(new IndoorSensorObserver() {
+            @Override
+            public void updateIndoorAirValue(AirValue indoorAirValue) {
+                System.out.println(indoorAirValue);
+            }
+
+            @Override
+            public void runOneLoop() {
+            }
+        });
         final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(indoorSensor, 0, 10, TimeUnit.SECONDS);
     }

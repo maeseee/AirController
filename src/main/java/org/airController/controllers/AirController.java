@@ -20,20 +20,19 @@ public class AirController implements IndoorSensorObserver, OutdoorSensorObserve
 
     public AirController(ControlledVentilationSystem controlledVentilationSystem) {
         this(controlledVentilationSystem, new DailyFreshAirRule(), new HourlyFreshAirRule(), new HumidityFreshAirRule(),
-                new HumidityExchangerControlRule(), null);
+                new HumidityExchangerControlRule());
     }
 
     AirController(ControlledVentilationSystem controlledVentilationSystem, DailyFreshAirRule dailyFreshAirRule, HourlyFreshAirRule hourlyFreshAirRule,
-                  HumidityFreshAirRule humidityFreshAirRule, HumidityExchangerControlRule humidityExchangerControlRule, AirValue airValue) {
+                  HumidityFreshAirRule humidityFreshAirRule, HumidityExchangerControlRule humidityExchangerControlRule) {
         this.controlledVentilationSystem = controlledVentilationSystem;
         this.dailyFreshAirRule = dailyFreshAirRule;
         this.hourlyFreshAirRule = hourlyFreshAirRule;
         this.humidityFreshAirRule = humidityFreshAirRule;
         this.humidityExchangerControlRule = humidityExchangerControlRule;
-        this.indoorAirValue = airValue;
-        this.outdoorAirValue = airValue;
     }
 
+    @Override
     public void runOneLoop() {
         final LocalDateTime now = LocalDateTime.now();
         final boolean sensorValuesAvailable = areSensorValuesAvailable();
@@ -50,13 +49,11 @@ public class AirController implements IndoorSensorObserver, OutdoorSensorObserve
     @Override
     public void updateIndoorAirValue(AirValue indoorAirValue) {
         this.indoorAirValue = indoorAirValue;
-        runOneLoop();
     }
 
     @Override
     public void updateOutdoorAirValue(AirValue outdoorAirValue) {
         this.outdoorAirValue = outdoorAirValue;
-        runOneLoop();
     }
 
     private boolean areSensorValuesAvailable() {
