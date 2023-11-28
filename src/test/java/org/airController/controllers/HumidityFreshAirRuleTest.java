@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 import java.io.IOException;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HumidityFreshAirRuleTest {
 
