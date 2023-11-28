@@ -8,12 +8,11 @@ import java.io.IOException;
 
 class HumidityFreshAirRule {
 
-    private static final Temperature TARGET_TEMPERATURE = Temperature.createFromCelsius(23);
-    private static final Humidity TARGET_HUMIDITY;
+    private static final AirValue TARGET_AIR_VALUE;
 
     static {
         try {
-            TARGET_HUMIDITY = Humidity.createFromRelative(50.0);
+            TARGET_AIR_VALUE = new AirValue(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(50.0));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -22,7 +21,7 @@ class HumidityFreshAirRule {
     public boolean turnFreshAirOn(AirValue indoorAirValue, AirValue outdoorAirValue) {
         final double indoorAbsoluteHumidity = indoorAirValue.getAbsoluteHumidity();
         final double outdoorAbsoluteHumidity = outdoorAirValue.getAbsoluteHumidity();
-        final double targetAbsoluteHumidity = TARGET_HUMIDITY.getAbsoluteHumidity(TARGET_TEMPERATURE);
+        final double targetAbsoluteHumidity = TARGET_AIR_VALUE.getAbsoluteHumidity();
 
         final double diffIndoorToGoal = indoorAbsoluteHumidity - targetAbsoluteHumidity;
         final double diffOutdoorToGoal = outdoorAbsoluteHumidity - targetAbsoluteHumidity;
