@@ -2,11 +2,13 @@ package org.airController.controllers;
 
 import org.airController.entities.AirValue;
 import org.airController.entities.Humidity;
+import org.airController.entities.Temperature;
 
 import java.io.IOException;
 
 class HumidityFreshAirRule {
 
+    private static final Temperature TARGET_TEMPERATURE = Temperature.createFromCelsius(23);
     private static final Humidity TARGET_HUMIDITY;
 
     static {
@@ -20,7 +22,7 @@ class HumidityFreshAirRule {
     public boolean turnFreshAirOn(AirValue indoorAirValue, AirValue outdoorAirValue) {
         final double indoorAbsoluteHumidity = indoorAirValue.getAbsoluteHumidity();
         final double outdoorAbsoluteHumidity = outdoorAirValue.getAbsoluteHumidity();
-        final double targetAbsoluteHumidity = TARGET_HUMIDITY.getAbsoluteHumidity(indoorAirValue.getTemperature());
+        final double targetAbsoluteHumidity = TARGET_HUMIDITY.getAbsoluteHumidity(TARGET_TEMPERATURE);
 
         final double diffIndoorToGoal = indoorAbsoluteHumidity - targetAbsoluteHumidity;
         final double diffOutdoorToGoal = outdoorAbsoluteHumidity - targetAbsoluteHumidity;
