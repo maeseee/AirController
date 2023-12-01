@@ -6,7 +6,7 @@ import org.airController.entities.Temperature;
 
 import java.io.IOException;
 
-class HumidityFreshAirRule {
+class HumidityFreshAir {
 
     private static final AirValue TARGET_AIR_VALUE;
 

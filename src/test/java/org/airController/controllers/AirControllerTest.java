@@ -26,15 +26,13 @@ class AirControllerTest {
     @Mock
     private ControlledVentilationSystemImpl controlledVentilationSystem;
     @Mock
-    private DailyFreshAirRule dailyFreshAirRule;
+    private DailyFreshAir dailyFreshAir;
     @Mock
-    private HourlyFreshAirRule hourlyFreshAirRule;
+    private HourlyFreshAir hourlyFreshAir;
     @Mock
-    private HumidityFreshAirRule humidityFreshAirRule;
+    private HumidityFreshAir humidityFreshAir;
     @Mock
-    private HumidityExchangerControlRule humidityExchangerControlRule;
-    @Mock
-    private AirValue airValue;
+    private HumidityExchanger humidityExchanger;
 
     @Captor
     ArgumentCaptor<AirValue> airValueArgumentCaptor;
@@ -43,12 +41,12 @@ class AirControllerTest {
     @ArgumentsSource(FreshAirArgumentProvider.class)
     void testFreshAirControllerOutputWhenSensorsAreAvailable(boolean mainFreshOn, boolean hourlyFreshAirOn, boolean humidityFreshAirOn,
                                                              boolean shouldFreshAirBeOn) {
-        when(dailyFreshAirRule.turnFreshAirOn(any())).thenReturn(mainFreshOn);
-        when(hourlyFreshAirRule.turnFreshAirOn(any())).thenReturn(hourlyFreshAirOn);
-        when(humidityFreshAirRule.turnFreshAirOn(any(), any())).thenReturn(humidityFreshAirOn);
+        when(dailyFreshAir.turnFreshAirOn(any())).thenReturn(mainFreshOn);
+        when(hourlyFreshAir.turnFreshAirOn(any())).thenReturn(hourlyFreshAirOn);
+        when(humidityFreshAir.turnFreshAirOn(any(), any())).thenReturn(humidityFreshAirOn);
         final AirValue airValue = mock(AirValue.class);
-        final AirController testee = new AirController(controlledVentilationSystem, dailyFreshAirRule, hourlyFreshAirRule, humidityFreshAirRule,
-                humidityExchangerControlRule);
+        final AirController testee =
+                new AirController(controlledVentilationSystem, dailyFreshAir, hourlyFreshAir, humidityFreshAir, humidityExchanger);
 
         testee.updateIndoorAirValue(airValue);
         testee.updateOutdoorAirValue(airValue);
@@ -77,19 +75,19 @@ class AirControllerTest {
 
     @Test
     void testWhenUpdateIndoorAirValueThenUseNewValue() {
-        when(dailyFreshAirRule.turnFreshAirOn(any())).thenReturn(true);
-        when(hourlyFreshAirRule.turnFreshAirOn(any())).thenReturn(false);
-        when(humidityExchangerControlRule.turnHumidityExchangerOn(any(), any())).thenReturn(true);
+        when(dailyFreshAir.turnFreshAirOn(any())).thenReturn(true);
+        when(hourlyFreshAir.turnFreshAirOn(any())).thenReturn(false);
+        when(humidityExchanger.turnHumidityExchangerOn(any(), any())).thenReturn(true);
         final AirValue indoorAirValue = mock(AirValue.class);
         final AirValue outdoorAirValue = mock(AirValue.class);
-        final AirController testee = new AirController(controlledVentilationSystem, dailyFreshAirRule, hourlyFreshAirRule, humidityFreshAirRule,
-                humidityExchangerControlRule);
+        final AirController testee =
+                new AirController(controlledVentilationSystem, dailyFreshAir, hourlyFreshAir, humidityFreshAir, humidityExchanger);
 
         testee.updateIndoorAirValue(indoorAirValue);
         testee.updateOutdoorAirValue(outdoorAirValue);
         testee.runOneLoop();
 
-        verify(humidityExchangerControlRule).turnHumidityExchangerOn(airValueArgumentCaptor.capture(), any());
+        verify(humidityExchanger).turnHumidityExchangerOn(airValueArgumentCaptor.capture(), any());
         final AirValue indoorAirValueCature = airValueArgumentCaptor.getValue();
         assertEquals(indoorAirValue, indoorAirValueCature);
         verify(controlledVentilationSystem).setAirFlowOn(true);
@@ -98,19 +96,19 @@ class AirControllerTest {
 
     @Test
     void testWhenUpdateOutdoorAirValueThenUseNewValue() {
-        when(dailyFreshAirRule.turnFreshAirOn(any())).thenReturn(true);
-        when(hourlyFreshAirRule.turnFreshAirOn(any())).thenReturn(false);
-        when(humidityExchangerControlRule.turnHumidityExchangerOn(any(), any())).thenReturn(true);
+        when(dailyFreshAir.turnFreshAirOn(any())).thenReturn(true);
+        when(hourlyFreshAir.turnFreshAirOn(any())).thenReturn(false);
+        when(humidityExchanger.turnHumidityExchangerOn(any(), any())).thenReturn(true);
         final AirValue indoorAirValue = mock(AirValue.class);
         final AirValue outdoorAirValue = mock(AirValue.class);
-        final AirController testee = new AirController(controlledVentilationSystem, dailyFreshAirRule, hourlyFreshAirRule, humidityFreshAirRule,
-                humidityExchangerControlRule);
+        final AirController testee =
+                new AirController(controlledVentilationSystem, dailyFreshAir, hourlyFreshAir, humidityFreshAir, humidityExchanger);
 
         testee.updateIndoorAirValue(indoorAirValue);
         testee.updateOutdoorAirValue(outdoorAirValue);
         testee.runOneLoop();
 
-        verify(humidityExchangerControlRule).turnHumidityExchangerOn(any(), airValueArgumentCaptor.capture());
+        verify(humidityExchanger).turnHumidityExchangerOn(any(), airValueArgumentCaptor.capture());
         final AirValue outdoorAirValueCature = airValueArgumentCaptor.getValue();
         assertEquals(outdoorAirValue, outdoorAirValueCature);
         verify(controlledVentilationSystem).setAirFlowOn(true);
@@ -119,11 +117,11 @@ class AirControllerTest {
 
     @Test
     void testWhenUpdateIndoorAirValueTheFirstTimeThenIgnoreHumidityController() {
-        when(dailyFreshAirRule.turnFreshAirOn(any())).thenReturn(false);
-        when(hourlyFreshAirRule.turnFreshAirOn(any())).thenReturn(false);
+        when(dailyFreshAir.turnFreshAirOn(any())).thenReturn(false);
+        when(hourlyFreshAir.turnFreshAirOn(any())).thenReturn(false);
         final AirValue indoorAirValue = mock(AirValue.class);
-        final AirController testee = new AirController(controlledVentilationSystem, dailyFreshAirRule, hourlyFreshAirRule, humidityFreshAirRule,
-                humidityExchangerControlRule);
+        final AirController testee =
+                new AirController(controlledVentilationSystem, dailyFreshAir, hourlyFreshAir, humidityFreshAir, humidityExchanger);
 
         testee.updateIndoorAirValue(indoorAirValue);
         testee.runOneLoop();
@@ -134,11 +132,11 @@ class AirControllerTest {
 
     @Test
     void testWhenUpdateOutdoorAirValueTheFirstTimeThenIgnoreHumidityController() {
-        when(dailyFreshAirRule.turnFreshAirOn(any())).thenReturn(false);
-        when(hourlyFreshAirRule.turnFreshAirOn(any())).thenReturn(false);
+        when(dailyFreshAir.turnFreshAirOn(any())).thenReturn(false);
+        when(hourlyFreshAir.turnFreshAirOn(any())).thenReturn(false);
         final AirValue outdoorAirValue = mock(AirValue.class);
-        final AirController testee = new AirController(controlledVentilationSystem, dailyFreshAirRule, hourlyFreshAirRule, humidityFreshAirRule,
-                humidityExchangerControlRule);
+        final AirController testee =
+                new AirController(controlledVentilationSystem, dailyFreshAir, hourlyFreshAir, humidityFreshAir, humidityExchanger);
 
         testee.updateOutdoorAirValue(outdoorAirValue);
         testee.runOneLoop();
@@ -149,18 +147,18 @@ class AirControllerTest {
 
     @Test
     void testWhenFreshAirOffThenHumidityExchangerOff() {
-        when(dailyFreshAirRule.turnFreshAirOn(any())).thenReturn(false);
-        when(hourlyFreshAirRule.turnFreshAirOn(any())).thenReturn(false);
-        when(humidityExchangerControlRule.turnHumidityExchangerOn(any(), any())).thenReturn(true);
+        when(dailyFreshAir.turnFreshAirOn(any())).thenReturn(false);
+        when(hourlyFreshAir.turnFreshAirOn(any())).thenReturn(false);
+        when(humidityExchanger.turnHumidityExchangerOn(any(), any())).thenReturn(true);
         final AirValue airValue = mock(AirValue.class);
-        final AirController testee = new AirController(controlledVentilationSystem, dailyFreshAirRule, hourlyFreshAirRule, humidityFreshAirRule,
-                humidityExchangerControlRule);
+        final AirController testee =
+                new AirController(controlledVentilationSystem, dailyFreshAir, hourlyFreshAir, humidityFreshAir, humidityExchanger);
 
         testee.updateIndoorAirValue(airValue);
         testee.updateOutdoorAirValue(airValue);
         testee.runOneLoop();
 
-        verify(humidityExchangerControlRule).turnHumidityExchangerOn(airValueArgumentCaptor.capture(), any());
+        verify(humidityExchanger).turnHumidityExchangerOn(airValueArgumentCaptor.capture(), any());
         final AirValue indoorAirValueCature = airValueArgumentCaptor.getValue();
         assertEquals(airValue, indoorAirValueCature);
         verify(controlledVentilationSystem).setAirFlowOn(false);

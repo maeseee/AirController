@@ -5,7 +5,7 @@ import org.airController.entities.Humidity;
 
 import java.io.IOException;
 
-class HumidityExchangerControlRule {
+class HumidityExchanger {
 
     private static final Humidity TARGET_HUMIDITY;
 

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
 
-class DailyFreshAirRule {
+class DailyFreshAir {
 
     private static final MonthDay SUMMER_TIME_START = MonthDay.of(5, 10);
     private static final MonthDay SUMMER_TIME_END = MonthDay.of(9, 10);

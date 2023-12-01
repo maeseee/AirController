@@ -30,7 +30,7 @@ class DailyFreshAirRuleTest {
     void testDates(String dateTimeString, boolean expectedResult) {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         final LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, formatter);
-        final DailyFreshAirRule testee = new DailyFreshAirRule();
+        final DailyFreshAir testee = new DailyFreshAir();
 
         final boolean freshAirOn = testee.turnFreshAirOn(dateTime);
 

@@ -9,41 +9,39 @@ import java.time.LocalDateTime;
 
 public class AirController implements IndoorSensorObserver, OutdoorSensorObserver {
 
-    private final ControlledVentilationSystem controlledVentilationSystem;
-    private final DailyFreshAirRule dailyFreshAirRule;
-    private final HourlyFreshAirRule hourlyFreshAirRule;
-    private final HumidityFreshAirRule humidityFreshAirRule;
-    private final HumidityExchangerControlRule humidityExchangerControlRule;
+    private final ControlledVentilationSystem ventilationSystem;
+    private final DailyFreshAir dailyFreshAir;
+    private final HourlyFreshAir hourlyFreshAir;
+    private final HumidityFreshAir humidityFreshAir;
+    private final HumidityExchanger humidityExchanger;
 
     private AirValue indoorAirValue;
     private AirValue outdoorAirValue;
 
-    public AirController(ControlledVentilationSystem controlledVentilationSystem) {
-        this(controlledVentilationSystem, new DailyFreshAirRule(), new HourlyFreshAirRule(), new HumidityFreshAirRule(),
-                new HumidityExchangerControlRule());
+    public AirController(ControlledVentilationSystem ventilationSystem) {
+        this(ventilationSystem, new DailyFreshAir(), new HourlyFreshAir(), new HumidityFreshAir(), new HumidityExchanger());
     }
 
-    AirController(ControlledVentilationSystem controlledVentilationSystem, DailyFreshAirRule dailyFreshAirRule, HourlyFreshAirRule hourlyFreshAirRule,
-                  HumidityFreshAirRule humidityFreshAirRule, HumidityExchangerControlRule humidityExchangerControlRule) {
-        this.controlledVentilationSystem = controlledVentilationSystem;
-        this.dailyFreshAirRule = dailyFreshAirRule;
-        this.hourlyFreshAirRule = hourlyFreshAirRule;
-        this.humidityFreshAirRule = humidityFreshAirRule;
-        this.humidityExchangerControlRule = humidityExchangerControlRule;
+    AirController(ControlledVentilationSystem ventilationSystem, DailyFreshAir dailyFreshAir, HourlyFreshAir hourlyFreshAir,
+                  HumidityFreshAir humidityFreshAir, HumidityExchanger humidityExchanger) {
+        this.ventilationSystem = ventilationSystem;
+        this.dailyFreshAir = dailyFreshAir;
+        this.hourlyFreshAir = hourlyFreshAir;
+        this.humidityFreshAir = humidityFreshAir;
+        this.humidityExchanger = humidityExchanger;
     }
 
     @Override
     public void runOneLoop() {
         final LocalDateTime now = LocalDateTime.now();
         final boolean sensorValuesAvailable = areSensorValuesAvailable();
-        final boolean freshAirOnForHumidityControl = sensorValuesAvailable && humidityFreshAirRule.turnFreshAirOn(indoorAirValue, outdoorAirValue);
-        final boolean freshAirOnForDailyExchange = dailyFreshAirRule.turnFreshAirOn(now);
-        final boolean freshAirOnForHourlyExchange = hourlyFreshAirRule.turnFreshAirOn(now.toLocalTime());
+        final boolean freshAirOnForHumidityControl = sensorValuesAvailable && humidityFreshAir.turnFreshAirOn(indoorAirValue, outdoorAirValue);
+        final boolean freshAirOnForDailyExchange = dailyFreshAir.turnFreshAirOn(now);
+        final boolean freshAirOnForHourlyExchange = hourlyFreshAir.turnFreshAirOn(now.toLocalTime());
         final boolean freshAirOn = freshAirOnForHumidityControl || freshAirOnForDailyExchange || freshAirOnForHourlyExchange;
-        final boolean humidityExchangerOn =
-                sensorValuesAvailable && humidityExchangerControlRule.turnHumidityExchangerOn(indoorAirValue, outdoorAirValue);
-        controlledVentilationSystem.setAirFlowOn(freshAirOn);
-        controlledVentilationSystem.setHumidityExchangerOn(humidityExchangerOn && freshAirOn);
+        final boolean humidityExchangerOn = sensorValuesAvailable && humidityExchanger.turnHumidityExchangerOn(indoorAirValue, outdoorAirValue);
+        ventilationSystem.setAirFlowOn(freshAirOn);
+        ventilationSystem.setHumidityExchangerOn(humidityExchangerOn && freshAirOn);
     }
 
     @Override

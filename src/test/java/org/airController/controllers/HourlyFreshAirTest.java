@@ -11,12 +11,12 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class HourlyFreshAirTimeSlotRuleTest {
+class HourlyFreshAirTest {
 
     @ParameterizedTest(name = "{index} => dateTime={0}, expectedResult={1}")
     @ArgumentsSource(HourlyFreshAirArgumentProvider.class)
     void testHourlyFreshAirRule(LocalTime time, boolean expectedResult) {
-        final HourlyFreshAirRule testee = new HourlyFreshAirRule();
+        final HourlyFreshAir testee = new HourlyFreshAir();
 
         final boolean result = testee.turnFreshAirOn(time);
 

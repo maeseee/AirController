@@ -2,7 +2,7 @@ package org.airController.controllers;
 
 import java.time.LocalTime;
 
-class HourlyFreshAirRule {
+class HourlyFreshAir {
 
     public static final int HOURLY_FRESH_AIR_MINUTES = 10;
 
