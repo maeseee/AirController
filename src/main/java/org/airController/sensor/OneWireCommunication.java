@@ -1,8 +1,8 @@
 package org.airController.sensor;
 
+import com.pi4j.wiringpi.Gpio;
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.util.Logging;
-import org.airController.util.RaspberryPiPin;
 
 import java.io.IOException;
 import java.util.OptionalLong;
@@ -12,25 +12,22 @@ class OneWireCommunication {
     private static final int NR_OF_BITS = 40;
     private static final int MIN_HIGH_DURATION = 16;
 
-    private final RaspberryPiPin raspberryPiPin;
+    private final GpioFunction gpioFunction;
 
     public OneWireCommunication(GpioFunction gpioFunction) throws IOException {
-        this(new RaspberryPiPin(gpioFunction));
-    }
-
-    OneWireCommunication(RaspberryPiPin raspberryPiPin) {
-        this.raspberryPiPin = raspberryPiPin;
+        this.gpioFunction = gpioFunction;
+        setupWiringPi();
     }
 
     public OptionalLong readSensorData() {
         sendStartSignal();
-        raspberryPiPin.setMode(true);
-        boolean lastState = true;
+        Gpio.pinMode(gpioFunction.getGpio(), Gpio.INPUT);
+        int lastState = Gpio.HIGH;
         int bitPosition = 0;
         long sensorData = 0;
         for (int transition = 0; transition < MAX_TIMINGS; transition++) {
             final int microsecondsToStateChange = waitUntilStateChanges(lastState);
-            lastState = raspberryPiPin.read();
+            lastState = Gpio.digitalRead(gpioFunction.getGpio());
             if (microsecondsToStateChange == 255) {
                 Logging.getLogger().severe("OneWireCommunication timeout. transition=" + transition);
                 break;
@@ -56,18 +53,25 @@ class OneWireCommunication {
         return sensorData;
     }
 
-    private void sendStartSignal() {
-        raspberryPiPin.setMode(false);
-        raspberryPiPin.write(false);
-        raspberryPiPin.sleep(18);
-        raspberryPiPin.setMode(true);
+    private void setupWiringPi() throws IOException {
+        final int wiringPiStatus = Gpio.wiringPiSetup();
+        if (wiringPiStatus == -1) {
+            throw new IOException("GPIO SETUP FAILED");
+        }
     }
 
-    private int waitUntilStateChanges(boolean lastState) {
+    private void sendStartSignal() {
+        Gpio.pinMode(gpioFunction.getGpio(), Gpio.OUTPUT);
+        Gpio.digitalWrite(gpioFunction.getGpio(), Gpio.LOW);
+        Gpio.delay(18);
+        Gpio.digitalWrite(gpioFunction.getGpio(), Gpio.HIGH);
+    }
+
+    private int waitUntilStateChanges(int lastState) {
         int microsecondCounter = 0;
-        while (raspberryPiPin.read() == lastState && microsecondCounter < 255) {
+        while (Gpio.digitalRead(gpioFunction.getGpio()) == lastState && microsecondCounter < 255) {
             microsecondCounter++;
-            raspberryPiPin.sleep(1);
+            Gpio.delayMicroseconds(1);
         }
         return microsecondCounter;
     }
