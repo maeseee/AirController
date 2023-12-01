@@ -26,7 +26,7 @@ public class Application {
     private final IndoorSensor indoorSensor;
 
     public Application() throws IOException, URISyntaxException {
-        this(new GpioPinImpl(GpioFunction.MAIN_SYSTEM, true), new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER, false), new IndoorSensorImpl());
+        this(new GpioPinImpl(GpioFunction.AIR_FLOW, true), new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER, false), new IndoorSensorImpl());
     }
 
     Application(GpioPin airFlow, GpioPin humidityExchanger, IndoorSensor indoorSensor) throws URISyntaxException {

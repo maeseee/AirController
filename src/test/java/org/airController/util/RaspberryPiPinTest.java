@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 class RaspberryPiPinTest {
 
     public static void main(String[] args) throws IOException {
-        final GpioPinImpl gpioPin = new GpioPinImpl(GpioFunction.MAIN_SYSTEM, true);
+        final GpioPinImpl gpioPin = new GpioPinImpl(GpioFunction.AIR_FLOW, true);
         final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(() -> gpioPin.setGpioState(!gpioPin.getGpioState()), 0, 2, TimeUnit.SECONDS);
     }

@@ -17,7 +17,7 @@ public class GpioPinImpl implements GpioPin {
         this(pinFunction.name(), new RaspberryPiPin(pinFunction),initialHigh);
     }
 
-    GpioPinImpl(String name, RaspberryPiPin raspberryPiPin, boolean initialHigh) {
+    public GpioPinImpl(String name, RaspberryPiPin raspberryPiPin, boolean initialHigh) {
         this.name = name;
         this.raspberryPiPin = raspberryPiPin;
         this.dailyGpioStatistic =  new DailyGpioStatistic(name, initialHigh);
