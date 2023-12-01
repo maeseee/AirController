@@ -7,6 +7,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -62,5 +64,20 @@ class SecretsEncryptionTest {
         final String decryptedSecret = decryptionTestee.decrypt(encryptedSecret);
 
         assertNull(decryptedSecret);
+    }
+
+    public static void main(String[] args) throws Exception {
+        System.out.println("Add secret that should be encrypted:");
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        final String secret = reader.readLine();
+        System.out.println("Enter the master password:");
+        final String masterPassword = reader.readLine();
+        final SecretsEncryption secretsEncryption = new SecretsEncryption(masterPassword);
+        final String encryptedSecret = secretsEncryption.encrypt(secret);
+        System.out.println("The encrpyted secret is: " + encryptedSecret);
+
+        final SecretsEncryption secretsDecryption = new SecretsEncryption(masterPassword);
+        final String decryptedSecret = secretsDecryption.decrypt(encryptedSecret);
+        System.out.println("The decrypted it is: " + decryptedSecret);
     }
 }
