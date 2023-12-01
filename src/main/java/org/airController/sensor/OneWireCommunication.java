@@ -1,13 +1,14 @@
 package org.airController.sensor;
 
 import org.airController.gpioAdapter.GpioFunction;
+import org.airController.util.Logging;
 import org.airController.util.RaspberryPiPin;
 
 import java.io.IOException;
 import java.util.OptionalLong;
 
 class OneWireCommunication {
-    private static final int MAX_TIMINGS = 85;
+    private static final int MAX_TIMINGS = 83;
     private static final int NR_OF_BITS = 40;
     private static final int MIN_HIGH_DURATION = 16;
 
@@ -31,6 +32,7 @@ class OneWireCommunication {
             final int microsecondsToStateChange = waitUntilStateChanges(lastState);
             lastState = raspberryPiPin.read();
             if (microsecondsToStateChange == 255) {
+                Logging.getLogger().severe("OneWireCommunication timeout. transition=" + transition);
                 break;
             }
 
@@ -48,7 +50,7 @@ class OneWireCommunication {
     }
 
     private long setBit(boolean bitHigh, long sensorData, int bitPosition) {
-        if(bitHigh) {
+        if (bitHigh) {
             sensorData |= (1L << (NR_OF_BITS - bitPosition - 1));
         }
         return sensorData;
