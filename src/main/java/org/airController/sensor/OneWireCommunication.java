@@ -1,87 +1,53 @@
 package org.airController.sensor;
 
-import com.pi4j.wiringpi.Gpio;
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.util.Logging;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.OptionalLong;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Optional;
 
 class OneWireCommunication {
-    private static final int MAX_TIMINGS = 83;
-    private static final int NR_OF_BITS = 40;
-    private static final int MIN_HIGH_DURATION = 16;
 
-    private final GpioFunction gpioFunction;
-
-    public OneWireCommunication(GpioFunction gpioFunction) throws IOException {
-        this.gpioFunction = gpioFunction;
-        setupWiringPi();
+    public OneWireCommunication(GpioFunction gpioFunction) {
     }
 
-    public OptionalLong readSensorData() {
-        sendStartSignal();
-        Gpio.pinMode(gpioFunction.getGpio(), Gpio.INPUT);
-        int lastState = Gpio.HIGH;
-        int bitPosition = 0;
-        long sensorData = 0;
-        for (int transition = 0; transition < MAX_TIMINGS; transition++) {
-            final int microsecondsToStateChange = waitUntilStateChanges(lastState);
-            lastState = Gpio.digitalRead(gpioFunction.getGpio());
-            if (microsecondsToStateChange == 255) {
-                Logging.getLogger().severe("OneWireCommunication timeout. transition=" + transition);
-                break;
+    public Optional<String> readSensorData() {
+        final ProcessBuilder processBuilder = new ProcessBuilder("python3", "src/main/java/org/airController/sensor/DhtDevice.py");
+        processBuilder.redirectErrorStream(true);
+
+        try {
+            final Process process = processBuilder.start();
+            final String output = readProcessOutput(process.getInputStream());
+            System.out.println(output);
+
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                return Optional.of(output);
             }
-
-            if (isBitReadState(transition)) {
-                sensorData = setBit(isBitHigh(microsecondsToStateChange), sensorData, bitPosition);
-                bitPosition++;
-            }
+        } catch (IOException | InterruptedException e) {
+            Logging.getLogger().severe("Invalid indoor sensor data!");
         }
 
-        if (bitPosition != 40) {
-            return OptionalLong.empty();
+        return Optional.empty();
+    }
+
+    private String readProcessOutput(InputStream inputStream) throws IOException {
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        StringBuilder output = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            System.out.println(line);
+            output.append(line).append("\n");
         }
-
-        return OptionalLong.of(sensorData);
+        return output.toString();
     }
 
-    private long setBit(boolean bitHigh, long sensorData, int bitPosition) {
-        if (bitHigh) {
-            sensorData |= (1L << (NR_OF_BITS - bitPosition - 1));
-        }
-        return sensorData;
-    }
-
-    private void setupWiringPi() throws IOException {
-        final int wiringPiStatus = Gpio.wiringPiSetup();
-        if (wiringPiStatus == -1) {
-            throw new IOException("GPIO SETUP FAILED");
-        }
-    }
-
-    private void sendStartSignal() {
-        Gpio.pinMode(gpioFunction.getGpio(), Gpio.OUTPUT);
-        Gpio.digitalWrite(gpioFunction.getGpio(), Gpio.LOW);
-        Gpio.delay(18);
-        Gpio.digitalWrite(gpioFunction.getGpio(), Gpio.HIGH);
-    }
-
-    private int waitUntilStateChanges(int lastState) {
-        int microsecondCounter = 0;
-        while (Gpio.digitalRead(gpioFunction.getGpio()) == lastState && microsecondCounter < 255) {
-            microsecondCounter++;
-            Gpio.delayMicroseconds(1);
-        }
-        return microsecondCounter;
-    }
-
-    private boolean isBitReadState(int transition) {
-        // ignore first 3 transitions
-        return transition >= 4 && transition % 2 == 0;
-    }
-
-    private boolean isBitHigh(long microsecondsToStateChange) {
-        return microsecondsToStateChange > MIN_HIGH_DURATION;
+    public static void main(String[] args) throws IOException, InterruptedException {
+        final OneWireCommunication oneWireCommunication = new OneWireCommunication(GpioFunction.DHT22_SENSOR);
+        final Optional<String> sensorData = oneWireCommunication.readSensorData();
+        System.out.println(sensorData);
     }
 }
