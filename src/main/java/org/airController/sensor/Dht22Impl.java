@@ -4,7 +4,6 @@ import org.airController.entities.AirValue;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
 import org.airController.gpioAdapter.GpioFunction;
-import org.airController.util.JsonParser;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -17,7 +16,7 @@ class Dht22Impl implements Dht22 {
     private final OneWireCommunication communication;
     private final int retryBaseTime;
 
-    public Dht22Impl() {
+    public Dht22Impl() throws IOException {
         this(new OneWireCommunication(GpioFunction.DHT22_SENSOR), 5);
     }
 
@@ -29,11 +28,9 @@ class Dht22Impl implements Dht22 {
     @Override
     public Optional<AirValue> refreshData() {
         for (int retryCounter = 0; retryCounter <= MAX_NR_OF_RETRIES; retryCounter++) {
-            final Optional<String> jsonSensorData = communication.readSensorData();
-            final Optional<AirValue> airValue = jsonSensorData.isPresent() ? JsonParser.parse(jsonSensorData.get()) : Optional.empty();
-
-            if (airValue.isPresent()) {
-                return airValue;
+            final OptionalLong sensorData = communication.readSensorData();
+            if (sensorData.isPresent() && checkParity(sensorData.getAsLong())) {
+                return getAirValueFromData(sensorData.getAsLong());
             }
             sleepABit(retryCounter);
         }
@@ -41,9 +38,9 @@ class Dht22Impl implements Dht22 {
     }
 
     private void sleepABit(int retryCounter) {
-        final int sleepDuration = retryBaseTime * retryCounter;
+        final int sleepDurraction = retryBaseTime * retryCounter;
         try {
-            TimeUnit.SECONDS.sleep(sleepDuration);
+            TimeUnit.SECONDS.sleep(sleepDurraction);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

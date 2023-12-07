@@ -1,13 +1,10 @@
 package org.airController.sensor;
 
 import org.airController.entities.AirValue;
-import org.airController.entities.Humidity;
-import org.airController.entities.Temperature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.OptionalLong;
 
@@ -18,9 +15,9 @@ import static org.mockito.Mockito.when;
 class Dht22ImplTest {
 
     @Test
-    void testWhenAllChecksAreValidThenValueIsPresent() throws IOException {
+    void testWhenAllChecksAreValidThenValueIsPresent() {
         final OneWireCommunication communication = mock(OneWireCommunication.class);
-        final Optional<String> sensorData = createSensorData(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(50.0));
+        final OptionalLong sensorData = createSensorData(23.0, 50.0);
         when(communication.readSensorData()).thenReturn(sensorData);
         final Dht22Impl testee = new Dht22Impl(communication, 0);
 
@@ -30,15 +27,28 @@ class Dht22ImplTest {
     }
 
     @Test
-    void testWhenCheckInvalidThenRetry3Times() throws IOException {
+    void testWhenCheckInvalidThenRetry3Times() {
         final OneWireCommunication communication = mock(OneWireCommunication.class);
-        final Optional<String> sensorData = createSensorData(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(50.0));
-        when(communication.readSensorData()).thenReturn(Optional.empty(), Optional.empty(), Optional.empty(), sensorData);
+        final OptionalLong sensorData = createSensorData(23.0, 50.0);
+        when(communication.readSensorData()).thenReturn(OptionalLong.empty(), OptionalLong.empty(), OptionalLong.empty(), sensorData);
         final Dht22Impl testee = new Dht22Impl(communication, 0);
 
         final Optional<AirValue> airValue = testee.refreshData();
 
         assertTrue(airValue.isPresent());
+    }
+
+    @Test
+    void testWhenWrongChecksumThenInvalid() {
+        final OneWireCommunication communication = mock(OneWireCommunication.class);
+        final OptionalLong sensorData = createSensorData(23.0, 50.0);
+        final OptionalLong sensorDataInvalid = OptionalLong.of(sensorData.orElse(0) + 1);
+        when(communication.readSensorData()).thenReturn(sensorDataInvalid);
+        final Dht22Impl testee = new Dht22Impl(communication, 0);
+
+        final Optional<AirValue> airValue = testee.refreshData();
+
+        assertFalse(airValue.isPresent());
     }
 
     @ParameterizedTest
@@ -52,27 +62,33 @@ class Dht22ImplTest {
             "-100.0, 50.0",
             "0.0, 50.0",
     })
-    void testGetValuesFromData(double temp, double hum) throws IOException {
+    void testGetValuesFromData(double temperature, double humidity) {
         final OneWireCommunication communication = mock(OneWireCommunication.class);
-        final Temperature temperature = Temperature.createFromCelsius(temp);
-        final Humidity humidity = Humidity.createFromRelative(hum);
         when(communication.readSensorData()).thenReturn(createSensorData(temperature, humidity));
         final Dht22Impl testee = new Dht22Impl(communication, 0);
 
         final Optional<AirValue> airValue = testee.refreshData();
 
         assertTrue(airValue.isPresent());
-        assertEquals(temperature.getCelsius(), airValue.get().getTemperature().getCelsius(), 0.01);
-        assertEquals(humidity.getRelativeHumidity(), airValue.get().getHumidity().getRelativeHumidity(),0.01);
+        assertEquals(temperature, airValue.get().getTemperature().getCelsius());
+        assertEquals(humidity, airValue.get().getHumidity().getRelativeHumidity());
     }
 
-    private Optional<String> createSensorData(Temperature temperature, Humidity humidity) {
-        final String json = """
-                {
-                "main":{"temp":%.2f,"humidity":%.2f}
-                }
-                """;
-        final String jsonFormatted = String.format(json, temperature.getKelvin(), humidity.getRelativeHumidity());
-        return Optional.of(jsonFormatted);
+    private OptionalLong createSensorData(double temperature, double humidity) {
+        long temperatureData = (long) Math.abs(temperature * 10);
+        if (temperature < 0) {
+            temperatureData |= (1 << 15);
+        }
+        final long humidityData = (long) (humidity * 10);
+        long sensorData = 0;
+        sensorData |= (temperatureData << 8);
+        sensorData |= (humidityData << 24);
+
+        final long byte0 = (temperatureData >> 8) & 0xFF;
+        final long byte1 = temperatureData & 0xFF;
+        final long byte2 = (humidityData >> 8) & 0xFF;
+        final long byte3 = humidityData & 0xFF;
+        sensorData |= ((byte0 + byte1 + byte2 + byte3) & 0xFF);
+        return OptionalLong.of(sensorData);
     }
 }
