@@ -2,9 +2,13 @@ package org.airController.util;
 
 import com.pi4j.wiringpi.Gpio;
 import com.pi4j.wiringpi.GpioUtil;
+import org.airController.gpio.GpioPinImpl;
 import org.airController.gpioAdapter.GpioFunction;
 
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class RaspberryPiPin {
 
@@ -13,11 +17,6 @@ public class RaspberryPiPin {
     public RaspberryPiPin(GpioFunction gpioFunction) throws IOException {
         this.gpioFunction = gpioFunction;
         setupWiringPi();
-    }
-
-    public void setMode(boolean input) {
-        final int mode = input ? Gpio.INPUT : Gpio.OUTPUT;
-        Gpio.pinMode(gpioFunction.getGpio(), mode);
     }
 
     public void export(boolean directionOut) {
@@ -35,14 +34,16 @@ public class RaspberryPiPin {
         return state != 0;
     }
 
-    public void sleep(int microseconds) {
-        Gpio.delayMicroseconds(microseconds);
-    }
-
     private void setupWiringPi() throws IOException {
         final int wiringPiStatus = com.pi4j.wiringpi.Gpio.wiringPiSetup();
         if (wiringPiStatus == -1) {
             throw new IOException("GPIO SETUP FAILED");
         }
+    }
+
+    public static void main(String[] args) throws IOException {
+        final GpioPinImpl gpioPin = new GpioPinImpl(GpioFunction.AIR_FLOW, true);
+        final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(() -> gpioPin.setGpioState(!gpioPin.getGpioState()), 0, 2, TimeUnit.SECONDS);
     }
 }
