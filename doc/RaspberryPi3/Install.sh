@@ -34,5 +34,8 @@ chmod +x run.sh
 # Add the following command to the /home/pi/.bashrc (without "")
 export weather_api_key="<api_key>"
 
-#See GPIO config
+# See GPIO config
 gpio readall
+
+# Write 1 on gpio 23
+gpio write 23 1

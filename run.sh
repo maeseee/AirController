@@ -16,3 +16,6 @@ done
 
 # Restart service
 # sudo systemctl restart airController.service
+
+# stop service
+# sudo systemctl stop airController.service

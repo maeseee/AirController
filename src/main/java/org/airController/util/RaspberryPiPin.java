@@ -21,7 +21,7 @@ public class RaspberryPiPin {
 
     public void export(boolean directionOut) {
         final int direction = directionOut ? GpioUtil.DIRECTION_IN : GpioUtil.DIRECTION_OUT;
-        GpioUtil.export(gpioFunction.getGpio(), direction);
+        GpioUtil.export(gpioFunction.getBcm(), direction);
     }
 
     public void write(boolean high) {
