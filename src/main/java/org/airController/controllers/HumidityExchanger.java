@@ -20,6 +20,19 @@ class HumidityExchanger {
         }
     }
 
+    public boolean turnFreshAirOn(AirValue indoorAirValue, AirValue outdoorAirValue) {
+        final double indoorAbsoluteHumidity = indoorAirValue.getAbsoluteHumidity();
+        final double outdoorAbsoluteHumidity = outdoorAirValue.getAbsoluteHumidity();
+        final double lowerTargetAbsoluteHumidity = LOWER_TARGET_AIR_VALUE.getAbsoluteHumidity();
+        final double upperTargetAbsoluteHumidity = UPPER_TARGET_AIR_VALUE.getAbsoluteHumidity();
+
+        if (indoorAbsoluteHumidity > upperTargetAbsoluteHumidity && outdoorAbsoluteHumidity < lowerTargetAbsoluteHumidity) {
+            return true;
+        }
+
+        return indoorAbsoluteHumidity < lowerTargetAbsoluteHumidity && outdoorAbsoluteHumidity > upperTargetAbsoluteHumidity;
+    }
+
     public boolean turnHumidityExchangerOn(AirValue indoorAirValue, AirValue outdoorAirValue) {
         final double indoorAbsoluteHumidity = indoorAirValue.getAbsoluteHumidity();
         final double outdoorAbsoluteHumidity = outdoorAirValue.getAbsoluteHumidity();
@@ -30,10 +43,6 @@ class HumidityExchanger {
             return true;
         }
 
-        if (indoorAbsoluteHumidity < lowerTargetAbsoluteHumidity && indoorAbsoluteHumidity > outdoorAbsoluteHumidity) {
-            return true;
-        }
-
-        return false;
+        return indoorAbsoluteHumidity < lowerTargetAbsoluteHumidity && indoorAbsoluteHumidity > outdoorAbsoluteHumidity;
     }
 }

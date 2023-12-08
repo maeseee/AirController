@@ -17,6 +17,37 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class HumidityExchangerTest {
 
     @ParameterizedTest(name = "{index} => indoor={0}, outdoor={1}, expectedResult={2}")
+    @ArgumentsSource(HumidityFreshAirArgumentProvider.class)
+    void testHumidityFreshAirRule(Humidity indoorHumidity, Humidity outdoorHumidity, boolean expectedResult) {
+        final Temperature temperature = Temperature.createFromCelsius(23);
+        final AirValue indoorAirValue = new AirValue(temperature, indoorHumidity);
+        final AirValue outdoorAirValue = new AirValue(temperature, outdoorHumidity);
+        final HumidityExchanger testee = new HumidityExchanger();
+
+        final boolean result = testee.turnFreshAirOn(indoorAirValue, outdoorAirValue);
+
+        assertEquals(expectedResult, result);
+    }
+
+    static class HumidityFreshAirArgumentProvider implements ArgumentsProvider {
+
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws IOException {
+            final Humidity humidityLow = Humidity.createFromRelative(40);
+            final Humidity humidityLowLow = Humidity.createFromRelative(30);
+            final Humidity humidityHigh = Humidity.createFromRelative(60);
+            final Humidity humidityHighHigh = Humidity.createFromRelative(70);
+            return Stream.of(
+                    Arguments.of(humidityLow, humidityHigh, true),
+                    Arguments.of(humidityHigh, humidityLow, true),
+                    Arguments.of(humidityLowLow, humidityLow, false),
+                    Arguments.of(humidityLow, humidityLowLow, false),
+                    Arguments.of(humidityHighHigh, humidityHigh, false),
+                    Arguments.of(humidityHigh, humidityHighHigh, false));
+        }
+    }
+
+    @ParameterizedTest(name = "{index} => indoor={0}, outdoor={1}, expectedResult={2}")
     @ArgumentsSource(HumidityControlArgumentProvider.class)
     void testHumidityControlRule(Humidity indoorHumidity, Humidity outdoorHumidity, boolean expectedResult) {
         final Temperature temperature = Temperature.createFromCelsius(23);

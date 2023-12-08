@@ -12,22 +12,20 @@ public class AirController implements IndoorSensorObserver, OutdoorSensorObserve
     private final ControlledVentilationSystem ventilationSystem;
     private final DailyFreshAir dailyFreshAir;
     private final HourlyFreshAir hourlyFreshAir;
-    private final HumidityFreshAir humidityFreshAir;
     private final HumidityExchanger humidityExchanger;
 
     private AirValue indoorAirValue;
     private AirValue outdoorAirValue;
 
     public AirController(ControlledVentilationSystem ventilationSystem) {
-        this(ventilationSystem, new DailyFreshAir(), new HourlyFreshAir(), new HumidityFreshAir(), new HumidityExchanger());
+        this(ventilationSystem, new DailyFreshAir(), new HourlyFreshAir(), new HumidityExchanger());
     }
 
     AirController(ControlledVentilationSystem ventilationSystem, DailyFreshAir dailyFreshAir, HourlyFreshAir hourlyFreshAir,
-                  HumidityFreshAir humidityFreshAir, HumidityExchanger humidityExchanger) {
+                  HumidityExchanger humidityExchanger) {
         this.ventilationSystem = ventilationSystem;
         this.dailyFreshAir = dailyFreshAir;
         this.hourlyFreshAir = hourlyFreshAir;
-        this.humidityFreshAir = humidityFreshAir;
         this.humidityExchanger = humidityExchanger;
     }
 
@@ -35,7 +33,7 @@ public class AirController implements IndoorSensorObserver, OutdoorSensorObserve
     public void runOneLoop() {
         final LocalDateTime now = LocalDateTime.now();
         final boolean sensorValuesAvailable = areSensorValuesAvailable();
-        final boolean freshAirOnForHumidityControl = sensorValuesAvailable && humidityFreshAir.turnFreshAirOn(indoorAirValue, outdoorAirValue);
+        final boolean freshAirOnForHumidityControl = sensorValuesAvailable && humidityExchanger.turnFreshAirOn(indoorAirValue, outdoorAirValue);
         final boolean freshAirOnForDailyExchange = dailyFreshAir.turnFreshAirOn(now);
         final boolean freshAirOnForHourlyExchange = hourlyFreshAir.turnFreshAirOn(now.toLocalTime());
         final boolean freshAirOn = freshAirOnForHumidityControl || freshAirOnForDailyExchange || freshAirOnForHourlyExchange;
