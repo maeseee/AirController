@@ -8,11 +8,13 @@ import java.io.IOException;
 
 class HumidityFreshAir {
 
-    private static final AirValue TARGET_AIR_VALUE;
+    private static final AirValue LOWER_TARGET_AIR_VALUE;
+    private static final AirValue UPPER_TARGET_AIR_VALUE;
 
     static {
         try {
-            TARGET_AIR_VALUE = new AirValue(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(50.0));
+            LOWER_TARGET_AIR_VALUE = new AirValue(Temperature.createFromCelsius(22.0), Humidity.createFromRelative(48.0));
+            UPPER_TARGET_AIR_VALUE = new AirValue(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(52.0));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -21,15 +23,17 @@ class HumidityFreshAir {
     public boolean turnFreshAirOn(AirValue indoorAirValue, AirValue outdoorAirValue) {
         final double indoorAbsoluteHumidity = indoorAirValue.getAbsoluteHumidity();
         final double outdoorAbsoluteHumidity = outdoorAirValue.getAbsoluteHumidity();
-        final double targetAbsoluteHumidity = TARGET_AIR_VALUE.getAbsoluteHumidity();
+        final double lowerTargetAbsoluteHumidity = LOWER_TARGET_AIR_VALUE.getAbsoluteHumidity();
+        final double upperTargetAbsoluteHumidity = UPPER_TARGET_AIR_VALUE.getAbsoluteHumidity();
 
-        final double diffIndoorToGoal = indoorAbsoluteHumidity - targetAbsoluteHumidity;
-        final double diffOutdoorToGoal = outdoorAbsoluteHumidity - targetAbsoluteHumidity;
+        if (indoorAbsoluteHumidity > upperTargetAbsoluteHumidity && outdoorAbsoluteHumidity < lowerTargetAbsoluteHumidity) {
+            return true;
+        }
 
-        return numbersWithDifferentSigns(diffIndoorToGoal, diffOutdoorToGoal);
-    }
+        if (indoorAbsoluteHumidity < lowerTargetAbsoluteHumidity && outdoorAbsoluteHumidity > upperTargetAbsoluteHumidity) {
+            return true;
+        }
 
-    private boolean numbersWithDifferentSigns(double diffIndoorToGoal, double diffOutdoorToGoal) {
-        return Math.signum(diffIndoorToGoal) * Math.signum(diffOutdoorToGoal) < 0;
+        return false;
     }
 }
