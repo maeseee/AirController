@@ -14,7 +14,7 @@ public class Logging {
         try {
             logger = Logger.getLogger(Logging.class.getName());
             Files.createDirectories(Paths.get("log"));
-            final FileHandler fileHandler = new FileHandler("log/airController", true);
+            final FileHandler fileHandler = new FileHandler("log/airController.log", true);
             final SimpleFormatter formatter = new SimpleFormatter();
             fileHandler.setFormatter(formatter);
             logger.addHandler(fileHandler);
