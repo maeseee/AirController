@@ -3,8 +3,6 @@ package org.airController.util;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -16,8 +14,7 @@ public class Logging {
         try {
             logger = Logger.getLogger(Logging.class.getName());
             Files.createDirectories(Paths.get("log"));
-            final String logFileName = new SimpleDateFormat("'log/airController_'yyyyMMdd_HHmm'.log'").format(new Date());
-            final FileHandler fileHandler = new FileHandler(logFileName);
+            final FileHandler fileHandler = new FileHandler("log/airController", true);
             final SimpleFormatter formatter = new SimpleFormatter();
             fileHandler.setFormatter(formatter);
             logger.addHandler(fileHandler);
