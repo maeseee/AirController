@@ -52,7 +52,6 @@ class OutdoorSensorImplTest {
         final AirValue outdoorAirValue = outdoorAirValueArgumentCaptor.getValue();
         assertEquals(10.53, outdoorAirValue.getTemperature().getCelsius(), 0.1);
         assertEquals(87.0, outdoorAirValue.getHumidity().getRelativeHumidity(), 0.1);
-        verify(observer).runOneLoop();
     }
 
     @Test

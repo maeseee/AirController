@@ -8,12 +8,15 @@ import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
 import org.airController.sensor.Dht22;
 import org.airController.sensor.IndoorSensorImpl;
+import org.airController.sensor.OutdoorSensorImpl;
 import org.airController.sensorAdapter.IndoorSensor;
+import org.airController.sensorAdapter.OutdoorSensor;
 import org.airController.util.RaspberryPiPin;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
+import java.util.concurrent.Executors;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -28,8 +31,9 @@ class MainMock {
         final AirValue airValue = new AirValue(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(50.0));
         final Dht22 dht22 = mock(Dht22.class);
         when(dht22.refreshData()).thenReturn(Optional.of(airValue));
+        final OutdoorSensor outdoorSensor = new OutdoorSensorImpl();
         final IndoorSensor indoorSensor = new IndoorSensorImpl(dht22);
-        final Application application = new Application(airFlow, humidityExchanger, indoorSensor);
+        final Application application = new Application(airFlow, humidityExchanger, outdoorSensor, indoorSensor, Executors.newScheduledThreadPool(1));
         application.run();
         Thread.currentThread().join();
     }

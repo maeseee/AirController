@@ -21,28 +21,33 @@ import java.util.concurrent.TimeUnit;
 public class Application {
     private static final int OUTDOOR_SENSOR_READ_PERIOD_MINUTES = 10;
     private static final int INDOOR_SENSOR_READ_PERIOD_MINUTES = 3;
+    private static final int VENTILATION_SYSTEM_PERIOD_MINUTES = 1;
 
     private final OutdoorSensor outdoorSensor;
     private final IndoorSensor indoorSensor;
+    private final AirController airController;
+    private final ScheduledExecutorService executor;
 
     public Application() throws IOException, URISyntaxException {
-        this(new GpioPinImpl(GpioFunction.AIR_FLOW, true), new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER, false), new IndoorSensorImpl());
+        this(new GpioPinImpl(GpioFunction.AIR_FLOW, true), new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER, false), new OutdoorSensorImpl(),
+                new IndoorSensorImpl(), Executors.newScheduledThreadPool(1));
     }
 
-    Application(GpioPin airFlow, GpioPin humidityExchanger, IndoorSensor indoorSensor) throws URISyntaxException {
+    Application(GpioPin airFlow, GpioPin humidityExchanger, OutdoorSensor outdoorSensor, IndoorSensor indoorSensor, ScheduledExecutorService executor) {
         final ControlledVentilationSystem ventilationSystem = new ControlledVentilationSystemImpl(airFlow, humidityExchanger);
-        this.outdoorSensor = new OutdoorSensorImpl();
+        this.outdoorSensor = outdoorSensor;
         this.indoorSensor = indoorSensor;
+        this.airController = new AirController(ventilationSystem);
+        this.executor = executor;
 
-        final AirController airController = new AirController(ventilationSystem);
         outdoorSensor.addObserver(airController);
         indoorSensor.addObserver(airController);
     }
 
     public void run() {
-        final ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
         executor.scheduleAtFixedRate(outdoorSensor, 0, OUTDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
         executor.scheduleAtFixedRate(indoorSensor, 0, INDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(airController, 0, VENTILATION_SYSTEM_PERIOD_MINUTES, TimeUnit.MINUTES);
 
         Logging.getLogger().info("All setup and running...");
     }

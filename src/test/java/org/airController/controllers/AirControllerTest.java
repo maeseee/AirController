@@ -47,7 +47,7 @@ class AirControllerTest {
 
         testee.updateIndoorAirValue(airValue);
         testee.updateOutdoorAirValue(airValue);
-        testee.runOneLoop();
+        testee.run();
 
         verify(controlledVentilationSystem).setAirFlowOn(shouldFreshAirBeOn);
         verify(controlledVentilationSystem).setHumidityExchangerOn(false);
@@ -81,7 +81,7 @@ class AirControllerTest {
 
         testee.updateIndoorAirValue(indoorAirValue);
         testee.updateOutdoorAirValue(outdoorAirValue);
-        testee.runOneLoop();
+        testee.run();
 
         verify(humidityExchanger).turnHumidityExchangerOn(airValueArgumentCaptor.capture(), any());
         final AirValue indoorAirValueCature = airValueArgumentCaptor.getValue();
@@ -101,7 +101,7 @@ class AirControllerTest {
 
         testee.updateIndoorAirValue(indoorAirValue);
         testee.updateOutdoorAirValue(outdoorAirValue);
-        testee.runOneLoop();
+        testee.run();
 
         verify(humidityExchanger).turnHumidityExchangerOn(any(), airValueArgumentCaptor.capture());
         final AirValue outdoorAirValueCature = airValueArgumentCaptor.getValue();
@@ -118,7 +118,7 @@ class AirControllerTest {
         final AirController testee = new AirController(controlledVentilationSystem, dailyFreshAir, hourlyFreshAir, humidityExchanger);
 
         testee.updateIndoorAirValue(indoorAirValue);
-        testee.runOneLoop();
+        testee.run();
 
         verify(controlledVentilationSystem).setAirFlowOn(false);
         verify(controlledVentilationSystem).setHumidityExchangerOn(false);
@@ -132,7 +132,7 @@ class AirControllerTest {
         final AirController testee = new AirController(controlledVentilationSystem, dailyFreshAir, hourlyFreshAir, humidityExchanger);
 
         testee.updateOutdoorAirValue(outdoorAirValue);
-        testee.runOneLoop();
+        testee.run();
 
         verify(controlledVentilationSystem).setAirFlowOn(false);
         verify(controlledVentilationSystem).setHumidityExchangerOn(false);
@@ -148,7 +148,7 @@ class AirControllerTest {
 
         testee.updateIndoorAirValue(airValue);
         testee.updateOutdoorAirValue(airValue);
-        testee.runOneLoop();
+        testee.run();
 
         verify(humidityExchanger).turnHumidityExchangerOn(airValueArgumentCaptor.capture(), any());
         final AirValue indoorAirValueCature = airValueArgumentCaptor.getValue();

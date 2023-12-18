@@ -7,7 +7,7 @@ import org.airController.systemAdapter.ControlledVentilationSystem;
 
 import java.time.LocalDateTime;
 
-public class AirController implements IndoorSensorObserver, OutdoorSensorObserver {
+public class AirController implements IndoorSensorObserver, OutdoorSensorObserver, Runnable {
 
     private final ControlledVentilationSystem ventilationSystem;
     private final DailyFreshAir dailyFreshAir;
@@ -30,7 +30,7 @@ public class AirController implements IndoorSensorObserver, OutdoorSensorObserve
     }
 
     @Override
-    public void runOneLoop() {
+    public void run() {
         final LocalDateTime now = LocalDateTime.now();
         final boolean sensorValuesAvailable = areSensorValuesAvailable();
         final boolean freshAirOnForHumidityControl = sensorValuesAvailable && humidityExchanger.turnFreshAirOn(indoorAirValue, outdoorAirValue);
@@ -55,6 +55,5 @@ public class AirController implements IndoorSensorObserver, OutdoorSensorObserve
     private boolean areSensorValuesAvailable() {
         return indoorAirValue != null && outdoorAirValue != null;
     }
-
 
 }
