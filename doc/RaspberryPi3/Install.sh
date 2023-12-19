@@ -39,3 +39,6 @@ gpio readall
 
 # Write 1 on gpio 23
 gpio write 23 1
+
+# Check dependencies
+mvn dependency:analyze
