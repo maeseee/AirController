@@ -3,7 +3,8 @@ package org.airController.sensor;
 import org.airController.entities.AirValue;
 import org.airController.sensorAdapter.IndoorSensor;
 import org.airController.sensorAdapter.IndoorSensorObserver;
-import org.airController.util.Logging;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class IndoorSensorImpl implements IndoorSensor {
+    private static final Logger logger = LogManager.getLogger(IndoorSensorImpl.class);
+
     private final List<IndoorSensorObserver> observers = new ArrayList<>();
     private final Dht22 dht22;
 
@@ -30,7 +33,7 @@ public class IndoorSensorImpl implements IndoorSensor {
         final Optional<AirValue> indoorAirValue = dht22.refreshData();
         indoorAirValue.ifPresentOrElse(
                 this::notifyObservers,
-                () -> Logging.getLogger().severe("Indoor sensor out of order"));
+                () -> logger.error("Indoor sensor out of order"));
     }
 
     @Override
@@ -39,7 +42,7 @@ public class IndoorSensorImpl implements IndoorSensor {
     }
 
     private void notifyObservers(AirValue indoorAirValue) {
-        Logging.getLogger().info("New indoor sensor value: " + indoorAirValue);
+        logger.info("New indoor sensor value: " + indoorAirValue);
         observers.forEach(observer -> observer.updateIndoorAirValue(indoorAirValue));
     }
 

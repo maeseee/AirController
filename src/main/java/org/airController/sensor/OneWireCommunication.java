@@ -2,12 +2,14 @@ package org.airController.sensor;
 
 import com.pi4j.wiringpi.Gpio;
 import org.airController.gpioAdapter.GpioFunction;
-import org.airController.util.Logging;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.OptionalLong;
 
 class OneWireCommunication {
+    private static final Logger logger = LogManager.getLogger(OneWireCommunication.class);
     private static final int MAX_TIMINGS = 83;
     private static final int NR_OF_BITS = 40;
     private static final int MIN_HIGH_DURATION = 16;
@@ -29,7 +31,7 @@ class OneWireCommunication {
             final int microsecondsToStateChange = waitUntilStateChanges(lastState);
             lastState = Gpio.digitalRead(gpioFunction.getGpio());
             if (microsecondsToStateChange == 255) {
-                Logging.getLogger().severe("OneWireCommunication timeout. transition=" + transition);
+                logger.error("OneWireCommunication timeout. transition=" + transition);
                 break;
             }
 

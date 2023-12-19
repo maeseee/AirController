@@ -2,13 +2,16 @@ package org.airController.gpio;
 
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
-import org.airController.util.Logging;
 import org.airController.util.RaspberryPiPin;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.time.LocalTime;
 
 public class GpioPinImpl implements GpioPin {
+    private static final Logger logger = LogManager.getLogger(GpioPinImpl.class);
+
     private final String name;
     private final RaspberryPiPin raspberryPiPin;
     private final DailyGpioStatistic dailyGpioStatistic;
@@ -35,7 +38,7 @@ public class GpioPinImpl implements GpioPin {
     public void setGpioState(boolean stateOn) {
         dailyGpioStatistic.stateChange(stateOn, LocalTime.now());
         if (getGpioState() != stateOn) {
-            Logging.getLogger().info(name + " set to " + (stateOn ? "on" : "off"));
+            logger.info(name + " set to " + (stateOn ? "on" : "off"));
             raspberryPiPin.write(stateOn);
         }
     }

@@ -5,8 +5,9 @@ import org.airController.sensorAdapter.OutdoorSensor;
 import org.airController.sensorAdapter.OutdoorSensorObserver;
 import org.airController.util.EnvironmentVariable;
 import org.airController.util.JsonParser;
-import org.airController.util.Logging;
 import org.airController.util.SecretsEncryption;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 
 public class OutdoorSensorImpl implements OutdoorSensor {
+    private static final Logger logger = LogManager.getLogger(OutdoorSensorImpl.class);
     private static final String LAT = "47.127459";
     private static final String LON = "8.245553";
     private static final String ENVIRONMENT_VARIABLE_API_KEY = "weather_api_key";
@@ -45,7 +47,7 @@ public class OutdoorSensorImpl implements OutdoorSensor {
         final Optional<AirValue> airValue = JsonParser.parse(request.get());
         airValue.ifPresentOrElse(
                 this::notifyObservers,
-                () -> Logging.getLogger().severe("Outdoor sensor out of order"));
+                () -> logger.error("Outdoor sensor out of order"));
     }
 
     @Override
@@ -84,7 +86,7 @@ public class OutdoorSensorImpl implements OutdoorSensor {
     }
 
     private void notifyObservers(AirValue outdoorAirValue) {
-        Logging.getLogger().info("New outdoor sensor value: " + outdoorAirValue);
+        logger.info("New outdoor sensor value: " + outdoorAirValue);
         observers.forEach(observer -> observer.updateOutdoorAirValue(outdoorAirValue));
     }
 }

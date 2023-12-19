@@ -1,11 +1,13 @@
 package org.airController.gpio;
 
-import org.airController.util.Logging;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
 class DailyGpioStatistic {
+    private static final Logger logger = LogManager.getLogger(DailyGpioStatistic.class);
     private static final LocalTime NEW_DAY = LocalTime.of(0, 0, 0);
     private static final long SECONDS_PER_DAY = 60 * 60 * 24;
 
@@ -39,7 +41,7 @@ class DailyGpioStatistic {
 
     private void startNewDay() {
         final double onPercentage = getOnPercentage(SECONDS_PER_DAY);
-        Logging.getLogger().info("Daily on time of " + name + " is " + onPercentage + "%");
+        logger.info("Daily on time of " + name + " is " + onPercentage + "%");
         lastTimeStamp = NEW_DAY;
         totalDailyOnTime = 0;
     }
