@@ -8,7 +8,7 @@
 <Appenders>
     <RollingFile
             name="roll-by-size"
-            fileName="log/airControllerTest.log"
+            fileName="log/airController.log"
             filePattern="log/airController.%i.log.gz"
             ignoreExceptions="false">
         <PatternLayout>

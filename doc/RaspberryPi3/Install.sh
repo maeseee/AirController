@@ -5,6 +5,7 @@ cd || exit
 sudo apt install maven
 sudo apt install openjdk-17-jdk
 sudo apt remove openjdk-11-jre-headless
+sudo apt install liblog4j2-java
 
 # Checkout AirController
 git clone https://github.com/maeseee/AirController.git
