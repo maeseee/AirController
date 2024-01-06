@@ -40,10 +40,10 @@ class OutdoorSensorImplTest {
 
     @Test
     void testWhenMeasureValuesThenCallObservers() {
-        final HttpsRequest httpsRequest = mock(HttpsRequest.class);
-        when(httpsRequest.sendRequest()).thenReturn(Optional.of(SAMPLE_HTTP_RESPONSE));
+        final HttpsGetRequest httpsGetRequest = mock(HttpsGetRequest.class);
+        when(httpsGetRequest.sendRequest()).thenReturn(Optional.of(SAMPLE_HTTP_RESPONSE));
         final OutdoorSensorObserver observer = mock(OutdoorSensorObserver.class);
-        final OutdoorSensorImpl testee = new OutdoorSensorImpl(httpsRequest);
+        final OutdoorSensorImpl testee = new OutdoorSensorImpl(httpsGetRequest);
         testee.addObserver(observer);
 
         testee.run();
@@ -56,10 +56,10 @@ class OutdoorSensorImplTest {
 
     @Test
     void testWhenMeasureValuesEmptyThenDontCallObservers() {
-        final HttpsRequest httpsRequest = mock(HttpsRequest.class);
-        when(httpsRequest.sendRequest()).thenReturn(Optional.empty());
+        final HttpsGetRequest httpsGetRequest = mock(HttpsGetRequest.class);
+        when(httpsGetRequest.sendRequest()).thenReturn(Optional.empty());
         final OutdoorSensorObserver observer = mock(OutdoorSensorObserver.class);
-        final OutdoorSensorImpl testee = new OutdoorSensorImpl(httpsRequest);
+        final OutdoorSensorImpl testee = new OutdoorSensorImpl(httpsGetRequest);
         testee.addObserver(observer);
 
         testee.run();

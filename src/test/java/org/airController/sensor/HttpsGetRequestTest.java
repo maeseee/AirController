@@ -10,13 +10,13 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class HttpsRequestTest {
+class HttpsGetRequestTest {
 
     @Test
     void testWhenUrlCalledThenReturnContent() throws URISyntaxException {
         final String url = "https://example.com";
         final URI uri = new URI(url);
-        final HttpsRequest testee = new HttpsRequest(uri);
+        final HttpsGetRequest testee = new HttpsGetRequest(uri);
 
         final Optional<String> result = testee.sendRequest();
 
@@ -28,7 +28,7 @@ class HttpsRequestTest {
     void testWhenUrlCalledTwiceThenReturnContentTwice() throws URISyntaxException {
         final String url = "https://example.com";
         final URI uri = new URI(url);
-        final HttpsRequest testee = new HttpsRequest(uri);
+        final HttpsGetRequest testee = new HttpsGetRequest(uri);
 
         final Optional<String> result = testee.sendRequest();
         final Optional<String> result2 = testee.sendRequest();

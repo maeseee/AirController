@@ -7,11 +7,11 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.Optional;
 
-class HttpsRequest {
+class HttpsGetRequest {
 
     private final URI uri;
 
-    public HttpsRequest(URI uri) {
+    public HttpsGetRequest(URI uri) {
         this.uri = uri;
     }
 

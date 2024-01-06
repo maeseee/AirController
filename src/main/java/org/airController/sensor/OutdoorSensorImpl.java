@@ -27,19 +27,19 @@ public class OutdoorSensorImpl implements OutdoorSensor {
     private static final String ENCRYPTED_API_KEY = "JWHqsiARWGfnwhAp/qvt7aWlmhsyXvOtnsYN32HH5J2m2/QGb/OnuhnGzooxh1onTK+ynB9f038EMbUnOZMjNw==";
 
     private final List<OutdoorSensorObserver> observers = new ArrayList<>();
-    private final HttpsRequest httpsRequest;
+    private final HttpsGetRequest httpsGetRequest;
 
     public OutdoorSensorImpl() throws URISyntaxException {
-        this(createHttpRequest(getApiKeyForHttpRequest()));
+        this(createHttpsGetRequest(getApiKeyForHttpRequest()));
     }
 
-    OutdoorSensorImpl(HttpsRequest httpsRequest) {
-        this.httpsRequest = httpsRequest;
+    OutdoorSensorImpl(HttpsGetRequest httpsGetRequest) {
+        this.httpsGetRequest = httpsGetRequest;
     }
 
     @Override
     public void run() {
-        final Optional<String> request = httpsRequest.sendRequest();
+        final Optional<String> request = httpsGetRequest.sendRequest();
         if (request.isEmpty()) {
             return;
         }
@@ -79,10 +79,10 @@ public class OutdoorSensorImpl implements OutdoorSensor {
         return decryptedApiKey;
     }
 
-    private static HttpsRequest createHttpRequest(String decryptedApiKey) throws URISyntaxException {
+    private static HttpsGetRequest createHttpsGetRequest(String decryptedApiKey) throws URISyntaxException {
         final String urlString = "https://api.openweathermap.org/data/2.5/weather?lat=" + LAT + "&lon=" + LON + "&appid=" + decryptedApiKey;
         final URI uri = new URI(urlString);
-        return new HttpsRequest(uri);
+        return new HttpsGetRequest(uri);
     }
 
     private void notifyObservers(AirValue outdoorAirValue) {
