@@ -4,7 +4,7 @@ import org.airController.controllers.AirController;
 import org.airController.gpio.GpioPinImpl;
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
-import org.airController.sensor.IndoorSensorImpl;
+import org.airController.sensor.OneWireSensor;
 import org.airController.sensor.OutdoorSensorImpl;
 import org.airController.sensorAdapter.IndoorSensor;
 import org.airController.sensorAdapter.OutdoorSensor;
@@ -32,7 +32,7 @@ public class Application {
 
     public Application() throws IOException, URISyntaxException {
         this(new GpioPinImpl(GpioFunction.AIR_FLOW, true), new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER, false), new OutdoorSensorImpl(),
-                new IndoorSensorImpl(), Executors.newScheduledThreadPool(1));
+                new OneWireSensor(), Executors.newScheduledThreadPool(1));
     }
 
     Application(GpioPin airFlow, GpioPin humidityExchanger, OutdoorSensor outdoorSensor, IndoorSensor indoorSensor, ScheduledExecutorService executor) {

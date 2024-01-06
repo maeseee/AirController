@@ -14,17 +14,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class IndoorSensorImpl implements IndoorSensor {
-    private static final Logger logger = LogManager.getLogger(IndoorSensorImpl.class);
+public class OneWireSensor implements IndoorSensor {
+    private static final Logger logger = LogManager.getLogger(OneWireSensor.class);
 
     private final List<IndoorSensorObserver> observers = new ArrayList<>();
     private final Dht22 dht22;
 
-    public IndoorSensorImpl() throws IOException {
+    public OneWireSensor() throws IOException {
         this.dht22 = new Dht22Impl();
     }
 
-    public IndoorSensorImpl(Dht22 dht22) {
+    public OneWireSensor(Dht22 dht22) {
         this.dht22 = dht22;
     }
 
@@ -48,7 +48,7 @@ public class IndoorSensorImpl implements IndoorSensor {
 
     public static void main(String[] args) throws IOException {
         final Dht22Impl dht22 = new Dht22Impl();
-        final IndoorSensorImpl indoorSensor = new IndoorSensorImpl(dht22);
+        final OneWireSensor indoorSensor = new OneWireSensor(dht22);
         indoorSensor.addObserver(System.out::println);
         final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(indoorSensor, 0, 10, TimeUnit.SECONDS);

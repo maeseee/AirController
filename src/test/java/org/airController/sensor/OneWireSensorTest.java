@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class IndoorSensorImplTest {
+class OneWireSensorTest {
 
     @Captor
     ArgumentCaptor<AirValue> indoorAirValueArgumentCaptor;
@@ -27,7 +27,7 @@ class IndoorSensorImplTest {
         final Dht22 dht22 = mock(Dht22.class);
         final AirValue indoorAirValue = new AirValue(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(50.0));
         when(dht22.refreshData()).thenReturn(Optional.of(indoorAirValue));
-        final IndoorSensorImpl testee = new IndoorSensorImpl(dht22);
+        final OneWireSensor testee = new OneWireSensor(dht22);
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
 
@@ -42,7 +42,7 @@ class IndoorSensorImplTest {
     void testWhenInvalidSensorDataThenDoNotNotifyObservers() {
         final Dht22 dht22 = mock(Dht22.class);
         when(dht22.refreshData()).thenReturn(Optional.empty());
-        final IndoorSensorImpl testee = new IndoorSensorImpl(dht22);
+        final OneWireSensor testee = new OneWireSensor(dht22);
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
 

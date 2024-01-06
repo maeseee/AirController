@@ -7,7 +7,7 @@ import org.airController.gpio.GpioPinImpl;
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
 import org.airController.sensor.Dht22;
-import org.airController.sensor.IndoorSensorImpl;
+import org.airController.sensor.OneWireSensor;
 import org.airController.sensor.OutdoorSensorImpl;
 import org.airController.sensorAdapter.IndoorSensor;
 import org.airController.sensorAdapter.OutdoorSensor;
@@ -32,7 +32,7 @@ class MainMock {
         final Dht22 dht22 = mock(Dht22.class);
         when(dht22.refreshData()).thenReturn(Optional.of(airValue));
         final OutdoorSensor outdoorSensor = new OutdoorSensorImpl();
-        final IndoorSensor indoorSensor = new IndoorSensorImpl(dht22);
+        final IndoorSensor indoorSensor = new OneWireSensor(dht22);
         final Application application = new Application(airFlow, humidityExchanger, outdoorSensor, indoorSensor, Executors.newScheduledThreadPool(1));
         application.run();
         Thread.currentThread().join();
