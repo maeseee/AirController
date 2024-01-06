@@ -1,4 +1,4 @@
-package org.airController.util;
+package org.airController.sensor;
 
 import org.airController.entities.AirValue;
 import org.airController.entities.Humidity;
@@ -8,7 +8,7 @@ import org.json.JSONTokener;
 
 import java.util.Optional;
 
-public class JsonParser {
+class JsonOpenWeatherApiParser {
 
     public static Optional<AirValue> parse(String jsonString) {
         try {

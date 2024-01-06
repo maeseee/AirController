@@ -4,7 +4,6 @@ import org.airController.entities.AirValue;
 import org.airController.sensorAdapter.OutdoorSensor;
 import org.airController.sensorAdapter.OutdoorSensorObserver;
 import org.airController.util.EnvironmentVariable;
-import org.airController.util.JsonParser;
 import org.airController.util.SecretsEncryption;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,7 +43,7 @@ public class OutdoorSensorImpl implements OutdoorSensor {
             return;
         }
 
-        final Optional<AirValue> airValue = JsonParser.parse(request.get());
+        final Optional<AirValue> airValue = JsonOpenWeatherApiParser.parse(request.get());
         airValue.ifPresentOrElse(
                 this::notifyObservers,
                 () -> logger.error("Outdoor sensor out of order"));

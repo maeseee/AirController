@@ -1,4 +1,4 @@
-package org.airController.util;
+package org.airController.sensor;
 
 import org.airController.entities.AirValue;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class JsonParserTest {
+class JsonOpenWeatherApiParserTest {
 
     @Test
     void testParsing() {
@@ -31,7 +31,7 @@ class JsonParserTest {
                 }
                 """;
 
-        final Optional<AirValue> result = JsonParser.parse(sampleHttpResponse);
+        final Optional<AirValue> result = JsonOpenWeatherApiParser.parse(sampleHttpResponse);
 
         assertTrue(result.isPresent());
         assertEquals(10.53, result.get().getTemperature().getCelsius(), 0.1);
@@ -58,7 +58,7 @@ class JsonParserTest {
                 }
                 """;
 
-        final Optional<AirValue> result = JsonParser.parse(sampleHttpResponse);
+        final Optional<AirValue> result = JsonOpenWeatherApiParser.parse(sampleHttpResponse);
 
         assertTrue(result.isEmpty());
     }
@@ -84,7 +84,7 @@ class JsonParserTest {
                 }
                 """;
 
-        final Optional<AirValue> result = JsonParser.parse(sampleHttpResponse);
+        final Optional<AirValue> result = JsonOpenWeatherApiParser.parse(sampleHttpResponse);
 
         assertTrue(result.isEmpty());
     }
