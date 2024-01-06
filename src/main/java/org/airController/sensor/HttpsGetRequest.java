@@ -2,6 +2,7 @@ package org.airController.sensor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -16,23 +17,23 @@ class HttpsGetRequest {
     }
 
     public Optional<String> sendRequest() {
-        String responseFromUrl = "";
+        String responseFromUrl = null;
         try {
             final HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
             connection.setRequestMethod("GET");
 
             final int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                responseFromUrl = readResponseFromServer(connection);
+                responseFromUrl = readResponseFromServer(connection.getInputStream());
             }
         } catch (Exception e) {
             return Optional.empty();
         }
-        return Optional.of(responseFromUrl);
+        return Optional.ofNullable(responseFromUrl);
     }
 
-    private String readResponseFromServer(HttpURLConnection connection) throws IOException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+    private String readResponseFromServer(InputStream inputStream) throws IOException {
+        BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
         String inputLine;
         StringBuilder response = new StringBuilder();
 
