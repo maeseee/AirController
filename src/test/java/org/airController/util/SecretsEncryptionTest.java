@@ -78,6 +78,6 @@ class SecretsEncryptionTest {
 
         final SecretsEncryption secretsDecryption = new SecretsEncryption(masterPassword);
         final String decryptedSecret = secretsDecryption.decrypt(encryptedSecret);
-        System.out.println("The decrypted it is: " + decryptedSecret);
+        System.out.println("The decrypted secret is: " + decryptedSecret);
     }
 }

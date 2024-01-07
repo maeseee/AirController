@@ -4,6 +4,7 @@ import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -70,6 +71,25 @@ public class SecretsEncryption {
             System.err.println("NoSuchAlgorithmException: " + e.getMessage());
         }
         return null;
+    }
+
+    public static String decrypt(String name, String encryptedSecret){
+        System.out.println("Enter the master password:");
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        final String masterPassword;
+        try {
+            masterPassword = reader.readLine();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        final SecretsEncryption secretsEncryption = new SecretsEncryption(masterPassword);
+        final String decryptedApiKey = secretsEncryption.decrypt(encryptedSecret);
+        if (decryptedApiKey == null) {
+            System.err.println("Wrong master password entered!");
+            return null;
+        }
+        System.out.println("Secet for " + name + " is " + decryptedApiKey);
+        return decryptedApiKey;
     }
 
     private byte[] getRandomSalt() {

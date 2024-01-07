@@ -60,22 +60,7 @@ public class OutdoorSensorImpl implements OutdoorSensor {
     }
 
     private static String getApiKeyForHttpRequestFromMasterPassword() {
-        System.out.println("Enter the master password:");
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        final String masterPassword;
-        try {
-            masterPassword = reader.readLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        final SecretsEncryption secretsEncryption = new SecretsEncryption(masterPassword);
-        final String decryptedApiKey = secretsEncryption.decrypt(ENCRYPTED_API_KEY);
-        if (decryptedApiKey == null) {
-            System.err.println("Wrong master password entered!");
-            return null;
-        }
-        System.out.println("API_KEY is " + decryptedApiKey);
-        return decryptedApiKey;
+        return SecretsEncryption.decrypt(ENVIRONMENT_VARIABLE_API_KEY, ENCRYPTED_API_KEY);
     }
 
     private static HttpsGetRequest createHttpsGetRequest(String decryptedApiKey) throws URISyntaxException {
