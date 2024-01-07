@@ -1,4 +1,4 @@
-package org.airController.util;
+package org.airController.secrets;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;

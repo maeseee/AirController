@@ -1,10 +1,10 @@
-package org.airController.util;
+package org.airController.secrets;
 
 import com.pi4j.util.StringUtil;
 
 import java.util.Optional;
 
-public class EnvironmentVariable {
+class EnvironmentVariable {
 
     public static Optional<String> readEnvironmentVariable(String variableName){
         final String variableContent = System.getenv(variableName);

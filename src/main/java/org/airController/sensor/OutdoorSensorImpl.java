@@ -1,10 +1,9 @@
 package org.airController.sensor;
 
 import org.airController.entities.AirValue;
+import org.airController.secrets.Secret;
 import org.airController.sensorAdapter.OutdoorSensor;
 import org.airController.sensorAdapter.OutdoorSensorObserver;
-import org.airController.util.EnvironmentVariable;
-import org.airController.util.SecretsEncryption;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,12 +51,7 @@ public class OutdoorSensorImpl implements OutdoorSensor {
     }
 
     private static String getApiKeyForHttpRequest() {
-        final Optional<String> apiKeyOptional = EnvironmentVariable.readEnvironmentVariable(ENVIRONMENT_VARIABLE_API_KEY);
-        return apiKeyOptional.orElseGet(OutdoorSensorImpl::getApiKeyForHttpRequestFromMasterPassword);
-    }
-
-    private static String getApiKeyForHttpRequestFromMasterPassword() {
-        return SecretsEncryption.decrypt(ENVIRONMENT_VARIABLE_API_KEY, ENCRYPTED_API_KEY);
+        return Secret.getSecret(ENVIRONMENT_VARIABLE_API_KEY, ENCRYPTED_API_KEY);
     }
 
     private static HttpsGetRequest createHttpsGetRequest(String decryptedApiKey) throws URISyntaxException {

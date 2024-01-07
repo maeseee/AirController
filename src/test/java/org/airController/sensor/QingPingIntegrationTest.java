@@ -1,7 +1,7 @@
 package org.airController.sensor;
 
 import org.airController.entities.AirValue;
-import org.airController.util.EnvironmentVariable;
+import org.airController.secrets.Secret;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -29,8 +29,8 @@ class QingPingIntegrationTest {
 
     private String runAccessTokenRequest() throws URISyntaxException {
         final String appKey = QingPingSensor.APP_KEY;
-        final Optional<String> appSecretOptional = EnvironmentVariable.readEnvironmentVariable(QingPingSensor.ENVIRONMENT_VARIABLE_APP_SECRET);
-        final String credentials = appKey + ":" + appSecretOptional.orElse("");
+        final String appSecret = Secret.getSecret(QingPingSensor.ENVIRONMENT_VARIABLE_APP_SECRET, QingPingSensor.ENCRYPTED_APP_SECRET);
+        final String credentials = appKey + ":" + appSecret;
         final String base64Credentials = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
         final String url = "https://oauth.cleargrass.com/oauth2/token";
         final URI uri = new URI(url);

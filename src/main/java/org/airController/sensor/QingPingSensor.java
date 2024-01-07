@@ -1,10 +1,9 @@
 package org.airController.sensor;
 
 import org.airController.entities.AirValue;
+import org.airController.secrets.Secret;
 import org.airController.sensorAdapter.IndoorSensor;
 import org.airController.sensorAdapter.IndoorSensorObserver;
-import org.airController.util.EnvironmentVariable;
-import org.airController.util.SecretsEncryption;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -79,14 +78,9 @@ public class QingPingSensor implements IndoorSensor {
     }
 
     private static String getCredentialsForPostRequest() {
-        final Optional<String> appSecretOptional = EnvironmentVariable.readEnvironmentVariable(ENVIRONMENT_VARIABLE_APP_SECRET);
-        final String appSecret = appSecretOptional.orElseGet(QingPingSensor::getAppSecretForAccessKeyFromMasterPassword);
+        final String appSecret = Secret.getSecret(ENVIRONMENT_VARIABLE_APP_SECRET, ENCRYPTED_APP_SECRET);
         final String credentials = APP_KEY + ":" + appSecret;
         return Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
-    }
-
-    private static String getAppSecretForAccessKeyFromMasterPassword() {
-        return SecretsEncryption.decrypt(ENVIRONMENT_VARIABLE_APP_SECRET, ENCRYPTED_APP_SECRET);
     }
 
     private static QingPingAccessTokenRequest createAccessTokenRequest(String credentials) throws URISyntaxException {
