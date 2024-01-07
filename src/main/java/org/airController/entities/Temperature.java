@@ -1,5 +1,7 @@
 package org.airController.entities;
 
+import java.util.Objects;
+
 public class Temperature {
 
     private static final double KELVIN_TO_CELSIUS = 273.15;
@@ -29,5 +31,18 @@ public class Temperature {
 
     public static Temperature createFromKelvin(double kelvin) {
         return new Temperature(kelvin - KELVIN_TO_CELSIUS);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Temperature that = (Temperature) o;
+        return Double.compare(celsius, that.celsius) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(celsius);
     }
 }

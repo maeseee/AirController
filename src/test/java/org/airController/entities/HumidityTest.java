@@ -1,5 +1,6 @@
 package org.airController.entities;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -89,5 +90,16 @@ class HumidityTest {
         final double expectedMaxDeltaInPercent = 1.0;
         final double expectedMaxDelta = expectedMaxDeltaInPercent * weightFor100Percent / 100.0;
         assertEquals(weightFor100Percent / 2.0, result, expectedMaxDelta);
+    }
+
+    @Test
+    void calculationAbsoluteHumidity() throws IOException {
+        final double relativeHumidity = 63.0;
+        final Temperature temperature = Temperature.createFromCelsius(9.5);
+        final Humidity testee = Humidity.createFromRelative(relativeHumidity);
+
+        final double result = testee.getAbsoluteHumidity(temperature);
+
+        System.out.println(result);
     }
 }

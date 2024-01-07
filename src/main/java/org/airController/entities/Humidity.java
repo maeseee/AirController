@@ -1,6 +1,7 @@
 package org.airController.entities;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class Humidity {
 
@@ -39,4 +40,16 @@ public class Humidity {
         return new Humidity(relativeHumidity);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Humidity humidity = (Humidity) o;
+        return Double.compare(relativeHumidity, humidity.relativeHumidity) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(relativeHumidity);
+    }
 }
