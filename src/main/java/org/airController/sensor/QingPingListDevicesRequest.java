@@ -25,7 +25,6 @@ class QingPingListDevicesRequest {
             final HttpURLConnection connection = getConnection(accessToken);
 
             final int responseCode = connection.getResponseCode();
-            System.out.println(responseCode);
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 responseFromUrl = readResponseFromServer(connection.getInputStream());
             }
