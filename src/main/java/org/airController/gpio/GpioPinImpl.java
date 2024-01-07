@@ -26,6 +26,7 @@ public class GpioPinImpl implements GpioPin {
         this.dailyGpioStatistic =  new DailyGpioStatistic(name, initialHigh);
 
         raspberryPiPin.export(true);
+        logger.info(name + " set initial to " + (initialHigh ? "on" : "off"));
         raspberryPiPin.write(initialHigh);
     }
 
