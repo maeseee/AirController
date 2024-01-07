@@ -32,8 +32,14 @@ sudo cp doc/RaspberryPi3/airController.service /etc/systemd/system/
 sudo systemctl enable airController.service # Enable the service to start at boot time
 chmod +x run.sh
 
+# Set variables on raspberry pi
 # Add the following command to the /home/pi/.bashrc (without "")
-export weather_api_key="<api_key>"
+#export weather_api_key=<api_key>
+#export qingping_app_secret=<app_secret>
+
+# Set variables on windows machine
+#setx weather_api_key "<api_key>"
+#setx qingping_app_secret "<app_secret>"
 
 # See GPIO config
 gpio readall
