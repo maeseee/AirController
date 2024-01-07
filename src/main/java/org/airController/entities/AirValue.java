@@ -25,7 +25,8 @@ public class AirValue {
 
     @Override
     public String toString() {
-        return "AirVO{" + temperature + ", " + humidity + '}';
+        final String absoluteHumidity = String.format("Humidity=%.2fg/m3", getAbsoluteHumidity());
+        return "AirValue{" + temperature + ", " + humidity + ", " + absoluteHumidity + "}";
     }
 
     @Override

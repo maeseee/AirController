@@ -30,7 +30,7 @@ public class Humidity {
 
     @Override
     public String toString() {
-        return "Humidity=" + relativeHumidity + "%";
+        return String.format("Humidity=%.2f%%", relativeHumidity);
     }
 
     public static Humidity createFromRelative(double relativeHumidity) throws IOException {

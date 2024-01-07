@@ -22,7 +22,7 @@ public class Temperature {
 
     @Override
     public String toString() {
-        return "Temperature=" + celsius + "°C";
+        return String.format("Temperature=%.2f°C",  + celsius);
     }
 
     public static Temperature createFromCelsius(double celsius) {
