@@ -27,11 +27,6 @@ public class ControlledVentilationSystemImpl implements ControlledVentilationSys
     }
 
     @Override
-    public boolean isHumidityExchangerOn() {
-        return humidityExchanger.getGpioState();
-    }
-
-    @Override
     public void setHumidityExchangerOn(boolean on) {
         humidityExchanger.setGpioState(on);
     }

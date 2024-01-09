@@ -36,7 +36,7 @@ class ApplicationTest {
         testee.run();
 
         verify(executor).scheduleAtFixedRate(outdoorSensor, 0, 10, TimeUnit.MINUTES);
-        verify(executor).scheduleAtFixedRate(indoorSensor, 0, 3, TimeUnit.MINUTES);
+        verify(executor).scheduleAtFixedRate(indoorSensor, 0, 10, TimeUnit.MINUTES);
         verify(executor).scheduleAtFixedRate(any(), eq(0L), eq(1L), eq(TimeUnit.MINUTES));
     }
 
