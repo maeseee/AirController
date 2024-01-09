@@ -4,5 +4,5 @@ public interface GpioPin {
 
     boolean getGpioState();
 
-    void setGpioState(boolean stateOn);
+    boolean setGpioState(boolean stateOn);
 }

@@ -36,11 +36,13 @@ public class GpioPinImpl implements GpioPin {
     }
 
     @Override
-    public void setGpioState(boolean stateOn) {
+    public boolean setGpioState(boolean stateOn) {
         dailyGpioStatistic.stateChange(stateOn, LocalTime.now());
         if (getGpioState() != stateOn) {
             logger.info(name + " set to " + (stateOn ? "on" : "off"));
             raspberryPiPin.write(stateOn);
+            return true;
         }
+        return false;
     }
 }
