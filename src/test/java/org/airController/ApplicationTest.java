@@ -1,6 +1,7 @@
 package org.airController;
 
 import org.airController.gpioAdapter.GpioPin;
+import org.airController.persistence.SensorValuePersistenceObserver;
 import org.airController.sensorAdapter.IndoorSensor;
 import org.airController.sensorAdapter.OutdoorSensor;
 import org.junit.jupiter.api.Test;
@@ -27,11 +28,13 @@ class ApplicationTest {
     @Mock
     private IndoorSensor indoorSensor;
     @Mock
+    private SensorValuePersistenceObserver persistenceObserver;
+    @Mock
     private ScheduledExecutorService executor;
 
     @Test
     void testWhenCreateApplicationThenScheduleExecutor() {
-        final Application testee = new Application(airFlow, humidityExchanger, outdoorSensor, indoorSensor, executor);
+        final Application testee = new Application(airFlow, humidityExchanger, outdoorSensor, indoorSensor, persistenceObserver, executor);
 
         testee.run();
 

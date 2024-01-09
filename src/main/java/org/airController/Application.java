@@ -4,6 +4,7 @@ import org.airController.controllers.AirController;
 import org.airController.gpio.GpioPinImpl;
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
+import org.airController.persistence.SensorValuePersistenceObserver;
 import org.airController.sensor.OutdoorSensorImpl;
 import org.airController.sensor.QingPingSensor;
 import org.airController.sensorAdapter.IndoorSensor;
@@ -32,10 +33,11 @@ public class Application {
 
     public Application() throws IOException, URISyntaxException {
         this(new GpioPinImpl(GpioFunction.AIR_FLOW, true), new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER, false), new OutdoorSensorImpl(),
-                new QingPingSensor(), Executors.newScheduledThreadPool(1));
+                new QingPingSensor(), new SensorValuePersistenceObserver(), Executors.newScheduledThreadPool(1));
     }
 
-    Application(GpioPin airFlow, GpioPin humidityExchanger, OutdoorSensor outdoorSensor, IndoorSensor indoorSensor, ScheduledExecutorService executor) {
+    Application(GpioPin airFlow, GpioPin humidityExchanger, OutdoorSensor outdoorSensor, IndoorSensor indoorSensor,
+                SensorValuePersistenceObserver persistenceObserver, ScheduledExecutorService executor) {
         final ControlledVentilationSystem ventilationSystem = new ControlledVentilationSystemImpl(airFlow, humidityExchanger);
         this.outdoorSensor = outdoorSensor;
         this.indoorSensor = indoorSensor;
@@ -43,7 +45,9 @@ public class Application {
         this.executor = executor;
 
         outdoorSensor.addObserver(airController);
+        outdoorSensor.addObserver(persistenceObserver);
         indoorSensor.addObserver(airController);
+        indoorSensor.addObserver(persistenceObserver);
     }
 
     public void run() {
