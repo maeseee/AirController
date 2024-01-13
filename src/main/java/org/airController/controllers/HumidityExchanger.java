@@ -13,7 +13,7 @@ class HumidityExchanger {
     static {
         try {
             LOWER_TARGET_HUMIDITY = Humidity.createFromRelative(49.0);
-            UPPER_TARGET_HUMIDITY = Humidity.createFromRelative(52.0);
+            UPPER_TARGET_HUMIDITY = Humidity.createFromRelative(55.0);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
