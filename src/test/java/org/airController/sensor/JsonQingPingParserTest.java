@@ -72,8 +72,9 @@ class JsonQingPingParserTest {
                 "token_type": "bearer"
                 }
                 """;
+        final JsonQingPingParser testee = new JsonQingPingParser();
 
-        final Optional<QingPingAccessToken> result = JsonQingPingParser.parseAccessTokenResponse(sampleAccessTokenResponse);
+        final Optional<QingPingAccessToken> result = testee.parseAccessTokenResponse(sampleAccessTokenResponse);
 
         assertTrue(result.isPresent());
         assertEquals("5E05GrH9bv-yVbtzpbgrHt2sXLl6SKNUJCYNizY2E58.FpNVQZjkKka1Yn7bgxlAHJ-V-33DD3J-pz_hRwMa_gY", result.get().accessToken());
@@ -86,15 +87,18 @@ class JsonQingPingParserTest {
                 {
                 }
                 """;
+        final JsonQingPingParser testee = new JsonQingPingParser();
 
-        final Optional<QingPingAccessToken> result = JsonQingPingParser.parseAccessTokenResponse(sampleAccessTokenResponse);
+        final Optional<QingPingAccessToken> result = testee.parseAccessTokenResponse(sampleAccessTokenResponse);
 
         assertFalse(result.isPresent());
     }
 
     @Test
     void testParsingDeviceList() {
-        final Optional<AirValue> result = JsonQingPingParser.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, QingPingSensor.MAC_ADDRESS);
+        final JsonQingPingParser testee = new JsonQingPingParser();
+
+        final Optional<AirValue> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, QingPingSensor.MAC_ADDRESS);
 
         assertTrue(result.isPresent());
         assertEquals(21.5, result.get().getTemperature().getCelsius(), 0.1);
@@ -103,7 +107,9 @@ class JsonQingPingParserTest {
 
     @Test
     void testWhenParsingDeviceListWithWringMacAddressThenOptionalEmpty() {
-        final Optional<AirValue> result = JsonQingPingParser.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, "mac");
+        final JsonQingPingParser testee = new JsonQingPingParser();
+
+        final Optional<AirValue> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, "mac");
 
         assertTrue(result.isEmpty());
     }

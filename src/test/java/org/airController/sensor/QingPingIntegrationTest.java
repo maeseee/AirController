@@ -43,7 +43,8 @@ class QingPingIntegrationTest {
     }
 
     private QingPingAccessToken runParseAccessToken(String qingPingAccessTokenResponse) {
-        final Optional<QingPingAccessToken> qingPingAccessToken = JsonQingPingParser.parseAccessTokenResponse(qingPingAccessTokenResponse);
+        final JsonQingPingParser parser = new JsonQingPingParser();
+        final Optional<QingPingAccessToken> qingPingAccessToken = parser.parseAccessTokenResponse(qingPingAccessTokenResponse);
 
         assertTrue(qingPingAccessToken.isPresent());
         return qingPingAccessToken.get();
@@ -61,7 +62,8 @@ class QingPingIntegrationTest {
     }
 
     private AirValue runParseListDevices(String listDevicesResponse) {
-        final Optional<AirValue> airValue = JsonQingPingParser.parseDeviceListResponse(listDevicesResponse, QingPingSensor.MAC_ADDRESS);
+        final JsonQingPingParser parser = new JsonQingPingParser();
+        final Optional<AirValue> airValue = parser.parseDeviceListResponse(listDevicesResponse, QingPingSensor.MAC_ADDRESS);
 
         assertTrue(airValue.isPresent());
         return airValue.get();

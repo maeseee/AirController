@@ -16,7 +16,7 @@ import java.util.Optional;
 class JsonQingPingParser {
     private static final Logger logger = LogManager.getLogger(JsonQingPingParser.class);
 
-    public static Optional<QingPingAccessToken> parseAccessTokenResponse(String jsonString) {
+    public Optional<QingPingAccessToken> parseAccessTokenResponse(String jsonString) {
         // https://developer.qingping.co/main/oauthApi
         try {
             final JSONTokener tokener = new JSONTokener(jsonString);
@@ -29,7 +29,7 @@ class JsonQingPingParser {
         }
     }
 
-    public static Optional<AirValue> parseDeviceListResponse(String jsonString, String macAddress) {
+    public Optional<AirValue> parseDeviceListResponse(String jsonString, String macAddress) {
         // https://developer.qingping.co/main/openApi
         try {
             final JSONTokener tokener = new JSONTokener(jsonString);
@@ -47,7 +47,7 @@ class JsonQingPingParser {
         }
     }
 
-    private static Optional<JSONObject> getDevice(JSONArray devices, String macAddress) {
+    private Optional<JSONObject> getDevice(JSONArray devices, String macAddress) {
         for (int deviceNumber = 0; deviceNumber < devices.length(); deviceNumber++) {
             final JSONObject device = (JSONObject) devices.get(0);
             final JSONObject info = device.getJSONObject("info");
@@ -60,7 +60,7 @@ class JsonQingPingParser {
         return Optional.empty();
     }
 
-    private static AirValue getAirValue(JSONObject deviceData) throws IOException {
+    private AirValue getAirValue(JSONObject deviceData) throws IOException {
         final JSONObject temperatureData = deviceData.getJSONObject("temperature");
         final double temperatureCelsius = temperatureData.getDouble("value");
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);

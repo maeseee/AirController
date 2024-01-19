@@ -28,6 +28,7 @@ public class QingPingSensor implements IndoorSensor {
     private final List<IndoorSensorObserver> observers = new ArrayList<>();
     private final QingPingAccessTokenRequest accessTokenRequest;
     private final QingPingListDevicesRequest listDevicesRequest;
+    private final JsonQingPingParser parser = new JsonQingPingParser();
 
     private String accessToken;
     private LocalDateTime accessTokenValidUntil;
@@ -52,7 +53,7 @@ public class QingPingSensor implements IndoorSensor {
             return;
         }
 
-        final Optional<AirValue> airValue = JsonQingPingParser.parseDeviceListResponse(request.get(), MAC_ADDRESS);
+        final Optional<AirValue> airValue = parser.parseDeviceListResponse(request.get(), MAC_ADDRESS);
         airValue.ifPresentOrElse(
                 this::notifyObservers,
                 () -> logger.error("Outdoor sensor out of order"));
@@ -65,7 +66,7 @@ public class QingPingSensor implements IndoorSensor {
             return;
         }
 
-        final Optional<QingPingAccessToken> accessTokenOptional = JsonQingPingParser.parseAccessTokenResponse(request.get());
+        final Optional<QingPingAccessToken> accessTokenOptional = parser.parseAccessTokenResponse(request.get());
         if (accessTokenOptional.isPresent()) {
             final QingPingAccessToken qingPingAccessToken = accessTokenOptional.get();
             accessToken = qingPingAccessToken.accessToken();
