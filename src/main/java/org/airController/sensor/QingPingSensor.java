@@ -21,6 +21,7 @@ public class QingPingSensor implements IndoorSensor {
     static final String APP_KEY = "me8h7AKSR";
     static final String ENVIRONMENT_VARIABLE_APP_SECRET = "qingping_app_secret";
     static final String ENCRYPTED_APP_SECRET = "P2Yg64Btliolc1DDvQFQKYZAb2ufYF10khTLrGfrb9d2kM1tA8ciYhZ2bbQeHdOLlIGmSfM4JQcG6EcnYtvm8w==";
+    static final String MAC_ADDRESS = "582D3480A7F4";
 
     private static final Logger logger = LogManager.getLogger(QingPingSensor.class);
 
@@ -51,7 +52,7 @@ public class QingPingSensor implements IndoorSensor {
             return;
         }
 
-        final Optional<AirValue> airValue = JsonQingPingParser.parseDeviceListResponse(request.get());
+        final Optional<AirValue> airValue = JsonQingPingParser.parseDeviceListResponse(request.get(), MAC_ADDRESS);
         airValue.ifPresentOrElse(
                 this::notifyObservers,
                 () -> logger.error("Outdoor sensor out of order"));

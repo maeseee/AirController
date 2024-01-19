@@ -9,39 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class JsonQingPingParserTest {
 
-    @Test
-    void testParsingAccessToken() {
-        final String sampleAccessTokenResponse = """
-                {
-                "access_token": "5E05GrH9bv-yVbtzpbgrHt2sXLl6SKNUJCYNizY2E58.FpNVQZjkKka1Yn7bgxlAHJ-V-33DD3J-pz_hRwMa_gY",
-                "expires_in": 7199,
-                "scope": "device_full_access",
-                "token_type": "bearer"
-                }
-                """;
-
-        final Optional<QingPingAccessToken> result = JsonQingPingParser.parseAccessTokenResponse(sampleAccessTokenResponse);
-
-        assertTrue(result.isPresent());
-        assertEquals("5E05GrH9bv-yVbtzpbgrHt2sXLl6SKNUJCYNizY2E58.FpNVQZjkKka1Yn7bgxlAHJ-V-33DD3J-pz_hRwMa_gY", result.get().accessToken());
-        assertEquals(7199, result.get().expiresIn());
-    }
-
-    @Test
-    void testWhenAccessTokenMissingInResponseThenOptionalEmpty() {
-        final String sampleAccessTokenResponse = """
-                {
-                }
-                """;
-
-        final Optional<QingPingAccessToken> result = JsonQingPingParser.parseAccessTokenResponse(sampleAccessTokenResponse);
-
-        assertFalse(result.isPresent());
-    }
-
-    @Test
-    void testParsingDeviceList() {
-        final String sampleDeviceListResponse = """
+    private final String SAMPLE_DEVICE_LIST_RESPONSE = """
             {
                 "total": 1,
                 "devices": [
@@ -94,10 +62,49 @@ class JsonQingPingParserTest {
             }
             """;
 
-        final Optional<AirValue> result = JsonQingPingParser.parseDeviceListResponse(sampleDeviceListResponse);
+    @Test
+    void testParsingAccessToken() {
+        final String sampleAccessTokenResponse = """
+                {
+                "access_token": "5E05GrH9bv-yVbtzpbgrHt2sXLl6SKNUJCYNizY2E58.FpNVQZjkKka1Yn7bgxlAHJ-V-33DD3J-pz_hRwMa_gY",
+                "expires_in": 7199,
+                "scope": "device_full_access",
+                "token_type": "bearer"
+                }
+                """;
+
+        final Optional<QingPingAccessToken> result = JsonQingPingParser.parseAccessTokenResponse(sampleAccessTokenResponse);
+
+        assertTrue(result.isPresent());
+        assertEquals("5E05GrH9bv-yVbtzpbgrHt2sXLl6SKNUJCYNizY2E58.FpNVQZjkKka1Yn7bgxlAHJ-V-33DD3J-pz_hRwMa_gY", result.get().accessToken());
+        assertEquals(7199, result.get().expiresIn());
+    }
+
+    @Test
+    void testWhenAccessTokenMissingInResponseThenOptionalEmpty() {
+        final String sampleAccessTokenResponse = """
+                {
+                }
+                """;
+
+        final Optional<QingPingAccessToken> result = JsonQingPingParser.parseAccessTokenResponse(sampleAccessTokenResponse);
+
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    void testParsingDeviceList() {
+        final Optional<AirValue> result = JsonQingPingParser.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, QingPingSensor.MAC_ADDRESS);
 
         assertTrue(result.isPresent());
         assertEquals(21.5, result.get().getTemperature().getCelsius(), 0.1);
         assertEquals(54.2, result.get().getHumidity().getRelativeHumidity(), 0.1);
+    }
+
+    @Test
+    void testWhenParsingDeviceListWithWringMacAddressThenOptionalEmpty() {
+        final Optional<AirValue> result = JsonQingPingParser.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, "mac");
+
+        assertTrue(result.isEmpty());
     }
 }
