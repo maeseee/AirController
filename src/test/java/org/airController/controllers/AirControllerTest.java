@@ -35,8 +35,7 @@ class AirControllerTest {
                                                              boolean shouldFreshAirBeOn) {
         when(dailyFreshAir.turnFreshAirOn(any())).thenReturn(mainFreshOn);
         when(hourlyFreshAir.turnFreshAirOn(any())).thenReturn(hourlyFreshAirOn);
-        final AirValue airValue = mock(AirValue.class);
-        final SensorValues sensorValues = new SensorValues(airValue, airValue);
+        final SensorValues sensorValues = mock(SensorValues.class);
         when(humidityExchanger.turnFreshAirOn(sensorValues)).thenReturn(humidityFreshAirOn);
         final AirController testee = new AirController(controlledVentilationSystem, sensorValues, dailyFreshAir, hourlyFreshAir, humidityExchanger);
 
@@ -44,6 +43,7 @@ class AirControllerTest {
 
         verify(controlledVentilationSystem).setAirFlowOn(shouldFreshAirBeOn);
         verify(controlledVentilationSystem).setHumidityExchangerOn(false);
+        verify(sensorValues).invalidateSensorValuesIfNeeded(any());
     }
 
     static class FreshAirArgumentProvider implements ArgumentsProvider {
@@ -95,8 +95,7 @@ class AirControllerTest {
     void testWhenFreshAirOffThenHumidityExchangerOff() {
         when(dailyFreshAir.turnFreshAirOn(any())).thenReturn(false);
         when(hourlyFreshAir.turnFreshAirOn(any())).thenReturn(false);
-        final AirValue airValue = mock(AirValue.class);
-        final SensorValues sensorValues = new SensorValues(airValue, airValue);
+        final SensorValues sensorValues = mock(SensorValues.class);
         when(humidityExchanger.turnHumidityExchangerOn(sensorValues)).thenReturn(true);
         final AirController testee = new AirController(controlledVentilationSystem, sensorValues, dailyFreshAir, hourlyFreshAir, humidityExchanger);
 
@@ -105,5 +104,6 @@ class AirControllerTest {
         verify(humidityExchanger).turnHumidityExchangerOn(sensorValues);
         verify(controlledVentilationSystem).setAirFlowOn(false);
         verify(controlledVentilationSystem).setHumidityExchangerOn(false);
+        verify(sensorValues).invalidateSensorValuesIfNeeded(any());
     }
 }
