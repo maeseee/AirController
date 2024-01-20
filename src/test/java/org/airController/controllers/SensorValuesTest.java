@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 
 class SensorValuesTest {
@@ -20,8 +21,7 @@ class SensorValuesTest {
 
         testee.updateIndoorAirValue(airValue);
 
-        assertEquals(airValue.getTemperature(), testee.getIndoorTemperature());
-        assertEquals(airValue.getAbsoluteHumidity(), testee.getIndoorAbsoluteHumidity());
+        assertEquals(airValue, testee.getIndoorAirValue());
     }
 
     @Test
@@ -31,8 +31,7 @@ class SensorValuesTest {
 
         testee.updateOutdoorAirValue(airValue);
 
-        assertEquals(airValue.getTemperature(), testee.getOutdoorTemperature());
-        assertEquals(airValue.getAbsoluteHumidity(), testee.getOutdoorAbsoluteHumidity());
+        assertEquals(airValue, testee.getOutdoorAirValue());
     }
 
     @Test
@@ -45,7 +44,7 @@ class SensorValuesTest {
         testee.updateOutdoorAirValue(airValue);
         testee.invalidateSensorValuesIfNeeded(nowPlus5Hours);
 
-        assertEquals(testee.getIndoorTemperature(), testee.getOutdoorTemperature());
-        assertEquals(airValue.getAbsoluteHumidity(), testee.getOutdoorAbsoluteHumidity());
+        assertNull(testee.getIndoorAirValue());
+        assertNull(testee.getOutdoorAirValue());
     }
 }

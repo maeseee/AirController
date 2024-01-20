@@ -19,54 +19,20 @@ class HumidityExchanger {
     }
 
     public boolean turnFreshAirOn(SensorValues sensorValues) {
-        if (sensorValues.isASensorValueMissing()) {
-            return false;
-        }
-        final double indoorAbsoluteHumidity = sensorValues.getIndoorAbsoluteHumidity();
-        final double outdoorAbsoluteHumidity = sensorValues.getOutdoorAbsoluteHumidity();
-        final double lowerTargetAbsoluteHumidity = LOWER_TARGET_HUMIDITY.getAbsoluteHumidity(sensorValues.getIndoorTemperature());
-        final double upperTargetAbsoluteHumidity = UPPER_TARGET_HUMIDITY.getAbsoluteHumidity(sensorValues.getIndoorTemperature());
-
-        if (isIndoorHumidityAboveUpperTarget(indoorAbsoluteHumidity, upperTargetAbsoluteHumidity) &&
-                isOutdoorHumidityBelowLowerTarget(outdoorAbsoluteHumidity, lowerTargetAbsoluteHumidity)) {
+        if (sensorValues.isIndoorHumidityAboveUpperTarget(UPPER_TARGET_HUMIDITY) &&
+                sensorValues.isOutdoorHumidityBelowLowerTarget(LOWER_TARGET_HUMIDITY)) {
             return true;
         }
 
-        return isIndoorHumidityBelowLowerTarget(indoorAbsoluteHumidity, lowerTargetAbsoluteHumidity) &&
-                isOutdoorHumidityAboveUpperTarget(outdoorAbsoluteHumidity, upperTargetAbsoluteHumidity);
+        return sensorValues.isIndoorHumidityBelowLowerTarget(LOWER_TARGET_HUMIDITY) &&
+                sensorValues.isOutdoorHumidityAboveUpperTarget(UPPER_TARGET_HUMIDITY);
     }
 
     public boolean turnHumidityExchangerOn(SensorValues sensorValues) {
-        if (sensorValues.isASensorValueMissing()) {
-            return false;
-        }
-        final double indoorAbsoluteHumidity = sensorValues.getIndoorAbsoluteHumidity();
-        final double outdoorAbsoluteHumidity = sensorValues.getOutdoorAbsoluteHumidity();
-        final double lowerTargetAbsoluteHumidity = LOWER_TARGET_HUMIDITY.getAbsoluteHumidity(sensorValues.getIndoorTemperature());
-        final double upperTargetAbsoluteHumidity = UPPER_TARGET_HUMIDITY.getAbsoluteHumidity(sensorValues.getIndoorTemperature());
-
-        if (isIndoorHumidityAboveUpperTarget(indoorAbsoluteHumidity, upperTargetAbsoluteHumidity) &&
-                indoorAbsoluteHumidity < outdoorAbsoluteHumidity) {
+        if (sensorValues.isIndoorHumidityAboveUpperTarget(UPPER_TARGET_HUMIDITY) && !sensorValues.isIndoorHumidityAboveOutdoorHumidity()) {
             return true;
         }
 
-        return isIndoorHumidityBelowLowerTarget(indoorAbsoluteHumidity, lowerTargetAbsoluteHumidity) &&
-                indoorAbsoluteHumidity > outdoorAbsoluteHumidity;
-    }
-
-    private boolean isIndoorHumidityAboveUpperTarget(double indoorAbsoluteHumidity, double upperTargetAbsoluteHumidity) {
-        return indoorAbsoluteHumidity > upperTargetAbsoluteHumidity;
-    }
-
-    private boolean isIndoorHumidityBelowLowerTarget(double indoorAbsoluteHumidity, double lowerTargetAbsoluteHumidity) {
-        return indoorAbsoluteHumidity < lowerTargetAbsoluteHumidity;
-    }
-
-    private boolean isOutdoorHumidityBelowLowerTarget(double outdoorAbsoluteHumidity, double lowerTargetAbsoluteHumidity) {
-        return outdoorAbsoluteHumidity < lowerTargetAbsoluteHumidity;
-    }
-
-    private boolean isOutdoorHumidityAboveUpperTarget(double outdoorAbsoluteHumidity, double upperTargetAbsoluteHumidity) {
-        return outdoorAbsoluteHumidity > upperTargetAbsoluteHumidity;
+        return sensorValues.isIndoorHumidityBelowLowerTarget(LOWER_TARGET_HUMIDITY) && sensorValues.isIndoorHumidityAboveOutdoorHumidity();
     }
 }

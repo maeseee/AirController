@@ -1,7 +1,7 @@
 package org.airController.controllers;
 
 import org.airController.entities.AirValue;
-import org.airController.entities.Temperature;
+import org.airController.entities.Humidity;
 import org.airController.sensorAdapter.IndoorSensorObserver;
 import org.airController.sensorAdapter.OutdoorSensorObserver;
 import org.apache.logging.log4j.LogManager;
@@ -26,26 +26,6 @@ public class SensorValues implements IndoorSensorObserver, OutdoorSensorObserver
         this.outdoorAirValue = outdoorAirValue;
     }
 
-    public double getIndoorAbsoluteHumidity() {
-        return indoorAirValue.getAbsoluteHumidity();
-    }
-
-    public double getOutdoorAbsoluteHumidity() {
-        return outdoorAirValue.getAbsoluteHumidity();
-    }
-
-    public Temperature getIndoorTemperature() {
-        return indoorAirValue.getTemperature();
-    }
-
-    public Temperature getOutdoorTemperature() {
-        return outdoorAirValue.getTemperature();
-    }
-
-    public boolean isASensorValueMissing() {
-        return indoorAirValue == null || outdoorAirValue == null;
-    }
-
     public void invalidateSensorValuesIfNeeded(LocalDateTime now) {
         if (lastIndoorAirValueUpdate == null || lastOutdoorAirValueUpdate == null) {
             logger.info("There was no sensor update jet!");
@@ -63,6 +43,45 @@ public class SensorValues implements IndoorSensorObserver, OutdoorSensorObserver
         }
     }
 
+    public boolean isIndoorHumidityAboveUpperTarget(Humidity upperTargetHumidity) {
+        if (indoorAirValue == null) {
+            return false;
+        }
+        final double upperTargetAbsoluteHumidity = upperTargetHumidity.getAbsoluteHumidity(indoorAirValue.getTemperature());
+        return indoorAirValue.getAbsoluteHumidity() > upperTargetAbsoluteHumidity;
+    }
+
+    public boolean isIndoorHumidityBelowLowerTarget(Humidity lowerTargetHumidity) {
+        if (indoorAirValue == null) {
+            return false;
+        }
+        final double lowerTargetAbsoluteHumidity = lowerTargetHumidity.getAbsoluteHumidity(indoorAirValue.getTemperature());
+        return indoorAirValue.getAbsoluteHumidity() < lowerTargetAbsoluteHumidity;
+    }
+
+    public boolean isOutdoorHumidityBelowLowerTarget(Humidity lowerTargetHumidity) {
+        if (indoorAirValue == null || outdoorAirValue == null) {
+            return false;
+        }
+        final double lowerTargetAbsoluteHumidity = lowerTargetHumidity.getAbsoluteHumidity(indoorAirValue.getTemperature());
+        return outdoorAirValue.getAbsoluteHumidity() < lowerTargetAbsoluteHumidity;
+    }
+
+    public boolean isOutdoorHumidityAboveUpperTarget(Humidity upperTargetHumidity) {
+        if (indoorAirValue == null || outdoorAirValue == null) {
+            return false;
+        }
+        final double upperTargetAbsoluteHumidity = upperTargetHumidity.getAbsoluteHumidity(indoorAirValue.getTemperature());
+        return outdoorAirValue.getAbsoluteHumidity() > upperTargetAbsoluteHumidity;
+    }
+
+    public boolean isIndoorHumidityAboveOutdoorHumidity() {
+        if (indoorAirValue == null || outdoorAirValue == null) {
+            return false;
+        }
+        return indoorAirValue.getAbsoluteHumidity() > outdoorAirValue.getAbsoluteHumidity();
+    }
+
     @Override
     public void updateIndoorAirValue(AirValue indoorAirValue) {
         this.indoorAirValue = indoorAirValue;
@@ -73,5 +92,13 @@ public class SensorValues implements IndoorSensorObserver, OutdoorSensorObserver
     public void updateOutdoorAirValue(AirValue outdoorAirValue) {
         this.outdoorAirValue = outdoorAirValue;
         lastOutdoorAirValueUpdate = LocalDateTime.now();
+    }
+
+    AirValue getIndoorAirValue() {
+        return indoorAirValue;
+    }
+
+    AirValue getOutdoorAirValue() {
+        return outdoorAirValue;
     }
 }
