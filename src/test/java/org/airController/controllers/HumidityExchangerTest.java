@@ -22,9 +22,10 @@ class HumidityExchangerTest {
         final Temperature temperature = Temperature.createFromCelsius(23);
         final AirValue indoorAirValue = new AirValue(temperature, indoorHumidity);
         final AirValue outdoorAirValue = new AirValue(temperature, outdoorHumidity);
+        final SensorValues sensorValues = new SensorValues(indoorAirValue, outdoorAirValue);
         final HumidityExchanger testee = new HumidityExchanger();
 
-        final boolean result = testee.turnFreshAirOn(indoorAirValue, outdoorAirValue);
+        final boolean result = testee.turnFreshAirOn(sensorValues);
 
         assertEquals(expectedResult, result);
     }
@@ -53,9 +54,10 @@ class HumidityExchangerTest {
         final Temperature temperature = Temperature.createFromCelsius(23);
         final AirValue indoorAirValue = new AirValue(temperature, indoorHumidity);
         final AirValue outdoorAirValue = new AirValue(temperature, outdoorHumidity);
+        final SensorValues sensorValues = new SensorValues(indoorAirValue, outdoorAirValue);
         final HumidityExchanger testee = new HumidityExchanger();
 
-        final boolean result = testee.turnHumidityExchangerOn(indoorAirValue, outdoorAirValue);
+        final boolean result = testee.turnHumidityExchangerOn(sensorValues);
 
         assertEquals(expectedResult, result);
     }

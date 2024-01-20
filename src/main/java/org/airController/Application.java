@@ -1,6 +1,7 @@
 package org.airController;
 
 import org.airController.controllers.AirController;
+import org.airController.controllers.SensorValues;
 import org.airController.gpio.GpioPinImpl;
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
@@ -41,12 +42,13 @@ public class Application {
         final ControlledVentilationSystem ventilationSystem = new ControlledVentilationSystemImpl(airFlow, humidityExchanger);
         this.outdoorSensor = outdoorSensor;
         this.indoorSensor = indoorSensor;
-        this.airController = new AirController(ventilationSystem);
+        final SensorValues sensorValues = new SensorValues();
+        this.airController = new AirController(ventilationSystem, sensorValues);
         this.executor = executor;
 
-        outdoorSensor.addObserver(airController);
+        outdoorSensor.addObserver(sensorValues);
         outdoorSensor.addObserver(persistenceObserver);
-        indoorSensor.addObserver(airController);
+        indoorSensor.addObserver(sensorValues);
         indoorSensor.addObserver(persistenceObserver);
     }
 

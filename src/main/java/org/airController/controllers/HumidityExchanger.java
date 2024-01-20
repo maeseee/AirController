@@ -1,6 +1,5 @@
 package org.airController.controllers;
 
-import org.airController.entities.AirValue;
 import org.airController.entities.Humidity;
 
 import java.io.IOException;
@@ -19,11 +18,14 @@ class HumidityExchanger {
         }
     }
 
-    public boolean turnFreshAirOn(AirValue indoorAirValue, AirValue outdoorAirValue) {
-        final double indoorAbsoluteHumidity = indoorAirValue.getAbsoluteHumidity();
-        final double outdoorAbsoluteHumidity = outdoorAirValue.getAbsoluteHumidity();
-        final double lowerTargetAbsoluteHumidity = LOWER_TARGET_HUMIDITY.getAbsoluteHumidity(indoorAirValue.getTemperature());
-        final double upperTargetAbsoluteHumidity = UPPER_TARGET_HUMIDITY.getAbsoluteHumidity(indoorAirValue.getTemperature());
+    public boolean turnFreshAirOn(SensorValues sensorValues) {
+        if (sensorValues.isASensorValueMissing()) {
+            return false;
+        }
+        final double indoorAbsoluteHumidity = sensorValues.getIndoorAbsoluteHumidity();
+        final double outdoorAbsoluteHumidity = sensorValues.getOutdoorAbsoluteHumidity();
+        final double lowerTargetAbsoluteHumidity = LOWER_TARGET_HUMIDITY.getAbsoluteHumidity(sensorValues.getIndoorTemperature());
+        final double upperTargetAbsoluteHumidity = UPPER_TARGET_HUMIDITY.getAbsoluteHumidity(sensorValues.getIndoorTemperature());
 
         if (isIndoorHumidityAboveUpperTarget(indoorAbsoluteHumidity, upperTargetAbsoluteHumidity) &&
                 isOutdoorHumidityBelowLowerTarget(outdoorAbsoluteHumidity, lowerTargetAbsoluteHumidity)) {
@@ -34,11 +36,14 @@ class HumidityExchanger {
                 isOutdoorHumidityAboveUpperTarget(outdoorAbsoluteHumidity, upperTargetAbsoluteHumidity);
     }
 
-    public boolean turnHumidityExchangerOn(AirValue indoorAirValue, AirValue outdoorAirValue) {
-        final double indoorAbsoluteHumidity = indoorAirValue.getAbsoluteHumidity();
-        final double outdoorAbsoluteHumidity = outdoorAirValue.getAbsoluteHumidity();
-        final double lowerTargetAbsoluteHumidity = LOWER_TARGET_HUMIDITY.getAbsoluteHumidity(indoorAirValue.getTemperature());
-        final double upperTargetAbsoluteHumidity = UPPER_TARGET_HUMIDITY.getAbsoluteHumidity(indoorAirValue.getTemperature());
+    public boolean turnHumidityExchangerOn(SensorValues sensorValues) {
+        if (sensorValues.isASensorValueMissing()) {
+            return false;
+        }
+        final double indoorAbsoluteHumidity = sensorValues.getIndoorAbsoluteHumidity();
+        final double outdoorAbsoluteHumidity = sensorValues.getOutdoorAbsoluteHumidity();
+        final double lowerTargetAbsoluteHumidity = LOWER_TARGET_HUMIDITY.getAbsoluteHumidity(sensorValues.getIndoorTemperature());
+        final double upperTargetAbsoluteHumidity = UPPER_TARGET_HUMIDITY.getAbsoluteHumidity(sensorValues.getIndoorTemperature());
 
         if (isIndoorHumidityAboveUpperTarget(indoorAbsoluteHumidity, upperTargetAbsoluteHumidity) &&
                 indoorAbsoluteHumidity < outdoorAbsoluteHumidity) {
