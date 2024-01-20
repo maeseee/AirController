@@ -63,7 +63,7 @@ class QingPingIntegrationTest {
 
     private AirValue runParseListDevices(String listDevicesResponse) {
         final JsonQingPingParser parser = new JsonQingPingParser();
-        final Optional<AirValue> airValue = parser.parseDeviceListResponse(listDevicesResponse, QingPingSensor.MAC_ADDRESS);
+        final Optional<AirValue> airValue = parser.parseDeviceListResponse(listDevicesResponse, QingPingSensor.MAC_ADDRESS, false);
 
         assertTrue(airValue.isPresent());
         return airValue.get();

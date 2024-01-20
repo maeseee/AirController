@@ -1,6 +1,7 @@
 package org.airController.controllers;
 
 import org.airController.entities.AirValue;
+import org.airController.entities.CarbonDioxide;
 import org.airController.entities.Humidity;
 import org.airController.sensorAdapter.IndoorSensorObserver;
 import org.airController.sensorAdapter.OutdoorSensorObserver;
@@ -8,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public class SensorValues implements IndoorSensorObserver, OutdoorSensorObserver {
     private static final Logger logger = LogManager.getLogger(SensorValues.class);
@@ -92,6 +94,10 @@ public class SensorValues implements IndoorSensorObserver, OutdoorSensorObserver
     public void updateOutdoorAirValue(AirValue outdoorAirValue) {
         this.outdoorAirValue = outdoorAirValue;
         lastOutdoorAirValueUpdate = LocalDateTime.now();
+    }
+
+    public Optional<CarbonDioxide> getIndoorCo2() {
+        return indoorAirValue.getCo2();
     }
 
     AirValue getIndoorAirValue() {

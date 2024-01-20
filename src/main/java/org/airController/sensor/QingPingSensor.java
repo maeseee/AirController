@@ -53,7 +53,7 @@ public class QingPingSensor implements IndoorSensor {
             return;
         }
 
-        final Optional<AirValue> airValue = parser.parseDeviceListResponse(request.get(), MAC_ADDRESS);
+        final Optional<AirValue> airValue = parser.parseDeviceListResponse(request.get(), MAC_ADDRESS, false);
         airValue.ifPresentOrElse(
                 this::notifyObservers,
                 () -> logger.error("Outdoor sensor out of order"));

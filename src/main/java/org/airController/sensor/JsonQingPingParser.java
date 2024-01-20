@@ -1,6 +1,7 @@
 package org.airController.sensor;
 
 import org.airController.entities.AirValue;
+import org.airController.entities.CarbonDioxide;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +30,7 @@ class JsonQingPingParser {
         }
     }
 
-    public Optional<AirValue> parseDeviceListResponse(String jsonString, String macAddress) {
+    public Optional<AirValue> parseDeviceListResponse(String jsonString, String macAddress, boolean withCo2Value) {
         // https://developer.qingping.co/main/openApi
         try {
             final JSONTokener tokener = new JSONTokener(jsonString);
@@ -40,7 +41,7 @@ class JsonQingPingParser {
                 logger.info("Device with MAC-Address " + macAddress + " is not available!");
                 return Optional.empty();
             }
-            final AirValue airValue = getAirValue(deviceData.get());
+            final AirValue airValue = getAirValue(deviceData.get(), withCo2Value);
             return Optional.of(airValue);
         } catch (Exception e) {
             return Optional.empty();
@@ -60,13 +61,19 @@ class JsonQingPingParser {
         return Optional.empty();
     }
 
-    private AirValue getAirValue(JSONObject deviceData) throws IOException {
+    private AirValue getAirValue(JSONObject deviceData, boolean withCo2Value) throws IOException {
         final JSONObject temperatureData = deviceData.getJSONObject("temperature");
         final double temperatureCelsius = temperatureData.getDouble("value");
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
         final JSONObject humidityData = deviceData.getJSONObject("humidity");
         final double humidityRelative = humidityData.getDouble("value");
         final Humidity humidity = Humidity.createFromRelative(humidityRelative);
+        if (withCo2Value) {
+            final JSONObject co2Data = deviceData.getJSONObject("co2");
+            final double co2ppm = co2Data.getDouble("value");
+            final CarbonDioxide co2 = CarbonDioxide.createFromPpm(co2ppm);
+            return new AirValue(temperature, humidity, co2);
+        }
         return new AirValue(temperature, humidity);
     }
 }
