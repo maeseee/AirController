@@ -28,6 +28,8 @@ class AirControllerTest {
     private HourlyFreshAir hourlyFreshAir;
     @Mock
     private HumidityExchanger humidityExchanger;
+    @Mock
+    private AirQualityChecker airQualityChecker;
 
     @ParameterizedTest(name = "{index} => mainFreshOn={0}, hourlyFreshAirOn={1}, humidityFreshAirOn={2}, shouldFreshAirBeOn={3}")
     @ArgumentsSource(FreshAirArgumentProvider.class)
@@ -37,7 +39,8 @@ class AirControllerTest {
         when(hourlyFreshAir.turnFreshAirOn(any())).thenReturn(hourlyFreshAirOn);
         final SensorValues sensorValues = mock(SensorValues.class);
         when(humidityExchanger.turnFreshAirOn(sensorValues)).thenReturn(humidityFreshAirOn);
-        final AirController testee = new AirController(controlledVentilationSystem, sensorValues, dailyFreshAir, hourlyFreshAir, humidityExchanger);
+        final AirController testee =
+                new AirController(controlledVentilationSystem, sensorValues, dailyFreshAir, hourlyFreshAir, humidityExchanger, airQualityChecker);
 
         testee.run();
 
@@ -69,7 +72,8 @@ class AirControllerTest {
         when(hourlyFreshAir.turnFreshAirOn(any())).thenReturn(false);
         final AirValue indoorAirValue = mock(AirValue.class);
         final SensorValues sensorValues = new SensorValues(indoorAirValue, null);
-        final AirController testee = new AirController(controlledVentilationSystem, sensorValues, dailyFreshAir, hourlyFreshAir, humidityExchanger);
+        final AirController testee =
+                new AirController(controlledVentilationSystem, sensorValues, dailyFreshAir, hourlyFreshAir, humidityExchanger, airQualityChecker);
 
         testee.run();
 
@@ -83,7 +87,8 @@ class AirControllerTest {
         when(hourlyFreshAir.turnFreshAirOn(any())).thenReturn(false);
         final AirValue outdoorAirValue = mock(AirValue.class);
         final SensorValues sensorValues = new SensorValues(null, outdoorAirValue);
-        final AirController testee = new AirController(controlledVentilationSystem, sensorValues, dailyFreshAir, hourlyFreshAir, humidityExchanger);
+        final AirController testee =
+                new AirController(controlledVentilationSystem, sensorValues, dailyFreshAir, hourlyFreshAir, humidityExchanger, airQualityChecker);
 
         testee.run();
 
@@ -97,7 +102,8 @@ class AirControllerTest {
         when(hourlyFreshAir.turnFreshAirOn(any())).thenReturn(false);
         final SensorValues sensorValues = mock(SensorValues.class);
         when(humidityExchanger.turnHumidityExchangerOn(sensorValues)).thenReturn(true);
-        final AirController testee = new AirController(controlledVentilationSystem, sensorValues, dailyFreshAir, hourlyFreshAir, humidityExchanger);
+        final AirController testee =
+                new AirController(controlledVentilationSystem, sensorValues, dailyFreshAir, hourlyFreshAir, humidityExchanger, airQualityChecker);
 
         testee.run();
 
