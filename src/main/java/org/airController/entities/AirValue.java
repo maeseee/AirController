@@ -27,7 +27,7 @@ public class AirValue {
     }
 
     public Optional<CarbonDioxide> getCo2() {
-        return Optional.of(co2);
+        return Optional.ofNullable(co2);
     }
 
     public double getAbsoluteHumidity() {

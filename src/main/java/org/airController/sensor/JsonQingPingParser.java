@@ -12,10 +12,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalDouble;
+import java.util.*;
 
 class JsonQingPingParser {
     private static final Logger logger = LogManager.getLogger(JsonQingPingParser.class);
@@ -33,67 +30,54 @@ class JsonQingPingParser {
         }
     }
 
-    public Optional<AirValue> parseDeviceListResponse(String jsonString, List<String> macAddresses) {
+    public Optional<AirValue> parseDeviceListResponse(String jsonString, String macAddress) {
         // https://developer.qingping.co/main/openApi
         try {
             final JSONTokener tokener = new JSONTokener(jsonString);
             final JSONObject jsonObject = new JSONObject(tokener);
             final JSONArray devices = jsonObject.getJSONArray("devices");
-            final List<JSONObject> devicesData = getDevicesData(devices, macAddresses);
-            if (devicesData.isEmpty()) {
-                logger.info("No device with MAC-Addresses " + macAddresses + " found!");
+            final Optional<JSONObject> deviceData = getDevicesData(devices, macAddress);
+            if (deviceData.isEmpty()) {
+                logger.info("No device MAC-Address " + macAddress + " found!");
                 return Optional.empty();
             }
-            final AirValue airValue = getAirValue(devicesData);
+            final AirValue airValue = getAirValue(deviceData.get());
             return Optional.of(airValue);
         } catch (Exception e) {
             return Optional.empty();
         }
     }
 
-    private List<JSONObject> getDevicesData(JSONArray devices, List<String> macAddresses) {
-        final List<JSONObject> devicesData = new ArrayList<>();
+    private Optional<JSONObject> getDevicesData(JSONArray devices, String macAddress) {
         for (int deviceNumber = 0; deviceNumber < devices.length(); deviceNumber++) {
             final JSONObject device = (JSONObject) devices.get(0);
             final JSONObject info = device.getJSONObject("info");
             final String mac = info.getString("mac");
-            if (macAddresses.contains(mac)) {
+            if (Objects.equals(macAddress, mac)) {
                 final JSONObject data = device.getJSONObject("data");
-                devicesData.add(data);
+                return Optional.of(data);
             }
         }
-        return devicesData;
+        return Optional.empty();
     }
 
-    private AirValue getAirValue(List<JSONObject> devicesData) throws IOException {
-        final List<Double> temperatureList = new ArrayList<>();
-        final List<Double> humidityList = new ArrayList<>();
-        final List<Double> co2List = new ArrayList<>();
-        for (JSONObject data : devicesData) {
-            addValueToList("temperature", data, temperatureList);
-            addValueToList("humidity", data, humidityList);
-            addValueToList("co2", data, co2List);
-        }
-
-        return createAirValue(temperatureList, humidityList, co2List);
+    private AirValue getAirValue(JSONObject deviceData) throws IOException {
+        final double temperatureCelsius = getValue("temperature", deviceData).orElseThrow();
+        final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
+        final double humidityRelative = getValue("humidity", deviceData).orElseThrow();
+        final Humidity humidity = Humidity.createFromRelative(humidityRelative);
+        final OptionalDouble co2Optinal = getValue("co2", deviceData);
+        final CarbonDioxide co2 = co2Optinal.isPresent() ? CarbonDioxide.createFromPpm(co2Optinal.getAsDouble()) : null;
+        return new AirValue(temperature, humidity, co2);
     }
 
-    private void addValueToList(String attribute, JSONObject deviceData, List<Double> resultList) {
+    private OptionalDouble getValue(String attribute, JSONObject deviceData) {
         try {
             final JSONObject data = deviceData.getJSONObject(attribute);
-            resultList.add(data.getDouble("value"));
+            return OptionalDouble.of(data.getDouble("value"));
         } catch (JSONException exception) {
             // Intentionally left empty
         }
-    }
-
-    private AirValue createAirValue(List<Double> temperatureList, List<Double> humidityList, List<Double> co2List) throws IOException {
-        final double temperatureAverage = temperatureList.stream().mapToDouble(d -> d).average().orElseThrow();
-        final Temperature temperature = Temperature.createFromCelsius(temperatureAverage);
-        final double humidityAverage = humidityList.stream().mapToDouble(d -> d).average().orElseThrow();
-        final Humidity humidity = Humidity.createFromRelative(humidityAverage);
-        final OptionalDouble co2Average = co2List.stream().mapToDouble(d -> d).average();
-        final CarbonDioxide co2 = co2Average.isPresent() ? CarbonDioxide.createFromPpm(co2Average.getAsDouble()) : null;
-        return new AirValue(temperature, humidity, co2);
+        return OptionalDouble.empty();
     }
 }

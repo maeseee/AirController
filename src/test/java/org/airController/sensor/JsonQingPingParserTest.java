@@ -99,7 +99,7 @@ class JsonQingPingParserTest {
     void testParsingDeviceList() {
         final JsonQingPingParser testee = new JsonQingPingParser();
 
-        final Optional<AirValue> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, QingPingSensor.MAC_ADDRESSES);
+        final Optional<AirValue> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, QingPingSensor.MAC_ADDRESSES.get(0));
 
         assertTrue(result.isPresent());
         assertEquals(21.5, result.get().getTemperature().getCelsius(), 0.1);
@@ -110,7 +110,7 @@ class JsonQingPingParserTest {
     void testWhenParsingDeviceListWithWringMacAddressThenOptionalEmpty() {
         final JsonQingPingParser testee = new JsonQingPingParser();
 
-        final Optional<AirValue> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, singletonList("mac"));
+        final Optional<AirValue> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, "mac");
 
         assertTrue(result.isEmpty());
     }

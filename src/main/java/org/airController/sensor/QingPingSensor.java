@@ -1,20 +1,22 @@
 package org.airController.sensor;
 
 import org.airController.entities.AirValue;
+import org.airController.entities.CarbonDioxide;
+import org.airController.entities.Humidity;
+import org.airController.entities.Temperature;
 import org.airController.secrets.Secret;
 import org.airController.sensorAdapter.IndoorSensor;
 import org.airController.sensorAdapter.IndoorSensorObserver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.DoubleStream;
 
 import static java.util.Collections.singletonList;
 
@@ -55,7 +57,12 @@ public class QingPingSensor implements IndoorSensor {
             return;
         }
 
-        final Optional<AirValue> airValue = parser.parseDeviceListResponse(request.get(), MAC_ADDRESSES);
+        final List<AirValue> airValues = new ArrayList<>();
+        for (String mac : MAC_ADDRESSES) {
+            parser.parseDeviceListResponse(request.get(), mac).ifPresent(airValues::add);
+
+        }
+        final Optional<AirValue> airValue = getAverageAirValue(airValues);
         airValue.ifPresentOrElse(
                 this::notifyObservers,
                 () -> logger.error("Outdoor sensor out of order"));
@@ -102,5 +109,29 @@ public class QingPingSensor implements IndoorSensor {
     private void notifyObservers(AirValue indoorAirValue) {
         logger.info("New indoor sensor value: " + indoorAirValue);
         observers.forEach(observer -> observer.updateIndoorAirValue(indoorAirValue));
+    }
+
+    private Optional<AirValue> getAverageAirValue(List<AirValue> airValues) {
+        try {
+            final double averageTemperature = airValues.stream()
+                    .mapToDouble(value -> value.getTemperature().getCelsius())
+                    .average()
+                    .orElseThrow();
+            final Temperature temperature = Temperature.createFromCelsius(averageTemperature);
+            final double averageHumidity = airValues.stream()
+                    .mapToDouble(value -> value.getHumidity().getRelativeHumidity())
+                    .average()
+                    .orElseThrow();
+            final Humidity humidity = Humidity.createFromRelative(averageHumidity);
+            final OptionalDouble averageCo2 = airValues.stream()
+                    .filter(airValue -> airValue.getCo2().isPresent())
+                    .mapToDouble(value -> value.getCo2().get().getPpm())
+                    .average();
+            final CarbonDioxide co2 = averageCo2.isPresent() ? CarbonDioxide.createFromPpm(averageCo2.getAsDouble()) : null;
+            return Optional.of(new AirValue(temperature, humidity, co2));
+        } catch (IOException e) {
+            // Intentionally left empty
+        }
+        return Optional.empty();
     }
 }
