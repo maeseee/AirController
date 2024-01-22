@@ -16,12 +16,14 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Collections.singletonList;
+
 
 public class QingPingSensor implements IndoorSensor {
     static final String APP_KEY = "me8h7AKSR";
     static final String ENVIRONMENT_VARIABLE_APP_SECRET = "qingping_app_secret";
     static final String ENCRYPTED_APP_SECRET = "P2Yg64Btliolc1DDvQFQKYZAb2ufYF10khTLrGfrb9d2kM1tA8ciYhZ2bbQeHdOLlIGmSfM4JQcG6EcnYtvm8w==";
-    static final String MAC_ADDRESS = "582D3480A7F4";
+    static final List<String> MAC_ADDRESSES = singletonList("582D3480A7F4");
 
     private static final Logger logger = LogManager.getLogger(QingPingSensor.class);
 
@@ -53,7 +55,7 @@ public class QingPingSensor implements IndoorSensor {
             return;
         }
 
-        final Optional<AirValue> airValue = parser.parseDeviceListResponse(request.get(), MAC_ADDRESS, false);
+        final Optional<AirValue> airValue = parser.parseDeviceListResponse(request.get(), MAC_ADDRESSES);
         airValue.ifPresentOrElse(
                 this::notifyObservers,
                 () -> logger.error("Outdoor sensor out of order"));
