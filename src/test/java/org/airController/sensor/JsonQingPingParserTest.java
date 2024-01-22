@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class JsonQingPingParserTest {
@@ -99,7 +98,7 @@ class JsonQingPingParserTest {
     void testParsingDeviceList() {
         final JsonQingPingParser testee = new JsonQingPingParser();
 
-        final Optional<AirValue> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, QingPingSensor.MAC_ADDRESSES.get(0));
+        final Optional<AirValue> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, "582D3480A7F4");
 
         assertTrue(result.isPresent());
         assertEquals(21.5, result.get().getTemperature().getCelsius(), 0.1);

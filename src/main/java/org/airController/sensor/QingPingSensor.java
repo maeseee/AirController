@@ -16,7 +16,6 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.DoubleStream;
 
 import static java.util.Collections.singletonList;
 
@@ -25,25 +24,29 @@ public class QingPingSensor implements IndoorSensor {
     static final String APP_KEY = "me8h7AKSR";
     static final String ENVIRONMENT_VARIABLE_APP_SECRET = "qingping_app_secret";
     static final String ENCRYPTED_APP_SECRET = "P2Yg64Btliolc1DDvQFQKYZAb2ufYF10khTLrGfrb9d2kM1tA8ciYhZ2bbQeHdOLlIGmSfM4JQcG6EcnYtvm8w==";
-    static final List<String> MAC_ADDRESSES = singletonList("582D3480A7F4");
 
     private static final Logger logger = LogManager.getLogger(QingPingSensor.class);
 
     private final List<IndoorSensorObserver> observers = new ArrayList<>();
     private final QingPingAccessTokenRequest accessTokenRequest;
     private final QingPingListDevicesRequest listDevicesRequest;
-    private final JsonQingPingParser parser = new JsonQingPingParser();
+    private final JsonQingPingParser parser;
+    private final List<String> deviceMacAddresses;
 
     private String accessToken;
     private LocalDateTime accessTokenValidUntil;
 
     public QingPingSensor() throws URISyntaxException {
-        this(createAccessTokenRequest(getCredentialsForPostRequest()), createListDevicesRequest());
+        this(createAccessTokenRequest(getCredentialsForPostRequest()), createListDevicesRequest(), new JsonQingPingParser(),
+                singletonList("582D3480A7F4"));
     }
 
-    QingPingSensor(QingPingAccessTokenRequest accessTokenRequest, QingPingListDevicesRequest listDevicesRequest) {
+    QingPingSensor(QingPingAccessTokenRequest accessTokenRequest, QingPingListDevicesRequest listDevicesRequest, JsonQingPingParser parser,
+                   List<String> deviceMacAddresses) {
         this.accessTokenRequest = accessTokenRequest;
         this.listDevicesRequest = listDevicesRequest;
+        this.parser = parser;
+        this.deviceMacAddresses = deviceMacAddresses;
     }
 
     @Override
@@ -58,7 +61,7 @@ public class QingPingSensor implements IndoorSensor {
         }
 
         final List<AirValue> airValues = new ArrayList<>();
-        for (String mac : MAC_ADDRESSES) {
+        for (String mac : deviceMacAddresses) {
             parser.parseDeviceListResponse(request.get(), mac).ifPresent(airValues::add);
 
         }

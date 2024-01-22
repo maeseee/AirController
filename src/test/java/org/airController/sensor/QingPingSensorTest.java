@@ -1,18 +1,27 @@
 package org.airController.sensor;
 
 import org.airController.entities.AirValue;
+import org.airController.entities.CarbonDioxide;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
 import org.airController.sensorAdapter.IndoorSensorObserver;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -89,7 +98,8 @@ class QingPingSensorTest {
         when(accessTokenRequest.sendRequest()).thenReturn(Optional.of(SAMPLE_ACCESS_TOKEN_RESPONSE));
         final QingPingListDevicesRequest listDevicesRequest = mock(QingPingListDevicesRequest.class);
         when(listDevicesRequest.sendRequest(any())).thenReturn(Optional.of(SAMPLE_LIST_DEVICES_RESPONSE));
-        final QingPingSensor testee = new QingPingSensor(accessTokenRequest, listDevicesRequest);
+        final QingPingSensor testee =
+                new QingPingSensor(accessTokenRequest, listDevicesRequest, new JsonQingPingParser(), singletonList("582D3480A7F4"));
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
 
@@ -107,12 +117,51 @@ class QingPingSensorTest {
         when(accessTokenRequest.sendRequest()).thenReturn(Optional.empty());
         final QingPingListDevicesRequest listDevicesRequest = mock(QingPingListDevicesRequest.class);
         when(listDevicesRequest.sendRequest(any())).thenReturn(Optional.empty());
-        final QingPingSensor testee = new QingPingSensor(accessTokenRequest, listDevicesRequest);
+        final QingPingSensor testee =
+                new QingPingSensor(accessTokenRequest, listDevicesRequest, new JsonQingPingParser(), singletonList("582D3480A7F4"));
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
 
         testee.run();
 
         verifyNoInteractions(observer);
+    }
+
+    @ParameterizedTest(name = "{index} => secret={0}")
+    @ArgumentsSource(AirValueArgumentProvider.class)
+    void testWhenMultipleSensorsWithoutCo2ThenAverage(double temperature1, double humidity1, CarbonDioxide co2, double temperatureExp,
+                                                      double humidityExp) throws IOException {
+        final QingPingAccessTokenRequest accessTokenRequest = mock(QingPingAccessTokenRequest.class);
+        when(accessTokenRequest.sendRequest()).thenReturn(Optional.of(SAMPLE_ACCESS_TOKEN_RESPONSE));
+        final QingPingListDevicesRequest listDevicesRequest = mock(QingPingListDevicesRequest.class);
+        when(listDevicesRequest.sendRequest(any())).thenReturn(Optional.of(SAMPLE_LIST_DEVICES_RESPONSE));
+        final JsonQingPingParser parser = mock(JsonQingPingParser.class);
+        final Temperature temperature = Temperature.createFromCelsius(temperature1);
+        final Humidity humidity = Humidity.createFromRelative(humidity1);
+        final AirValue airValue1 = new AirValue(temperature, humidity, co2);
+        final AirValue airValue2 = new AirValue(Temperature.createFromCelsius(40.0), Humidity.createFromRelative(60.0));
+        when(parser.parseDeviceListResponse(any(), eq("mac1"))).thenReturn(Optional.of(airValue1));
+        when(parser.parseDeviceListResponse(any(), eq("mac2"))).thenReturn(Optional.of(airValue2));
+        final QingPingSensor testee = new QingPingSensor(accessTokenRequest, listDevicesRequest, parser, asList("mac1", "mac2"));
+        final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
+        testee.addObserver(observer);
+
+        testee.run();
+
+        verify(observer).updateIndoorAirValue(indoorAirValueArgumentCaptor.capture());
+        final AirValue indoorAirValueCapture = indoorAirValueArgumentCaptor.getValue();
+        final AirValue indoorAirValue = new AirValue(Temperature.createFromCelsius(temperatureExp), Humidity.createFromRelative(humidityExp), co2);
+        assertEquals(indoorAirValue, indoorAirValueCapture);
+    }
+
+    static class AirValueArgumentProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws IOException {
+            return Stream.of(
+                    Arguments.of(20.0, 40.0, null, 30.0, 50.0),
+                    Arguments.of(20.0, 40.0, CarbonDioxide.createFromPpm(500.0), 30.0, 50.0),
+                    Arguments.of(40.0, 60.0, CarbonDioxide.createFromPpm(500.0), 40.0, 60.0)
+            );
+        }
     }
 }
