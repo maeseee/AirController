@@ -32,11 +32,21 @@ class AirQualityCheckerTest {
         final Humidity humidity = Humidity.createFromRelative(50.0);
         final CarbonDioxide co2 = CarbonDioxide.createFromPpm(1000.0);
         final AirValue airValue = new AirValue(temperature, humidity, co2);
-        SensorValues sensorValues = new SensorValues(airValue, null);
+        final SensorValues sensorValues = new SensorValues(airValue, null);
         final AirQualityChecker testee = new AirQualityChecker();
 
         final boolean airOn = testee.turnFreshAirOn(sensorValues);
 
         assertTrue(airOn);
+    }
+
+    @Test
+    void testWhenCo2EmptyThenNoAirFlow() {
+        final SensorValues sensorValues = new SensorValues(null, null);
+        final AirQualityChecker testee = new AirQualityChecker();
+
+        final boolean airOn = testee.turnFreshAirOn(sensorValues);
+
+        assertFalse(airOn);
     }
 }

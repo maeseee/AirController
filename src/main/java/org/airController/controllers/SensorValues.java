@@ -97,6 +97,9 @@ public class SensorValues implements IndoorSensorObserver, OutdoorSensorObserver
     }
 
     public Optional<CarbonDioxide> getIndoorCo2() {
+        if(indoorAirValue == null) {
+            return Optional.empty();
+        }
         return indoorAirValue.getCo2();
     }
 
