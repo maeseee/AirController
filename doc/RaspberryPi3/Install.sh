@@ -27,6 +27,8 @@ EOF
 
 # Config startup behaviour
 cd || exit
+echo "export weather_api_key=<key>" >> .bashrc
+echo "export qingping_app_secret=<secret>" >> .bashrc
 cd AirController || exit
 sudo cp doc/RaspberryPi3/airController.service /etc/systemd/system/
 sudo systemctl enable airController.service # Enable the service to start at boot time
