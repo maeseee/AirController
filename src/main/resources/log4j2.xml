@@ -4,7 +4,7 @@
         name="airController"
         packages="">
     <Properties>
-        <Property>log</Property>
+        <Property name="airController">log</Property>
     </Properties>
 
     <Appenders>

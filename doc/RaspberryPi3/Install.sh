@@ -35,7 +35,7 @@ sudo systemctl enable airController.service # Enable the service to start at boo
 chmod +x run.sh
 
 # See the log of the systemd service
-journalctl -u airController.service -n 100
+journalctl -fu airController.service -n 10
 
 # Set variables on raspberry pi
 # Add the following command to the /home/pi/.bashrc (without "")
