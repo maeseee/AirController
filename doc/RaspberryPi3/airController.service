@@ -2,8 +2,10 @@
 Description=AirController
 After=network.target
 [Service]
-ExecStart=/home/pi/AirController/run.sh
+ExecStart=/bin/bash /home/pi/AirController/run.sh
 Restart=always
+RestartSec=60
 User=pi
+Environment=weather_api_key=<key> qingping_app_secret=<secret>
 [Install]
 WantedBy=default.target

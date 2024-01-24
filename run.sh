@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 cd /home/pi/AirController || exit
 mvn exec:java -Dexec.mainClass="org.airController.Main"
 
