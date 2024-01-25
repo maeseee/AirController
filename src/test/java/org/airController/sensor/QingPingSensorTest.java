@@ -17,6 +17,7 @@ import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -127,9 +128,9 @@ class QingPingSensorTest {
         verifyNoInteractions(observer);
     }
 
-    @ParameterizedTest(name = "{index} => secret={0}")
+    @ParameterizedTest(name = "{index} => temperature1={0}, humidity1={1}, co2_1={2}, age_1={3}, temperatureExp={4}, humidityExp={5}")
     @ArgumentsSource(AirValueArgumentProvider.class)
-    void testWhenMultipleSensorsWithoutCo2ThenAverage(double temperature1, double humidity1, CarbonDioxide co2, double temperatureExp,
+    void testWhenMultipleSensorsWithoutCo2ThenAverage(double temperature1, double humidity1, CarbonDioxide co2, int age_1, double temperatureExp,
                                                       double humidityExp) throws IOException {
         final QingPingAccessTokenRequest accessTokenRequest = mock(QingPingAccessTokenRequest.class);
         when(accessTokenRequest.sendRequest()).thenReturn(Optional.of(SAMPLE_ACCESS_TOKEN_RESPONSE));
@@ -138,8 +139,9 @@ class QingPingSensorTest {
         final JsonQingPingParser parser = mock(JsonQingPingParser.class);
         final Temperature temperature = Temperature.createFromCelsius(temperature1);
         final Humidity humidity = Humidity.createFromRelative(humidity1);
-        final AirValue airValue1 = new AirValue(temperature, humidity, co2);
-        final AirValue airValue2 = new AirValue(Temperature.createFromCelsius(40.0), Humidity.createFromRelative(60.0));
+        final LocalDateTime time1 = LocalDateTime.now().minusMinutes(age_1);
+        final AirValue airValue1 = new AirValue(temperature, humidity, co2, time1);
+        final AirValue airValue2 = new AirValue(Temperature.createFromCelsius(40.0), Humidity.createFromRelative(60.0), LocalDateTime.now());
         when(parser.parseDeviceListResponse(any(), eq("mac1"))).thenReturn(Optional.of(airValue1));
         when(parser.parseDeviceListResponse(any(), eq("mac2"))).thenReturn(Optional.of(airValue2));
         final QingPingSensor testee = new QingPingSensor(accessTokenRequest, listDevicesRequest, parser, asList("mac1", "mac2"));
@@ -150,7 +152,8 @@ class QingPingSensorTest {
 
         verify(observer).updateIndoorAirValue(indoorAirValueArgumentCaptor.capture());
         final AirValue indoorAirValueCapture = indoorAirValueArgumentCaptor.getValue();
-        final AirValue indoorAirValue = new AirValue(Temperature.createFromCelsius(temperatureExp), Humidity.createFromRelative(humidityExp), co2);
+        final AirValue
+                indoorAirValue = new AirValue(Temperature.createFromCelsius(temperatureExp), Humidity.createFromRelative(humidityExp), co2, time1);
         assertEquals(indoorAirValue, indoorAirValueCapture);
     }
 
@@ -158,9 +161,13 @@ class QingPingSensorTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws IOException {
             return Stream.of(
-                    Arguments.of(20.0, 40.0, null, 30.0, 50.0),
-                    Arguments.of(20.0, 40.0, CarbonDioxide.createFromPpm(500.0), 30.0, 50.0),
-                    Arguments.of(40.0, 60.0, CarbonDioxide.createFromPpm(500.0), 40.0, 60.0)
+                    Arguments.of(20.0, 40.0, null, 0, 30.0, 50.0),
+                    Arguments.of(20.0, 40.0, CarbonDioxide.createFromPpm(500.0), 0, 30.0, 50.0),
+                    Arguments.of(40.0, 60.0, CarbonDioxide.createFromPpm(500.0), 0, 40.0, 60.0),
+                    Arguments.of(20.0, 40.0, null, 30, 30.0, 50.0),
+                    Arguments.of(20.0, 40.0, null, 59, 30.0, 50.0),
+                    Arguments.of(20.0, 40.0, null, 60, 40.0, 60.0),
+                    Arguments.of(20.0, 40.0, null, 100, 40.0, 60.0)
             );
         }
     }

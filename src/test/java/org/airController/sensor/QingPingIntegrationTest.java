@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -25,6 +26,7 @@ class QingPingIntegrationTest {
         final String listDevicesResponse = runListDevicesRequest(accessToken);
         final AirValue airValue = runParseListDevices(listDevicesResponse);
         assertNotNull(airValue);
+        assertTrue(LocalDateTime.now().minusMinutes(5).isBefore(airValue.getTime()));
     }
 
     private String runAccessTokenRequest() throws URISyntaxException {

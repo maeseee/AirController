@@ -7,6 +7,7 @@ import org.airController.entities.Temperature;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,7 +18,7 @@ class AirQualityCheckerTest {
         final Temperature temperature = Temperature.createFromCelsius(23.0);
         final Humidity humidity = Humidity.createFromRelative(50.0);
         final CarbonDioxide co2 = CarbonDioxide.createFromPpm(700.0);
-        final AirValue airValue = new AirValue(temperature, humidity, co2);
+        final AirValue airValue = new AirValue(temperature, humidity, co2, LocalDateTime.now());
         SensorValues sensorValues = new SensorValues(airValue, null);
         final AirQualityChecker testee = new AirQualityChecker();
 
@@ -31,7 +32,7 @@ class AirQualityCheckerTest {
         final Temperature temperature = Temperature.createFromCelsius(23.0);
         final Humidity humidity = Humidity.createFromRelative(50.0);
         final CarbonDioxide co2 = CarbonDioxide.createFromPpm(1000.0);
-        final AirValue airValue = new AirValue(temperature, humidity, co2);
+        final AirValue airValue = new AirValue(temperature, humidity, co2, LocalDateTime.now());
         final SensorValues sensorValues = new SensorValues(airValue, null);
         final AirQualityChecker testee = new AirQualityChecker();
 

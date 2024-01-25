@@ -1,5 +1,6 @@
 package org.airController.entities;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -7,27 +8,39 @@ public class AirValue {
     private final Temperature temperature;
     private final Humidity humidity;
     private final CarbonDioxide co2;
+    private final LocalDateTime time;
 
     public AirValue(Temperature temperature, Humidity humidity) {
-        this(temperature, humidity, null);
+        this(temperature, humidity, null, LocalDateTime.now());
     }
 
-    public AirValue(Temperature temperature, Humidity humidity, CarbonDioxide co2) {
+    public AirValue(Temperature temperature, Humidity humidity, LocalDateTime time) {
+        this(temperature, humidity, null, time);
+    }
+
+    public AirValue(Temperature temperature, Humidity humidity, CarbonDioxide co2, LocalDateTime time) {
         this.temperature = temperature;
         this.humidity = humidity;
         this.co2 = co2;
+        this.time = time;
     }
 
     public Temperature getTemperature() {
+
         return temperature;
     }
 
     public Humidity getHumidity() {
+
         return humidity;
     }
 
     public Optional<CarbonDioxide> getCo2() {
         return Optional.ofNullable(co2);
+    }
+
+    public LocalDateTime getTime() {
+        return time;
     }
 
     public double getAbsoluteHumidity() {

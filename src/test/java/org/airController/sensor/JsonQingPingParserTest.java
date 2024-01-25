@@ -3,6 +3,9 @@ package org.airController.sensor;
 import org.airController.entities.AirValue;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -103,6 +106,7 @@ class JsonQingPingParserTest {
         assertTrue(result.isPresent());
         assertEquals(21.5, result.get().getTemperature().getCelsius(), 0.1);
         assertEquals(54.2, result.get().getHumidity().getRelativeHumidity(), 0.1);
+        assertEquals(1704516210, result.get().getTime().atZone(ZoneId.systemDefault()).toEpochSecond());
     }
 
     @Test

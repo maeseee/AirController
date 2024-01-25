@@ -115,23 +115,29 @@ public class QingPingSensor implements IndoorSensor {
     }
 
     private Optional<AirValue> getAverageAirValue(List<AirValue> airValues) {
+        final List<AirValue> currentAirValues = airValues.stream()
+                .filter(sensorAirValue -> sensorAirValue.getTime().isAfter(LocalDateTime.now().minusHours(1)))
+                .toList();
         try {
-            final double averageTemperature = airValues.stream()
+            final double averageTemperature = currentAirValues.stream()
                     .mapToDouble(value -> value.getTemperature().getCelsius())
                     .average()
                     .orElseThrow();
             final Temperature temperature = Temperature.createFromCelsius(averageTemperature);
-            final double averageHumidity = airValues.stream()
+            final double averageHumidity = currentAirValues.stream()
                     .mapToDouble(value -> value.getHumidity().getRelativeHumidity())
                     .average()
                     .orElseThrow();
             final Humidity humidity = Humidity.createFromRelative(averageHumidity);
-            final OptionalDouble averageCo2 = airValues.stream()
+            final OptionalDouble averageCo2 = currentAirValues.stream()
                     .filter(airValue -> airValue.getCo2().isPresent())
                     .mapToDouble(value -> value.getCo2().get().getPpm())
                     .average();
             final CarbonDioxide co2 = averageCo2.isPresent() ? CarbonDioxide.createFromPpm(averageCo2.getAsDouble()) : null;
-            return Optional.of(new AirValue(temperature, humidity, co2));
+            final LocalDateTime time = currentAirValues.stream()
+                    .map(AirValue::getTime)
+                    .max(LocalDateTime::compareTo).orElse(LocalDateTime.now());
+            return Optional.of(new AirValue(temperature, humidity, co2, time));
         } catch (IOException e) {
             // Intentionally left empty
         }

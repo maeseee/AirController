@@ -12,6 +12,9 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 class JsonQingPingParser {
@@ -62,16 +65,20 @@ class JsonQingPingParser {
     }
 
     private AirValue getAirValue(JSONObject deviceData) throws IOException {
-        final double temperatureCelsius = getValue("temperature", deviceData).orElseThrow();
+        final double temperatureCelsius = getDoubleValue("temperature", deviceData).orElseThrow();
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
-        final double humidityRelative = getValue("humidity", deviceData).orElseThrow();
+        final double humidityRelative = getDoubleValue("humidity", deviceData).orElseThrow();
         final Humidity humidity = Humidity.createFromRelative(humidityRelative);
-        final OptionalDouble co2Optinal = getValue("co2", deviceData);
+        final OptionalDouble co2Optinal = getDoubleValue("co2", deviceData);
         final CarbonDioxide co2 = co2Optinal.isPresent() ? CarbonDioxide.createFromPpm(co2Optinal.getAsDouble()) : null;
-        return new AirValue(temperature, humidity, co2);
+        final long timeFromEpoch = getLongValue("timestamp", deviceData).orElseThrow();
+        final LocalDateTime time = LocalDateTime.ofInstant(
+                Instant.ofEpochSecond(timeFromEpoch),
+                ZoneId.systemDefault());
+        return new AirValue(temperature, humidity, co2, time);
     }
 
-    private OptionalDouble getValue(String attribute, JSONObject deviceData) {
+    private OptionalDouble getDoubleValue(String attribute, JSONObject deviceData) {
         try {
             final JSONObject data = deviceData.getJSONObject(attribute);
             return OptionalDouble.of(data.getDouble("value"));
@@ -80,4 +87,15 @@ class JsonQingPingParser {
         }
         return OptionalDouble.empty();
     }
+
+    private OptionalLong getLongValue(String attribute, JSONObject deviceData) {
+        try {
+            final JSONObject data = deviceData.getJSONObject(attribute);
+            return OptionalLong.of(data.getLong("value"));
+        } catch (JSONException exception) {
+            // Intentionally left empty
+        }
+        return OptionalLong.empty();
+    }
+
 }
