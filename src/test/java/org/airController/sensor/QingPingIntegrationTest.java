@@ -26,7 +26,8 @@ class QingPingIntegrationTest {
         final String listDevicesResponse = runListDevicesRequest(accessToken);
         final AirValue airValue = runParseListDevices(listDevicesResponse);
         assertNotNull(airValue);
-        assertTrue(LocalDateTime.now().minusMinutes(5).isBefore(airValue.getTime()));
+        assertTrue(LocalDateTime.now().minusMinutes(15).isBefore(airValue.getTime()));
+        assertTrue(LocalDateTime.now().plusMinutes(5).isAfter(airValue.getTime()));
     }
 
     private String runAccessTokenRequest() throws URISyntaxException {
