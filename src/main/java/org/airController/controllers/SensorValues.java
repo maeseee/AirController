@@ -8,6 +8,7 @@ import org.airController.sensorAdapter.OutdoorSensorObserver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -35,12 +36,14 @@ public class SensorValues implements IndoorSensorObserver, OutdoorSensorObserver
         }
         final LocalDateTime invalidationTime = now.minusHours(SENSOR_INVALIDATION_DURATION);
         if (invalidationTime.isAfter(lastIndoorAirValueUpdate)) {
-            logger.error("There was no indoor sensor update for at least " + SENSOR_INVALIDATION_DURATION + " hours!");
+            final Duration lastUpdate = Duration.between(lastIndoorAirValueUpdate, now);
+            logger.error("There was no indoor sensor update for " + lastUpdate.toHours() + " hours!");
             indoorAirValue = null;
         }
 
         if (invalidationTime.isAfter(lastOutdoorAirValueUpdate)) {
-            logger.error("There was no outdoor sensor update for at least " + SENSOR_INVALIDATION_DURATION + " hours!");
+            final Duration lastUpdate = Duration.between(lastIndoorAirValueUpdate, now);
+            logger.error("There was no outdoor sensor update for " + lastUpdate.toHours() + " hours!");
             outdoorAirValue = null;
         }
     }
