@@ -43,13 +43,12 @@ public class Application {
         this.outdoorSensor = outdoorSensor;
         this.indoorSensor = indoorSensor;
         final SensorValues sensorValues = new SensorValues();
-        this.airController = new AirController(ventilationSystem, sensorValues);
-        this.executor = executor;
-
         outdoorSensor.addObserver(sensorValues);
         outdoorSensor.addObserver(persistenceObserver);
         indoorSensor.addObserver(sensorValues);
         indoorSensor.addObserver(persistenceObserver);
+        this.airController = new AirController(ventilationSystem, sensorValues);
+        this.executor = executor;
     }
 
     public void run() {
