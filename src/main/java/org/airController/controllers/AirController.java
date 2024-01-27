@@ -33,7 +33,7 @@ public class AirController implements Runnable {
     @Override
     public void run() {
         final LocalDateTime now = LocalDateTime.now();
-        sensorValues.invalidateSensorValuesIfNeeded(now);
+        sensorValues.invalidateSensorValuesIfNeeded();
         final boolean freshAirOnForHumidityControl = humidityExchanger.turnFreshAirOn(sensorValues);
         final boolean freshAirOnForAirQualityControl = airQualityChecker.turnFreshAirOn(sensorValues);
         final boolean freshAirOnForDailyExchange = dailyFreshAir.turnFreshAirOn(now);

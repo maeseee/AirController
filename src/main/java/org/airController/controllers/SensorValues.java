@@ -29,7 +29,8 @@ public class SensorValues implements IndoorSensorObserver, OutdoorSensorObserver
         this.outdoorAirValue = outdoorAirValue;
     }
 
-    public void invalidateSensorValuesIfNeeded(LocalDateTime now) {
+    public void invalidateSensorValuesIfNeeded() {
+        final LocalDateTime now = LocalDateTime.now();
         if (lastIndoorAirValueUpdate == null || lastOutdoorAirValueUpdate == null) {
             logger.info("There was no sensor update jet!");
             return;

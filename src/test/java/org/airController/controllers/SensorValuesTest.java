@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class SensorValuesTest {
 
@@ -37,12 +38,13 @@ class SensorValuesTest {
     @Test
     void testWhen4HoursPassedThenInvalidateSensorValues() {
         final AirValue airValue = mock(AirValue.class);
-        final LocalDateTime nowPlus5Hours = LocalDateTime.now().plusHours(5);
+        final LocalDateTime nowMinus5Hours = LocalDateTime.now().minusHours(5);
+        when(airValue.getTime()).thenReturn(nowMinus5Hours);
         final SensorValues testee = new SensorValues();
 
         testee.updateIndoorAirValue(airValue);
         testee.updateOutdoorAirValue(airValue);
-        testee.invalidateSensorValuesIfNeeded(nowPlus5Hours);
+        testee.invalidateSensorValuesIfNeeded();
 
         assertNull(testee.getIndoorAirValue());
         assertNull(testee.getOutdoorAirValue());

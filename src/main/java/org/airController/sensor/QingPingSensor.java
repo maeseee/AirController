@@ -57,6 +57,7 @@ public class QingPingSensor implements IndoorSensor {
 
         final Optional<String> request = listDevicesRequest.sendRequest(accessToken);
         if (request.isEmpty()) {
+            logger.error("QingPing sensor request failed");
             return;
         }
 
@@ -68,7 +69,7 @@ public class QingPingSensor implements IndoorSensor {
         final Optional<AirValue> airValue = getAverageAirValue(airValues);
         airValue.ifPresentOrElse(
                 this::notifyObservers,
-                () -> logger.error("Outdoor sensor out of order"));
+                () -> logger.error("QingPing sensor out of order"));
     }
 
     private void updateAccessToken() {

@@ -36,6 +36,7 @@ public class OutdoorSensorImpl implements OutdoorSensor {
     public void run() {
         final Optional<String> request = httpsGetRequest.sendRequest();
         if (request.isEmpty()) {
+            logger.error("Outdoor sensor request failed");
             return;
         }
 

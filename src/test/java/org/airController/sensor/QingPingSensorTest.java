@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -37,7 +38,7 @@ class QingPingSensorTest {
                 "token_type": "bearer"
             }
             """;
-    private final static String SAMPLE_LIST_DEVICES_RESPONSE = """
+    private final static String SAMPLE_LIST_DEVICES_RESPONSE = String.format("""
             {
                 "total": 1,
                 "devices": [
@@ -67,7 +68,7 @@ class QingPingSensorTest {
                         },
                         "data": {
                             "timestamp": {
-                                "value": 1704516210
+                                "value": %d
                             },
                             "battery": {
                                 "value": 86
@@ -88,7 +89,7 @@ class QingPingSensorTest {
                     }
                 ]
             }
-            """;
+            """, LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond());
 
     @Captor
     ArgumentCaptor<AirValue> indoorAirValueArgumentCaptor;
