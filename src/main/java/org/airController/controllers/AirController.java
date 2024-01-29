@@ -32,6 +32,14 @@ public class AirController implements Runnable {
 
     @Override
     public void run() {
+        try {
+            doRun();
+        } catch (Exception exception) {
+            logger.error("Exception in AirController loop:", exception);
+        }
+    }
+
+    private void doRun() {
         final LocalDateTime now = LocalDateTime.now();
         sensorValues.invalidateSensorValuesIfNeeded();
         final boolean freshAirOnForHumidityControl = humidityExchanger.turnFreshAirOn(sensorValues);

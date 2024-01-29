@@ -34,6 +34,14 @@ public class OutdoorSensorImpl implements OutdoorSensor {
 
     @Override
     public void run() {
+        try {
+            doRun();
+        } catch (Exception exception) {
+            logger.error("Exception in OutdoorSensor loop:", exception);
+        }
+    }
+
+    private void doRun() {
         final Optional<String> request = httpsGetRequest.sendRequest();
         if (request.isEmpty()) {
             logger.error("Outdoor sensor request failed");

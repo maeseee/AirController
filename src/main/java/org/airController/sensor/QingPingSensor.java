@@ -51,6 +51,14 @@ public class QingPingSensor implements IndoorSensor {
 
     @Override
     public void run() {
+        try {
+            doRun();
+        } catch (Exception exception) {
+            logger.error("Exception in QingPing sensor loop:", exception);
+        }
+    }
+
+    private void doRun() {
         if (accessTokenValidUntil == null || accessTokenValidUntil.isBefore(LocalDateTime.now())) {
             updateAccessToken();
         }
