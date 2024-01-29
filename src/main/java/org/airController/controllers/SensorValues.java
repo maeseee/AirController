@@ -17,9 +17,7 @@ public class SensorValues implements IndoorSensorObserver, OutdoorSensorObserver
     private static final int SENSOR_INVALIDATION_DURATION = 4;
 
     private AirValue indoorAirValue;
-    private LocalDateTime lastIndoorAirValueUpdate;
     private AirValue outdoorAirValue;
-    private LocalDateTime lastOutdoorAirValueUpdate;
 
     public SensorValues() {
     }
@@ -31,10 +29,6 @@ public class SensorValues implements IndoorSensorObserver, OutdoorSensorObserver
 
     public void invalidateSensorValuesIfNeeded() {
         final LocalDateTime now = LocalDateTime.now();
-        if (lastIndoorAirValueUpdate == null || lastOutdoorAirValueUpdate == null) {
-            logger.info("There was no sensor update jet!");
-            return;
-        }
         final LocalDateTime invalidationTime = now.minusHours(SENSOR_INVALIDATION_DURATION);
         checkIndoorAirValue(now, invalidationTime);
         checkOutdoorAirValue(now, invalidationTime);
@@ -82,13 +76,11 @@ public class SensorValues implements IndoorSensorObserver, OutdoorSensorObserver
     @Override
     public void updateIndoorAirValue(AirValue indoorAirValue) {
         this.indoorAirValue = indoorAirValue;
-        lastIndoorAirValueUpdate = indoorAirValue.getTime();
     }
 
     @Override
     public void updateOutdoorAirValue(AirValue outdoorAirValue) {
         this.outdoorAirValue = outdoorAirValue;
-        lastOutdoorAirValueUpdate = outdoorAirValue.getTime();
     }
 
     public Optional<CarbonDioxide> getIndoorCo2() {
@@ -107,16 +99,16 @@ public class SensorValues implements IndoorSensorObserver, OutdoorSensorObserver
     }
 
     private void checkIndoorAirValue(LocalDateTime now, LocalDateTime invalidationTime) {
-        if (invalidationTime.isAfter(lastIndoorAirValueUpdate)) {
-            final Duration lastUpdate = Duration.between(lastIndoorAirValueUpdate, now);
+        if (indoorAirValue != null && invalidationTime.isAfter(indoorAirValue.getTimeStamp())) {
+            final Duration lastUpdate = Duration.between(indoorAirValue.getTimeStamp(), now);
             logger.error("There was no indoor sensor update for " + lastUpdate.toHours() + " hours!");
             indoorAirValue = null;
         }
     }
 
     private void checkOutdoorAirValue(LocalDateTime now, LocalDateTime invalidationTime) {
-        if (invalidationTime.isAfter(lastOutdoorAirValueUpdate)) {
-            final Duration lastUpdate = Duration.between(lastOutdoorAirValueUpdate, now);
+        if (outdoorAirValue != null && invalidationTime.isAfter(outdoorAirValue.getTimeStamp())) {
+            final Duration lastUpdate = Duration.between(outdoorAirValue.getTimeStamp(), now);
             logger.error("There was no outdoor sensor update for " + lastUpdate.toHours() + " hours!");
             outdoorAirValue = null;
         }

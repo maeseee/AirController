@@ -39,7 +39,7 @@ class SensorValuesTest {
     void testWhen4HoursPassedThenInvalidateSensorValues() {
         final AirValue airValue = mock(AirValue.class);
         final LocalDateTime nowMinus5Hours = LocalDateTime.now().minusHours(5);
-        when(airValue.getTime()).thenReturn(nowMinus5Hours);
+        when(airValue.getTimeStamp()).thenReturn(nowMinus5Hours);
         final SensorValues testee = new SensorValues();
 
         testee.updateIndoorAirValue(airValue);

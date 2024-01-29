@@ -125,7 +125,7 @@ public class QingPingSensor implements IndoorSensor {
 
     private Optional<AirValue> getAverageAirValue(List<AirValue> airValues) {
         final List<AirValue> currentAirValues = airValues.stream()
-                .filter(sensorAirValue -> sensorAirValue.getTime().isAfter(LocalDateTime.now().minusHours(1)))
+                .filter(sensorAirValue -> sensorAirValue.getTimeStamp().isAfter(LocalDateTime.now().minusHours(1)))
                 .toList();
         try {
             final double averageTemperature = currentAirValues.stream()
@@ -144,7 +144,7 @@ public class QingPingSensor implements IndoorSensor {
                     .average();
             final CarbonDioxide co2 = averageCo2.isPresent() ? CarbonDioxide.createFromPpm(averageCo2.getAsDouble()) : null;
             final LocalDateTime time = currentAirValues.stream()
-                    .map(AirValue::getTime)
+                    .map(AirValue::getTimeStamp)
                     .max(LocalDateTime::compareTo).orElse(LocalDateTime.now());
             return Optional.of(new AirValue(temperature, humidity, co2, time));
         } catch (IOException e) {

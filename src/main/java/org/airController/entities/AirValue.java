@@ -39,7 +39,7 @@ public class AirValue {
         return Optional.ofNullable(co2);
     }
 
-    public LocalDateTime getTime() {
+    public LocalDateTime getTimeStamp() {
         return time;
     }
 

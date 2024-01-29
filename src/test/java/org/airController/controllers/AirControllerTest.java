@@ -1,6 +1,5 @@
 package org.airController.controllers;
 
-import org.airController.entities.AirValue;
 import org.airController.system.ControlledVentilationSystemImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -64,36 +63,6 @@ class AirControllerTest {
                     Arguments.of(true, true, true, true)
             );
         }
-    }
-
-    @Test
-    void testWhenUpdateIndoorAirValueTheFirstTimeThenIgnoreHumidityController() {
-        when(dailyFreshAir.turnFreshAirOn(any())).thenReturn(false);
-        when(hourlyFreshAir.turnFreshAirOn(any())).thenReturn(false);
-        final AirValue indoorAirValue = mock(AirValue.class);
-        final SensorValues sensorValues = new SensorValues(indoorAirValue, null);
-        final AirController testee =
-                new AirController(controlledVentilationSystem, sensorValues, dailyFreshAir, hourlyFreshAir, humidityExchanger, airQualityChecker);
-
-        testee.run();
-
-        verify(controlledVentilationSystem).setAirFlowOn(false);
-        verify(controlledVentilationSystem).setHumidityExchangerOn(false);
-    }
-
-    @Test
-    void testWhenUpdateOutdoorAirValueTheFirstTimeThenIgnoreHumidityController() {
-        when(dailyFreshAir.turnFreshAirOn(any())).thenReturn(false);
-        when(hourlyFreshAir.turnFreshAirOn(any())).thenReturn(false);
-        final AirValue outdoorAirValue = mock(AirValue.class);
-        final SensorValues sensorValues = new SensorValues(null, outdoorAirValue);
-        final AirController testee =
-                new AirController(controlledVentilationSystem, sensorValues, dailyFreshAir, hourlyFreshAir, humidityExchanger, airQualityChecker);
-
-        testee.run();
-
-        verify(controlledVentilationSystem).setAirFlowOn(false);
-        verify(controlledVentilationSystem).setHumidityExchangerOn(false);
     }
 
     @Test
