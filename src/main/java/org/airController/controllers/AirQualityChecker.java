@@ -2,7 +2,7 @@ package org.airController.controllers;
 
 class AirQualityChecker {
 
-    private static final double UPPER_CO2_LIMIT = 900.0;
+    private static final double UPPER_CO2_LIMIT = 800.0;
 
     public boolean turnFreshAirOn(SensorValues sensorValues) {
         if (sensorValues.getIndoorCo2().isEmpty()) {
