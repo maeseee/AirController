@@ -17,13 +17,13 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static java.util.Collections.singletonList;
-
 
 public class QingPingSensor implements IndoorSensor {
     static final String APP_KEY = "me8h7AKSR";
     static final String ENVIRONMENT_VARIABLE_APP_SECRET = "qingping_app_secret";
     static final String ENCRYPTED_APP_SECRET = "P2Yg64Btliolc1DDvQFQKYZAb2ufYF10khTLrGfrb9d2kM1tA8ciYhZ2bbQeHdOLlIGmSfM4JQcG6EcnYtvm8w==";
+    static final String MAC_PRESSURE_DEVICE = "582D3480A7F4";
+    static final String MAC_CO2_DEVICE = "582D34831850";
 
     private static final Logger logger = LogManager.getLogger(QingPingSensor.class);
 
@@ -38,7 +38,7 @@ public class QingPingSensor implements IndoorSensor {
 
     public QingPingSensor() throws URISyntaxException {
         this(createAccessTokenRequest(getCredentialsForPostRequest()), createListDevicesRequest(), new JsonQingPingParser(),
-                singletonList("582D3480A7F4"));
+                Arrays.asList(MAC_PRESSURE_DEVICE, MAC_CO2_DEVICE));
     }
 
     QingPingSensor(QingPingAccessTokenRequest accessTokenRequest, QingPingListDevicesRequest listDevicesRequest, JsonQingPingParser parser,

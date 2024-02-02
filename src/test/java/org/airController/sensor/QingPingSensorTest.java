@@ -100,8 +100,8 @@ class QingPingSensorTest {
         when(accessTokenRequest.sendRequest()).thenReturn(Optional.of(SAMPLE_ACCESS_TOKEN_RESPONSE));
         final QingPingListDevicesRequest listDevicesRequest = mock(QingPingListDevicesRequest.class);
         when(listDevicesRequest.sendRequest(any())).thenReturn(Optional.of(SAMPLE_LIST_DEVICES_RESPONSE));
-        final QingPingSensor testee =
-                new QingPingSensor(accessTokenRequest, listDevicesRequest, new JsonQingPingParser(), singletonList("582D3480A7F4"));
+        final QingPingSensor testee = new QingPingSensor(accessTokenRequest, listDevicesRequest, new JsonQingPingParser(),
+                singletonList(QingPingSensor.MAC_PRESSURE_DEVICE));
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
 
@@ -119,8 +119,8 @@ class QingPingSensorTest {
         when(accessTokenRequest.sendRequest()).thenReturn(Optional.empty());
         final QingPingListDevicesRequest listDevicesRequest = mock(QingPingListDevicesRequest.class);
         when(listDevicesRequest.sendRequest(any())).thenReturn(Optional.empty());
-        final QingPingSensor testee =
-                new QingPingSensor(accessTokenRequest, listDevicesRequest, new JsonQingPingParser(), singletonList("582D3480A7F4"));
+        final QingPingSensor testee = new QingPingSensor(accessTokenRequest, listDevicesRequest, new JsonQingPingParser(),
+                singletonList(QingPingSensor.MAC_PRESSURE_DEVICE));
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
 

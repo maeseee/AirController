@@ -15,7 +15,10 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalLong;
 
 class JsonQingPingParser {
     private static final Logger logger = LogManager.getLogger(JsonQingPingParser.class);
@@ -53,7 +56,7 @@ class JsonQingPingParser {
 
     private Optional<JSONObject> getDevicesData(JSONArray devices, String macAddress) {
         for (int deviceNumber = 0; deviceNumber < devices.length(); deviceNumber++) {
-            final JSONObject device = (JSONObject) devices.get(0);
+            final JSONObject device = (JSONObject) devices.get(deviceNumber);
             final JSONObject info = device.getJSONObject("info");
             final String mac = info.getString("mac");
             if (Objects.equals(macAddress, mac)) {
