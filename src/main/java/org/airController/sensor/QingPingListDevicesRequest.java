@@ -34,13 +34,8 @@ class QingPingListDevicesRequest {
         return Optional.ofNullable(responseFromUrl);
     }
 
-    private HttpURLConnection getConnection(String accessToken) throws IOException {
-        final URI uriWithParameter;
-        try {
-            uriWithParameter = new URI(uri.toString() + "?timestamp=" + LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+    private HttpURLConnection getConnection(String accessToken) throws IOException, URISyntaxException {
+        final URI uriWithParameter = new URI(uri.toString() + "?timestamp=" + LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
         final HttpURLConnection connection = (HttpURLConnection) uriWithParameter.toURL().openConnection();
         connection.setRequestMethod("GET");
         connection.setDoOutput(true);

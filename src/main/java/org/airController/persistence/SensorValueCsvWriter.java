@@ -1,6 +1,8 @@
 package org.airController.persistence;
 
 import org.airController.entities.AirValue;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -9,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 class SensorValueCsvWriter implements SensorValuePersistence {
+    private static final Logger logger = LogManager.getLogger(SensorValueCsvWriter.class);
 
     private final String filePath;
 
@@ -27,7 +30,7 @@ class SensorValueCsvWriter implements SensorValuePersistence {
             writer.write(csvLine);
             writer.newLine();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            logger.error("CSV could not be written! " + e.getMessage());
         }
     }
 }

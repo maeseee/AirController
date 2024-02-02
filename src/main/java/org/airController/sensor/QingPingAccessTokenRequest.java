@@ -1,5 +1,8 @@
 package org.airController.sensor;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -8,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 class QingPingAccessTokenRequest {
+    private static final Logger logger = LogManager.getLogger(QingPingAccessTokenRequest.class);
 
     private final URI uri;
     private final String credentials;
@@ -28,7 +32,7 @@ class QingPingAccessTokenRequest {
             }
             connection.disconnect();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            logger.error("QingPingAccessTokenRequest failed! " + e.getMessage());
         }
         return Optional.ofNullable(responseFromUrl);
     }
