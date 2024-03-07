@@ -1,5 +1,8 @@
 package org.airController.sensor;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +15,7 @@ import java.time.ZoneOffset;
 import java.util.Optional;
 
 class QingPingListDevicesRequest {
+    private static final Logger logger = LogManager.getLogger(QingPingListDevicesRequest.class);
 
     private final URI uri;
 
@@ -28,7 +32,8 @@ class QingPingListDevicesRequest {
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 responseFromUrl = readResponseFromServer(connection.getInputStream());
             }
-        } catch (Exception e) {
+        } catch (Exception exception) {
+            logger.error("QingPingListDevicesRequest failure: ", exception);
             return Optional.empty();
         }
         return Optional.ofNullable(responseFromUrl);

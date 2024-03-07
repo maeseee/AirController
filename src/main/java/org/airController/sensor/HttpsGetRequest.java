@@ -1,5 +1,8 @@
 package org.airController.sensor;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +12,7 @@ import java.net.URI;
 import java.util.Optional;
 
 class HttpsGetRequest {
+    private static final Logger logger = LogManager.getLogger(HttpsGetRequest.class);
 
     private final URI uri;
 
@@ -26,7 +30,8 @@ class HttpsGetRequest {
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 responseFromUrl = readResponseFromServer(connection.getInputStream());
             }
-        } catch (Exception e) {
+        } catch (Exception exception) {
+            logger.error("HttpsGetRequest failure: ", exception);
             return Optional.empty();
         }
         return Optional.ofNullable(responseFromUrl);

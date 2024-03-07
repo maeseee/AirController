@@ -127,6 +127,10 @@ public class QingPingSensor implements IndoorSensor {
         final List<AirValue> currentAirValues = airValues.stream()
                 .filter(sensorAirValue -> sensorAirValue.getTimeStamp().isAfter(LocalDateTime.now().minusHours(1)))
                 .toList();
+        if (currentAirValues.isEmpty()) {
+            logger.info("No current indoor values at the moment");
+            return Optional.empty();
+        }
         try {
             final double averageTemperature = currentAirValues.stream()
                     .mapToDouble(value -> value.getTemperature().getCelsius())
@@ -147,8 +151,8 @@ public class QingPingSensor implements IndoorSensor {
                     .map(AirValue::getTimeStamp)
                     .max(LocalDateTime::compareTo).orElse(LocalDateTime.now());
             return Optional.of(new AirValue(temperature, humidity, co2, time));
-        } catch (IOException e) {
-            // Intentionally left empty
+        } catch (IOException | NoSuchElementException exception) {
+            logger.error("Unexpected error in Exception in getAverageAirValue: :", exception);
         }
         return Optional.empty();
     }
