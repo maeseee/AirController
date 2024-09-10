@@ -4,7 +4,10 @@ import java.time.Duration;
 
 public class PeriodicallyAirFlow implements Rule {
 
-    public static final double MAX_IMPACT = 0.5;
+    private static final double MAX_IMPACT = 0.5;
+    private static final Duration HOURLY_FRESH_AIR = Duration.ofMinutes(10);
+    private static final double B = MAX_IMPACT; // y = xm + b
+    private static final double M = -B / HOURLY_FRESH_AIR.toMinutes(); // y = xm + b
 
     private Timetraker timetraker;
 
@@ -15,7 +18,7 @@ public class PeriodicallyAirFlow implements Rule {
     @Override
     public Percentage getAirFlowNeed() {
         Duration airFlowOnDurationInLastHour = timetraker.getAirFlowOnDurationInLastHour();
-        double impact = -1.0 / 20 * airFlowOnDurationInLastHour.toMinutes() + 0.5;
+        double impact = M * airFlowOnDurationInLastHour.toMinutes() + B;
         return new Percentage(impact, MAX_IMPACT);
     }
 }
