@@ -2,9 +2,9 @@ package org.airController.rules;
 
 import lombok.Getter;
 
+@Getter
 public class Percentage {
 
-    @Getter
     private final double percentage;
 
     public Percentage(double percentage) {

@@ -20,7 +20,7 @@ public class DailyAirFlow implements Rule {
     public Percentage getAirFlowNeed() {
         LocalDateTime now = LocalDateTime.now();
         Duration durationToPeak = isSummerTime(MonthDay.from(now)) ? getDurationToPeakInSummer(now.toLocalTime()) : getDurationToPeakInWinter(now.toLocalTime());
-        double impact = M * durationToPeak.toHours() + B;
+        double impact = M * getDifferenceInHours(durationToPeak) + B;
         return new Percentage(impact, -MAX_IMPACT, MAX_IMPACT);
     }
 
@@ -34,5 +34,10 @@ public class DailyAirFlow implements Rule {
 
     private Duration getDurationToPeakInWinter(LocalTime timeNow) {
         return Duration.between(timeNow, WINTER_ON_TIME);
+    }
+
+    private long getDifferenceInHours(Duration durationToPeak) {
+        long hours = Math.abs(durationToPeak.toHours());
+        return hours > 12 ? 24 - hours : hours;
     }
 }
