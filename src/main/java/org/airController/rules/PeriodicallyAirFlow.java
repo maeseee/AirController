@@ -19,6 +19,6 @@ public class PeriodicallyAirFlow implements Rule {
     public Percentage getAirFlowNeed() {
         Duration airFlowOnDurationInLastHour = timetraker.getAirFlowOnDurationInLastHour();
         double impact = M * airFlowOnDurationInLastHour.toMinutes() + B;
-        return new Percentage(impact, MAX_IMPACT);
+        return new Percentage(impact, -MAX_IMPACT, MAX_IMPACT);
     }
 }

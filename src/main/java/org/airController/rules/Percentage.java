@@ -8,13 +8,13 @@ public class Percentage {
     private final double percentage;
 
     public Percentage(double percentage) {
-        this.percentage = Math.min(Math.max(percentage, -1), 1);
+        this(percentage, -1, 1);
     }
 
-    public Percentage(double percentage, double limiter) {
-        if (Math.abs(limiter) > 1) {
-            throw new IllegalArgumentException("limiter must be between -1 and 1");
+    public Percentage(double percentage, double lowerBound, double upperBound) {
+        if (lowerBound < -1 || upperBound > 1 || lowerBound > upperBound) {
+            throw new IllegalArgumentException("bounds must be between -1 and 1");
         }
-        this.percentage = Math.min(Math.max(percentage, -1), 1);
+        this.percentage = Math.min(Math.max(percentage, lowerBound), upperBound);
     }
 }

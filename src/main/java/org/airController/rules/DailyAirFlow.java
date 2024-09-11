@@ -21,7 +21,7 @@ public class DailyAirFlow implements Rule {
         LocalDateTime now = LocalDateTime.now();
         Duration durationToPeak = isSummerTime(MonthDay.from(now)) ? getDurationToPeakInSummer(now.toLocalTime()) : getDurationToPeakInWinter(now.toLocalTime());
         double impact = M * durationToPeak.toHours() + B;
-        return new Percentage(impact, MAX_IMPACT);
+        return new Percentage(impact, -MAX_IMPACT, MAX_IMPACT);
     }
 
     private boolean isSummerTime(MonthDay dateNow) {
