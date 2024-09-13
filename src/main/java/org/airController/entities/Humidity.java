@@ -12,7 +12,7 @@ public class Humidity {
     }
 
     /**
-     * @return absolute humidity in [%]
+     * @return relative humidity in [%]
      */
     public double getRelativeHumidity() {
         return relativeHumidity;

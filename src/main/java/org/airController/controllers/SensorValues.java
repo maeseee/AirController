@@ -73,6 +73,10 @@ public class SensorValues implements IndoorSensorObserver, OutdoorSensorObserver
         return indoorAirValue.getAbsoluteHumidity() > outdoorAirValue.getAbsoluteHumidity();
     }
 
+    public Humidity getIndoorHumidity() {
+        return indoorAirValue.getHumidity();
+    }
+
     @Override
     public void updateIndoorAirValue(AirValue indoorAirValue) {
         this.indoorAirValue = indoorAirValue;
