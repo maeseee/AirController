@@ -1,11 +1,12 @@
 package org.airController.rules;
 
+import org.airController.controllers.Rule;
 import org.airController.controllers.SensorValues;
 import org.airController.entities.CarbonDioxide;
 
 import java.util.Optional;
 
-public class CO2ControlAirFlow implements Rule {
+class CO2ControlAirFlow implements Rule {
 
     private static final double UPPER_LIMIT = 1100;
     private static final double LOWER_LIMIT = 500;
@@ -19,7 +20,12 @@ public class CO2ControlAirFlow implements Rule {
     }
 
     @Override
-    public Percentage getAirFlowNeed() {
+    public String name() {
+        return "CO2 air flow control";
+    }
+
+    @Override
+    public Percentage turnOn() {
         Optional<CarbonDioxide> indoorCo2 = sensorValues.getIndoorCo2();
         if (indoorCo2.isEmpty()) {
             return new Percentage(0.0);

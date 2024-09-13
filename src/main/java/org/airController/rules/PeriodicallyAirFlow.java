@@ -1,8 +1,10 @@
 package org.airController.rules;
 
+import org.airController.controllers.Rule;
+
 import java.time.Duration;
 
-public class PeriodicallyAirFlow implements Rule {
+class PeriodicallyAirFlow implements Rule {
 
     private static final double MAX_IMPACT = 0.5;
     private static final Duration HOURLY_FRESH_AIR = Duration.ofMinutes(10);
@@ -16,7 +18,12 @@ public class PeriodicallyAirFlow implements Rule {
     }
 
     @Override
-    public Percentage getAirFlowNeed() {
+    public String name() {
+        return "Hourly air flow control";
+    }
+
+    @Override
+    public Percentage turnOn() {
         Duration airFlowOnDurationInLastHour = timetraker.getAirFlowOnDurationInLastHour();
         double impact = M * airFlowOnDurationInLastHour.toMinutes() + B;
         return new Percentage(impact, -MAX_IMPACT, MAX_IMPACT);

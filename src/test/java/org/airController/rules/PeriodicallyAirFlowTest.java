@@ -14,14 +14,14 @@ import static org.mockito.Mockito.when;
 class PeriodicallyAirFlowTest {
 
     @Mock
-    Timetraker timetraker;
+    private Timetraker timetraker;
 
     @Test
     void shouldReturnMax_when0OnTime() {
         when(timetraker.getAirFlowOnDurationInLastHour()).thenReturn(Duration.ofMinutes(0));
         PeriodicallyAirFlow testee = new PeriodicallyAirFlow(timetraker);
 
-        Percentage airFlowNeed = testee.getAirFlowNeed();
+        Percentage airFlowNeed = testee.turnOn();
 
         assertThat(airFlowNeed.getPercentage()).isEqualTo(0.5);
     }
@@ -31,7 +31,7 @@ class PeriodicallyAirFlowTest {
         when(timetraker.getAirFlowOnDurationInLastHour()).thenReturn(Duration.ofMinutes(20));
         PeriodicallyAirFlow testee = new PeriodicallyAirFlow(timetraker);
 
-        Percentage airFlowNeed = testee.getAirFlowNeed();
+        Percentage airFlowNeed = testee.turnOn();
 
         assertThat(airFlowNeed.getPercentage()).isEqualTo(-0.5);
     }

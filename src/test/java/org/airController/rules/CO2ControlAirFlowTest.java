@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 class CO2ControlAirFlowTest {
 
     @Mock
-    SensorValues sensorValues;
+    private SensorValues sensorValues;
 
     @ParameterizedTest(name = "{index} => co2 ppm={0}, expectedResult={1}")
     @CsvSource({
@@ -32,7 +32,7 @@ class CO2ControlAirFlowTest {
         when(sensorValues.getIndoorCo2()).thenReturn(carbonDioxide);
         CO2ControlAirFlow testee = new CO2ControlAirFlow(sensorValues);
 
-        Percentage result = testee.getAirFlowNeed();
+        Percentage result = testee.turnOn();
 
         assertThat(result.getPercentage()).isEqualTo(expectedResult);
     }

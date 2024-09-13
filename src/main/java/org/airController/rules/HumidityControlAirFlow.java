@@ -1,9 +1,10 @@
 package org.airController.rules;
 
+import org.airController.controllers.Rule;
 import org.airController.controllers.SensorValues;
 import org.airController.entities.Humidity;
 
-public class HumidityControlAirFlow implements Rule {
+class HumidityControlAirFlow implements Rule {
 
     private static final double UPPER_LIMIT = 60.0;
     private static final double LOWER_LIMIT = 44.0;
@@ -17,7 +18,12 @@ public class HumidityControlAirFlow implements Rule {
     }
 
     @Override
-    public Percentage getAirFlowNeed() {
+    public String name() {
+        return "Humidity air flow control";
+    }
+
+    @Override
+    public Percentage turnOn() {
         Humidity indoorHumidity = sensorValues.getIndoorHumidity();
         double impact = M * indoorHumidity.getRelativeHumidity() + B;
         double sign = sensorValues.isIndoorHumidityAboveOutdoorHumidity() ? 1 : -1;

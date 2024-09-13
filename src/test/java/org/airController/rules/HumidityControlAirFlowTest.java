@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 class HumidityControlAirFlowTest {
 
     @Mock
-    SensorValues sensorValues;
+    private SensorValues sensorValues;
 
     @ParameterizedTest(name = "{index} => humidity %={0}, expectedResult={1}")
     @CsvSource({
@@ -34,7 +34,7 @@ class HumidityControlAirFlowTest {
         when(sensorValues.isIndoorHumidityAboveOutdoorHumidity()).thenReturn(true);
         HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
 
-        Percentage result = testee.getAirFlowNeed();
+        Percentage result = testee.turnOn();
 
         assertThat(result.getPercentage()).isCloseTo(expectedResult, Offset.offset(0.01));
     }
@@ -53,7 +53,7 @@ class HumidityControlAirFlowTest {
         when(sensorValues.isIndoorHumidityAboveOutdoorHumidity()).thenReturn(false);
         HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
 
-        Percentage result = testee.getAirFlowNeed();
+        Percentage result = testee.turnOn();
 
         assertThat(result.getPercentage()).isCloseTo(expectedResult, Offset.offset(0.01));
     }
