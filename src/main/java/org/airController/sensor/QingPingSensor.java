@@ -119,7 +119,7 @@ public class QingPingSensor implements IndoorSensor {
     }
 
     private void notifyObservers(AirValue indoorAirValue) {
-        logger.info("New indoor sensor value: " + indoorAirValue);
+        logger.info("New indoor sensor value: {}", indoorAirValue);
         observers.forEach(observer -> observer.updateIndoorSensorValue(indoorAirValue));
     }
 

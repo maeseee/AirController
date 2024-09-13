@@ -31,7 +31,7 @@ class OneWireCommunication {
             final int microsecondsToStateChange = waitUntilStateChanges(lastState);
             lastState = Gpio.digitalRead(gpioFunction.getGpio());
             if (microsecondsToStateChange == 255) {
-                logger.error("OneWireCommunication timeout. transition=" + transition);
+                logger.error("OneWireCommunication timeout. transition={}", transition);
                 break;
             }
 

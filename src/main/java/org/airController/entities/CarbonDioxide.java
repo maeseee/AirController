@@ -1,18 +1,17 @@
 package org.airController.entities;
 
+import lombok.Getter;
+
 import java.io.IOException;
 import java.util.Objects;
 
+@Getter
 public class CarbonDioxide {
 
     private final double ppm;
 
     private CarbonDioxide(double ppm) {
         this.ppm = ppm;
-    }
-
-    public double getPpm() {
-        return ppm;
     }
 
     @Override

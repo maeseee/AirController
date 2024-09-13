@@ -1,7 +1,10 @@
 package org.airController.entities;
 
+import lombok.Getter;
+
 import java.util.Objects;
 
+@Getter
 public class Temperature {
 
     private static final double KELVIN_TO_CELSIUS = 273.15;
@@ -12,17 +15,13 @@ public class Temperature {
         this.celsius = celsius;
     }
 
-    public double getCelsius() {
-        return celsius;
-    }
-
     public double getKelvin() {
         return celsius + KELVIN_TO_CELSIUS;
     }
 
     @Override
     public String toString() {
-        return String.format("Temperature=%.2f°C",  + celsius);
+        return String.format("Temperature=%.2f°C", +celsius);
     }
 
     public static Temperature createFromCelsius(double celsius) {

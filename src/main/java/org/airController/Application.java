@@ -1,6 +1,5 @@
 package org.airController;
 
-import org.airController.controllers.AirController;
 import org.airController.controllers.FreshAirController;
 import org.airController.controllers.Rule;
 import org.airController.controllers.SensorValues;
@@ -33,7 +32,6 @@ public class Application {
 
     private final OutdoorSensor outdoorSensor;
     private final IndoorSensor indoorSensor;
-    private final AirController airController;
     private final FreshAirController freshAirController;
     private final ScheduledExecutorService executor;
 
@@ -52,7 +50,6 @@ public class Application {
         outdoorSensor.addObserver(persistenceObserver);
         indoorSensor.addObserver(sensorValues);
         indoorSensor.addObserver(persistenceObserver);
-        this.airController = new AirController(ventilationSystem, sensorValues);
         this.freshAirController = createFreshAirController(ventilationSystem, sensorValues);
         this.executor = executor;
     }
@@ -60,7 +57,7 @@ public class Application {
     public void run() {
         executor.scheduleAtFixedRate(outdoorSensor, 0, OUTDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
         executor.scheduleAtFixedRate(indoorSensor, 0, INDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
-        executor.scheduleAtFixedRate(airController, 0, VENTILATION_SYSTEM_PERIOD_MINUTES, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(freshAirController, 0, VENTILATION_SYSTEM_PERIOD_MINUTES, TimeUnit.MINUTES);
 
         logger.info("All setup and running...");
     }

@@ -32,7 +32,7 @@ class QingPingAccessTokenRequest {
             }
             connection.disconnect();
         } catch (IOException e) {
-            logger.error("QingPingAccessTokenRequest failed! " + e.getMessage());
+            logger.error("QingPingAccessTokenRequest failed! {}", e.getMessage());
         }
         return Optional.ofNullable(responseFromUrl);
     }

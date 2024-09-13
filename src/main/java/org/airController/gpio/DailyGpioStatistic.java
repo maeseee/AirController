@@ -41,7 +41,7 @@ class DailyGpioStatistic {
 
     private void startNewDay() {
         final double onPercentage = getOnPercentage(SECONDS_PER_DAY);
-        logger.info("Daily on time of " + name + " is " + onPercentage + "%");
+        logger.info("Daily on time of {} is {}%", name, onPercentage);
         lastTimeStamp = NEW_DAY;
         totalDailyOnTime = 0;
     }

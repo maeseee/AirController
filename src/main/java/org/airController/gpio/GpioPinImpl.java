@@ -17,16 +17,16 @@ public class GpioPinImpl implements GpioPin {
     private final DailyGpioStatistic dailyGpioStatistic;
 
     public GpioPinImpl(GpioFunction pinFunction, boolean initialHigh) throws IOException {
-        this(pinFunction.name(), new RaspberryPiPin(pinFunction),initialHigh);
+        this(pinFunction.name(), new RaspberryPiPin(pinFunction), initialHigh);
     }
 
     public GpioPinImpl(String name, RaspberryPiPin raspberryPiPin, boolean initialHigh) {
         this.name = name;
         this.raspberryPiPin = raspberryPiPin;
-        this.dailyGpioStatistic =  new DailyGpioStatistic(name, initialHigh);
+        this.dailyGpioStatistic = new DailyGpioStatistic(name, initialHigh);
 
         raspberryPiPin.export(true);
-        logger.info(name + " set initial to " + (initialHigh ? "on" : "off"));
+        logger.info("{} set initial to {}", name, initialHigh ? "on" : "off");
         raspberryPiPin.write(initialHigh);
     }
 
@@ -39,7 +39,7 @@ public class GpioPinImpl implements GpioPin {
     public boolean setGpioState(boolean stateOn) {
         dailyGpioStatistic.stateChange(stateOn, LocalTime.now());
         if (getGpioState() != stateOn) {
-            logger.info(name + " set to " + (stateOn ? "on" : "off"));
+            logger.info("{} set to {}", name, stateOn ? "on" : "off");
             raspberryPiPin.write(stateOn);
             return true;
         }

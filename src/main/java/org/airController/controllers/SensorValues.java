@@ -21,26 +21,6 @@ public class SensorValues implements IndoorSensorObserver, OutdoorSensorObserver
         this.outdoorSensorValue = outdoorSensorValue;
     }
 
-    public boolean isIndoorHumidityAboveUpperTarget(Humidity upperTargetHumidity) {
-        final double upperTargetAbsoluteHumidity = upperTargetHumidity.getAbsoluteHumidity(indoorSensorValue.getTemperature());
-        return indoorSensorValue.getAbsoluteHumidity() > upperTargetAbsoluteHumidity;
-    }
-
-    public boolean isIndoorHumidityBelowLowerTarget(Humidity lowerTargetHumidity) {
-        final double lowerTargetAbsoluteHumidity = lowerTargetHumidity.getAbsoluteHumidity(indoorSensorValue.getTemperature());
-        return indoorSensorValue.getAbsoluteHumidity() < lowerTargetAbsoluteHumidity;
-    }
-
-    public boolean isOutdoorHumidityBelowLowerTarget(Humidity lowerTargetHumidity) {
-        final double lowerTargetAbsoluteHumidity = lowerTargetHumidity.getAbsoluteHumidity(indoorSensorValue.getTemperature());
-        return outdoorSensorValue.getAbsoluteHumidity() < lowerTargetAbsoluteHumidity;
-    }
-
-    public boolean isOutdoorHumidityAboveUpperTarget(Humidity upperTargetHumidity) {
-        final double upperTargetAbsoluteHumidity = upperTargetHumidity.getAbsoluteHumidity(indoorSensorValue.getTemperature());
-        return outdoorSensorValue.getAbsoluteHumidity() > upperTargetAbsoluteHumidity;
-    }
-
     public boolean isIndoorHumidityAboveOutdoorHumidity() {
         return indoorSensorValue.getAbsoluteHumidity() > outdoorSensorValue.getAbsoluteHumidity();
     }

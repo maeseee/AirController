@@ -30,7 +30,7 @@ class SensorValueCsvWriter implements SensorValuePersistence {
             writer.write(csvLine);
             writer.newLine();
         } catch (IOException e) {
-            logger.error("CSV could not be written! " + e.getMessage());
+            logger.error("CSV could not be written! {}", e.getMessage());
         }
     }
 }

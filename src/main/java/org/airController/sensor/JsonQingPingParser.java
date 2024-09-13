@@ -44,7 +44,7 @@ class JsonQingPingParser {
             final JSONArray devices = jsonObject.getJSONArray("devices");
             final Optional<JSONObject> deviceData = getDevicesData(devices, macAddress);
             if (deviceData.isEmpty()) {
-                logger.info("No device MAC-Address " + macAddress + " found!");
+                logger.info("No device MAC-Address {} found!", macAddress);
                 return Optional.empty();
             }
             final AirValue airValue = getAirValue(deviceData.get());

@@ -1,5 +1,8 @@
 package org.airController.gpioAdapter;
 
+import lombok.Getter;
+
+@Getter
 public enum GpioFunction {
     DHT22_SENSOR(7, 4),        // PIN 7
     AIR_FLOW(21, 5),           // PIN 29
@@ -15,11 +18,4 @@ public enum GpioFunction {
         this.bcm = bcm;
     }
 
-    public int getGpio() {
-        return gpio;
-    }
-
-    public int getBcm() {
-        return bcm;
-    }
 }

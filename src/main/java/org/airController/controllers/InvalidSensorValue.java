@@ -31,7 +31,7 @@ public class InvalidSensorValue implements SensorValue {
 
     @Override
     public LocalDateTime getTimeStamp() {
-        return null;
+        return LocalDateTime.now();
     }
 
     @Override
