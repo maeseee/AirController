@@ -18,6 +18,7 @@ public class HumidityControlExchanger implements Rule {
 
     @Override
     public Percentage turnOn() {
-        return new Percentage(humidityControlAirFlow.turnOn().getPercentage() * -1);
+        double impact = humidityControlAirFlow.turnOn().getPercentage() < 0 ? 1 : -1;
+        return new Percentage(impact);
     }
 }
