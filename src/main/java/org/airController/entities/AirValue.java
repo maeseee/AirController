@@ -8,21 +8,21 @@ public class AirValue {
     private final Temperature temperature;
     private final Humidity humidity;
     private final CarbonDioxide co2;
-    private final LocalDateTime time;
+    private final LocalDateTime timeStamp;
 
     public AirValue(Temperature temperature, Humidity humidity) {
         this(temperature, humidity, null, LocalDateTime.now());
     }
 
-    public AirValue(Temperature temperature, Humidity humidity, LocalDateTime time) {
-        this(temperature, humidity, null, time);
+    public AirValue(Temperature temperature, Humidity humidity, LocalDateTime timeStamp) {
+        this(temperature, humidity, null, timeStamp);
     }
 
-    public AirValue(Temperature temperature, Humidity humidity, CarbonDioxide co2, LocalDateTime time) {
+    public AirValue(Temperature temperature, Humidity humidity, CarbonDioxide co2, LocalDateTime timeStamp) {
         this.temperature = temperature;
         this.humidity = humidity;
         this.co2 = co2;
-        this.time = time;
+        this.timeStamp = timeStamp;
     }
 
     public Temperature getTemperature() {
@@ -40,7 +40,7 @@ public class AirValue {
     }
 
     public LocalDateTime getTimeStamp() {
-        return time;
+        return timeStamp;
     }
 
     public double getAbsoluteHumidity() {
