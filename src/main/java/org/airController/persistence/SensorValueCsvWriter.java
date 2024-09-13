@@ -1,6 +1,6 @@
 package org.airController.persistence;
 
-import org.airController.entities.AirValue;
+import org.airController.controllers.SensorValue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,7 +19,7 @@ class SensorValueCsvWriter implements SensorValuePersistence {
     }
 
     @Override
-    public void persist(AirValue value) {
+    public void persist(SensorValue value) {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         final String formattedTime = value.getTimeStamp().format(formatter);
         final String formattedTemperature = String.format("%.2f", value.getTemperature().getCelsius());

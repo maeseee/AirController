@@ -1,13 +1,21 @@
 package org.airController.entities;
 
+import lombok.Getter;
+import org.airController.controllers.SensorValue;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
-public class AirValue {
+public class AirValue implements SensorValue {
+    private static final Duration SENSOR_INVALIDATION = Duration.ofHours(4);
+    @Getter
     private final Temperature temperature;
+    @Getter
     private final Humidity humidity;
     private final CarbonDioxide co2;
+    @Getter
     private final LocalDateTime timeStamp;
 
     public AirValue(Temperature temperature, Humidity humidity) {
@@ -25,26 +33,19 @@ public class AirValue {
         this.timeStamp = timeStamp;
     }
 
-    public Temperature getTemperature() {
-
-        return temperature;
-    }
-
-    public Humidity getHumidity() {
-
-        return humidity;
-    }
-
+    @Override
     public Optional<CarbonDioxide> getCo2() {
         return Optional.ofNullable(co2);
     }
 
-    public LocalDateTime getTimeStamp() {
-        return timeStamp;
-    }
-
+    @Override
     public double getAbsoluteHumidity() {
         return humidity.getAbsoluteHumidity(temperature);
+    }
+
+    @Override
+    public boolean isSensorValid() {
+        return LocalDateTime.now().minus(SENSOR_INVALIDATION).isBefore(timeStamp);
     }
 
     @Override

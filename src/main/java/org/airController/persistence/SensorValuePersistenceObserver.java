@@ -1,6 +1,6 @@
 package org.airController.persistence;
 
-import org.airController.entities.AirValue;
+import org.airController.controllers.SensorValue;
 import org.airController.sensorAdapter.IndoorSensorObserver;
 import org.airController.sensorAdapter.OutdoorSensorObserver;
 
@@ -13,12 +13,12 @@ public class SensorValuePersistenceObserver implements IndoorSensorObserver, Out
     private final SensorValuePersistence outdoorValuePersistence = new SensorValueCsvWriter(OUTDOOR_SENSOR_VALUES_FILE_PATH);
 
     @Override
-    public void updateIndoorAirValue(AirValue indoorAirValue) {
-        indoorValuePersistence.persist(indoorAirValue);
+    public void updateIndoorSensorValue(SensorValue indoorSensorValue) {
+        indoorValuePersistence.persist(indoorSensorValue);
     }
 
     @Override
-    public void updateOutdoorAirValue(AirValue outdoorAirValue) {
-        outdoorValuePersistence.persist(outdoorAirValue);
+    public void updateOutdoorSensorValue(SensorValue outdoorSensorValue) {
+        outdoorValuePersistence.persist(outdoorSensorValue);
     }
 }

@@ -43,13 +43,13 @@ public class OneWireSensor implements IndoorSensor {
 
     private void notifyObservers(AirValue indoorAirValue) {
         logger.info("New indoor sensor value: " + indoorAirValue);
-        observers.forEach(observer -> observer.updateIndoorAirValue(indoorAirValue));
+        observers.forEach(observer -> observer.updateIndoorSensorValue(indoorAirValue));
     }
 
     public static void main(String[] args) throws IOException {
         final Dht22Impl dht22 = new Dht22Impl();
         final OneWireSensor indoorSensor = new OneWireSensor(dht22);
-        indoorSensor.addObserver(System.out::println);
+        indoorSensor.addObserver(x -> System.out.println(x));
         final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(indoorSensor, 0, 10, TimeUnit.SECONDS);
     }

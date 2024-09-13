@@ -33,7 +33,7 @@ class OneWireSensorTest {
 
         testee.run();
 
-        verify(observer).updateIndoorAirValue(indoorAirValueArgumentCaptor.capture());
+        verify(observer).updateIndoorSensorValue(indoorAirValueArgumentCaptor.capture());
         final AirValue indoorAirValueCapture = indoorAirValueArgumentCaptor.getValue();
         assertEquals(indoorAirValue, indoorAirValueCapture);
     }

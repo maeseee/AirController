@@ -45,7 +45,6 @@ class AirControllerTest {
 
         verify(controlledVentilationSystem).setAirFlowOn(shouldFreshAirBeOn);
         verify(controlledVentilationSystem).setHumidityExchangerOn(false);
-        verify(sensorValues).invalidateSensorValuesIfNeeded();
     }
 
     static class FreshAirArgumentProvider implements ArgumentsProvider {
@@ -79,6 +78,5 @@ class AirControllerTest {
         verify(humidityExchanger).turnHumidityExchangerOn(sensorValues);
         verify(controlledVentilationSystem).setAirFlowOn(false);
         verify(controlledVentilationSystem).setHumidityExchangerOn(false);
-        verify(sensorValues).invalidateSensorValuesIfNeeded();
     }
 }

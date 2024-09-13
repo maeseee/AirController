@@ -107,7 +107,7 @@ class QingPingSensorTest {
 
         testee.run();
 
-        verify(observer).updateIndoorAirValue(indoorAirValueArgumentCaptor.capture());
+        verify(observer).updateIndoorSensorValue(indoorAirValueArgumentCaptor.capture());
         final AirValue indoorAirValueCapture = indoorAirValueArgumentCaptor.getValue();
         final AirValue indoorAirValue = new AirValue(Temperature.createFromCelsius(21.5), Humidity.createFromRelative(54.2));
         assertEquals(indoorAirValue, indoorAirValueCapture);
@@ -151,7 +151,7 @@ class QingPingSensorTest {
 
         testee.run();
 
-        verify(observer).updateIndoorAirValue(indoorAirValueArgumentCaptor.capture());
+        verify(observer).updateIndoorSensorValue(indoorAirValueArgumentCaptor.capture());
         final AirValue indoorAirValueCapture = indoorAirValueArgumentCaptor.getValue();
         final AirValue
                 indoorAirValue = new AirValue(Temperature.createFromCelsius(temperatureExp), Humidity.createFromRelative(humidityExp), co2, time1);

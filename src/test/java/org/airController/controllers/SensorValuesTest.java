@@ -6,47 +6,41 @@ import org.airController.entities.Temperature;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class SensorValuesTest {
 
     @Test
-    void testWhenUpdateIndoorAirValueThenUseNewValue() throws IOException {
-        final AirValue airValue = new AirValue(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(50.0));
+    void testWhenUpdateIndoorSensorValueThenUseNewValue() throws IOException {
+        Humidity humidity = Humidity.createFromRelative(50.0);
+        final AirValue airValue = new AirValue(Temperature.createFromCelsius(23.0), humidity);
         final SensorValues testee = new SensorValues();
 
-        testee.updateIndoorAirValue(airValue);
+        testee.updateIndoorSensorValue(airValue);
 
-        assertEquals(airValue, testee.getIndoorAirValue());
+        assertThat(testee.getIndoorHumidity()).isPresent();
+        assertThat(testee.getIndoorHumidity().get()).isEqualTo(humidity);
     }
 
     @Test
-    void testWhenUpdateOutdoorAirValueThenUseNewValue() throws IOException {
-        final AirValue airValue = new AirValue(Temperature.createFromCelsius(-11.0), Humidity.createFromRelative(99.0));
-        final SensorValues testee = new SensorValues();
-
-        testee.updateOutdoorAirValue(airValue);
-
-        assertEquals(airValue, testee.getOutdoorAirValue());
-    }
-
-    @Test
-    void testWhen4HoursPassedThenInvalidateSensorValues() {
+    void testWhenSensorInvalidThenInvalidateSensorValues() {
         final AirValue airValue = mock(AirValue.class);
-        final LocalDateTime nowMinus5Hours = LocalDateTime.now().minusHours(5);
-        when(airValue.getTimeStamp()).thenReturn(nowMinus5Hours);
+        when(airValue.isSensorValid()).thenReturn(false);
         final SensorValues testee = new SensorValues();
 
-        testee.updateIndoorAirValue(airValue);
-        testee.updateOutdoorAirValue(airValue);
-        testee.invalidateSensorValuesIfNeeded();
+        testee.updateIndoorSensorValue(airValue);
+        testee.updateOutdoorSensorValue(airValue);
 
-        assertNull(testee.getIndoorAirValue());
-        assertNull(testee.getOutdoorAirValue());
+        assertThat(testee.getIndoorHumidity()).isNotPresent();
+    }
+
+    @Test
+    void testWhenInitializedThenHaveInvalidSensorValues() {
+        final SensorValues testee = new SensorValues();
+
+        assertThat(testee.getIndoorHumidity()).isNotPresent();
     }
 }

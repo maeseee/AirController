@@ -1,8 +1,8 @@
 package org.airController.persistence;
 
-import org.airController.entities.AirValue;
+import org.airController.controllers.SensorValue;
 
 public interface SensorValuePersistence {
 
-    void persist(AirValue value);
+    void persist(SensorValue value);
 }
