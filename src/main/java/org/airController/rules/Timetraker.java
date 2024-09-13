@@ -4,6 +4,6 @@ import java.time.Duration;
 
 public class Timetraker {
     public Duration getAirFlowOnDurationInLastHour() {
-        return Duration.ofHours(1);
+        return Duration.ofMinutes(10); // TODO implement
     }
 }

@@ -1,11 +1,14 @@
 package org.airController;
 
 import org.airController.controllers.AirController;
+import org.airController.controllers.FreshAirController;
+import org.airController.controllers.Rule;
 import org.airController.controllers.SensorValues;
 import org.airController.gpio.GpioPinImpl;
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
 import org.airController.persistence.SensorValuePersistenceObserver;
+import org.airController.rules.*;
 import org.airController.sensor.OutdoorSensorImpl;
 import org.airController.sensor.QingPingSensor;
 import org.airController.sensorAdapter.IndoorSensor;
@@ -17,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -30,6 +34,7 @@ public class Application {
     private final OutdoorSensor outdoorSensor;
     private final IndoorSensor indoorSensor;
     private final AirController airController;
+    private final FreshAirController freshAirController;
     private final ScheduledExecutorService executor;
 
     public Application() throws IOException, URISyntaxException {
@@ -48,6 +53,7 @@ public class Application {
         indoorSensor.addObserver(sensorValues);
         indoorSensor.addObserver(persistenceObserver);
         this.airController = new AirController(ventilationSystem, sensorValues);
+        this.freshAirController = createFreshAirController(ventilationSystem, sensorValues);
         this.executor = executor;
     }
 
@@ -57,5 +63,18 @@ public class Application {
         executor.scheduleAtFixedRate(airController, 0, VENTILATION_SYSTEM_PERIOD_MINUTES, TimeUnit.MINUTES);
 
         logger.info("All setup and running...");
+    }
+
+    private FreshAirController createFreshAirController(ControlledVentilationSystem ventilationSystem, SensorValues sensorValues) {
+        Timetraker timetraker = new Timetraker();
+        CO2ControlAirFlow co2ControlAirFlow = new CO2ControlAirFlow(sensorValues);
+        DailyAirFlow dailyAirFlow = new DailyAirFlow();
+        HumidityControlAirFlow humidityControlAirFlow = new HumidityControlAirFlow(sensorValues);
+        PeriodicallyAirFlow periodicallyAirFlow = new PeriodicallyAirFlow(timetraker);
+        HumidityControlExchanger humidityControlExchanger = new HumidityControlExchanger(humidityControlAirFlow);
+
+        List<Rule> freshAirRules = List.of(co2ControlAirFlow, dailyAirFlow, humidityControlAirFlow, periodicallyAirFlow);
+        List<Rule> exchangeHumidityRules = List.of(humidityControlExchanger);
+        return new FreshAirController(ventilationSystem, freshAirRules, exchangeHumidityRules);
     }
 }

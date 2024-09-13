@@ -4,7 +4,7 @@ import org.airController.controllers.Rule;
 
 import java.time.Duration;
 
-class PeriodicallyAirFlow implements Rule {
+public class PeriodicallyAirFlow implements Rule {
 
     private static final double MAX_IMPACT = 0.5;
     private static final Duration HOURLY_FRESH_AIR = Duration.ofMinutes(10);

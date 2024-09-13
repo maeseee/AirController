@@ -6,7 +6,7 @@ import org.airController.entities.CarbonDioxide;
 
 import java.util.Optional;
 
-class CO2ControlAirFlow implements Rule {
+public class CO2ControlAirFlow implements Rule {
 
     private static final double UPPER_LIMIT = 1100;
     private static final double LOWER_LIMIT = 500;

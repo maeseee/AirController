@@ -4,7 +4,7 @@ import org.airController.controllers.Rule;
 import org.airController.controllers.SensorValues;
 import org.airController.entities.Humidity;
 
-class HumidityControlAirFlow implements Rule {
+public class HumidityControlAirFlow implements Rule {
 
     private static final double UPPER_LIMIT = 60.0;
     private static final double LOWER_LIMIT = 44.0;
