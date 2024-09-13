@@ -22,10 +22,10 @@ class CO2ControlAirFlowTest {
 
     @ParameterizedTest(name = "{index} => co2 ppm={0}, expectedResult={1}")
     @CsvSource({
-            "600, -1.0",
-            "1200, 1.0",
-            "1500, 1.0",
-            "900, 0.0"
+            "500, -1.0",
+            "1100, 1.0",
+            "1400, 1.0",
+            "800, 0.0"
     })
     void shouldCalculateCo2Percentage(double co2, double expectedResult) throws IOException {
         Optional<CarbonDioxide> carbonDioxide = Optional.of(CarbonDioxide.createFromPpm(co2));
