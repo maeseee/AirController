@@ -1,21 +1,17 @@
 package org.airController.entities;
 
+import lombok.Getter;
+
 import java.io.IOException;
 import java.util.Objects;
 
+@Getter
 public class Humidity {
 
     private final double relativeHumidity;
 
     private Humidity(double relativeHumidity) {
         this.relativeHumidity = relativeHumidity;
-    }
-
-    /**
-     * @return relative humidity in [%]
-     */
-    public double getRelativeHumidity() {
-        return relativeHumidity;
     }
 
     /**
