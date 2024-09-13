@@ -4,6 +4,8 @@ import org.airController.controllers.Rule;
 import org.airController.controllers.SensorValues;
 import org.airController.entities.Humidity;
 
+import java.util.Optional;
+
 public class HumidityControlAirFlow implements Rule {
 
     private static final double UPPER_LIMIT = 60.0;
@@ -24,9 +26,12 @@ public class HumidityControlAirFlow implements Rule {
 
     @Override
     public Percentage turnOn() {
-        Humidity indoorHumidity = sensorValues.getIndoorHumidity();
-        double impact = M * indoorHumidity.getRelativeHumidity() + B;
-        double sign = sensorValues.isIndoorHumidityAboveOutdoorHumidity() ? 1 : -1;
+        Optional<Humidity> indoorHumidity = sensorValues.getIndoorHumidity();
+        if (indoorHumidity.isEmpty()) {
+            return new Percentage(0.0);
+        }
+        double impact = M * indoorHumidity.get().getRelativeHumidity() + B;
+        double sign = sensorValues.isIndoorHumidityAboveOutdoorHumidity() ? 1.0 : -1.0;
         return new Percentage(impact * sign);
     }
 }

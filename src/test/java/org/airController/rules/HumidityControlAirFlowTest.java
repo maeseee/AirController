@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -30,7 +31,7 @@ class HumidityControlAirFlowTest {
     })
     void shouldCalculateHumidityPercentage_whenOutdoorHumidityIsBelowIndoor(double indoorHumidity, double expectedResult) throws IOException {
         Humidity humidity = Humidity.createFromRelative(indoorHumidity);
-        when(sensorValues.getIndoorHumidity()).thenReturn(humidity);
+        when(sensorValues.getIndoorHumidity()).thenReturn(Optional.of(humidity));
         when(sensorValues.isIndoorHumidityAboveOutdoorHumidity()).thenReturn(true);
         HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
 
@@ -49,7 +50,7 @@ class HumidityControlAirFlowTest {
     })
     void shouldCalculateHumidityPercentage_whenOutdoorHumidityIsAboveIndoor(double indoorHumidity, double expectedResult) throws IOException {
         Humidity humidity = Humidity.createFromRelative(indoorHumidity);
-        when(sensorValues.getIndoorHumidity()).thenReturn(humidity);
+        when(sensorValues.getIndoorHumidity()).thenReturn(Optional.of(humidity));
         when(sensorValues.isIndoorHumidityAboveOutdoorHumidity()).thenReturn(false);
         HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
 
