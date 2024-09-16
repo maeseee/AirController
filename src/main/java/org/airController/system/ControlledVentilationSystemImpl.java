@@ -11,14 +11,6 @@ public class ControlledVentilationSystemImpl implements ControlledVentilationSys
     public ControlledVentilationSystemImpl(GpioPin airFlow, GpioPin humidityExchanger) {
         this.airFlow = airFlow;
         this.humidityExchanger = humidityExchanger;
-
-        setAirFlowOn(true);
-        setHumidityExchangerOn(false);
-    }
-
-    @Override
-    public boolean isAirFlowOn() {
-        return airFlow.getGpioState();
     }
 
     @Override

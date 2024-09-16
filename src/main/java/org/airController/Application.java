@@ -42,7 +42,7 @@ public class Application {
 
     Application(GpioPin airFlow, GpioPin humidityExchanger, OutdoorSensor outdoorSensor, IndoorSensor indoorSensor,
                 SensorValuePersistenceObserver persistenceObserver, ScheduledExecutorService executor) {
-        final ControlledVentilationSystem ventilationSystem = new ControlledVentilationSystemImpl(airFlow, humidityExchanger);
+        final ControlledVentilationSystem ventilationSystem = createVentilationSystem(airFlow, humidityExchanger);
         this.outdoorSensor = outdoorSensor;
         this.indoorSensor = indoorSensor;
         final SensorValues sensorValues = new SensorValues();
@@ -60,6 +60,13 @@ public class Application {
         executor.scheduleAtFixedRate(freshAirController, 0, VENTILATION_SYSTEM_PERIOD_MINUTES, TimeUnit.MINUTES);
 
         logger.info("All setup and running...");
+    }
+
+    private ControlledVentilationSystem createVentilationSystem(GpioPin airFlow, GpioPin humidityExchanger) {
+        final ControlledVentilationSystem ventilationSystem = new ControlledVentilationSystemImpl(airFlow, humidityExchanger);
+        ventilationSystem.setAirFlowOn(true);
+        ventilationSystem.setHumidityExchangerOn(false);
+        return ventilationSystem;
     }
 
     private FreshAirController createFreshAirController(ControlledVentilationSystem ventilationSystem, SensorValues sensorValues) {
