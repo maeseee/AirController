@@ -11,10 +11,10 @@ public class PeriodicallyAirFlow implements Rule {
     private static final double B = MAX_IMPACT; // y = xm + b
     private static final double M = -B / HOURLY_FRESH_AIR.toMinutes(); // y = xm + b
 
-    private final Timetraker timetraker;
+    private final TimeKeeper timeKeeper;
 
-    public PeriodicallyAirFlow(Timetraker timetraker) {
-        this.timetraker = timetraker;
+    public PeriodicallyAirFlow(TimeKeeper timeKeeper) {
+        this.timeKeeper = timeKeeper;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class PeriodicallyAirFlow implements Rule {
 
     @Override
     public Percentage turnOn() {
-        Duration airFlowOnDurationInLastHour = timetraker.getAirFlowOnDurationInLastHour();
+        Duration airFlowOnDurationInLastHour = timeKeeper.getAirFlowOnDurationInLastHour();
         double impact = M * airFlowOnDurationInLastHour.toMinutes() + B;
         return new Percentage(impact, -MAX_IMPACT, MAX_IMPACT);
     }

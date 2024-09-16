@@ -13,6 +13,7 @@ import org.airController.sensor.QingPingSensor;
 import org.airController.sensorAdapter.IndoorSensor;
 import org.airController.sensorAdapter.OutdoorSensor;
 import org.airController.system.ControlledVentilationSystemImpl;
+import org.airController.system.ControlledVentilationSystemTimeKeeper;
 import org.airController.systemAdapter.ControlledVentilationSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,11 +64,11 @@ public class Application {
     }
 
     private FreshAirController createFreshAirController(ControlledVentilationSystem ventilationSystem, SensorValues sensorValues) {
-        Timetraker timetraker = new Timetraker();
+        ControlledVentilationSystemTimeKeeper timeKeeper = new ControlledVentilationSystemTimeKeeper();
         CO2ControlAirFlow co2ControlAirFlow = new CO2ControlAirFlow(sensorValues);
         DailyAirFlow dailyAirFlow = new DailyAirFlow();
         HumidityControlAirFlow humidityControlAirFlow = new HumidityControlAirFlow(sensorValues);
-        PeriodicallyAirFlow periodicallyAirFlow = new PeriodicallyAirFlow(timetraker);
+        PeriodicallyAirFlow periodicallyAirFlow = new PeriodicallyAirFlow(timeKeeper);
         HumidityControlExchanger humidityControlExchanger = new HumidityControlExchanger(humidityControlAirFlow);
 
         List<Rule> freshAirRules = List.of(co2ControlAirFlow, dailyAirFlow, humidityControlAirFlow, periodicallyAirFlow);

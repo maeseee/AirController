@@ -14,12 +14,12 @@ import static org.mockito.Mockito.when;
 class PeriodicallyAirFlowTest {
 
     @Mock
-    private Timetraker timetraker;
+    private TimeKeeper timekeeper;
 
     @Test
     void shouldReturnMax_when0OnTime() {
-        when(timetraker.getAirFlowOnDurationInLastHour()).thenReturn(Duration.ofMinutes(0));
-        PeriodicallyAirFlow testee = new PeriodicallyAirFlow(timetraker);
+        when(timekeeper.getAirFlowOnDurationInLastHour()).thenReturn(Duration.ofMinutes(0));
+        PeriodicallyAirFlow testee = new PeriodicallyAirFlow(timekeeper);
 
         Percentage airFlowNeed = testee.turnOn();
 
@@ -28,8 +28,8 @@ class PeriodicallyAirFlowTest {
 
     @Test
     void shouldReturnMin_when20OnTime() {
-        when(timetraker.getAirFlowOnDurationInLastHour()).thenReturn(Duration.ofMinutes(20));
-        PeriodicallyAirFlow testee = new PeriodicallyAirFlow(timetraker);
+        when(timekeeper.getAirFlowOnDurationInLastHour()).thenReturn(Duration.ofMinutes(20));
+        PeriodicallyAirFlow testee = new PeriodicallyAirFlow(timekeeper);
 
         Percentage airFlowNeed = testee.turnOn();
 

@@ -14,7 +14,7 @@ public class GpioPinImpl implements GpioPin {
 
     private final String name;
     private final RaspberryPiPin raspberryPiPin;
-    private final DailyGpioStatistic dailyGpioStatistic;
+    private final DailyGpioStatistic dailyGpioStatistic; // TODO move
 
     public GpioPinImpl(GpioFunction pinFunction, boolean initialHigh) throws IOException {
         this(pinFunction.name(), new RaspberryPiPin(pinFunction), initialHigh);
