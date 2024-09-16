@@ -13,11 +13,15 @@ public class FreshAirController implements Runnable {
     private final ControlledVentilationSystem ventilationSystem;
     private final List<Rule> freshAirRules;
     private final List<Rule> exchangeHumidityRules;
+    private boolean airFlowStateOn = true;
+    private boolean humidityExchangerStateOn = false;
 
     public FreshAirController(ControlledVentilationSystem ventilationSystem, List<Rule> freshAirRules, List<Rule> exchangeHumidityRules) {
         this.ventilationSystem = ventilationSystem;
         this.freshAirRules = freshAirRules;
         this.exchangeHumidityRules = exchangeHumidityRules;
+        ventilationSystem.setAirFlowOn(airFlowStateOn);
+        ventilationSystem.setHumidityExchangerOn(humidityExchangerStateOn);
     }
 
     @Override
@@ -34,20 +38,32 @@ public class FreshAirController implements Runnable {
         double confidentForFreshAir = freshAirRules.stream()
                 .mapToDouble(rule -> rule.turnOn().getPercentage())
                 .sum();
-        boolean freshAirOn = confidentForFreshAir > 0;
+        boolean airFlowOn = confidentForFreshAir > 0;
+        updateAirFlow(airFlowOn);
+
         double confidentHumidityExchange = exchangeHumidityRules.stream()
                 .mapToDouble(rule -> rule.turnOn().getPercentage())
                 .sum();
-        boolean exchangeHumidityOn = confidentHumidityExchange > 0;
+        boolean humidityExchangerOn = confidentHumidityExchange > 0 && airFlowOn;
+        updateHumidityExchanger(humidityExchangerOn);
 
-        final boolean stateChanged = ventilationSystem.setAirFlowOn(freshAirOn);
-        ventilationSystem.setHumidityExchangerOn(exchangeHumidityOn && freshAirOn);
+    }
 
-        if (stateChanged) {
+    private void updateAirFlow(boolean airFlowOn) {
+        if (airFlowStateOn != airFlowOn) {
+            ventilationSystem.setAirFlowOn(airFlowOn);
+            airFlowStateOn = airFlowOn;
             String freshAirPercentage = freshAirRules.stream()
                     .map(rule -> rule.name() + ": " + rule.turnOn().getPercentage() + ", ")
                     .collect(Collectors.joining());
             logger.info("Fresh air is on because of {}", freshAirPercentage);
+        }
+    }
+
+    private void updateHumidityExchanger(boolean humidityExchangerOn) {
+        if (humidityExchangerStateOn != humidityExchangerOn) {
+            ventilationSystem.setHumidityExchangerOn(humidityExchangerOn);
+            humidityExchangerStateOn = humidityExchangerOn;
         }
     }
 }

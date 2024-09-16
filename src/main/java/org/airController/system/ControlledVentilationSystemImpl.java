@@ -14,8 +14,8 @@ public class ControlledVentilationSystemImpl implements ControlledVentilationSys
     }
 
     @Override
-    public boolean setAirFlowOn(boolean on) {
-        return airFlow.setGpioState(on);
+    public void setAirFlowOn(boolean on) {
+        airFlow.setGpioState(on);
     }
 
     @Override
