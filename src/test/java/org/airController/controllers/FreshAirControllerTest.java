@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,7 +29,7 @@ class FreshAirControllerTest {
     void shouldTurnAirFlowOn_WhenPositivConfident() {
         when(rule.turnOn()).thenReturn(new Percentage(1.0));
         freshAirRules.add(rule);
-        FreshAirController testee = new FreshAirController(ventilationSystem, freshAirRules, exchangeHumidityRules);
+        FreshAirController testee = new FreshAirController(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
 
         testee.run();
 
@@ -40,7 +41,7 @@ class FreshAirControllerTest {
     void shouldNotTurnAirFlowOn_WhenNegativConfident() {
         when(rule.turnOn()).thenReturn(new Percentage(-1.0));
         freshAirRules.add(rule);
-        FreshAirController testee = new FreshAirController(ventilationSystem, freshAirRules, exchangeHumidityRules);
+        FreshAirController testee = new FreshAirController(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
 
         testee.run();
 
@@ -53,7 +54,7 @@ class FreshAirControllerTest {
         when(rule.turnOn()).thenReturn(new Percentage(1.0));
         freshAirRules.add(rule);
         exchangeHumidityRules.add(rule);
-        FreshAirController testee = new FreshAirController(ventilationSystem, freshAirRules, exchangeHumidityRules);
+        FreshAirController testee = new FreshAirController(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
 
         testee.run();
 
@@ -68,7 +69,7 @@ class FreshAirControllerTest {
         Rule humidityRule = mock(Rule.class);
         when(humidityRule.turnOn()).thenReturn(new Percentage(1.0));
         exchangeHumidityRules.add(humidityRule);
-        FreshAirController testee = new FreshAirController(ventilationSystem, freshAirRules, exchangeHumidityRules);
+        FreshAirController testee = new FreshAirController(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
 
         testee.run();
 

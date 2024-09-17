@@ -64,6 +64,7 @@ public class Application {
     }
 
     private FreshAirController createFreshAirController(ControlledVentilationSystem ventilationSystem, SensorValues sensorValues) {
+        List<ControlledVentilationSystem> ventilationSystems = List.of(ventilationSystem, new ControlledVentilationSystemTimeKeeper());
         ControlledVentilationSystemTimeKeeper timeKeeper = new ControlledVentilationSystemTimeKeeper();
         CO2ControlAirFlow co2ControlAirFlow = new CO2ControlAirFlow(sensorValues);
         DailyAirFlow dailyAirFlow = new DailyAirFlow();
@@ -73,6 +74,6 @@ public class Application {
 
         List<Rule> freshAirRules = List.of(co2ControlAirFlow, dailyAirFlow, humidityControlAirFlow, periodicallyAirFlow);
         List<Rule> exchangeHumidityRules = List.of(humidityControlExchanger);
-        return new FreshAirController(ventilationSystem, freshAirRules, exchangeHumidityRules);
+        return new FreshAirController(ventilationSystems, freshAirRules, exchangeHumidityRules);
     }
 }

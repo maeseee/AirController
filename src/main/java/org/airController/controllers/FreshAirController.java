@@ -10,18 +10,18 @@ import java.util.stream.Collectors;
 public class FreshAirController implements Runnable {
     private static final Logger logger = LogManager.getLogger(FreshAirController.class);
 
-    private final ControlledVentilationSystem ventilationSystem;
+    private final List<ControlledVentilationSystem> ventilationSystem;
     private final List<Rule> freshAirRules;
     private final List<Rule> exchangeHumidityRules;
     private boolean airFlowStateOn = true;
     private boolean humidityExchangerStateOn = false;
 
-    public FreshAirController(ControlledVentilationSystem ventilationSystem, List<Rule> freshAirRules, List<Rule> exchangeHumidityRules) {
+    public FreshAirController(List<ControlledVentilationSystem> ventilationSystem, List<Rule> freshAirRules, List<Rule> exchangeHumidityRules) {
         this.ventilationSystem = ventilationSystem;
         this.freshAirRules = freshAirRules;
         this.exchangeHumidityRules = exchangeHumidityRules;
-        ventilationSystem.setAirFlowOn(airFlowStateOn);
-        ventilationSystem.setHumidityExchangerOn(humidityExchangerStateOn);
+        ventilationSystem.forEach(system -> system.setAirFlowOn(airFlowStateOn));
+        ventilationSystem.forEach(system -> system.setHumidityExchangerOn(humidityExchangerStateOn));
     }
 
     @Override
@@ -51,7 +51,7 @@ public class FreshAirController implements Runnable {
 
     private void updateAirFlow(boolean airFlowOn) {
         if (airFlowStateOn != airFlowOn) {
-            ventilationSystem.setAirFlowOn(airFlowOn);
+            ventilationSystem.forEach(system -> system.setAirFlowOn(airFlowOn));
             airFlowStateOn = airFlowOn;
             String freshAirPercentage = freshAirRules.stream()
                     .map(rule -> rule.name() + ": " + rule.turnOn().getPercentage() + ", ")
@@ -62,7 +62,7 @@ public class FreshAirController implements Runnable {
 
     private void updateHumidityExchanger(boolean humidityExchangerOn) {
         if (humidityExchangerStateOn != humidityExchangerOn) {
-            ventilationSystem.setHumidityExchangerOn(humidityExchangerOn);
+            ventilationSystem.forEach(system -> system.setHumidityExchangerOn(humidityExchangerOn));
             humidityExchangerStateOn = humidityExchangerOn;
         }
     }
