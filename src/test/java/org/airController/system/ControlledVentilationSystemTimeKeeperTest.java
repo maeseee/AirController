@@ -1,6 +1,7 @@
 package org.airController.system;
 
 import org.assertj.core.data.Offset;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -40,5 +41,31 @@ class ControlledVentilationSystemTimeKeeperTest {
         final Duration result = testee.getAirFlowOnDurationInLastHour();
 
         assertThat(result.toMinutes()).isCloseTo(expectedResult, Offset.offset(1L));
+    }
+
+    @Test
+    void shouldCountTwoTimePeriods() {
+        final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime onTime1 = now.minusMinutes(50);
+        final LocalDateTime offTime1 = now.minusMinutes(40);
+        final LocalDateTime onTime2 = now.minusMinutes(20);
+        final LocalDateTime offTime2 = now.minusMinutes(10);
+        final ControlledVentilationSystemTimeKeeper testee = new ControlledVentilationSystemTimeKeeper();
+        try (MockedStatic<LocalDateTime> mocked = mockStatic(LocalDateTime.class)) {
+            mocked.when(LocalDateTime::now)
+                    .thenReturn(onTime1)
+                    .thenReturn(offTime1)
+                    .thenReturn(onTime2)
+                    .thenReturn(offTime2)
+                    .thenReturn(now);
+            testee.setAirFlowOn(true);
+            testee.setAirFlowOn(false);
+            testee.setAirFlowOn(true);
+            testee.setAirFlowOn(false);
+        }
+
+        final Duration result = testee.getAirFlowOnDurationInLastHour();
+
+        assertThat(result.toMinutes()).isCloseTo(20, Offset.offset(1L));
     }
 }
