@@ -6,7 +6,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +17,7 @@ public class ControlledVentilationSystemTimeKeeper implements ControlledVentilat
 
     private final List<TimePeriod> timePeriods = new ArrayList<>();
     private LocalDateTime onTime;
+    private LocalDate lastDailyReport = LocalDate.now();
 
     @Override
     public void setAirFlowOn(boolean on) {
@@ -25,9 +28,9 @@ public class ControlledVentilationSystemTimeKeeper implements ControlledVentilat
         if (!on && onTime != null) {
             TimePeriod timePeriod = new TimePeriod(onTime, now);
             timePeriods.add(timePeriod);
-            removeOldTimePeriods(now);
             onTime = null;
         }
+        dailyReportOnDayChange(now.toLocalDate());
     }
 
     @Override
@@ -42,9 +45,15 @@ public class ControlledVentilationSystemTimeKeeper implements ControlledVentilat
         return getDuration(startTime, endTime);
     }
 
-    private void removeOldTimePeriods(LocalDateTime now) {
-        LocalDateTime yesterday = now.minusDays(1);
-        timePeriods.removeIf(timePeriod -> timePeriod.off().isBefore(yesterday));
+    @Override
+    public Duration getTotalAirFlowFromDay(LocalDate day) {
+        LocalDateTime startTime = day.atStartOfDay();
+        LocalDateTime endTime = day.atTime(LocalTime.MAX);
+        return getDuration(startTime, endTime);
+    }
+
+    private void removeTimePeriods(LocalDate date) {
+        timePeriods.removeIf(timePeriod -> timePeriod.off().toLocalDate().isBefore(date));
     }
 
     private Duration getDuration(LocalDateTime startTime, LocalDateTime endTime) {
@@ -61,5 +70,18 @@ public class ControlledVentilationSystemTimeKeeper implements ControlledVentilat
         return Duration.between(durationStart, durationEnd);
     }
 
+    private void dailyReportOnDayChange(LocalDate now) {
+        if (!now.equals(lastDailyReport)) {
+            LocalDate yesterday = now.minusDays(1);
+            removeTimePeriods(yesterday.minusDays(1));
+            Duration totalAirFlowYesterday = getTotalAirFlowFromDay(yesterday);
+            logger.info("Daily on time is {} minutes ({} %)", totalAirFlowYesterday.toMinutes(), getOnPercentage(totalAirFlowYesterday));
+            lastDailyReport = now;
+        }
+    }
 
+    private double getOnPercentage(Duration onTime) {
+        final long SECONDS_PER_DAY = 60 * 60 * 24;
+        return Math.round((double) onTime.toSeconds() / (double) SECONDS_PER_DAY * 1000.0) / 10.0;
+    }
 }

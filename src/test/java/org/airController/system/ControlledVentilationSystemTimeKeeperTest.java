@@ -68,4 +68,22 @@ class ControlledVentilationSystemTimeKeeperTest {
 
         assertThat(result.toMinutes()).isCloseTo(20, Offset.offset(1L));
     }
+
+    @Test
+    void shouldReturnReportFromYesterday() {
+        final LocalDateTime onTime1 = LocalDateTime.of(2024, 9, 17, 12, 0);
+        final LocalDateTime offTime1 = onTime1.plusMinutes(10);
+        final ControlledVentilationSystemTimeKeeper testee = new ControlledVentilationSystemTimeKeeper();
+        try (MockedStatic<LocalDateTime> mocked = mockStatic(LocalDateTime.class)) {
+            mocked.when(LocalDateTime::now)
+                    .thenReturn(onTime1)
+                    .thenReturn(offTime1);
+            testee.setAirFlowOn(true);
+            testee.setAirFlowOn(false);
+        }
+
+        final Duration result = testee.getTotalAirFlowFromDay(onTime1.toLocalDate());
+
+        assertThat(result.toMinutes()).isCloseTo(10, Offset.offset(1L));
+    }
 }
