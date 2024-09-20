@@ -1,6 +1,6 @@
 package org.airController.rules;
 
-import org.airController.controllers.SensorValues;
+import org.airController.controllers.CurrentSensorValues;
 import org.airController.entities.Humidity;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 class HumidityControlAirFlowTest {
 
     @Mock
-    private SensorValues sensorValues;
+    private CurrentSensorValues sensorValues;
 
     @ParameterizedTest(name = "{index} => humidity %={0}, expectedResult={1}")
     @CsvSource({

@@ -1,8 +1,8 @@
 package org.airController;
 
+import org.airController.controllers.CurrentSensorValues;
 import org.airController.controllers.FreshAirController;
 import org.airController.controllers.Rule;
-import org.airController.controllers.SensorValues;
 import org.airController.gpio.GpioPinImpl;
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
@@ -46,7 +46,7 @@ public class Application {
         final ControlledVentilationSystem ventilationSystem = new ControlledVentilationSystemImpl(airFlow, humidityExchanger);
         this.outdoorSensor = outdoorSensor;
         this.indoorSensor = indoorSensor;
-        final SensorValues sensorValues = new SensorValues();
+        final CurrentSensorValues sensorValues = new CurrentSensorValues();
         outdoorSensor.addObserver(sensorValues);
         outdoorSensor.addObserver(persistenceObserver);
         indoorSensor.addObserver(sensorValues);
@@ -63,7 +63,7 @@ public class Application {
         logger.info("All setup and running...");
     }
 
-    private FreshAirController createFreshAirController(ControlledVentilationSystem ventilationSystem, SensorValues sensorValues) {
+    private FreshAirController createFreshAirController(ControlledVentilationSystem ventilationSystem, CurrentSensorValues sensorValues) {
         List<ControlledVentilationSystem> ventilationSystems = List.of(ventilationSystem, new ControlledVentilationSystemTimeKeeper());
         ControlledVentilationSystemTimeKeeper timeKeeper = new ControlledVentilationSystemTimeKeeper();
         CO2ControlAirFlow co2ControlAirFlow = new CO2ControlAirFlow(sensorValues);

@@ -1,6 +1,6 @@
 package org.airController.rules;
 
-import org.airController.controllers.SensorValues;
+import org.airController.controllers.CurrentSensorValues;
 import org.airController.entities.CarbonDioxide;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 class CO2ControlAirFlowTest {
 
     @Mock
-    private SensorValues sensorValues;
+    private CurrentSensorValues sensorValues;
 
     @ParameterizedTest(name = "{index} => co2 ppm={0}, expectedResult={1}")
     @CsvSource({

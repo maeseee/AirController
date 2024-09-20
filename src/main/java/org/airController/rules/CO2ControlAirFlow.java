@@ -1,7 +1,7 @@
 package org.airController.rules;
 
+import org.airController.controllers.CurrentSensorValues;
 import org.airController.controllers.Rule;
-import org.airController.controllers.SensorValues;
 import org.airController.entities.CarbonDioxide;
 
 import java.util.Optional;
@@ -13,9 +13,9 @@ public class CO2ControlAirFlow implements Rule {
     private static final double M = 2.0 / (UPPER_LIMIT - LOWER_LIMIT); // y = xm + b
     private static final double B = 1 - (UPPER_LIMIT * M); // y = xm + b
 
-    private final SensorValues sensorValues;
+    private final CurrentSensorValues sensorValues;
 
-    public CO2ControlAirFlow(SensorValues sensorValues) {
+    public CO2ControlAirFlow(CurrentSensorValues sensorValues) {
         this.sensorValues = sensorValues;
     }
 

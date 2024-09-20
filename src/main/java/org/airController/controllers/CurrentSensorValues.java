@@ -7,16 +7,16 @@ import org.airController.sensorAdapter.OutdoorSensorObserver;
 
 import java.util.Optional;
 
-public class SensorValues implements IndoorSensorObserver, OutdoorSensorObserver {
+public class CurrentSensorValues implements IndoorSensorObserver, OutdoorSensorObserver {
 
     private SensorValue indoorSensorValue;
     private SensorValue outdoorSensorValue;
 
-    public SensorValues() {
+    public CurrentSensorValues() {
         this(new InvalidSensorValue(), new InvalidSensorValue());
     }
 
-    SensorValues(SensorValue indoorAirValue, SensorValue outdoorSensorValue) {
+    CurrentSensorValues(SensorValue indoorAirValue, SensorValue outdoorSensorValue) {
         this.indoorSensorValue = indoorAirValue;
         this.outdoorSensorValue = outdoorSensorValue;
     }

@@ -1,6 +1,6 @@
 package org.airController.rules;
 
-import org.airController.controllers.SensorValues;
+import org.airController.controllers.CurrentSensorValues;
 import org.airController.entities.Humidity;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +18,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class HumidityControlExchangerTest {
 
+    @Mock
+    private CurrentSensorValues sensorValues;
+
     @ParameterizedTest(name = "{index} => humidity %={0}, indoorHumidityAboveOutdoorHumidity = {1}, expectedResult={2}")
     @CsvSource({
             "60, true, -1.0",
@@ -25,7 +28,7 @@ class HumidityControlExchangerTest {
             "40, false, -1.0",
             "40, true, 1.0"
     })
-    void should(double indoorHumidity, boolean indoorHumidityAboveOutdoorHumidity, double expectedResult) throws IOException {
+    void shouldControlHumidity(double indoorHumidity, boolean indoorHumidityAboveOutdoorHumidity, double expectedResult) throws IOException {
         when(sensorValues.getIndoorHumidity()).thenReturn(Optional.of(Humidity.createFromRelative(indoorHumidity)));
         when(sensorValues.isIndoorHumidityAboveOutdoorHumidity()).thenReturn(indoorHumidityAboveOutdoorHumidity);
         HumidityControlAirFlow humidityControlAirFlow = new HumidityControlAirFlow(sensorValues);
@@ -35,7 +38,4 @@ class HumidityControlExchangerTest {
 
         assertThat(result.getPercentage()).isCloseTo(expectedResult, Offset.offset(0.01));
     }
-
-    @Mock
-    private SensorValues sensorValues;
 }

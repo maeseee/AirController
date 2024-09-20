@@ -11,13 +11,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class SensorValuesTest {
+class CurrentSensorValuesTest {
 
     @Test
     void testWhenUpdateIndoorSensorValueThenUseNewValue() throws IOException {
         Humidity humidity = Humidity.createFromRelative(50.0);
         final AirValue airValue = new AirValue(Temperature.createFromCelsius(23.0), humidity);
-        final SensorValues testee = new SensorValues();
+        final CurrentSensorValues testee = new CurrentSensorValues();
 
         testee.updateIndoorSensorValue(airValue);
 
@@ -29,7 +29,7 @@ class SensorValuesTest {
     void testWhenSensorInvalidThenInvalidateSensorValues() {
         final AirValue airValue = mock(AirValue.class);
         when(airValue.isSensorValid()).thenReturn(false);
-        final SensorValues testee = new SensorValues();
+        final CurrentSensorValues testee = new CurrentSensorValues();
 
         testee.updateIndoorSensorValue(airValue);
         testee.updateOutdoorSensorValue(airValue);
@@ -39,7 +39,7 @@ class SensorValuesTest {
 
     @Test
     void testWhenInitializedThenHaveInvalidSensorValues() {
-        final SensorValues testee = new SensorValues();
+        final CurrentSensorValues testee = new CurrentSensorValues();
 
         assertThat(testee.getIndoorHumidity()).isNotPresent();
     }
