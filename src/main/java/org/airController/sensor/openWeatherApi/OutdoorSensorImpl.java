@@ -70,6 +70,6 @@ public class OutdoorSensorImpl implements OutdoorSensor {
 
     private void notifyObservers(OpenWeatherApiSensorData outdoorSensorData) {
         logger.info("New outdoor sensor data: {}", outdoorSensorData);
-        observers.forEach(observer -> observer.updateOutdoorSensorValue(outdoorSensorData));
+        observers.forEach(observer -> observer.updateOutdoorSensorData(outdoorSensorData));
     }
 }

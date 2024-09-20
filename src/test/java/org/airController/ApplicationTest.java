@@ -1,7 +1,7 @@
 package org.airController;
 
 import org.airController.gpioAdapter.GpioPin;
-import org.airController.persistence.SensorValuePersistenceObserver;
+import org.airController.persistence.SensorDataPersistenceObserver;
 import org.airController.sensorAdapter.IndoorSensor;
 import org.airController.sensorAdapter.OutdoorSensor;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class ApplicationTest {
     @Mock
     private IndoorSensor indoorSensor;
     @Mock
-    private SensorValuePersistenceObserver persistenceObserver;
+    private SensorDataPersistenceObserver persistenceObserver;
     @Mock
     private ScheduledExecutorService executor;
 

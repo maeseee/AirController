@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 class CurrentSensorValuesTest {
 
     @Test
-    void testWhenUpdateIndoorSensorValueThenUseNewValue() throws IOException {
+    void testWhenUpdateIndoorSensorDataThenUseNewData() throws IOException {
         final Temperature temperature = Temperature.createFromCelsius(23.0);
         final Humidity humidity = Humidity.createFromRelative(50.0);
         final SensorData sensorData = mock(SensorData.class);
@@ -23,7 +23,7 @@ class CurrentSensorValuesTest {
 
         final CurrentSensorValues testee = new CurrentSensorValues();
 
-        testee.updateIndoorSensorValue(sensorData);
+        testee.updateIndoorSensorData(sensorData);
 
         assertThat(testee.getIndoorHumidity()).isPresent();
         assertThat(testee.getIndoorHumidity().get()).isEqualTo(humidity);
@@ -50,8 +50,8 @@ class CurrentSensorValuesTest {
 
         final CurrentSensorValues testee = new CurrentSensorValues();
 
-        testee.updateIndoorSensorValue(indoorSensorData);
-        testee.updateOutdoorSensorValue(outdoorSensorData);
+        testee.updateIndoorSensorData(indoorSensorData);
+        testee.updateOutdoorSensorData(outdoorSensorData);
 
         assertThat(testee.isIndoorHumidityAboveOutdoorHumidity()).isTrue();
     }
@@ -70,8 +70,8 @@ class CurrentSensorValuesTest {
 
         final CurrentSensorValues testee = new CurrentSensorValues();
 
-        testee.updateIndoorSensorValue(indoorSensorData);
-        testee.updateOutdoorSensorValue(indoorSensorData);
+        testee.updateIndoorSensorData(indoorSensorData);
+        testee.updateOutdoorSensorData(indoorSensorData);
 
         assertThat(testee.isIndoorHumidityAboveOutdoorHumidity()).isFalse();
     }

@@ -10,12 +10,12 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-class SensorValueCsvWriter implements SensorValuePersistence {
-    private static final Logger logger = LogManager.getLogger(SensorValueCsvWriter.class);
+class SensorDataCsvWriter implements SensorValuePersistence {
+    private static final Logger logger = LogManager.getLogger(SensorDataCsvWriter.class);
 
     private final String filePath;
 
-    public SensorValueCsvWriter(String filePath) {
+    public SensorDataCsvWriter(String filePath) {
         this.filePath = filePath;
     }
 

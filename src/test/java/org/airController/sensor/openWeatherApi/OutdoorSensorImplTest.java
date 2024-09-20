@@ -48,7 +48,7 @@ class OutdoorSensorImplTest {
 
         testee.run();
 
-        verify(observer).updateOutdoorSensorValue(outdoorSensorDataArgumentCaptor.capture());
+        verify(observer).updateOutdoorSensorData(outdoorSensorDataArgumentCaptor.capture());
         final OpenWeatherApiSensorData sensorData = outdoorSensorDataArgumentCaptor.getValue();
         assertTrue(sensorData.getTemperature().isPresent());
         assertTrue(sensorData.getHumidity().isPresent());

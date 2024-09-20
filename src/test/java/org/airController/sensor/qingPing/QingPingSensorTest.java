@@ -107,7 +107,7 @@ class QingPingSensorTest {
 
         testee.run();
 
-        verify(observer).updateIndoorSensorValue(indoorSensorDataArgumentCaptor.capture());
+        verify(observer).updateIndoorSensorData(indoorSensorDataArgumentCaptor.capture());
         final SensorData indoorSensorDataCapture = indoorSensorDataArgumentCaptor.getValue();
         Assertions.assertThat(indoorSensorDataCapture.getTemperature()).isPresent().hasValue(Temperature.createFromCelsius(21.5));
         Assertions.assertThat(indoorSensorDataCapture.getHumidity()).isPresent().hasValue(Humidity.createFromRelative(54.2));
@@ -151,7 +151,7 @@ class QingPingSensorTest {
 
         testee.run();
 
-        verify(observer).updateIndoorSensorValue(indoorSensorDataArgumentCaptor.capture());
+        verify(observer).updateIndoorSensorData(indoorSensorDataArgumentCaptor.capture());
         final SensorData indoorSensorDataCapture = indoorSensorDataArgumentCaptor.getValue();
         Assertions.assertThat(indoorSensorDataCapture.getTemperature()).isPresent().hasValue(Temperature.createFromCelsius(temperatureExp));
         Assertions.assertThat(indoorSensorDataCapture.getHumidity()).isPresent().hasValue(Humidity.createFromRelative(humidityExp));

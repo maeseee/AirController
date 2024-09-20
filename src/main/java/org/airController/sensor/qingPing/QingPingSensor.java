@@ -120,7 +120,7 @@ public class QingPingSensor implements IndoorSensor {
 
     private void notifyObservers(SensorData sensorData) {
         logger.info("New indoor sensor data: {}", sensorData);
-        observers.forEach(observer -> observer.updateIndoorSensorValue(sensorData));
+        observers.forEach(observer -> observer.updateIndoorSensorData(sensorData));
     }
 
     private Optional<SensorData> getAverageSensorData(List<QingPingSensorData> sensorDataList) {

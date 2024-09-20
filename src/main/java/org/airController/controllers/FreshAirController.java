@@ -34,7 +34,6 @@ public class FreshAirController implements Runnable {
     }
 
     private void doRun() {
-        //sensorValues.invalidateSensorValuesIfNeeded();
         double confidentForFreshAir = freshAirRules.stream()
                 .mapToDouble(rule -> rule.turnOn().getPercentage())
                 .sum();

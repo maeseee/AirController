@@ -43,7 +43,7 @@ public class OneWireSensor implements IndoorSensor {
 
     private void notifyObservers(SensorData indoorSensorData) {
         logger.info("New indoor sensor data: {}", indoorSensorData);
-        observers.forEach(observer -> observer.updateIndoorSensorValue(indoorSensorData));
+        observers.forEach(observer -> observer.updateIndoorSensorData(indoorSensorData));
     }
 
     public static void main(String[] args) throws IOException {
