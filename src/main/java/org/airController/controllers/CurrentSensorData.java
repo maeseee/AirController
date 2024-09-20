@@ -20,28 +20,40 @@ public class CurrentSensorData implements SensorData {
 
     @Override
     public Optional<Temperature> getTemperature() {
-        return Optional.ofNullable(temperature);
+        return isSensorValid() ?
+                Optional.ofNullable(temperature) :
+                Optional.empty();
     }
 
     @Override
     public Optional<Humidity> getHumidity() {
-        return Optional.ofNullable(humidity);
-    }
-
-    public Optional<Double> getAbsoluteHumidity() {
-        return Optional.of(humidity.getAbsoluteHumidity(temperature));
+        return isSensorValid() ?
+                Optional.ofNullable(humidity) :
+                Optional.empty();
     }
 
     @Override
     public Optional<CarbonDioxide> getCo2() {
-        return Optional.ofNullable(co2);
+        return isSensorValid() ?
+                Optional.ofNullable(co2) :
+                Optional.empty();
+    }
+
+    public Optional<Double> getAbsoluteHumidity() {
+        return canAbsoluteHumidityBeCalculated() ?
+                Optional.of(humidity.getAbsoluteHumidity(temperature)) :
+                Optional.empty();
     }
 
     public void updateTimestamp() {
         this.timestamp = LocalDateTime.now();
     }
 
-    public boolean isSensorValid() {
+    private boolean canAbsoluteHumidityBeCalculated() {
+        return isSensorValid() && temperature != null && humidity != null;
+    }
+
+    private boolean isSensorValid() {
         return LocalDateTime.now().minus(SENSOR_INVALIDATION).isBefore(timestamp);
     }
 }

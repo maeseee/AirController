@@ -9,43 +9,39 @@ import java.util.Optional;
 
 public class CurrentSensorValues implements IndoorSensorObserver, OutdoorSensorObserver {
 
-    private SensorValue indoorSensorValue;
-    private CurrentSensorData outdoorSensorData = new CurrentSensorData();
-
-    public CurrentSensorValues() {
-        this(new InvalidSensorValue());
-    }
-
-    CurrentSensorValues(SensorValue indoorAirValue) {
-        this.indoorSensorValue = indoorAirValue;
-    }
+    private final CurrentSensorData indoorSensorData = new CurrentSensorData();
+    private final CurrentSensorData outdoorSensorData = new CurrentSensorData();
 
     public boolean isIndoorHumidityAboveOutdoorHumidity() {
-        Optional<Double> outdoorAbsoluteHumidity = outdoorSensorData.getAbsoluteHumidity();
-        if (outdoorAbsoluteHumidity.isEmpty()) {
+        final Optional<Double> outdoorAbsoluteHumidity = outdoorSensorData.getAbsoluteHumidity();
+        final Optional<Double> indoorAbsoluteHumidity = indoorSensorData.getAbsoluteHumidity();
+        if (outdoorAbsoluteHumidity.isEmpty() || indoorAbsoluteHumidity.isEmpty()) {
             return false;
         }
-        return indoorSensorValue.getAbsoluteHumidity() > outdoorAbsoluteHumidity.get();
+        return indoorAbsoluteHumidity.get() > outdoorAbsoluteHumidity.get();
     }
 
     public Optional<Humidity> getIndoorHumidity() {
-        return indoorSensorValue.isSensorValid() ? Optional.of(indoorSensorValue.getHumidity()) : Optional.empty();
+        return indoorSensorData.getHumidity();
     }
 
     public Optional<CarbonDioxide> getIndoorCo2() {
-        return indoorSensorValue.isSensorValid() ? indoorSensorValue.getCo2() : Optional.empty();
+        return indoorSensorData.getCo2();
     }
 
     @Override
-    public void updateIndoorSensorValue(SensorValue indoorSensorValue) {
-        this.indoorSensorValue = indoorSensorValue;
+    public void updateIndoorSensorValue(SensorData indoorSensorData) {
+        indoorSensorData.getTemperature().ifPresent(this.indoorSensorData::setTemperature);
+        indoorSensorData.getHumidity().ifPresent(this.indoorSensorData::setHumidity);
+        indoorSensorData.getCo2().ifPresent(this.indoorSensorData::setCo2);
+        this.indoorSensorData.updateTimestamp();
     }
 
     @Override
     public void updateOutdoorSensorValue(SensorData outdoorSensorData) {
-        outdoorSensorData.getTemperature().ifPresent(temperature -> this.outdoorSensorData.setTemperature(temperature));
-        outdoorSensorData.getHumidity().ifPresent(humidity -> this.outdoorSensorData.setHumidity(humidity));
-        outdoorSensorData.getCo2().ifPresent(co2 -> this.outdoorSensorData.setCo2(co2));
+        outdoorSensorData.getTemperature().ifPresent(this.outdoorSensorData::setTemperature);
+        outdoorSensorData.getHumidity().ifPresent(this.outdoorSensorData::setHumidity);
+        outdoorSensorData.getCo2().ifPresent(this.outdoorSensorData::setCo2);
         this.outdoorSensorData.updateTimestamp();
     }
 }

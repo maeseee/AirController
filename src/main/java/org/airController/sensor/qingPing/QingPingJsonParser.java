@@ -1,6 +1,5 @@
 package org.airController.sensor.qingPing;
 
-import org.airController.entities.AirValue;
 import org.airController.entities.CarbonDioxide;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
@@ -36,7 +35,7 @@ class QingPingJsonParser {
         }
     }
 
-    public Optional<AirValue> parseDeviceListResponse(String jsonString, String macAddress) {
+    public Optional<QingPingSensorData> parseDeviceListResponse(String jsonString, String macAddress) {
         // https://developer.qingping.co/main/openApi
         try {
             final JSONTokener tokener = new JSONTokener(jsonString);
@@ -47,8 +46,8 @@ class QingPingJsonParser {
                 logger.info("No device MAC-Address {} found!", macAddress);
                 return Optional.empty();
             }
-            final AirValue airValue = getAirValue(deviceData.get());
-            return Optional.of(airValue);
+            final QingPingSensorData sensorData = getSensorData(deviceData.get());
+            return Optional.of(sensorData);
         } catch (Exception e) {
             return Optional.empty();
         }
@@ -67,7 +66,7 @@ class QingPingJsonParser {
         return Optional.empty();
     }
 
-    private AirValue getAirValue(JSONObject deviceData) throws IOException {
+    private QingPingSensorData getSensorData(JSONObject deviceData) throws IOException {
         final double temperatureCelsius = getDoubleValue("temperature", deviceData).orElseThrow();
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
         final double humidityRelative = getDoubleValue("humidity", deviceData).orElseThrow();
@@ -78,7 +77,7 @@ class QingPingJsonParser {
         final LocalDateTime time = LocalDateTime.ofInstant(
                 Instant.ofEpochSecond(timeFromEpoch),
                 ZoneId.systemDefault());
-        return new AirValue(temperature, humidity, co2, time);
+        return new QingPingSensorData(temperature, humidity, co2, time);
     }
 
     private OptionalDouble getDoubleValue(String attribute, JSONObject deviceData) {

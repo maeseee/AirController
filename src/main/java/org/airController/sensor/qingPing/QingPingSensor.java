@@ -1,6 +1,6 @@
 package org.airController.sensor.qingPing;
 
-import org.airController.entities.AirValue;
+import org.airController.controllers.SensorData;
 import org.airController.entities.CarbonDioxide;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
@@ -69,13 +69,13 @@ public class QingPingSensor implements IndoorSensor {
             return;
         }
 
-        final List<AirValue> airValues = new ArrayList<>();
+        final List<QingPingSensorData> sensorDataList = new ArrayList<>();
         for (String mac : deviceMacAddresses) {
-            parser.parseDeviceListResponse(request.get(), mac).ifPresent(airValues::add);
+            parser.parseDeviceListResponse(request.get(), mac).ifPresent(sensorDataList::add);
 
         }
-        final Optional<AirValue> airValue = getAverageAirValue(airValues);
-        airValue.ifPresentOrElse(
+        final Optional<SensorData> sensorData = getAverageSensorData(sensorDataList);
+        sensorData.ifPresentOrElse(
                 this::notifyObservers,
                 () -> logger.error("QingPing sensor out of order"));
     }
@@ -118,42 +118,58 @@ public class QingPingSensor implements IndoorSensor {
         return new QingPingListDevicesRequest(uri);
     }
 
-    private void notifyObservers(AirValue indoorAirValue) {
-        logger.info("New indoor sensor value: {}", indoorAirValue);
-        observers.forEach(observer -> observer.updateIndoorSensorValue(indoorAirValue));
+    private void notifyObservers(SensorData sensorData) {
+        logger.info("New indoor sensor data: {}", sensorData);
+        observers.forEach(observer -> observer.updateIndoorSensorValue(sensorData));
     }
 
-    private Optional<AirValue> getAverageAirValue(List<AirValue> airValues) {
-        final List<AirValue> currentAirValues = airValues.stream()
+    private Optional<SensorData> getAverageSensorData(List<QingPingSensorData> sensorDataList) {
+        final List<QingPingSensorData> currentSensorDataList = sensorDataList.stream()
                 .filter(sensorAirValue -> sensorAirValue.getTimeStamp().isAfter(LocalDateTime.now().minusHours(1)))
                 .toList();
-        if (currentAirValues.isEmpty()) {
-            logger.info("No current indoor values at the moment");
+        if (currentSensorDataList.isEmpty()) {
+            logger.info("No current indoor data at the moment");
             return Optional.empty();
         }
         try {
-            final double averageTemperature = currentAirValues.stream()
-                    .mapToDouble(value -> value.getTemperature().getCelsius())
-                    .average()
-                    .orElseThrow();
-            final Temperature temperature = Temperature.createFromCelsius(averageTemperature);
-            final double averageHumidity = currentAirValues.stream()
-                    .mapToDouble(value -> value.getHumidity().getRelativeHumidity())
-                    .average()
-                    .orElseThrow();
-            final Humidity humidity = Humidity.createFromRelative(averageHumidity);
-            final OptionalDouble averageCo2 = currentAirValues.stream()
-                    .filter(airValue -> airValue.getCo2().isPresent())
-                    .mapToDouble(value -> value.getCo2().get().getPpm())
-                    .average();
-            final CarbonDioxide co2 = averageCo2.isPresent() ? CarbonDioxide.createFromPpm(averageCo2.getAsDouble()) : null;
-            final LocalDateTime time = currentAirValues.stream()
-                    .map(AirValue::getTimeStamp)
-                    .max(LocalDateTime::compareTo).orElse(LocalDateTime.now());
-            return Optional.of(new AirValue(temperature, humidity, co2, time));
+            final Temperature temperature = getAverageTemperature(currentSensorDataList);
+            final Humidity humidity = getAverageHumidity(currentSensorDataList);
+            final CarbonDioxide co2 = getAverageCo2(currentSensorDataList);
+            final LocalDateTime time = getNewestTimestamp(currentSensorDataList);
+            return Optional.of(new QingPingSensorData(temperature, humidity, co2, time));
         } catch (IOException | NoSuchElementException exception) {
             logger.error("Unexpected error in Exception in getAverageAirValue: :", exception);
         }
         return Optional.empty();
+    }
+
+    private Temperature getAverageTemperature(List<QingPingSensorData> currentSensorDataList) {
+        final OptionalDouble averageTemperature = currentSensorDataList.stream()
+                .filter(sensorData -> sensorData.getTemperature().isPresent())
+                .mapToDouble(value -> value.getTemperature().get().getCelsius())
+                .average();
+        return averageTemperature.isPresent() ? Temperature.createFromCelsius(averageTemperature.getAsDouble()) : null;
+    }
+
+    private Humidity getAverageHumidity(List<QingPingSensorData> currentSensorDataList) throws IOException {
+        final OptionalDouble averageHumidity = currentSensorDataList.stream()
+                .filter(sensorData -> sensorData.getHumidity().isPresent())
+                .mapToDouble(value -> value.getHumidity().get().getRelativeHumidity())
+                .average();
+        return averageHumidity.isPresent() ? Humidity.createFromRelative(averageHumidity.getAsDouble()) : null;
+    }
+
+    private CarbonDioxide getAverageCo2(List<QingPingSensorData> currentSensorDataList) throws IOException {
+        final OptionalDouble averageCo2 = currentSensorDataList.stream()
+                .filter(sensorData -> sensorData.getCo2().isPresent())
+                .mapToDouble(value -> value.getCo2().get().getPpm())
+                .average();
+        return averageCo2.isPresent() ? CarbonDioxide.createFromPpm(averageCo2.getAsDouble()) : null;
+    }
+
+    private static LocalDateTime getNewestTimestamp(List<QingPingSensorData> currentSensorDataList) {
+        return currentSensorDataList.stream()
+                .map(QingPingSensorData::getTimeStamp)
+                .max(LocalDateTime::compareTo).orElse(LocalDateTime.now());
     }
 }

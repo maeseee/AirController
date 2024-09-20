@@ -1,7 +1,7 @@
 package org.airController.sensorAdapter;
 
-import org.airController.controllers.SensorValue;
+import org.airController.controllers.SensorData;
 
 public interface IndoorSensorObserver {
-    void updateIndoorSensorValue(SensorValue indoorSensorValue);
+    void updateIndoorSensorValue(SensorData indoorSensorData);
 }

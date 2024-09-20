@@ -1,11 +1,11 @@
 package org.airController.controllers;
 
-import org.airController.entities.AirValue;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -15,28 +15,18 @@ class CurrentSensorValuesTest {
 
     @Test
     void testWhenUpdateIndoorSensorValueThenUseNewValue() throws IOException {
-        Humidity humidity = Humidity.createFromRelative(50.0);
-        final AirValue airValue = new AirValue(Temperature.createFromCelsius(23.0), humidity);
+        final Temperature temperature = Temperature.createFromCelsius(23.0);
+        final Humidity humidity = Humidity.createFromRelative(50.0);
+        final SensorData sensorData = mock(SensorData.class);
+        when(sensorData.getTemperature()).thenReturn(Optional.of(temperature));
+        when(sensorData.getHumidity()).thenReturn(Optional.of(humidity));
+
         final CurrentSensorValues testee = new CurrentSensorValues();
 
-        testee.updateIndoorSensorValue(airValue);
+        testee.updateIndoorSensorValue(sensorData);
 
         assertThat(testee.getIndoorHumidity()).isPresent();
         assertThat(testee.getIndoorHumidity().get()).isEqualTo(humidity);
-    }
-
-    @Test
-    void testWhenSensorInvalidThenInvalidateSensorValues() {
-        final AirValue airValue = mock(AirValue.class);
-        final CurrentSensorData sensorData = mock(CurrentSensorData.class);
-        when(airValue.isSensorValid()).thenReturn(false);
-        when(sensorData.isSensorValid()).thenReturn(false);
-        final CurrentSensorValues testee = new CurrentSensorValues();
-
-        testee.updateIndoorSensorValue(airValue);
-        testee.updateOutdoorSensorValue(sensorData);
-
-        assertThat(testee.getIndoorHumidity()).isNotPresent();
     }
 
     @Test
@@ -44,5 +34,45 @@ class CurrentSensorValuesTest {
         final CurrentSensorValues testee = new CurrentSensorValues();
 
         assertThat(testee.getIndoorHumidity()).isNotPresent();
+    }
+
+    @Test
+    void testIndoorHumidityHigher() throws IOException {
+        final Temperature temperature = Temperature.createFromCelsius(23.0);
+        final Humidity indoorHumidity = Humidity.createFromRelative(60.0);
+        final SensorData indoorSensorData = mock(SensorData.class);
+        when(indoorSensorData.getTemperature()).thenReturn(Optional.of(temperature));
+        when(indoorSensorData.getHumidity()).thenReturn(Optional.of(indoorHumidity));
+        final Humidity outdoorHumidity = Humidity.createFromRelative(50.0);
+        final SensorData outdoorSensorData = mock(SensorData.class);
+        when(outdoorSensorData.getTemperature()).thenReturn(Optional.of(temperature));
+        when(outdoorSensorData.getHumidity()).thenReturn(Optional.of(outdoorHumidity));
+
+        final CurrentSensorValues testee = new CurrentSensorValues();
+
+        testee.updateIndoorSensorValue(indoorSensorData);
+        testee.updateOutdoorSensorValue(indoorSensorData);
+
+        assertThat(testee.isIndoorHumidityAboveOutdoorHumidity()).isTrue();
+    }
+
+    @Test
+    void testIndoorHumidityLower() throws IOException {
+        final Temperature temperature = Temperature.createFromCelsius(23.0);
+        final Humidity indoorHumidity = Humidity.createFromRelative(40.0);
+        final SensorData indoorSensorData = mock(SensorData.class);
+        when(indoorSensorData.getTemperature()).thenReturn(Optional.of(temperature));
+        when(indoorSensorData.getHumidity()).thenReturn(Optional.of(indoorHumidity));
+        final Humidity outdoorHumidity = Humidity.createFromRelative(50.0);
+        final SensorData outdoorSensorData = mock(SensorData.class);
+        when(outdoorSensorData.getTemperature()).thenReturn(Optional.of(temperature));
+        when(outdoorSensorData.getHumidity()).thenReturn(Optional.of(outdoorHumidity));
+
+        final CurrentSensorValues testee = new CurrentSensorValues();
+
+        testee.updateIndoorSensorValue(indoorSensorData);
+        testee.updateOutdoorSensorValue(indoorSensorData);
+
+        assertThat(testee.isIndoorHumidityAboveOutdoorHumidity()).isFalse();
     }
 }
