@@ -20,8 +20,8 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalLong;
 
-class JsonQingPingParser {
-    private static final Logger logger = LogManager.getLogger(JsonQingPingParser.class);
+class QingPingJsonParser {
+    private static final Logger logger = LogManager.getLogger(QingPingJsonParser.class);
 
     public Optional<QingPingAccessToken> parseAccessTokenResponse(String jsonString) {
         // https://developer.qingping.co/main/oauthApi

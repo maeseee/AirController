@@ -30,18 +30,18 @@ public class QingPingSensor implements IndoorSensor {
     private final List<IndoorSensorObserver> observers = new ArrayList<>();
     private final QingPingAccessTokenRequest accessTokenRequest;
     private final QingPingListDevicesRequest listDevicesRequest;
-    private final JsonQingPingParser parser;
+    private final QingPingJsonParser parser;
     private final List<String> deviceMacAddresses;
 
     private String accessToken;
     private LocalDateTime accessTokenValidUntil;
 
     public QingPingSensor() throws URISyntaxException {
-        this(createAccessTokenRequest(getCredentialsForPostRequest()), createListDevicesRequest(), new JsonQingPingParser(),
+        this(createAccessTokenRequest(getCredentialsForPostRequest()), createListDevicesRequest(), new QingPingJsonParser(),
                 Arrays.asList(MAC_PRESSURE_DEVICE, MAC_CO2_DEVICE));
     }
 
-    QingPingSensor(QingPingAccessTokenRequest accessTokenRequest, QingPingListDevicesRequest listDevicesRequest, JsonQingPingParser parser,
+    QingPingSensor(QingPingAccessTokenRequest accessTokenRequest, QingPingListDevicesRequest listDevicesRequest, QingPingJsonParser parser,
                    List<String> deviceMacAddresses) {
         this.accessTokenRequest = accessTokenRequest;
         this.listDevicesRequest = listDevicesRequest;

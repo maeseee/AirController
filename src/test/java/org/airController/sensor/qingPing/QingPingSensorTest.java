@@ -100,7 +100,7 @@ class QingPingSensorTest {
         when(accessTokenRequest.sendRequest()).thenReturn(Optional.of(SAMPLE_ACCESS_TOKEN_RESPONSE));
         final QingPingListDevicesRequest listDevicesRequest = mock(QingPingListDevicesRequest.class);
         when(listDevicesRequest.sendRequest(any())).thenReturn(Optional.of(SAMPLE_LIST_DEVICES_RESPONSE));
-        final QingPingSensor testee = new QingPingSensor(accessTokenRequest, listDevicesRequest, new JsonQingPingParser(),
+        final QingPingSensor testee = new QingPingSensor(accessTokenRequest, listDevicesRequest, new QingPingJsonParser(),
                 singletonList(QingPingSensor.MAC_PRESSURE_DEVICE));
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
@@ -119,7 +119,7 @@ class QingPingSensorTest {
         when(accessTokenRequest.sendRequest()).thenReturn(Optional.empty());
         final QingPingListDevicesRequest listDevicesRequest = mock(QingPingListDevicesRequest.class);
         when(listDevicesRequest.sendRequest(any())).thenReturn(Optional.empty());
-        final QingPingSensor testee = new QingPingSensor(accessTokenRequest, listDevicesRequest, new JsonQingPingParser(),
+        final QingPingSensor testee = new QingPingSensor(accessTokenRequest, listDevicesRequest, new QingPingJsonParser(),
                 singletonList(QingPingSensor.MAC_PRESSURE_DEVICE));
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
@@ -137,7 +137,7 @@ class QingPingSensorTest {
         when(accessTokenRequest.sendRequest()).thenReturn(Optional.of(SAMPLE_ACCESS_TOKEN_RESPONSE));
         final QingPingListDevicesRequest listDevicesRequest = mock(QingPingListDevicesRequest.class);
         when(listDevicesRequest.sendRequest(any())).thenReturn(Optional.of(SAMPLE_LIST_DEVICES_RESPONSE));
-        final JsonQingPingParser parser = mock(JsonQingPingParser.class);
+        final QingPingJsonParser parser = mock(QingPingJsonParser.class);
         final Temperature temperature = Temperature.createFromCelsius(temperature1);
         final Humidity humidity = Humidity.createFromRelative(humidity1);
         final LocalDateTime time1 = LocalDateTime.now().minusMinutes(age_1);

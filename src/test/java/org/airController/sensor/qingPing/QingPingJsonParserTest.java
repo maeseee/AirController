@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class JsonQingPingParserTest {
+class QingPingJsonParserTest {
 
     private final String SAMPLE_DEVICE_LIST_RESPONSE = """
             {
@@ -118,7 +118,7 @@ class JsonQingPingParserTest {
                 "token_type": "bearer"
                 }
                 """;
-        final JsonQingPingParser testee = new JsonQingPingParser();
+        final QingPingJsonParser testee = new QingPingJsonParser();
 
         final Optional<QingPingAccessToken> result = testee.parseAccessTokenResponse(sampleAccessTokenResponse);
 
@@ -133,7 +133,7 @@ class JsonQingPingParserTest {
                 {
                 }
                 """;
-        final JsonQingPingParser testee = new JsonQingPingParser();
+        final QingPingJsonParser testee = new QingPingJsonParser();
 
         final Optional<QingPingAccessToken> result = testee.parseAccessTokenResponse(sampleAccessTokenResponse);
 
@@ -142,7 +142,7 @@ class JsonQingPingParserTest {
 
     @Test
     void testParsingDeviceListOfPressureDevice() {
-        final JsonQingPingParser testee = new JsonQingPingParser();
+        final QingPingJsonParser testee = new QingPingJsonParser();
 
         final Optional<AirValue> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, QingPingSensor.MAC_PRESSURE_DEVICE);
 
@@ -154,7 +154,7 @@ class JsonQingPingParserTest {
 
     @Test
     void testParsingDeviceListOfCo2Device() {
-        final JsonQingPingParser testee = new JsonQingPingParser();
+        final QingPingJsonParser testee = new QingPingJsonParser();
 
         final Optional<AirValue> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, QingPingSensor.MAC_CO2_DEVICE);
 
@@ -168,7 +168,7 @@ class JsonQingPingParserTest {
 
     @Test
     void testWhenParsingDeviceListWithWringMacAddressThenOptionalEmpty() {
-        final JsonQingPingParser testee = new JsonQingPingParser();
+        final QingPingJsonParser testee = new QingPingJsonParser();
 
         final Optional<AirValue> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, "mac");
 
