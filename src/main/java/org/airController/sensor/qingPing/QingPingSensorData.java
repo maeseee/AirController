@@ -43,6 +43,7 @@ public class QingPingSensorData implements SensorData {
         return Optional.ofNullable(co2);
     }
 
+    @Override
     public LocalDateTime getTimeStamp() {
         return timestamp;
     }

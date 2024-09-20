@@ -1,9 +1,10 @@
 package org.airController.persistence;
 
-import org.airController.entities.AirValue;
+import org.airController.controllers.SensorData;
 import org.airController.entities.CarbonDioxide;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
+import org.airController.sensor.qingPing.QingPingSensorData;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -29,12 +30,12 @@ class SensorValueCsvWriterTest {
         final LocalDateTime now = LocalDateTime.now();
         final LocalDateTime time =
                 LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), now.getHour(), now.getMinute(), now.getSecond());
-        final AirValue airValue =
-                new AirValue(Temperature.createFromCelsius(temperature), Humidity.createFromRelative(humidity), CarbonDioxide.createFromPpm(co2),
+        final SensorData sensorData =
+                new QingPingSensorData(Temperature.createFromCelsius(temperature), Humidity.createFromRelative(humidity), CarbonDioxide.createFromPpm(co2),
                         time);
         final SensorValuePersistence testee = new SensorValueCsvWriter(FILE_PATH);
 
-        testee.persist(airValue);
+        testee.persist(sensorData);
 
         assertCsvFile(time, temperature, humidity, co2);
     }

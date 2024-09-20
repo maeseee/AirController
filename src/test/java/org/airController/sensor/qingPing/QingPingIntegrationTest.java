@@ -23,10 +23,10 @@ class QingPingIntegrationTest {
         final String accessTokenResponse = runAccessTokenRequest();
         final QingPingAccessToken accessToken = runParseAccessToken(accessTokenResponse);
         final String listDevicesResponse = runListDevicesRequest(accessToken);
-        final QingPingSensorData airValue = runParseListDevices(listDevicesResponse);
-        assertNotNull(airValue);
-        assertTrue(LocalDateTime.now().minusMinutes(15).isBefore(airValue.getTimeStamp()));
-        assertTrue(LocalDateTime.now().plusMinutes(5).isAfter(airValue.getTimeStamp()));
+        final QingPingSensorData sensorData = runParseListDevices(listDevicesResponse);
+        assertNotNull(sensorData);
+        assertTrue(LocalDateTime.now().minusMinutes(15).isBefore(sensorData.getTimeStamp()));
+        assertTrue(LocalDateTime.now().plusMinutes(5).isAfter(sensorData.getTimeStamp()));
     }
 
     private String runAccessTokenRequest() throws URISyntaxException {

@@ -125,7 +125,7 @@ public class QingPingSensor implements IndoorSensor {
 
     private Optional<SensorData> getAverageSensorData(List<QingPingSensorData> sensorDataList) {
         final List<QingPingSensorData> currentSensorDataList = sensorDataList.stream()
-                .filter(sensorAirValue -> sensorAirValue.getTimeStamp().isAfter(LocalDateTime.now().minusHours(1)))
+                .filter(sensorData -> sensorData.getTimeStamp().isAfter(LocalDateTime.now().minusHours(1)))
                 .toList();
         if (currentSensorDataList.isEmpty()) {
             logger.info("No current indoor data at the moment");
@@ -138,7 +138,7 @@ public class QingPingSensor implements IndoorSensor {
             final LocalDateTime time = getNewestTimestamp(currentSensorDataList);
             return Optional.of(new QingPingSensorData(temperature, humidity, co2, time));
         } catch (IOException | NoSuchElementException exception) {
-            logger.error("Unexpected error in Exception in getAverageAirValue: :", exception);
+            logger.error("Unexpected error in Exception in getAverageSensorData: :", exception);
         }
         return Optional.empty();
     }

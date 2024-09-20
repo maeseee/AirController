@@ -36,7 +36,7 @@ class OutdoorSensorImplTest {
             """;
 
     @Captor
-    ArgumentCaptor<OpenWeatherApiSensorData> outdoorAirValueArgumentCaptor;
+    ArgumentCaptor<OpenWeatherApiSensorData> outdoorSensorDataArgumentCaptor;
 
     @Test
     void testWhenMeasureValuesThenCallObservers() {
@@ -48,8 +48,8 @@ class OutdoorSensorImplTest {
 
         testee.run();
 
-        verify(observer).updateOutdoorSensorValue(outdoorAirValueArgumentCaptor.capture());
-        final OpenWeatherApiSensorData sensorData = outdoorAirValueArgumentCaptor.getValue();
+        verify(observer).updateOutdoorSensorValue(outdoorSensorDataArgumentCaptor.capture());
+        final OpenWeatherApiSensorData sensorData = outdoorSensorDataArgumentCaptor.getValue();
         assertTrue(sensorData.getTemperature().isPresent());
         assertTrue(sensorData.getHumidity().isPresent());
         assertEquals(10.53, sensorData.getTemperature().get().getCelsius(), 0.1);

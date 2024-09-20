@@ -47,8 +47,8 @@ public class OutdoorSensorImpl implements OutdoorSensor {
             return;
         }
 
-        final Optional<OpenWeatherApiSensorData> airValue = JsonOpenWeatherApiParser.parse(request.get());
-        airValue.ifPresentOrElse(
+        final Optional<OpenWeatherApiSensorData> sensorData = JsonOpenWeatherApiParser.parse(request.get());
+        sensorData.ifPresentOrElse(
                 this::notifyObservers,
                 () -> logger.error("Outdoor sensor out of order"));
     }

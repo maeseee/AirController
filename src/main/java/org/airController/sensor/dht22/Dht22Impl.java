@@ -46,12 +46,12 @@ class Dht22Impl implements Dht22 {
         }
     }
 
-    private Optional<SensorData> getSensorDataFromData(long sensorData) {
+    private Optional<SensorData> getSensorDataFromData(long rawSensorData) {
         try {
-            final Humidity humidity = getHumidityFromData(sensorData);
-            final Temperature temperature = getTemperatureFromData(sensorData);
-            final SensorData airValue = new Dht22SensorData(temperature, humidity);
-            return Optional.of(airValue);
+            final Humidity humidity = getHumidityFromData(rawSensorData);
+            final Temperature temperature = getTemperatureFromData(rawSensorData);
+            final SensorData sensorData = new Dht22SensorData(temperature, humidity);
+            return Optional.of(sensorData);
         } catch (IOException e) {
             return Optional.empty();
         }

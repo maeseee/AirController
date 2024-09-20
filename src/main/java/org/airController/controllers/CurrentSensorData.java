@@ -39,6 +39,11 @@ public class CurrentSensorData implements SensorData {
                 Optional.empty();
     }
 
+    @Override
+    public LocalDateTime getTimeStamp() {
+        return timestamp;
+    }
+
     public Optional<Double> getAbsoluteHumidity() {
         return canAbsoluteHumidityBeCalculated() ?
                 Optional.of(humidity.getAbsoluteHumidity(temperature)) :

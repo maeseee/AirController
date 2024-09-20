@@ -1,7 +1,6 @@
 package org.airController.sensor.qingPing;
 
 import org.airController.controllers.SensorData;
-import org.airController.entities.AirValue;
 import org.airController.entities.CarbonDioxide;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
@@ -131,7 +130,7 @@ class QingPingSensorTest {
     }
 
     @ParameterizedTest(name = "{index} => temperature1={0}, humidity1={1}, co2_1={2}, age_1={3}, temperatureExp={4}, humidityExp={5}")
-    @ArgumentsSource(AirValueArgumentProvider.class)
+    @ArgumentsSource(SensorDataArgumentProvider.class)
     void testWhenMultipleSensorsWithoutCo2ThenAverage(double temperature1, double humidity1, CarbonDioxide co2, int age_1, double temperatureExp,
                                                       double humidityExp) throws IOException {
         final QingPingAccessTokenRequest accessTokenRequest = mock(QingPingAccessTokenRequest.class);
@@ -154,12 +153,11 @@ class QingPingSensorTest {
 
         verify(observer).updateIndoorSensorValue(indoorSensorDataArgumentCaptor.capture());
         final SensorData indoorSensorDataCapture = indoorSensorDataArgumentCaptor.getValue();
-        final AirValue indoorAirValue = new AirValue(Temperature.createFromCelsius(temperatureExp), Humidity.createFromRelative(humidityExp), co2, time1);
         Assertions.assertThat(indoorSensorDataCapture.getTemperature()).isPresent().hasValue(Temperature.createFromCelsius(temperatureExp));
         Assertions.assertThat(indoorSensorDataCapture.getHumidity()).isPresent().hasValue(Humidity.createFromRelative(humidityExp));
     }
 
-    static class AirValueArgumentProvider implements ArgumentsProvider {
+    static class SensorDataArgumentProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws IOException {
             return Stream.of(
