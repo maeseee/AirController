@@ -9,7 +9,7 @@ import org.airController.gpioAdapter.GpioPin;
 import org.airController.persistence.SensorValuePersistenceObserver;
 import org.airController.rules.*;
 import org.airController.sensor.OutdoorSensorImpl;
-import org.airController.sensor.QingPingSensor;
+import org.airController.sensor.qingPing.QingPingSensor;
 import org.airController.sensorAdapter.IndoorSensor;
 import org.airController.sensorAdapter.OutdoorSensor;
 import org.airController.system.ControlledVentilationSystemImpl;

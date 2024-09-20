@@ -1,4 +1,4 @@
-package org.airController.sensor;
+package org.airController.sensor.qingPing;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

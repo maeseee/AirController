@@ -1,4 +1,4 @@
-package org.airController.sensor;
+package org.airController.sensor.qingPing;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;

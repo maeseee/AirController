@@ -1,4 +1,4 @@
-package org.airController.sensor;
+package org.airController.sensor.qingPing;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -20,7 +20,7 @@ class QingPingAccessTokenRequestTest {
 
     @Test
     void testWhenSendPostRequestThenRequestIsInResponse() throws URISyntaxException {
-        final String credentials =  "just a secret";
+        final String credentials = "just a secret";
         final String base64Credentials = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
         final String url = "https://httpbin.org/anything";
         final URI uri = new URI(url);
