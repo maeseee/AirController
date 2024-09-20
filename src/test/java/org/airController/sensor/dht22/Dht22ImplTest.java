@@ -1,6 +1,6 @@
 package org.airController.sensor.dht22;
 
-import org.airController.entities.AirValue;
+import org.airController.controllers.SensorData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -17,38 +17,38 @@ class Dht22ImplTest {
     @Test
     void testWhenAllChecksAreValidThenValueIsPresent() {
         final OneWireCommunication communication = mock(OneWireCommunication.class);
-        final OptionalLong sensorData = createSensorData(23.0, 50.0);
-        when(communication.readSensorData()).thenReturn(sensorData);
+        final OptionalLong rawSensorData = createSensorData(23.0, 50.0);
+        when(communication.readSensorData()).thenReturn(rawSensorData);
         final Dht22Impl testee = new Dht22Impl(communication, 0);
 
-        final Optional<AirValue> airValue = testee.refreshData();
+        final Optional<SensorData> sensorData = testee.refreshData();
 
-        assertTrue(airValue.isPresent());
+        assertTrue(sensorData.isPresent());
     }
 
     @Test
     void testWhenCheckInvalidThenRetry3Times() {
         final OneWireCommunication communication = mock(OneWireCommunication.class);
-        final OptionalLong sensorData = createSensorData(23.0, 50.0);
-        when(communication.readSensorData()).thenReturn(OptionalLong.empty(), OptionalLong.empty(), OptionalLong.empty(), sensorData);
+        final OptionalLong rawSensorData = createSensorData(23.0, 50.0);
+        when(communication.readSensorData()).thenReturn(OptionalLong.empty(), OptionalLong.empty(), OptionalLong.empty(), rawSensorData);
         final Dht22Impl testee = new Dht22Impl(communication, 0);
 
-        final Optional<AirValue> airValue = testee.refreshData();
+        final Optional<SensorData> sensorData = testee.refreshData();
 
-        assertTrue(airValue.isPresent());
+        assertTrue(sensorData.isPresent());
     }
 
     @Test
     void testWhenWrongChecksumThenInvalid() {
         final OneWireCommunication communication = mock(OneWireCommunication.class);
-        final OptionalLong sensorData = createSensorData(23.0, 50.0);
-        final OptionalLong sensorDataInvalid = OptionalLong.of(sensorData.orElse(0) + 1);
-        when(communication.readSensorData()).thenReturn(sensorDataInvalid);
+        final OptionalLong rawSensorData = createSensorData(23.0, 50.0);
+        final OptionalLong rawSensorDataInvalid = OptionalLong.of(rawSensorData.orElse(0) + 1);
+        when(communication.readSensorData()).thenReturn(rawSensorDataInvalid);
         final Dht22Impl testee = new Dht22Impl(communication, 0);
 
-        final Optional<AirValue> airValue = testee.refreshData();
+        final Optional<SensorData> sensorData = testee.refreshData();
 
-        assertFalse(airValue.isPresent());
+        assertFalse(sensorData.isPresent());
     }
 
     @ParameterizedTest
@@ -67,11 +67,13 @@ class Dht22ImplTest {
         when(communication.readSensorData()).thenReturn(createSensorData(temperature, humidity));
         final Dht22Impl testee = new Dht22Impl(communication, 0);
 
-        final Optional<AirValue> airValue = testee.refreshData();
+        final Optional<SensorData> sensorData = testee.refreshData();
 
-        assertTrue(airValue.isPresent());
-        assertEquals(temperature, airValue.get().getTemperature().getCelsius());
-        assertEquals(humidity, airValue.get().getHumidity().getRelativeHumidity());
+        assertTrue(sensorData.isPresent());
+        assertTrue(sensorData.get().getTemperature().isPresent());
+        assertTrue(sensorData.get().getHumidity().isPresent());
+        assertEquals(temperature, sensorData.get().getTemperature().get().getCelsius());
+        assertEquals(humidity, sensorData.get().getHumidity().get().getRelativeHumidity());
     }
 
     private OptionalLong createSensorData(double temperature, double humidity) {

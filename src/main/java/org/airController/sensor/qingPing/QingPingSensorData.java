@@ -1,5 +1,6 @@
 package org.airController.sensor.qingPing;
 
+import com.google.inject.internal.Nullable;
 import org.airController.controllers.SensorData;
 import org.airController.entities.CarbonDioxide;
 import org.airController.entities.Humidity;
@@ -12,8 +13,13 @@ public class QingPingSensorData implements SensorData {
 
     private final Temperature temperature;
     private final Humidity humidity;
+    @Nullable
     private final CarbonDioxide co2;
     private final LocalDateTime timestamp;
+
+    public QingPingSensorData(Temperature temperature, Humidity humidity, LocalDateTime timestamp) {
+        this(temperature, humidity, null, timestamp);
+    }
 
     public QingPingSensorData(Temperature temperature, Humidity humidity, CarbonDioxide co2, LocalDateTime timestamp) {
         this.temperature = temperature;
@@ -34,7 +40,7 @@ public class QingPingSensorData implements SensorData {
 
     @Override
     public Optional<CarbonDioxide> getCo2() {
-        return Optional.of(co2);
+        return Optional.ofNullable(co2);
     }
 
     public LocalDateTime getTimeStamp() {

@@ -16,7 +16,7 @@ public class CurrentSensorData implements SensorData {
     private Temperature temperature;
     private Humidity humidity;
     private CarbonDioxide co2;
-    private LocalDateTime timestamp;
+    private LocalDateTime timestamp = LocalDateTime.now();
 
     @Override
     public Optional<Temperature> getTemperature() {

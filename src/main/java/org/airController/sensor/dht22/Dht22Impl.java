@@ -1,6 +1,6 @@
 package org.airController.sensor.dht22;
 
-import org.airController.entities.AirValue;
+import org.airController.controllers.SensorData;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
 import org.airController.gpioAdapter.GpioFunction;
@@ -26,11 +26,11 @@ class Dht22Impl implements Dht22 {
     }
 
     @Override
-    public Optional<AirValue> refreshData() {
+    public Optional<SensorData> refreshData() {
         for (int retryCounter = 0; retryCounter <= MAX_NR_OF_RETRIES; retryCounter++) {
-            final OptionalLong sensorData = communication.readSensorData();
-            if (sensorData.isPresent() && checkParity(sensorData.getAsLong())) {
-                return getAirValueFromData(sensorData.getAsLong());
+            final OptionalLong rawSensorData = communication.readSensorData();
+            if (rawSensorData.isPresent() && checkParity(rawSensorData.getAsLong())) {
+                return getSensorDataFromData(rawSensorData.getAsLong());
             }
             sleepABit(retryCounter);
         }
@@ -46,11 +46,11 @@ class Dht22Impl implements Dht22 {
         }
     }
 
-    private Optional<AirValue> getAirValueFromData(long sensorData) {
+    private Optional<SensorData> getSensorDataFromData(long sensorData) {
         try {
             final Humidity humidity = getHumidityFromData(sensorData);
             final Temperature temperature = getTemperatureFromData(sensorData);
-            final AirValue airValue = new AirValue(temperature, humidity);
+            final SensorData airValue = new Dht22SensorData(temperature, humidity);
             return Optional.of(airValue);
         } catch (IOException e) {
             return Optional.empty();

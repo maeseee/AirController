@@ -1,10 +1,12 @@
 package org.airController.sensor.qingPing;
 
+import org.airController.controllers.SensorData;
 import org.airController.entities.AirValue;
 import org.airController.entities.CarbonDioxide;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
 import org.airController.sensorAdapter.IndoorSensorObserver;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -24,7 +26,6 @@ import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -92,7 +93,7 @@ class QingPingSensorTest {
             """, LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond());
 
     @Captor
-    ArgumentCaptor<AirValue> indoorAirValueArgumentCaptor;
+    ArgumentCaptor<SensorData> indoorSensorDataArgumentCaptor;
 
     @Test
     void testWhenRunThenNotifyObservers() throws IOException {
@@ -107,10 +108,10 @@ class QingPingSensorTest {
 
         testee.run();
 
-        verify(observer).updateIndoorSensorValue(indoorAirValueArgumentCaptor.capture());
-        final AirValue indoorAirValueCapture = indoorAirValueArgumentCaptor.getValue();
-        final AirValue indoorAirValue = new AirValue(Temperature.createFromCelsius(21.5), Humidity.createFromRelative(54.2));
-        assertEquals(indoorAirValue, indoorAirValueCapture);
+        verify(observer).updateIndoorSensorValue(indoorSensorDataArgumentCaptor.capture());
+        final SensorData indoorSensorDataCapture = indoorSensorDataArgumentCaptor.getValue();
+        Assertions.assertThat(indoorSensorDataCapture.getTemperature()).isPresent().hasValue(Temperature.createFromCelsius(21.5));
+        Assertions.assertThat(indoorSensorDataCapture.getHumidity()).isPresent().hasValue(Humidity.createFromRelative(54.2));
     }
 
     @Test
@@ -141,21 +142,21 @@ class QingPingSensorTest {
         final Temperature temperature = Temperature.createFromCelsius(temperature1);
         final Humidity humidity = Humidity.createFromRelative(humidity1);
         final LocalDateTime time1 = LocalDateTime.now().minusMinutes(age_1);
-        final AirValue airValue1 = new AirValue(temperature, humidity, co2, time1);
-        final AirValue airValue2 = new AirValue(Temperature.createFromCelsius(40.0), Humidity.createFromRelative(60.0), LocalDateTime.now());
-        when(parser.parseDeviceListResponse(any(), eq("mac1"))).thenReturn(Optional.of(airValue1));
-        when(parser.parseDeviceListResponse(any(), eq("mac2"))).thenReturn(Optional.of(airValue2));
+        final QingPingSensorData sensorData1 = new QingPingSensorData(temperature, humidity, co2, time1);
+        final QingPingSensorData sensorData2 = new QingPingSensorData(Temperature.createFromCelsius(40.0), Humidity.createFromRelative(60.0), LocalDateTime.now());
+        when(parser.parseDeviceListResponse(any(), eq("mac1"))).thenReturn(Optional.of(sensorData1));
+        when(parser.parseDeviceListResponse(any(), eq("mac2"))).thenReturn(Optional.of(sensorData2));
         final QingPingSensor testee = new QingPingSensor(accessTokenRequest, listDevicesRequest, parser, asList("mac1", "mac2"));
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
 
         testee.run();
 
-        verify(observer).updateIndoorSensorValue(indoorAirValueArgumentCaptor.capture());
-        final AirValue indoorAirValueCapture = indoorAirValueArgumentCaptor.getValue();
-        final AirValue
-                indoorAirValue = new AirValue(Temperature.createFromCelsius(temperatureExp), Humidity.createFromRelative(humidityExp), co2, time1);
-        assertEquals(indoorAirValue, indoorAirValueCapture);
+        verify(observer).updateIndoorSensorValue(indoorSensorDataArgumentCaptor.capture());
+        final SensorData indoorSensorDataCapture = indoorSensorDataArgumentCaptor.getValue();
+        final AirValue indoorAirValue = new AirValue(Temperature.createFromCelsius(temperatureExp), Humidity.createFromRelative(humidityExp), co2, time1);
+        Assertions.assertThat(indoorSensorDataCapture.getTemperature()).isPresent().hasValue(Temperature.createFromCelsius(temperatureExp));
+        Assertions.assertThat(indoorSensorDataCapture.getHumidity()).isPresent().hasValue(Humidity.createFromRelative(humidityExp));
     }
 
     static class AirValueArgumentProvider implements ArgumentsProvider {

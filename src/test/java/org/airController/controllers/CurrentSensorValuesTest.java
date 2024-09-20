@@ -51,7 +51,7 @@ class CurrentSensorValuesTest {
         final CurrentSensorValues testee = new CurrentSensorValues();
 
         testee.updateIndoorSensorValue(indoorSensorData);
-        testee.updateOutdoorSensorValue(indoorSensorData);
+        testee.updateOutdoorSensorValue(outdoorSensorData);
 
         assertThat(testee.isIndoorHumidityAboveOutdoorHumidity()).isTrue();
     }

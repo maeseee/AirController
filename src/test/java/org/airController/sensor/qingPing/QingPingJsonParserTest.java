@@ -1,6 +1,5 @@
 package org.airController.sensor.qingPing;
 
-import org.airController.entities.AirValue;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZoneId;
@@ -144,11 +143,13 @@ class QingPingJsonParserTest {
     void testParsingDeviceListOfPressureDevice() {
         final QingPingJsonParser testee = new QingPingJsonParser();
 
-        final Optional<AirValue> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, QingPingSensor.MAC_PRESSURE_DEVICE);
+        final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, QingPingSensor.MAC_PRESSURE_DEVICE);
 
         assertTrue(result.isPresent());
-        assertEquals(21.5, result.get().getTemperature().getCelsius(), 0.1);
-        assertEquals(54.2, result.get().getHumidity().getRelativeHumidity(), 0.1);
+        assertTrue(result.get().getTemperature().isPresent());
+        assertTrue(result.get().getHumidity().isPresent());
+        assertEquals(21.5, result.get().getTemperature().get().getCelsius(), 0.1);
+        assertEquals(54.2, result.get().getHumidity().get().getRelativeHumidity(), 0.1);
         assertEquals(1704516210, result.get().getTimeStamp().atZone(ZoneId.systemDefault()).toEpochSecond());
     }
 
@@ -156,11 +157,13 @@ class QingPingJsonParserTest {
     void testParsingDeviceListOfCo2Device() {
         final QingPingJsonParser testee = new QingPingJsonParser();
 
-        final Optional<AirValue> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, QingPingSensor.MAC_CO2_DEVICE);
+        final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, QingPingSensor.MAC_CO2_DEVICE);
 
         assertTrue(result.isPresent());
-        assertEquals(22.3, result.get().getTemperature().getCelsius(), 0.1);
-        assertEquals(47.1, result.get().getHumidity().getRelativeHumidity(), 0.1);
+        assertTrue(result.get().getTemperature().isPresent());
+        assertTrue(result.get().getHumidity().isPresent());
+        assertEquals(22.3, result.get().getTemperature().get().getCelsius(), 0.1);
+        assertEquals(47.1, result.get().getHumidity().get().getRelativeHumidity(), 0.1);
         assertTrue(result.get().getCo2().isPresent());
         assertEquals(400, result.get().getCo2().get().getPpm(), 0.1);
         assertEquals(1704516210, result.get().getTimeStamp().atZone(ZoneId.systemDefault()).toEpochSecond());
@@ -170,7 +173,7 @@ class QingPingJsonParserTest {
     void testWhenParsingDeviceListWithWringMacAddressThenOptionalEmpty() {
         final QingPingJsonParser testee = new QingPingJsonParser();
 
-        final Optional<AirValue> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, "mac");
+        final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, "mac");
 
         assertTrue(result.isEmpty());
     }

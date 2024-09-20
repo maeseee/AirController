@@ -1,6 +1,5 @@
 package org.airController.sensor.qingPing;
 
-import org.airController.entities.AirValue;
 import org.airController.secrets.Secret;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +23,7 @@ class QingPingIntegrationTest {
         final String accessTokenResponse = runAccessTokenRequest();
         final QingPingAccessToken accessToken = runParseAccessToken(accessTokenResponse);
         final String listDevicesResponse = runListDevicesRequest(accessToken);
-        final AirValue airValue = runParseListDevices(listDevicesResponse);
+        final QingPingSensorData airValue = runParseListDevices(listDevicesResponse);
         assertNotNull(airValue);
         assertTrue(LocalDateTime.now().minusMinutes(15).isBefore(airValue.getTimeStamp()));
         assertTrue(LocalDateTime.now().plusMinutes(5).isAfter(airValue.getTimeStamp()));
@@ -64,11 +63,11 @@ class QingPingIntegrationTest {
         return listDevicesResponse.get();
     }
 
-    private AirValue runParseListDevices(String listDevicesResponse) {
+    private QingPingSensorData runParseListDevices(String listDevicesResponse) {
         final QingPingJsonParser parser = new QingPingJsonParser();
-        final Optional<AirValue> airValue = parser.parseDeviceListResponse(listDevicesResponse, QingPingSensor.MAC_PRESSURE_DEVICE);
+        final Optional<QingPingSensorData> sensorData = parser.parseDeviceListResponse(listDevicesResponse, QingPingSensor.MAC_PRESSURE_DEVICE);
 
-        assertTrue(airValue.isPresent());
-        return airValue.get();
+        assertTrue(sensorData.isPresent());
+        return sensorData.get();
     }
 }

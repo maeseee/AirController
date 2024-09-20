@@ -1,6 +1,6 @@
 package org.airController.sensor.dht22;
 
-import org.airController.entities.AirValue;
+import org.airController.controllers.SensorData;
 import org.airController.sensorAdapter.IndoorSensor;
 import org.airController.sensorAdapter.IndoorSensorObserver;
 import org.apache.logging.log4j.LogManager;
@@ -30,8 +30,8 @@ public class OneWireSensor implements IndoorSensor {
 
     @Override
     public void run() {
-        final Optional<AirValue> indoorAirValue = dht22.refreshData();
-        indoorAirValue.ifPresentOrElse(
+        final Optional<SensorData> indoorSensorData = dht22.refreshData();
+        indoorSensorData.ifPresentOrElse(
                 this::notifyObservers,
                 () -> logger.error("Indoor sensor out of order"));
     }
@@ -41,9 +41,9 @@ public class OneWireSensor implements IndoorSensor {
         observers.add(observer);
     }
 
-    private void notifyObservers(AirValue indoorAirValue) {
-        logger.info("New indoor sensor value: {}", indoorAirValue);
-        observers.forEach(observer -> observer.updateIndoorSensorValue(indoorAirValue));
+    private void notifyObservers(SensorData indoorSensorData) {
+        logger.info("New indoor sensor data: {}", indoorSensorData);
+        observers.forEach(observer -> observer.updateIndoorSensorValue(indoorSensorData));
     }
 
     public static void main(String[] args) throws IOException {

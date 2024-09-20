@@ -1,6 +1,6 @@
 package org.airController.sensor.dht22;
 
-import org.airController.entities.AirValue;
+import org.airController.controllers.SensorData;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
 import org.airController.sensorAdapter.IndoorSensorObserver;
@@ -20,22 +20,22 @@ import static org.mockito.Mockito.*;
 class OneWireSensorTest {
 
     @Captor
-    ArgumentCaptor<AirValue> indoorAirValueArgumentCaptor;
+    ArgumentCaptor<SensorData> indoorSensorDataArgumentCaptor;
 
     @Test
     void testWhenRunThenNotifyObservers() throws IOException {
         final Dht22 dht22 = mock(Dht22.class);
-        final AirValue indoorAirValue = new AirValue(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(50.0));
-        when(dht22.refreshData()).thenReturn(Optional.of(indoorAirValue));
+        final SensorData indoorSensorData = new Dht22SensorData(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(50.0));
+        when(dht22.refreshData()).thenReturn(Optional.of(indoorSensorData));
         final OneWireSensor testee = new OneWireSensor(dht22);
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
 
         testee.run();
 
-        verify(observer).updateIndoorSensorValue(indoorAirValueArgumentCaptor.capture());
-        final AirValue indoorAirValueCapture = indoorAirValueArgumentCaptor.getValue();
-        assertEquals(indoorAirValue, indoorAirValueCapture);
+        verify(observer).updateIndoorSensorValue(indoorSensorDataArgumentCaptor.capture());
+        final SensorData indoorSensorDataCapture = indoorSensorDataArgumentCaptor.getValue();
+        assertEquals(indoorSensorData, indoorSensorDataCapture);
     }
 
     @Test
