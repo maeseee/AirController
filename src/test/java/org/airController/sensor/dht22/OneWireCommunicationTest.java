@@ -1,18 +1,8 @@
-package org.airController.sensor;
+package org.airController.sensor.dht22;
 
 
-import org.airController.util.RaspberryPiPin;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.OptionalLong;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OneWireCommunicationTest {

@@ -1,4 +1,4 @@
-package org.airController.sensor;
+package org.airController.sensor.dht22;
 
 import com.pi4j.wiringpi.Gpio;
 import org.airController.gpioAdapter.GpioFunction;

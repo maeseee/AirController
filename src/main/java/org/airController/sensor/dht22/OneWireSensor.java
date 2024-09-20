@@ -1,4 +1,4 @@
-package org.airController.sensor;
+package org.airController.sensor.dht22;
 
 import org.airController.entities.AirValue;
 import org.airController.sensorAdapter.IndoorSensor;
