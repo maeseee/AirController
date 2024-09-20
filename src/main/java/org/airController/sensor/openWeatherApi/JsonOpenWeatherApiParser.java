@@ -1,6 +1,5 @@
 package org.airController.sensor.openWeatherApi;
 
-import org.airController.entities.AirValue;
 import org.airController.entities.Humidity;
 import org.airController.entities.Temperature;
 import org.json.JSONObject;
@@ -10,7 +9,7 @@ import java.util.Optional;
 
 class JsonOpenWeatherApiParser {
 
-    public static Optional<AirValue> parse(String jsonString) {
+    public static Optional<OpenWeatherApiSensorData> parse(String jsonString) {
         try {
             final JSONTokener tokener = new JSONTokener(jsonString);
             final JSONObject jsonObject = new JSONObject(tokener);
@@ -19,8 +18,8 @@ class JsonOpenWeatherApiParser {
             final Temperature temperature = Temperature.createFromKelvin(temperatureKelvin);
             final double humidityRelative = main.getDouble("humidity");
             final Humidity humidity = Humidity.createFromRelative(humidityRelative);
-            final AirValue airValue = new AirValue(temperature, humidity);
-            return Optional.of(airValue);
+            final OpenWeatherApiSensorData sensorData = new OpenWeatherApiSensorData(temperature, humidity);
+            return Optional.of(sensorData);
         } catch (Exception e) {
             return Optional.empty();
         }

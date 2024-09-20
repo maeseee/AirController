@@ -1,6 +1,5 @@
 package org.airController.sensor.openWeatherApi;
 
-import org.airController.entities.AirValue;
 import org.airController.secrets.Secret;
 import org.airController.sensorAdapter.OutdoorSensor;
 import org.airController.sensorAdapter.OutdoorSensorObserver;
@@ -48,7 +47,7 @@ public class OutdoorSensorImpl implements OutdoorSensor {
             return;
         }
 
-        final Optional<AirValue> airValue = JsonOpenWeatherApiParser.parse(request.get());
+        final Optional<OpenWeatherApiSensorData> airValue = JsonOpenWeatherApiParser.parse(request.get());
         airValue.ifPresentOrElse(
                 this::notifyObservers,
                 () -> logger.error("Outdoor sensor out of order"));
@@ -69,8 +68,8 @@ public class OutdoorSensorImpl implements OutdoorSensor {
         return new HttpsGetRequest(uri);
     }
 
-    private void notifyObservers(AirValue outdoorAirValue) {
-        logger.info("New outdoor sensor value: {}", outdoorAirValue);
-        observers.forEach(observer -> observer.updateOutdoorSensorValue(outdoorAirValue));
+    private void notifyObservers(OpenWeatherApiSensorData outdoorSensorData) {
+        logger.info("New outdoor sensor data: {}", outdoorSensorData);
+        observers.forEach(observer -> observer.updateOutdoorSensorValue(outdoorSensorData));
     }
 }

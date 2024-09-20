@@ -1,6 +1,5 @@
 package org.airController.sensor.openWeatherApi;
 
-import org.airController.entities.AirValue;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -31,11 +30,13 @@ class JsonOpenWeatherApiParserTest {
                 }
                 """;
 
-        final Optional<AirValue> result = JsonOpenWeatherApiParser.parse(sampleHttpResponse);
+        final Optional<OpenWeatherApiSensorData> result = JsonOpenWeatherApiParser.parse(sampleHttpResponse);
 
         assertTrue(result.isPresent());
-        assertEquals(10.53, result.get().getTemperature().getCelsius(), 0.1);
-        assertEquals(87.0, result.get().getHumidity().getRelativeHumidity(), 0.1);
+        assertTrue(result.get().getTemperature().isPresent());
+        assertTrue(result.get().getHumidity().isPresent());
+        assertEquals(10.53, result.get().getTemperature().get().getCelsius(), 0.1);
+        assertEquals(87.0, result.get().getHumidity().get().getRelativeHumidity(), 0.1);
     }
 
     @Test
@@ -58,7 +59,7 @@ class JsonOpenWeatherApiParserTest {
                 }
                 """;
 
-        final Optional<AirValue> result = JsonOpenWeatherApiParser.parse(sampleHttpResponse);
+        final Optional<OpenWeatherApiSensorData> result = JsonOpenWeatherApiParser.parse(sampleHttpResponse);
 
         assertTrue(result.isEmpty());
     }
@@ -84,7 +85,7 @@ class JsonOpenWeatherApiParserTest {
                 }
                 """;
 
-        final Optional<AirValue> result = JsonOpenWeatherApiParser.parse(sampleHttpResponse);
+        final Optional<OpenWeatherApiSensorData> result = JsonOpenWeatherApiParser.parse(sampleHttpResponse);
 
         assertTrue(result.isEmpty());
     }

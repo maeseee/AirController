@@ -10,19 +10,22 @@ import java.util.Optional;
 public class CurrentSensorValues implements IndoorSensorObserver, OutdoorSensorObserver {
 
     private SensorValue indoorSensorValue;
-    private SensorValue outdoorSensorValue;
+    private CurrentSensorData outdoorSensorData = new CurrentSensorData();
 
     public CurrentSensorValues() {
-        this(new InvalidSensorValue(), new InvalidSensorValue());
+        this(new InvalidSensorValue());
     }
 
-    CurrentSensorValues(SensorValue indoorAirValue, SensorValue outdoorSensorValue) {
+    CurrentSensorValues(SensorValue indoorAirValue) {
         this.indoorSensorValue = indoorAirValue;
-        this.outdoorSensorValue = outdoorSensorValue;
     }
 
     public boolean isIndoorHumidityAboveOutdoorHumidity() {
-        return indoorSensorValue.getAbsoluteHumidity() > outdoorSensorValue.getAbsoluteHumidity();
+        Optional<Double> outdoorAbsoluteHumidity = outdoorSensorData.getAbsoluteHumidity();
+        if (outdoorAbsoluteHumidity.isEmpty()) {
+            return false;
+        }
+        return indoorSensorValue.getAbsoluteHumidity() > outdoorAbsoluteHumidity.get();
     }
 
     public Optional<Humidity> getIndoorHumidity() {
@@ -39,7 +42,10 @@ public class CurrentSensorValues implements IndoorSensorObserver, OutdoorSensorO
     }
 
     @Override
-    public void updateOutdoorSensorValue(SensorValue outdoorSensorValue) {
-        this.outdoorSensorValue = outdoorSensorValue;
+    public void updateOutdoorSensorValue(SensorData outdoorSensorData) {
+        outdoorSensorData.getTemperature().ifPresent(temperature -> this.outdoorSensorData.setTemperature(temperature));
+        outdoorSensorData.getHumidity().ifPresent(humidity -> this.outdoorSensorData.setHumidity(humidity));
+        outdoorSensorData.getCo2().ifPresent(co2 -> this.outdoorSensorData.setCo2(co2));
+        this.outdoorSensorData.updateTimestamp();
     }
 }

@@ -28,11 +28,13 @@ class CurrentSensorValuesTest {
     @Test
     void testWhenSensorInvalidThenInvalidateSensorValues() {
         final AirValue airValue = mock(AirValue.class);
+        final CurrentSensorData sensorData = mock(CurrentSensorData.class);
         when(airValue.isSensorValid()).thenReturn(false);
+        when(sensorData.isSensorValid()).thenReturn(false);
         final CurrentSensorValues testee = new CurrentSensorValues();
 
         testee.updateIndoorSensorValue(airValue);
-        testee.updateOutdoorSensorValue(airValue);
+        testee.updateOutdoorSensorValue(sensorData);
 
         assertThat(testee.getIndoorHumidity()).isNotPresent();
     }

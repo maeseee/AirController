@@ -1,6 +1,5 @@
 package org.airController.sensor.openWeatherApi;
 
-import org.airController.entities.AirValue;
 import org.airController.sensorAdapter.OutdoorSensorObserver;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,7 +36,7 @@ class OutdoorSensorImplTest {
             """;
 
     @Captor
-    ArgumentCaptor<AirValue> outdoorAirValueArgumentCaptor;
+    ArgumentCaptor<OpenWeatherApiSensorData> outdoorAirValueArgumentCaptor;
 
     @Test
     void testWhenMeasureValuesThenCallObservers() {
@@ -49,9 +49,11 @@ class OutdoorSensorImplTest {
         testee.run();
 
         verify(observer).updateOutdoorSensorValue(outdoorAirValueArgumentCaptor.capture());
-        final AirValue outdoorAirValue = outdoorAirValueArgumentCaptor.getValue();
-        assertEquals(10.53, outdoorAirValue.getTemperature().getCelsius(), 0.1);
-        assertEquals(87.0, outdoorAirValue.getHumidity().getRelativeHumidity(), 0.1);
+        final OpenWeatherApiSensorData sensorData = outdoorAirValueArgumentCaptor.getValue();
+        assertTrue(sensorData.getTemperature().isPresent());
+        assertTrue(sensorData.getHumidity().isPresent());
+        assertEquals(10.53, sensorData.getTemperature().get().getCelsius(), 0.1);
+        assertEquals(87.0, sensorData.getHumidity().get().getRelativeHumidity(), 0.1);
     }
 
     @Test

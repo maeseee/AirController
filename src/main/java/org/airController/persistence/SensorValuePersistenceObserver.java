@@ -1,5 +1,6 @@
 package org.airController.persistence;
 
+import org.airController.controllers.SensorData;
 import org.airController.controllers.SensorValue;
 import org.airController.sensorAdapter.IndoorSensorObserver;
 import org.airController.sensorAdapter.OutdoorSensorObserver;
@@ -18,7 +19,7 @@ public class SensorValuePersistenceObserver implements IndoorSensorObserver, Out
     }
 
     @Override
-    public void updateOutdoorSensorValue(SensorValue outdoorSensorValue) {
-        outdoorValuePersistence.persist(outdoorSensorValue);
+    public void updateOutdoorSensorValue(SensorData outdoorSensorData) {
+        outdoorValuePersistence.persist(outdoorSensorData);
     }
 }
