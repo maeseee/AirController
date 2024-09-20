@@ -1,4 +1,4 @@
-package org.airController.sensor;
+package org.airController.sensor.openWeatherApi;
 
 import org.junit.jupiter.api.Test;
 
