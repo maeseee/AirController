@@ -1,10 +1,10 @@
 package org.airController.controllers;
 
 import org.airController.entities.Humidity;
+import org.airController.entities.InvaildArgumentException;
 import org.airController.entities.Temperature;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 class CurrentSensorValuesTest {
 
     @Test
-    void testWhenUpdateIndoorSensorDataThenUseNewData() throws IOException {
+    void testWhenUpdateIndoorSensorDataThenUseNewData() throws InvaildArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(23.0);
         final Humidity humidity = Humidity.createFromRelative(50.0);
         final SensorData sensorData = mock(SensorData.class);
@@ -37,7 +37,7 @@ class CurrentSensorValuesTest {
     }
 
     @Test
-    void testIndoorHumidityHigher() throws IOException {
+    void testIndoorHumidityHigher() throws InvaildArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(23.0);
         final Humidity indoorHumidity = Humidity.createFromRelative(60.0);
         final SensorData indoorSensorData = mock(SensorData.class);
@@ -57,7 +57,7 @@ class CurrentSensorValuesTest {
     }
 
     @Test
-    void testIndoorHumidityLower() throws IOException {
+    void testIndoorHumidityLower() throws InvaildArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(23.0);
         final Humidity indoorHumidity = Humidity.createFromRelative(40.0);
         final SensorData indoorSensorData = mock(SensorData.class);

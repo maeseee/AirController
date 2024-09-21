@@ -2,8 +2,6 @@ package org.airController.entities;
 
 import lombok.Getter;
 
-import java.io.IOException;
-
 @Getter
 public class Humidity {
 
@@ -28,9 +26,9 @@ public class Humidity {
         return String.format("Humidity=%.2f%%", relativeHumidity);
     }
 
-    public static Humidity createFromRelative(double relativeHumidity) throws IOException {
+    public static Humidity createFromRelative(double relativeHumidity) throws InvaildArgumentException {
         if (relativeHumidity < 0.0 || relativeHumidity > 100.0) {
-            throw new IOException();
+            throw new InvaildArgumentException("Given humidity of " + relativeHumidity + "% is out of range!");
         }
         return new Humidity(relativeHumidity);
     }

@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.io.IOException;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,7 +18,7 @@ class HumidityTest {
             "90.0",
             "100.0",
             "-0.0"})
-    void testRelativHumidity(double relativeHumidity) throws IOException {
+    void testRelativHumidity(double relativeHumidity) throws InvaildArgumentException {
         final Humidity testee = Humidity.createFromRelative(relativeHumidity);
 
         final double result = testee.getRelativeHumidity();
@@ -33,7 +31,7 @@ class HumidityTest {
             "100.1, false",
             "-0.1"})
     void testEdgeCases(double relativeHumidity) {
-        assertThrows(IOException.class, () -> Humidity.createFromRelative(relativeHumidity));
+        assertThrows(InvaildArgumentException.class, () -> Humidity.createFromRelative(relativeHumidity));
     }
 
     @ParameterizedTest
@@ -52,7 +50,7 @@ class HumidityTest {
             "35.0, 39.58",
             "40.0, 51.1",
             "45.0, 65.35",})
-    void testCalculationOfAbsoluteHumidity100Percent(double temperatureCelsius, double weightFor100Percent) throws IOException {
+    void testCalculationOfAbsoluteHumidity100Percent(double temperatureCelsius, double weightFor100Percent) throws InvaildArgumentException {
         final double relativeHumidity = 100.0;
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
         final Humidity testee = Humidity.createFromRelative(relativeHumidity);
@@ -80,7 +78,7 @@ class HumidityTest {
             "35.0, 39.58",
             "40.0, 51.1",
             "45.0, 65.35",})
-    void testCalculationOfAbsoluteHumidity50Percent(double temperatureCelsius, double weightFor100Percent) throws IOException {
+    void testCalculationOfAbsoluteHumidity50Percent(double temperatureCelsius, double weightFor100Percent) throws InvaildArgumentException {
         final double relativeHumidity = 50.0;
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
         final Humidity testee = Humidity.createFromRelative(relativeHumidity);
@@ -93,7 +91,7 @@ class HumidityTest {
     }
 
     @Test
-    void calculationAbsoluteHumidity() throws IOException {
+    void calculationAbsoluteHumidity() throws InvaildArgumentException {
         final double relativeHumidity = 63.0;
         final Temperature temperature = Temperature.createFromCelsius(9.5);
         final Humidity testee = Humidity.createFromRelative(relativeHumidity);

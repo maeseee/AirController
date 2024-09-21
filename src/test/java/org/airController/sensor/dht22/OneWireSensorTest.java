@@ -2,6 +2,7 @@ package org.airController.sensor.dht22;
 
 import org.airController.controllers.SensorData;
 import org.airController.entities.Humidity;
+import org.airController.entities.InvaildArgumentException;
 import org.airController.entities.Temperature;
 import org.airController.sensorAdapter.IndoorSensorObserver;
 import org.junit.jupiter.api.Test;
@@ -10,7 +11,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,7 +23,7 @@ class OneWireSensorTest {
     ArgumentCaptor<SensorData> indoorSensorDataArgumentCaptor;
 
     @Test
-    void testWhenRunThenNotifyObservers() throws IOException {
+    void testWhenRunThenNotifyObservers() throws InvaildArgumentException {
         final Dht22 dht22 = mock(Dht22.class);
         final SensorData indoorSensorData = new Dht22SensorData(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(50.0));
         when(dht22.refreshData()).thenReturn(Optional.of(indoorSensorData));

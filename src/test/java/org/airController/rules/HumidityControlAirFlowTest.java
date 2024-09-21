@@ -2,6 +2,7 @@ package org.airController.rules;
 
 import org.airController.controllers.CurrentSensorValues;
 import org.airController.entities.Humidity;
+import org.airController.entities.InvaildArgumentException;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -9,7 +10,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,7 +29,7 @@ class HumidityControlAirFlowTest {
             "44, -1.0",
             "40, -1.0",
     })
-    void shouldCalculateHumidityPercentage_whenOutdoorHumidityIsBelowIndoor(double indoorHumidity, double expectedResult) throws IOException {
+    void shouldCalculateHumidityPercentage_whenOutdoorHumidityIsBelowIndoor(double indoorHumidity, double expectedResult) throws InvaildArgumentException {
         Humidity humidity = Humidity.createFromRelative(indoorHumidity);
         when(sensorValues.getIndoorHumidity()).thenReturn(Optional.of(humidity));
         when(sensorValues.isIndoorHumidityAboveOutdoorHumidity()).thenReturn(true);
@@ -48,7 +48,7 @@ class HumidityControlAirFlowTest {
             "44, 1.0",
             "40, 1.0",
     })
-    void shouldCalculateHumidityPercentage_whenOutdoorHumidityIsAboveIndoor(double indoorHumidity, double expectedResult) throws IOException {
+    void shouldCalculateHumidityPercentage_whenOutdoorHumidityIsAboveIndoor(double indoorHumidity, double expectedResult) throws InvaildArgumentException {
         Humidity humidity = Humidity.createFromRelative(indoorHumidity);
         when(sensorValues.getIndoorHumidity()).thenReturn(Optional.of(humidity));
         when(sensorValues.isIndoorHumidityAboveOutdoorHumidity()).thenReturn(false);

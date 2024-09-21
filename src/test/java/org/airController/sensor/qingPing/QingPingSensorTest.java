@@ -3,6 +3,7 @@ package org.airController.sensor.qingPing;
 import org.airController.controllers.SensorData;
 import org.airController.entities.CarbonDioxide;
 import org.airController.entities.Humidity;
+import org.airController.entities.InvaildArgumentException;
 import org.airController.entities.Temperature;
 import org.airController.sensorAdapter.IndoorSensorObserver;
 import org.assertj.core.api.Assertions;
@@ -17,7 +18,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
@@ -95,7 +95,7 @@ class QingPingSensorTest {
     ArgumentCaptor<SensorData> indoorSensorDataArgumentCaptor;
 
     @Test
-    void testWhenRunThenNotifyObservers() throws IOException {
+    void testWhenRunThenNotifyObservers() throws InvaildArgumentException {
         final QingPingAccessTokenRequest accessTokenRequest = mock(QingPingAccessTokenRequest.class);
         when(accessTokenRequest.sendRequest()).thenReturn(Optional.of(SAMPLE_ACCESS_TOKEN_RESPONSE));
         final QingPingListDevicesRequest listDevicesRequest = mock(QingPingListDevicesRequest.class);
@@ -132,7 +132,7 @@ class QingPingSensorTest {
     @ParameterizedTest(name = "{index} => temperature1={0}, humidity1={1}, co2_1={2}, age_1={3}, temperatureExp={4}, humidityExp={5}")
     @ArgumentsSource(SensorDataArgumentProvider.class)
     void testWhenMultipleSensorsWithoutCo2ThenAverage(double temperature1, double humidity1, CarbonDioxide co2, int age_1, double temperatureExp,
-                                                      double humidityExp) throws IOException {
+                                                      double humidityExp) throws InvaildArgumentException {
         final QingPingAccessTokenRequest accessTokenRequest = mock(QingPingAccessTokenRequest.class);
         when(accessTokenRequest.sendRequest()).thenReturn(Optional.of(SAMPLE_ACCESS_TOKEN_RESPONSE));
         final QingPingListDevicesRequest listDevicesRequest = mock(QingPingListDevicesRequest.class);
@@ -159,7 +159,7 @@ class QingPingSensorTest {
 
     static class SensorDataArgumentProvider implements ArgumentsProvider {
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws IOException {
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws InvaildArgumentException {
             return Stream.of(
                     Arguments.of(20.0, 40.0, null, 0, 30.0, 50.0),
                     Arguments.of(20.0, 40.0, CarbonDioxide.createFromPpm(500.0), 0, 30.0, 50.0),

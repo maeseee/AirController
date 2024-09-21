@@ -3,6 +3,7 @@ package org.airController.persistence;
 import org.airController.controllers.SensorData;
 import org.airController.entities.CarbonDioxide;
 import org.airController.entities.Humidity;
+import org.airController.entities.InvaildArgumentException;
 import org.airController.entities.Temperature;
 import org.airController.sensor.qingPing.QingPingSensorData;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ class SensorDataCsvWriterTest {
     private final String FILE_PATH = "log/sensorValueCsvWriterTest.csv";
 
     @Test
-    void testWhenWritingCsvThenValuesInCsvFile() throws IOException {
+    void testWhenWritingCsvThenValuesInCsvFile() throws InvaildArgumentException, IOException {
         final Random random = new Random();
         final double temperature = random.nextDouble() * 100;
         final double humidity = random.nextDouble() * 100;

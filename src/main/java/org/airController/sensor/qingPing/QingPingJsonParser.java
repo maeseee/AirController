@@ -2,6 +2,7 @@ package org.airController.sensor.qingPing;
 
 import org.airController.entities.CarbonDioxide;
 import org.airController.entities.Humidity;
+import org.airController.entities.InvaildArgumentException;
 import org.airController.entities.Temperature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,7 +11,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -66,7 +66,7 @@ class QingPingJsonParser {
         return Optional.empty();
     }
 
-    private QingPingSensorData getSensorData(JSONObject deviceData) throws IOException {
+    private QingPingSensorData getSensorData(JSONObject deviceData) throws InvaildArgumentException {
         final double temperatureCelsius = getDoubleValue("temperature", deviceData).orElseThrow();
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
         final double humidityRelative = getDoubleValue("humidity", deviceData).orElseThrow();

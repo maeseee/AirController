@@ -3,6 +3,7 @@ package org.airController.sensor.qingPing;
 import org.airController.controllers.SensorData;
 import org.airController.entities.CarbonDioxide;
 import org.airController.entities.Humidity;
+import org.airController.entities.InvaildArgumentException;
 import org.airController.entities.Temperature;
 import org.airController.secrets.Secret;
 import org.airController.sensorAdapter.IndoorSensor;
@@ -10,7 +11,6 @@ import org.airController.sensorAdapter.IndoorSensorObserver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -137,7 +137,7 @@ public class QingPingSensor implements IndoorSensor {
             final CarbonDioxide co2 = getAverageCo2(currentSensorDataList);
             final LocalDateTime time = getNewestTimestamp(currentSensorDataList);
             return Optional.of(new QingPingSensorData(temperature, humidity, co2, time));
-        } catch (IOException | NoSuchElementException exception) {
+        } catch (InvaildArgumentException | NoSuchElementException exception) {
             logger.error("Unexpected error in Exception in getAverageSensorData: :", exception);
         }
         return Optional.empty();
@@ -151,7 +151,7 @@ public class QingPingSensor implements IndoorSensor {
         return averageTemperature.isPresent() ? Temperature.createFromCelsius(averageTemperature.getAsDouble()) : null;
     }
 
-    private Humidity getAverageHumidity(List<QingPingSensorData> currentSensorDataList) throws IOException {
+    private Humidity getAverageHumidity(List<QingPingSensorData> currentSensorDataList) throws InvaildArgumentException {
         final OptionalDouble averageHumidity = currentSensorDataList.stream()
                 .filter(sensorData -> sensorData.getHumidity().isPresent())
                 .mapToDouble(value -> value.getHumidity().get().getRelativeHumidity())
@@ -159,7 +159,7 @@ public class QingPingSensor implements IndoorSensor {
         return averageHumidity.isPresent() ? Humidity.createFromRelative(averageHumidity.getAsDouble()) : null;
     }
 
-    private CarbonDioxide getAverageCo2(List<QingPingSensorData> currentSensorDataList) throws IOException {
+    private CarbonDioxide getAverageCo2(List<QingPingSensorData> currentSensorDataList) throws InvaildArgumentException {
         final OptionalDouble averageCo2 = currentSensorDataList.stream()
                 .filter(sensorData -> sensorData.getCo2().isPresent())
                 .mapToDouble(value -> value.getCo2().get().getPpm())
