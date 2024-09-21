@@ -29,6 +29,8 @@ class QingPingAccessTokenRequest {
             final int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 responseFromUrl = readResponseFromServer(connection.getInputStream());
+            } else {
+                logger.error("Wrong response code! responseCode={} responseMessage={}", responseCode, connection.getResponseMessage());
             }
             connection.disconnect();
         } catch (IOException e) {
