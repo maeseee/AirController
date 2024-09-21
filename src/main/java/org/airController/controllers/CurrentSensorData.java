@@ -8,6 +8,7 @@ import org.airController.entities.Temperature;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.OptionalDouble;
 
 @Setter
 public class CurrentSensorData implements SensorData {
@@ -44,10 +45,10 @@ public class CurrentSensorData implements SensorData {
         return timestamp;
     }
 
-    public Optional<Double> getAbsoluteHumidity() {
+    public OptionalDouble getAbsoluteHumidity() {
         return isSensorValid() && humidity != null ?
-                Optional.of(humidity.getAbsoluteHumidity()) :
-                Optional.empty();
+                OptionalDouble.of(humidity.getAbsoluteHumidity()) :
+                OptionalDouble.empty();
     }
 
     public void updateTimestamp() {

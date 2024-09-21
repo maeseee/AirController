@@ -7,6 +7,7 @@ import org.airController.sensorAdapter.IndoorSensorObserver;
 import org.airController.sensorAdapter.OutdoorSensorObserver;
 
 import java.util.Optional;
+import java.util.OptionalDouble;
 
 public class CurrentSensorValues implements IndoorSensorObserver, OutdoorSensorObserver {
 
@@ -14,12 +15,12 @@ public class CurrentSensorValues implements IndoorSensorObserver, OutdoorSensorO
     private final CurrentSensorData outdoorSensorData = new CurrentSensorData();
 
     public boolean isIndoorHumidityAboveOutdoorHumidity() {
-        final Optional<Double> outdoorAbsoluteHumidity = outdoorSensorData.getAbsoluteHumidity();
-        final Optional<Double> indoorAbsoluteHumidity = indoorSensorData.getAbsoluteHumidity();
+        final OptionalDouble outdoorAbsoluteHumidity = outdoorSensorData.getAbsoluteHumidity();
+        final OptionalDouble indoorAbsoluteHumidity = indoorSensorData.getAbsoluteHumidity();
         if (outdoorAbsoluteHumidity.isEmpty() || indoorAbsoluteHumidity.isEmpty()) {
             return false;
         }
-        return indoorAbsoluteHumidity.get() > outdoorAbsoluteHumidity.get();
+        return indoorAbsoluteHumidity.getAsDouble() > outdoorAbsoluteHumidity.getAsDouble();
     }
 
     public Optional<Humidity> getIndoorHumidity() {
