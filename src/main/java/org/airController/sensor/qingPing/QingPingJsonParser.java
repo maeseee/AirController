@@ -70,7 +70,7 @@ class QingPingJsonParser {
         final double temperatureCelsius = getDoubleValue("temperature", deviceData).orElseThrow();
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
         final double humidityRelative = getDoubleValue("humidity", deviceData).orElseThrow();
-        final Humidity humidity = Humidity.createFromRelative(humidityRelative);
+        final Humidity humidity = Humidity.createFromRelative(humidityRelative, temperature);
         final OptionalDouble co2Optinal = getDoubleValue("co2", deviceData);
         final CarbonDioxide co2 = co2Optinal.isPresent() ? CarbonDioxide.createFromPpm(co2Optinal.getAsDouble()) : null;
         final long timeFromEpoch = getLongValue("timestamp", deviceData).orElseThrow();

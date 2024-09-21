@@ -1,5 +1,7 @@
 package org.airController.sensor.qingPing;
 
+import org.airController.entities.Humidity;
+import org.airController.entities.Temperature;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZoneId;
@@ -148,8 +150,10 @@ class QingPingJsonParserTest {
         assertTrue(result.isPresent());
         assertTrue(result.get().getTemperature().isPresent());
         assertTrue(result.get().getHumidity().isPresent());
-        assertEquals(21.5, result.get().getTemperature().get().getCelsius(), 0.1);
-        assertEquals(54.2, result.get().getHumidity().get().getRelativeHumidity(), 0.1);
+        final Temperature temperature = result.get().getTemperature().get();
+        assertEquals(21.5, temperature.getCelsius(), 0.1);
+        final Humidity humidity = result.get().getHumidity().get();
+        assertEquals(54.2, humidity.getRelativeHumidity(temperature), 0.1);
         assertEquals(1704516210, result.get().getTimeStamp().atZone(ZoneId.systemDefault()).toEpochSecond());
     }
 
@@ -162,8 +166,9 @@ class QingPingJsonParserTest {
         assertTrue(result.isPresent());
         assertTrue(result.get().getTemperature().isPresent());
         assertTrue(result.get().getHumidity().isPresent());
-        assertEquals(22.3, result.get().getTemperature().get().getCelsius(), 0.1);
-        assertEquals(47.1, result.get().getHumidity().get().getRelativeHumidity(), 0.1);
+        final Temperature temperature = result.get().getTemperature().get();
+        assertEquals(22.3, temperature.getCelsius(), 0.1);
+        assertEquals(47.1, result.get().getHumidity().get().getRelativeHumidity(temperature), 0.1);
         assertTrue(result.get().getCo2().isPresent());
         assertEquals(400, result.get().getCo2().get().getPpm(), 0.1);
         assertEquals(1704516210, result.get().getTimeStamp().atZone(ZoneId.systemDefault()).toEpochSecond());

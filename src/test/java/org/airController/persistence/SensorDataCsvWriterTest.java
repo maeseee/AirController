@@ -25,20 +25,20 @@ class SensorDataCsvWriterTest {
     @Test
     void testWhenWritingCsvThenValuesInCsvFile() throws InvaildArgumentException, IOException {
         final Random random = new Random();
-        final double temperature = random.nextDouble() * 100;
-        final double humidity = random.nextDouble() * 100;
-        final double co2 = random.nextDouble() * 100000;
+        final double temperatureValue = random.nextDouble() * 100;
+        final Temperature temperature = Temperature.createFromCelsius(temperatureValue);
+        final double humidityValue = random.nextDouble() * 100;
+        final Humidity humidity = Humidity.createFromRelative(humidityValue, temperature);
+        final double co2Value = random.nextDouble() * 100000;
+        final CarbonDioxide co2 = CarbonDioxide.createFromPpm(co2Value);
         final LocalDateTime now = LocalDateTime.now();
-        final LocalDateTime time =
-                LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), now.getHour(), now.getMinute(), now.getSecond());
-        final SensorData sensorData =
-                new QingPingSensorData(Temperature.createFromCelsius(temperature), Humidity.createFromRelative(humidity), CarbonDioxide.createFromPpm(co2),
-                        time);
+        final LocalDateTime time = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), now.getHour(), now.getMinute(), now.getSecond());
+        final SensorData sensorData = new QingPingSensorData(temperature, humidity, co2, time);
         final SensorValuePersistence testee = new SensorDataCsvWriter(FILE_PATH);
 
         testee.persist(sensorData);
 
-        assertCsvFile(time, temperature, humidity, co2);
+        assertCsvFile(time, temperatureValue, humidityValue, co2Value);
     }
 
     private void assertCsvFile(LocalDateTime time, double temperature, double humidity, double co2) throws IOException {

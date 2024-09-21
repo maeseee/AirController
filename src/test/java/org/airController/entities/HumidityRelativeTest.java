@@ -1,14 +1,15 @@
 package org.airController.entities;
 
-import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class HumidityTest {
+class HumidityRelativeTest {
 
     @ParameterizedTest
     @CsvSource({
@@ -18,26 +19,19 @@ class HumidityTest {
             "100.0",
             "-0.0"})
     void testRelativHumidity(double relativeHumidity) throws InvaildArgumentException {
-        final Temperature temperature = Temperature.createFromCelsius(25.0);
-        final Humidity testee = Humidity.createFromRelative(relativeHumidity, temperature);
+        final HumidityRelative testee = HumidityRelative.createFromRelative(relativeHumidity);
 
-        final double result = testee.getRelativeHumidity(temperature);
+        final double result = testee.getRelativeHumidity();
 
-        assertThat(result).isCloseTo(relativeHumidity, Offset.offset(0.001));
+        assertThat(result, is(relativeHumidity));
     }
 
     @ParameterizedTest
     @CsvSource({
             "100.1, false",
             "-0.1"})
-    void testRelativeEdgeCases(double relativeHumidity) {
-        final Temperature temperature = Temperature.createFromCelsius(25.0);
-        assertThrows(InvaildArgumentException.class, () -> Humidity.createFromRelative(relativeHumidity, temperature));
-    }
-
-    @Test
-    void testAbsoluteEdgeCases() {
-        assertThrows(InvaildArgumentException.class, () -> Humidity.createFromAbsolute(-1.0));
+    void testEdgeCases(double relativeHumidity) {
+        assertThrows(InvaildArgumentException.class, () -> HumidityRelative.createFromRelative(relativeHumidity));
     }
 
     @ParameterizedTest
@@ -56,17 +50,16 @@ class HumidityTest {
             "35.0, 39.58",
             "40.0, 51.1",
             "45.0, 65.35",})
-    void testCalculationOfRelativeHumidity100Percent(double temperatureCelsius, double weightFor100Percent) throws InvaildArgumentException {
+    void testCalculationOfAbsoluteHumidity100Percent(double temperatureCelsius, double weightFor100Percent) throws InvaildArgumentException {
         final double relativeHumidity = 100.0;
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
-        final Humidity testee = Humidity.createFromRelative(relativeHumidity, temperature);
+        final HumidityRelative testee = HumidityRelative.createFromRelative(relativeHumidity);
 
-        final double absoluteHumidity = testee.getAbsoluteHumidity();
-        System.out.println(testee);
+        final double result = testee.getAbsoluteHumidity(temperature);
 
         final double expectedMaxDeltaInPercent = 1.0;
         final double expectedMaxDelta = expectedMaxDeltaInPercent * weightFor100Percent / 100.0;
-        assertThat(absoluteHumidity).isCloseTo(weightFor100Percent, Offset.offset(expectedMaxDelta));
+        assertEquals(weightFor100Percent, result, expectedMaxDelta);
     }
 
     @ParameterizedTest
@@ -88,21 +81,23 @@ class HumidityTest {
     void testCalculationOfAbsoluteHumidity50Percent(double temperatureCelsius, double weightFor100Percent) throws InvaildArgumentException {
         final double relativeHumidity = 50.0;
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
-        final Humidity testee = Humidity.createFromRelative(relativeHumidity, temperature);
+        final HumidityRelative testee = HumidityRelative.createFromRelative(relativeHumidity);
 
-        final double absoluteHumidity = testee.getAbsoluteHumidity();
+        final double result = testee.getAbsoluteHumidity(temperature);
 
         final double expectedMaxDeltaInPercent = 1.0;
         final double expectedMaxDelta = expectedMaxDeltaInPercent * weightFor100Percent / 100.0;
-        assertThat(absoluteHumidity).isCloseTo(weightFor100Percent / 2.0, Offset.offset(expectedMaxDelta));
+        assertEquals(weightFor100Percent / 2.0, result, expectedMaxDelta);
     }
 
     @Test
     void calculationAbsoluteHumidity() throws InvaildArgumentException {
         final double relativeHumidity = 63.0;
         final Temperature temperature = Temperature.createFromCelsius(9.5);
-        final Humidity testee = Humidity.createFromRelative(relativeHumidity, temperature);
+        final HumidityRelative testee = HumidityRelative.createFromRelative(relativeHumidity);
 
-        System.out.println(testee);
+        final double result = testee.getAbsoluteHumidity(temperature);
+
+        System.out.println(result);
     }
 }

@@ -3,6 +3,7 @@ package org.airController.rules;
 import org.airController.controllers.CurrentSensorValues;
 import org.airController.controllers.Rule;
 import org.airController.entities.Humidity;
+import org.airController.entities.Temperature;
 
 import java.util.Optional;
 
@@ -27,10 +28,11 @@ public class HumidityControlAirFlow implements Rule {
     @Override
     public Percentage turnOn() {
         Optional<Humidity> indoorHumidity = sensorValues.getIndoorHumidity();
-        if (indoorHumidity.isEmpty()) {
+        Optional<Temperature> indoorTemperature = sensorValues.getIndoorTemperature();
+        if (indoorHumidity.isEmpty() || indoorTemperature.isEmpty()) {
             return new Percentage(0.0);
         }
-        double impact = M * indoorHumidity.get().getRelativeHumidity() + B;
+        double impact = M * indoorHumidity.get().getRelativeHumidity(indoorTemperature.get()) + B;
         double sign = sensorValues.isIndoorHumidityAboveOutdoorHumidity() ? 1.0 : -1.0;
         return new Percentage(impact * sign);
     }

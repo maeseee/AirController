@@ -25,7 +25,8 @@ class OneWireSensorTest {
     @Test
     void testWhenRunThenNotifyObservers() throws InvaildArgumentException {
         final Dht22 dht22 = mock(Dht22.class);
-        final SensorData indoorSensorData = new Dht22SensorData(Temperature.createFromCelsius(23.0), Humidity.createFromRelative(50.0));
+        final Temperature temperature = Temperature.createFromCelsius(23.0);
+        final SensorData indoorSensorData = new Dht22SensorData(temperature, Humidity.createFromRelative(50.0, temperature));
         when(dht22.refreshData()).thenReturn(Optional.of(indoorSensorData));
         final OneWireSensor testee = new OneWireSensor(dht22);
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);

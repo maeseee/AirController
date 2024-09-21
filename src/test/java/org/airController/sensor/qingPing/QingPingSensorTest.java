@@ -110,7 +110,8 @@ class QingPingSensorTest {
         verify(observer).updateIndoorSensorData(indoorSensorDataArgumentCaptor.capture());
         final SensorData indoorSensorDataCapture = indoorSensorDataArgumentCaptor.getValue();
         Assertions.assertThat(indoorSensorDataCapture.getTemperature()).isPresent().hasValue(Temperature.createFromCelsius(21.5));
-        Assertions.assertThat(indoorSensorDataCapture.getHumidity()).isPresent().hasValue(Humidity.createFromRelative(54.2));
+        final Temperature expectedTemperature = Temperature.createFromCelsius(21.5);
+        Assertions.assertThat(indoorSensorDataCapture.getHumidity()).isPresent().hasValue(Humidity.createFromRelative(54.2, expectedTemperature));
     }
 
     @Test
@@ -139,10 +140,10 @@ class QingPingSensorTest {
         when(listDevicesRequest.sendRequest(any())).thenReturn(Optional.of(SAMPLE_LIST_DEVICES_RESPONSE));
         final QingPingJsonParser parser = mock(QingPingJsonParser.class);
         final Temperature temperature = Temperature.createFromCelsius(temperature1);
-        final Humidity humidity = Humidity.createFromRelative(humidity1);
+        final Humidity humidity = Humidity.createFromAbsolute(humidity1);
         final LocalDateTime time1 = LocalDateTime.now().minusMinutes(age_1);
         final QingPingSensorData sensorData1 = new QingPingSensorData(temperature, humidity, co2, time1);
-        final QingPingSensorData sensorData2 = new QingPingSensorData(Temperature.createFromCelsius(40.0), Humidity.createFromRelative(60.0), LocalDateTime.now());
+        final QingPingSensorData sensorData2 = new QingPingSensorData(Temperature.createFromCelsius(40.0), Humidity.createFromAbsolute(15.0), LocalDateTime.now());
         when(parser.parseDeviceListResponse(any(), eq("mac1"))).thenReturn(Optional.of(sensorData1));
         when(parser.parseDeviceListResponse(any(), eq("mac2"))).thenReturn(Optional.of(sensorData2));
         final QingPingSensor testee = new QingPingSensor(accessTokenRequest, listDevicesRequest, parser, asList("mac1", "mac2"));
@@ -154,20 +155,20 @@ class QingPingSensorTest {
         verify(observer).updateIndoorSensorData(indoorSensorDataArgumentCaptor.capture());
         final SensorData indoorSensorDataCapture = indoorSensorDataArgumentCaptor.getValue();
         Assertions.assertThat(indoorSensorDataCapture.getTemperature()).isPresent().hasValue(Temperature.createFromCelsius(temperatureExp));
-        Assertions.assertThat(indoorSensorDataCapture.getHumidity()).isPresent().hasValue(Humidity.createFromRelative(humidityExp));
+        Assertions.assertThat(indoorSensorDataCapture.getHumidity()).isPresent().hasValue(Humidity.createFromAbsolute(humidityExp));
     }
 
     static class SensorDataArgumentProvider implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws InvaildArgumentException {
             return Stream.of(
-                    Arguments.of(20.0, 40.0, null, 0, 30.0, 50.0),
-                    Arguments.of(20.0, 40.0, CarbonDioxide.createFromPpm(500.0), 0, 30.0, 50.0),
-                    Arguments.of(40.0, 60.0, CarbonDioxide.createFromPpm(500.0), 0, 40.0, 60.0),
-                    Arguments.of(20.0, 40.0, null, 30, 30.0, 50.0),
-                    Arguments.of(20.0, 40.0, null, 59, 30.0, 50.0),
-                    Arguments.of(20.0, 40.0, null, 60, 40.0, 60.0),
-                    Arguments.of(20.0, 40.0, null, 100, 40.0, 60.0)
+                    Arguments.of(20.0, 10.0, null, 0, 30.0, 12.5),
+                    Arguments.of(20.0, 10.0, CarbonDioxide.createFromPpm(500.0), 0, 30.0, 12.5),
+                    Arguments.of(40.0, 15.0, CarbonDioxide.createFromPpm(500.0), 0, 40.0, 15.0),
+                    Arguments.of(20.0, 10.0, null, 30, 30.0, 12.5),
+                    Arguments.of(20.0, 10.0, null, 59, 30.0, 12.5),
+                    Arguments.of(20.0, 10.0, null, 60, 40.0, 15.0),
+                    Arguments.of(20.0, 10.0, null, 100, 40.0, 15.0)
             );
         }
     }

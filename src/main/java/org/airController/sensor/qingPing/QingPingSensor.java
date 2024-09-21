@@ -154,9 +154,9 @@ public class QingPingSensor implements IndoorSensor {
     private Humidity getAverageHumidity(List<QingPingSensorData> currentSensorDataList) throws InvaildArgumentException {
         final OptionalDouble averageHumidity = currentSensorDataList.stream()
                 .filter(sensorData -> sensorData.getHumidity().isPresent())
-                .mapToDouble(value -> value.getHumidity().get().getRelativeHumidity())
+                .mapToDouble(sensorData -> sensorData.getHumidity().get().getAbsoluteHumidity())
                 .average();
-        return averageHumidity.isPresent() ? Humidity.createFromRelative(averageHumidity.getAsDouble()) : null;
+        return averageHumidity.isPresent() ? Humidity.createFromAbsolute(averageHumidity.getAsDouble()) : null;
     }
 
     private CarbonDioxide getAverageCo2(List<QingPingSensorData> currentSensorDataList) throws InvaildArgumentException {

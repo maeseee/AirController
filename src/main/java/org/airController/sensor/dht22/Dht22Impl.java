@@ -49,8 +49,8 @@ class Dht22Impl implements Dht22 {
 
     private Optional<SensorData> getSensorDataFromData(long rawSensorData) {
         try {
-            final Humidity humidity = getHumidityFromData(rawSensorData);
             final Temperature temperature = getTemperatureFromData(rawSensorData);
+            final Humidity humidity = getHumidityFromData(rawSensorData, temperature);
             final SensorData sensorData = new Dht22SensorData(temperature, humidity);
             return Optional.of(sensorData);
         } catch (InvaildArgumentException e) {
@@ -58,10 +58,10 @@ class Dht22Impl implements Dht22 {
         }
     }
 
-    private Humidity getHumidityFromData(long sensorData) throws InvaildArgumentException {
+    private Humidity getHumidityFromData(long sensorData, Temperature temperature) throws InvaildArgumentException {
         final long humidityData = (sensorData >> 24) & 0xFFFF;
         final double humidity = (double) humidityData / 10.0;
-        return Humidity.createFromRelative(humidity);
+        return Humidity.createFromRelative(humidity, temperature);
     }
 
     private Temperature getTemperatureFromData(long sensorData) {

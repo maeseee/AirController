@@ -1,5 +1,7 @@
 package org.airController.sensor.openWeatherApi;
 
+import org.airController.entities.Humidity;
+import org.airController.entities.Temperature;
 import org.airController.sensorAdapter.OutdoorSensorObserver;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,8 +54,10 @@ class OutdoorSensorImplTest {
         final OpenWeatherApiSensorData sensorData = outdoorSensorDataArgumentCaptor.getValue();
         assertTrue(sensorData.getTemperature().isPresent());
         assertTrue(sensorData.getHumidity().isPresent());
-        assertEquals(10.53, sensorData.getTemperature().get().getCelsius(), 0.1);
-        assertEquals(87.0, sensorData.getHumidity().get().getRelativeHumidity(), 0.1);
+        final Temperature temperature = sensorData.getTemperature().get();
+        assertEquals(10.53, temperature.getCelsius(), 0.1);
+        final Humidity humidity = sensorData.getHumidity().get();
+        assertEquals(87.0, humidity.getRelativeHumidity(temperature), 0.1);
     }
 
     @Test

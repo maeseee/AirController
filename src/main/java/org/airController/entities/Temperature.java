@@ -19,7 +19,7 @@ public class Temperature {
 
     @Override
     public String toString() {
-        return String.format("Temperature=%.2f°C", +celsius);
+        return String.format("%.2f°C", +celsius);
     }
 
     public static Temperature createFromCelsius(double celsius) {

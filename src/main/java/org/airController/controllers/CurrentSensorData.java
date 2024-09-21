@@ -45,17 +45,13 @@ public class CurrentSensorData implements SensorData {
     }
 
     public Optional<Double> getAbsoluteHumidity() {
-        return canAbsoluteHumidityBeCalculated() ?
-                Optional.of(humidity.getAbsoluteHumidity(temperature)) :
+        return isSensorValid() && humidity != null ?
+                Optional.of(humidity.getAbsoluteHumidity()) :
                 Optional.empty();
     }
 
     public void updateTimestamp() {
         this.timestamp = LocalDateTime.now();
-    }
-
-    private boolean canAbsoluteHumidityBeCalculated() {
-        return isSensorValid() && temperature != null && humidity != null;
     }
 
     private boolean isSensorValid() {

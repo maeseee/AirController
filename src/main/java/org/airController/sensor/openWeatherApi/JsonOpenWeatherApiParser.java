@@ -17,7 +17,7 @@ class JsonOpenWeatherApiParser {
             final double temperatureKelvin = main.getDouble("temp");
             final Temperature temperature = Temperature.createFromKelvin(temperatureKelvin);
             final double humidityRelative = main.getDouble("humidity");
-            final Humidity humidity = Humidity.createFromRelative(humidityRelative);
+            final Humidity humidity = Humidity.createFromRelative(humidityRelative, temperature);
             final OpenWeatherApiSensorData sensorData = new OpenWeatherApiSensorData(temperature, humidity);
             return Optional.of(sensorData);
         } catch (Exception e) {

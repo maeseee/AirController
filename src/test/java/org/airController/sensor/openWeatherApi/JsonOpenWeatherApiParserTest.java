@@ -1,5 +1,6 @@
 package org.airController.sensor.openWeatherApi;
 
+import org.airController.entities.Temperature;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -35,8 +36,9 @@ class JsonOpenWeatherApiParserTest {
         assertTrue(result.isPresent());
         assertTrue(result.get().getTemperature().isPresent());
         assertTrue(result.get().getHumidity().isPresent());
-        assertEquals(10.53, result.get().getTemperature().get().getCelsius(), 0.1);
-        assertEquals(87.0, result.get().getHumidity().get().getRelativeHumidity(), 0.1);
+        final Temperature temperature = result.get().getTemperature().get();
+        assertEquals(10.53, temperature.getCelsius(), 0.1);
+        assertEquals(87.0, result.get().getHumidity().get().getRelativeHumidity(temperature), 0.1);
     }
 
     @Test

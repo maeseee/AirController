@@ -3,6 +3,7 @@ package org.airController.rules;
 import org.airController.controllers.CurrentSensorValues;
 import org.airController.entities.Humidity;
 import org.airController.entities.InvaildArgumentException;
+import org.airController.entities.Temperature;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,12 +31,14 @@ class HumidityControlAirFlowTest {
             "40, -1.0",
     })
     void shouldCalculateHumidityPercentage_whenOutdoorHumidityIsBelowIndoor(double indoorHumidity, double expectedResult) throws InvaildArgumentException {
-        Humidity humidity = Humidity.createFromRelative(indoorHumidity);
+        final Temperature temperature = Temperature.createFromCelsius(22.0);
+        final Humidity humidity = Humidity.createFromRelative(indoorHumidity, temperature);
+        when(sensorValues.getIndoorTemperature()).thenReturn(Optional.of(temperature));
         when(sensorValues.getIndoorHumidity()).thenReturn(Optional.of(humidity));
         when(sensorValues.isIndoorHumidityAboveOutdoorHumidity()).thenReturn(true);
-        HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
+        final HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
 
-        Percentage result = testee.turnOn();
+        final Percentage result = testee.turnOn();
 
         assertThat(result.getPercentage()).isCloseTo(expectedResult, Offset.offset(0.01));
     }
@@ -49,12 +52,14 @@ class HumidityControlAirFlowTest {
             "40, 1.0",
     })
     void shouldCalculateHumidityPercentage_whenOutdoorHumidityIsAboveIndoor(double indoorHumidity, double expectedResult) throws InvaildArgumentException {
-        Humidity humidity = Humidity.createFromRelative(indoorHumidity);
+        final Temperature temperature = Temperature.createFromCelsius(22.0);
+        final Humidity humidity = Humidity.createFromRelative(indoorHumidity, temperature);
+        when(sensorValues.getIndoorTemperature()).thenReturn(Optional.of(temperature));
         when(sensorValues.getIndoorHumidity()).thenReturn(Optional.of(humidity));
         when(sensorValues.isIndoorHumidityAboveOutdoorHumidity()).thenReturn(false);
-        HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
+        final HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
 
-        Percentage result = testee.turnOn();
+        final Percentage result = testee.turnOn();
 
         assertThat(result.getPercentage()).isCloseTo(expectedResult, Offset.offset(0.01));
     }

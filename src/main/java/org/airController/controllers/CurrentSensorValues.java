@@ -2,6 +2,7 @@ package org.airController.controllers;
 
 import org.airController.entities.CarbonDioxide;
 import org.airController.entities.Humidity;
+import org.airController.entities.Temperature;
 import org.airController.sensorAdapter.IndoorSensorObserver;
 import org.airController.sensorAdapter.OutdoorSensorObserver;
 
@@ -23,6 +24,10 @@ public class CurrentSensorValues implements IndoorSensorObserver, OutdoorSensorO
 
     public Optional<Humidity> getIndoorHumidity() {
         return indoorSensorData.getHumidity();
+    }
+
+    public Optional<Temperature> getIndoorTemperature() {
+        return indoorSensorData.getTemperature();
     }
 
     public Optional<CarbonDioxide> getIndoorCo2() {

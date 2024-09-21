@@ -3,6 +3,7 @@ package org.airController.rules;
 import org.airController.controllers.CurrentSensorValues;
 import org.airController.entities.Humidity;
 import org.airController.entities.InvaildArgumentException;
+import org.airController.entities.Temperature;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,7 +30,9 @@ class HumidityControlExchangerTest {
             "40, true, 1.0"
     })
     void shouldControlHumidity(double indoorHumidity, boolean indoorHumidityAboveOutdoorHumidity, double expectedResult) throws InvaildArgumentException {
-        when(sensorValues.getIndoorHumidity()).thenReturn(Optional.of(Humidity.createFromRelative(indoorHumidity)));
+        Temperature temperature = Temperature.createFromCelsius(22.0);
+        when(sensorValues.getIndoorTemperature()).thenReturn(Optional.of(temperature));
+        when(sensorValues.getIndoorHumidity()).thenReturn(Optional.of(Humidity.createFromRelative(indoorHumidity, temperature)));
         when(sensorValues.isIndoorHumidityAboveOutdoorHumidity()).thenReturn(indoorHumidityAboveOutdoorHumidity);
         HumidityControlAirFlow humidityControlAirFlow = new HumidityControlAirFlow(sensorValues);
         HumidityControlExchanger testee = new HumidityControlExchanger(humidityControlAirFlow);

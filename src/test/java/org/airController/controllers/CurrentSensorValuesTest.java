@@ -16,7 +16,7 @@ class CurrentSensorValuesTest {
     @Test
     void testWhenUpdateIndoorSensorDataThenUseNewData() throws InvaildArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(23.0);
-        final Humidity humidity = Humidity.createFromRelative(50.0);
+        final Humidity humidity = Humidity.createFromRelative(50.0, temperature);
         final SensorData sensorData = mock(SensorData.class);
         when(sensorData.getTemperature()).thenReturn(Optional.of(temperature));
         when(sensorData.getHumidity()).thenReturn(Optional.of(humidity));
@@ -39,11 +39,11 @@ class CurrentSensorValuesTest {
     @Test
     void testIndoorHumidityHigher() throws InvaildArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(23.0);
-        final Humidity indoorHumidity = Humidity.createFromRelative(60.0);
+        final Humidity indoorHumidity = Humidity.createFromRelative(60.0, temperature);
         final SensorData indoorSensorData = mock(SensorData.class);
         when(indoorSensorData.getTemperature()).thenReturn(Optional.of(temperature));
         when(indoorSensorData.getHumidity()).thenReturn(Optional.of(indoorHumidity));
-        final Humidity outdoorHumidity = Humidity.createFromRelative(50.0);
+        final Humidity outdoorHumidity = Humidity.createFromRelative(50.0, temperature);
         final SensorData outdoorSensorData = mock(SensorData.class);
         when(outdoorSensorData.getTemperature()).thenReturn(Optional.of(temperature));
         when(outdoorSensorData.getHumidity()).thenReturn(Optional.of(outdoorHumidity));
@@ -59,11 +59,11 @@ class CurrentSensorValuesTest {
     @Test
     void testIndoorHumidityLower() throws InvaildArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(23.0);
-        final Humidity indoorHumidity = Humidity.createFromRelative(40.0);
+        final Humidity indoorHumidity = Humidity.createFromRelative(40.0, temperature);
         final SensorData indoorSensorData = mock(SensorData.class);
         when(indoorSensorData.getTemperature()).thenReturn(Optional.of(temperature));
         when(indoorSensorData.getHumidity()).thenReturn(Optional.of(indoorHumidity));
-        final Humidity outdoorHumidity = Humidity.createFromRelative(50.0);
+        final Humidity outdoorHumidity = Humidity.createFromRelative(50.0, temperature);
         final SensorData outdoorSensorData = mock(SensorData.class);
         when(outdoorSensorData.getTemperature()).thenReturn(Optional.of(temperature));
         when(outdoorSensorData.getHumidity()).thenReturn(Optional.of(outdoorHumidity));

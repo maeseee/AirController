@@ -7,7 +7,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 class SensorDataCsvWriter implements SensorValuePersistence {
@@ -22,10 +21,16 @@ class SensorDataCsvWriter implements SensorValuePersistence {
     @Override
     public void persist(SensorData sensorData) {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        final String formattedTime = LocalDateTime.now().format(formatter);
-        final String formattedTemperature = sensorData.getTemperature().isPresent() ? String.format("%.2f", sensorData.getTemperature().get().getCelsius()) : "";
-        final String formattedHumidity = sensorData.getHumidity().isPresent() ? String.format("%.2f", sensorData.getHumidity().get().getRelativeHumidity()) : "";
-        final String formattedCo2 = sensorData.getCo2().isPresent() ? String.format("%.2f", sensorData.getCo2().get().getPpm()) : "";
+        final String formattedTime = sensorData.getTimeStamp().format(formatter);
+        final String formattedTemperature = sensorData.getTemperature()
+                .map(temperature -> String.valueOf(temperature.getCelsius()))
+                .orElse("");
+        final String formattedHumidity = sensorData.getHumidity()
+                .map(humidity -> String.valueOf(humidity.getRelativeHumidity(sensorData.getTemperature().get())))
+                .orElse("");
+        final String formattedCo2 = sensorData.getCo2()
+                .map(co2 -> String.valueOf(co2.getPpm()))
+                .orElse("");
         final String csvLine = String.format("%s,%s,%s,%s", formattedTime, formattedTemperature, formattedHumidity, formattedCo2);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             writer.write(csvLine);

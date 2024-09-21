@@ -13,7 +13,7 @@ public class CarbonDioxide {
 
     @Override
     public String toString() {
-        return String.format("CO2=%.0fppm", ppm);
+        return String.format("%.0fppm", ppm);
     }
 
     public static CarbonDioxide createFromPpm(double ppm) throws InvaildArgumentException {
