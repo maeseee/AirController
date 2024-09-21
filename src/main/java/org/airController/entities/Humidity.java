@@ -3,7 +3,6 @@ package org.airController.entities;
 import lombok.Getter;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @Getter
 public class Humidity {
@@ -37,15 +36,15 @@ public class Humidity {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Humidity humidity = (Humidity) o;
+        if (!(o instanceof Humidity humidity)) return false;
+
         return Double.compare(relativeHumidity, humidity.relativeHumidity) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(relativeHumidity);
+        return Double.hashCode(relativeHumidity);
     }
 }

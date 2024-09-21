@@ -3,7 +3,6 @@ package org.airController.entities;
 import lombok.Getter;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @Getter
 public class CarbonDioxide {
@@ -27,15 +26,15 @@ public class CarbonDioxide {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CarbonDioxide that = (CarbonDioxide) o;
+        if (!(o instanceof CarbonDioxide that)) return false;
+
         return Double.compare(ppm, that.ppm) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ppm);
+        return Double.hashCode(ppm);
     }
 }

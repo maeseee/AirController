@@ -2,8 +2,6 @@ package org.airController.entities;
 
 import lombok.Getter;
 
-import java.util.Objects;
-
 @Getter
 public class Temperature {
 
@@ -33,15 +31,15 @@ public class Temperature {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Temperature that = (Temperature) o;
+        if (!(o instanceof Temperature that)) return false;
+
         return Double.compare(celsius, that.celsius) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(celsius);
+        return Double.hashCode(celsius);
     }
 }
