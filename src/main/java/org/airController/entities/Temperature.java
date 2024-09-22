@@ -22,13 +22,23 @@ public class Temperature {
         return String.format("%.2f°C", +celsius);
     }
 
-    public static Temperature createFromCelsius(double celsius) {
+    public static Temperature createFromCelsius(double celsius) throws InvaildArgumentException {
+        validateTemperature(celsius);
         return new Temperature(celsius);
     }
 
-    public static Temperature createFromKelvin(double kelvin) {
-        return new Temperature(kelvin - KELVIN_TO_CELSIUS);
+    public static Temperature createFromKelvin(double kelvin) throws InvaildArgumentException {
+        final double celsius = kelvin - KELVIN_TO_CELSIUS;
+        validateTemperature(celsius);
+        return new Temperature(celsius);
     }
+
+    private static void validateTemperature(double celsius) throws InvaildArgumentException {
+        if (celsius < -60.0 || celsius > 100.0) {
+            throw new InvaildArgumentException("Given temperature of " + celsius + "°C is unrealistic!");
+        }
+    }
+
 
     @Override
     public final boolean equals(Object o) {

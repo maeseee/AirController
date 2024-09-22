@@ -143,7 +143,7 @@ public class QingPingSensor implements IndoorSensor {
         return Optional.empty();
     }
 
-    private Temperature getAverageTemperature(List<QingPingSensorData> currentSensorDataList) {
+    private Temperature getAverageTemperature(List<QingPingSensorData> currentSensorDataList) throws InvaildArgumentException {
         final OptionalDouble averageTemperature = currentSensorDataList.stream()
                 .filter(sensorData -> sensorData.getTemperature().isPresent())
                 .mapToDouble(value -> value.getTemperature().get().getCelsius())

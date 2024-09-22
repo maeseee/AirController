@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class TemperatureTest {
 
     @Test
-    void testCelsiusToCelsius() {
+    void testCelsiusToCelsius() throws InvaildArgumentException {
         final Temperature testee = Temperature.createFromCelsius(0);
 
         final double celsius = testee.getCelsius();
@@ -16,25 +16,25 @@ class TemperatureTest {
     }
 
     @Test
-    void testKelvinToCelsius() {
-        final Temperature testee = Temperature.createFromKelvin(0);
+    void testKelvinToCelsius() throws InvaildArgumentException {
+        final Temperature testee = Temperature.createFromKelvin(273.15);
 
         final double celsius = testee.getCelsius();
 
-        assertEquals(-273.15, celsius);
+        assertEquals(0, celsius);
     }
 
     @Test
-    void testKelvinToKelvin() {
-        final Temperature testee = Temperature.createFromKelvin(0);
+    void testKelvinToKelvin() throws InvaildArgumentException {
+        final Temperature testee = Temperature.createFromKelvin(273.15);
 
         final double kelvin = testee.getKelvin();
 
-        assertEquals(0, kelvin);
+        assertEquals(273.15, kelvin);
     }
 
     @Test
-    void testCelsiusToKelvin() {
+    void testCelsiusToKelvin() throws InvaildArgumentException {
         final Temperature testee = Temperature.createFromCelsius(0);
 
         final double kelvin = testee.getKelvin();

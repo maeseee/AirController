@@ -30,7 +30,7 @@ class HumidityTest {
     @CsvSource({
             "100.1, false",
             "-0.1"})
-    void testRelativeEdgeCases(double relativeHumidity) {
+    void testRelativeEdgeCases(double relativeHumidity) throws InvaildArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(25.0);
         assertThrows(InvaildArgumentException.class, () -> Humidity.createFromRelative(relativeHumidity, temperature));
     }

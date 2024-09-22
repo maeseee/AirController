@@ -60,7 +60,7 @@ class Dht22ImplTest {
             "100.0, 50.0",
             "0.0, 50.0",
             "-10.0, 50.0",
-            "-100.0, 50.0",
+            "-60.0, 50.0",
             "0.0, 50.0",
     })
     void testGetValuesFromData(double temperature, double humidity) {

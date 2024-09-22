@@ -64,7 +64,7 @@ class Dht22Impl implements Dht22 {
         return Humidity.createFromRelative(humidity, temperature);
     }
 
-    private Temperature getTemperatureFromData(long sensorData) {
+    private Temperature getTemperatureFromData(long sensorData) throws InvaildArgumentException {
         final long temperatureData = (sensorData >> 8) & 0xFFFF;
         final double sign = (temperatureData & 0x8000) == 0 ? 1 : -1;
         final double temperature = (double) (temperatureData & 0x7FFF) / 10.0 * sign;
