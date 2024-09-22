@@ -7,9 +7,10 @@ import org.junit.jupiter.api.Test;
 import java.time.ZoneId;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class QingPingJsonParserTest {
+class QingPingJsonDeviceListParserTest {
 
     private final String SAMPLE_DEVICE_LIST_RESPONSE = """
             {
@@ -110,40 +111,8 @@ class QingPingJsonParserTest {
             """;
 
     @Test
-    void testParsingAccessToken() {
-        final String sampleAccessTokenResponse = """
-                {
-                "access_token": "5E05GrH9bv-yVbtzpbgrHt2sXLl6SKNUJCYNizY2E58.FpNVQZjkKka1Yn7bgxlAHJ-V-33DD3J-pz_hRwMa_gY",
-                "expires_in": 7199,
-                "scope": "device_full_access",
-                "token_type": "bearer"
-                }
-                """;
-        final QingPingJsonParser testee = new QingPingJsonParser();
-
-        final Optional<QingPingAccessTokenData> result = testee.parseAccessTokenResponse(sampleAccessTokenResponse);
-
-        assertTrue(result.isPresent());
-        assertEquals("5E05GrH9bv-yVbtzpbgrHt2sXLl6SKNUJCYNizY2E58.FpNVQZjkKka1Yn7bgxlAHJ-V-33DD3J-pz_hRwMa_gY", result.get().accessToken());
-        assertEquals(7199, result.get().expiresIn());
-    }
-
-    @Test
-    void testWhenAccessTokenMissingInResponseThenOptionalEmpty() {
-        final String sampleAccessTokenResponse = """
-                {
-                }
-                """;
-        final QingPingJsonParser testee = new QingPingJsonParser();
-
-        final Optional<QingPingAccessTokenData> result = testee.parseAccessTokenResponse(sampleAccessTokenResponse);
-
-        assertFalse(result.isPresent());
-    }
-
-    @Test
     void testParsingDeviceListOfPressureDevice() {
-        final QingPingJsonParser testee = new QingPingJsonParser();
+        final QingPingJsonDeviceListParser testee = new QingPingJsonDeviceListParser();
 
         final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, QingPingSensor.MAC_PRESSURE_DEVICE);
 
@@ -159,7 +128,7 @@ class QingPingJsonParserTest {
 
     @Test
     void testParsingDeviceListOfCo2Device() {
-        final QingPingJsonParser testee = new QingPingJsonParser();
+        final QingPingJsonDeviceListParser testee = new QingPingJsonDeviceListParser();
 
         final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, QingPingSensor.MAC_CO2_DEVICE);
 
@@ -176,7 +145,7 @@ class QingPingJsonParserTest {
 
     @Test
     void testWhenParsingDeviceListWithWringMacAddressThenOptionalEmpty() {
-        final QingPingJsonParser testee = new QingPingJsonParser();
+        final QingPingJsonDeviceListParser testee = new QingPingJsonDeviceListParser();
 
         final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, "mac");
 

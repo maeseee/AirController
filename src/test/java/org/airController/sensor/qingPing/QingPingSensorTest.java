@@ -95,12 +95,12 @@ class QingPingSensorTest {
     ArgumentCaptor<SensorData> indoorSensorDataArgumentCaptor;
 
     @Test
-    void testWhenRunThenNotifyObservers() throws InvaildArgumentException {
-        final QingPingAccessTokenRequest accessTokenRequest = mock(QingPingAccessTokenRequest.class);
-        when(accessTokenRequest.sendRequest()).thenReturn(Optional.of(SAMPLE_ACCESS_TOKEN_RESPONSE));
+    void testWhenRunThenNotifyObservers() throws InvaildArgumentException, CommunicationException {
+        final QingPingAccessToken accessToken = mock(QingPingAccessToken.class);
+        when(accessToken.getToken()).thenReturn("token");
         final QingPingListDevicesRequest listDevicesRequest = mock(QingPingListDevicesRequest.class);
         when(listDevicesRequest.sendRequest(any())).thenReturn(Optional.of(SAMPLE_LIST_DEVICES_RESPONSE));
-        final QingPingSensor testee = new QingPingSensor(accessTokenRequest, listDevicesRequest, new QingPingJsonParser(),
+        final QingPingSensor testee = new QingPingSensor(accessToken, listDevicesRequest, new QingPingJsonDeviceListParser(),
                 singletonList(QingPingSensor.MAC_PRESSURE_DEVICE));
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
@@ -115,12 +115,12 @@ class QingPingSensorTest {
     }
 
     @Test
-    void testWhenInvalidSensorDataThenDoNotNotifyObservers() {
-        final QingPingAccessTokenRequest accessTokenRequest = mock(QingPingAccessTokenRequest.class);
-        when(accessTokenRequest.sendRequest()).thenReturn(Optional.of("something"));
+    void testWhenInvalidSensorDataThenDoNotNotifyObservers() throws CommunicationException {
+        final QingPingAccessToken accessToken = mock(QingPingAccessToken.class);
+        when(accessToken.getToken()).thenReturn("token");
         final QingPingListDevicesRequest listDevicesRequest = mock(QingPingListDevicesRequest.class);
         when(listDevicesRequest.sendRequest(any())).thenReturn(Optional.empty());
-        final QingPingSensor testee = new QingPingSensor(accessTokenRequest, listDevicesRequest, new QingPingJsonParser(),
+        final QingPingSensor testee = new QingPingSensor(accessToken, listDevicesRequest, new QingPingJsonDeviceListParser(),
                 singletonList(QingPingSensor.MAC_PRESSURE_DEVICE));
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
@@ -133,12 +133,12 @@ class QingPingSensorTest {
     @ParameterizedTest(name = "{index} => temperature1={0}, humidity1={1}, co2_1={2}, age_1={3}, temperatureExp={4}, humidityExp={5}")
     @ArgumentsSource(SensorDataArgumentProvider.class)
     void testWhenMultipleSensorsWithoutCo2ThenAverage(double temperature1, double humidity1, CarbonDioxide co2, int age_1, double temperatureExp,
-                                                      double humidityExp) throws InvaildArgumentException {
-        final QingPingAccessTokenRequest accessTokenRequest = mock(QingPingAccessTokenRequest.class);
-        when(accessTokenRequest.sendRequest()).thenReturn(Optional.of(SAMPLE_ACCESS_TOKEN_RESPONSE));
+                                                      double humidityExp) throws InvaildArgumentException, CommunicationException {
+        final QingPingAccessToken accessToken = mock(QingPingAccessToken.class);
+        when(accessToken.getToken()).thenReturn("token");
         final QingPingListDevicesRequest listDevicesRequest = mock(QingPingListDevicesRequest.class);
         when(listDevicesRequest.sendRequest(any())).thenReturn(Optional.of(SAMPLE_LIST_DEVICES_RESPONSE));
-        final QingPingJsonParser parser = mock(QingPingJsonParser.class);
+        final QingPingJsonDeviceListParser parser = mock(QingPingJsonDeviceListParser.class);
         final Temperature temperature = Temperature.createFromCelsius(temperature1);
         final Humidity humidity = Humidity.createFromAbsolute(humidity1);
         final LocalDateTime time1 = LocalDateTime.now().minusMinutes(age_1);
@@ -146,7 +146,7 @@ class QingPingSensorTest {
         final QingPingSensorData sensorData2 = new QingPingSensorData(Temperature.createFromCelsius(40.0), Humidity.createFromAbsolute(15.0), LocalDateTime.now());
         when(parser.parseDeviceListResponse(any(), eq("mac1"))).thenReturn(Optional.of(sensorData1));
         when(parser.parseDeviceListResponse(any(), eq("mac2"))).thenReturn(Optional.of(sensorData2));
-        final QingPingSensor testee = new QingPingSensor(accessTokenRequest, listDevicesRequest, parser, asList("mac1", "mac2"));
+        final QingPingSensor testee = new QingPingSensor(accessToken, listDevicesRequest, parser, asList("mac1", "mac2"));
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
 

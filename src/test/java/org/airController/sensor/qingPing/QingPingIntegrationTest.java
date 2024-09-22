@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Optional;
 
+import static org.airController.sensor.qingPing.QingPingAccessToken.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -30,9 +31,8 @@ class QingPingIntegrationTest {
     }
 
     private String runAccessTokenRequest() throws URISyntaxException {
-        final String appKey = QingPingSensor.APP_KEY;
-        final String appSecret = Secret.getSecret(QingPingSensor.ENVIRONMENT_VARIABLE_APP_SECRET, QingPingSensor.ENCRYPTED_APP_SECRET);
-        final String credentials = appKey + ":" + appSecret;
+        final String appSecret = Secret.getSecret(ENVIRONMENT_VARIABLE_APP_SECRET, ENCRYPTED_APP_SECRET);
+        final String credentials = APP_KEY + ":" + appSecret;
         final String base64Credentials = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
         final String url = "https://oauth.cleargrass.com/oauth2/token";
         final URI uri = new URI(url);
@@ -45,8 +45,8 @@ class QingPingIntegrationTest {
     }
 
     private QingPingAccessTokenData runParseAccessToken(String qingPingAccessTokenResponse) {
-        final QingPingJsonParser parser = new QingPingJsonParser();
-        final Optional<QingPingAccessTokenData> qingPingAccessToken = parser.parseAccessTokenResponse(qingPingAccessTokenResponse);
+        final QingPingAccessTokenJsonParser parser = new QingPingAccessTokenJsonParser();
+        final Optional<QingPingAccessTokenData> qingPingAccessToken = parser.parse(qingPingAccessTokenResponse);
 
         assertTrue(qingPingAccessToken.isPresent());
         return qingPingAccessToken.get();
@@ -64,7 +64,7 @@ class QingPingIntegrationTest {
     }
 
     private QingPingSensorData runParseListDevices(String listDevicesResponse) {
-        final QingPingJsonParser parser = new QingPingJsonParser();
+        final QingPingJsonDeviceListParser parser = new QingPingJsonDeviceListParser();
         final Optional<QingPingSensorData> sensorData = parser.parseDeviceListResponse(listDevicesResponse, QingPingSensor.MAC_PRESSURE_DEVICE);
 
         assertTrue(sensorData.isPresent());
