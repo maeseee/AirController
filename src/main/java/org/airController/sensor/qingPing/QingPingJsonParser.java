@@ -22,14 +22,14 @@ import java.util.OptionalLong;
 class QingPingJsonParser {
     private static final Logger logger = LogManager.getLogger(QingPingJsonParser.class);
 
-    public Optional<QingPingAccessToken> parseAccessTokenResponse(String jsonString) {
+    public Optional<QingPingAccessTokenData> parseAccessTokenResponse(String jsonString) {
         // https://developer.qingping.co/main/oauthApi
         try {
             final JSONTokener tokener = new JSONTokener(jsonString);
             final JSONObject jsonObject = new JSONObject(tokener);
             final String accessToken = jsonObject.getString("access_token");
             final int expiresIn = jsonObject.getInt("expires_in");
-            return Optional.of(new QingPingAccessToken(accessToken, expiresIn));
+            return Optional.of(new QingPingAccessTokenData(accessToken, expiresIn));
         } catch (Exception e) {
             return Optional.empty();
         }

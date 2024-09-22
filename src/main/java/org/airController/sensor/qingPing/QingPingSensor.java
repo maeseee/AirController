@@ -78,11 +78,11 @@ public class QingPingSensor implements IndoorSensor {
             throw new CommunicationException("QingPing access token could not be updated");
         }
 
-        final Optional<QingPingAccessToken> accessTokenOptional = parser.parseAccessTokenResponse(request.get());
+        final Optional<QingPingAccessTokenData> accessTokenOptional = parser.parseAccessTokenResponse(request.get());
         if (accessTokenOptional.isPresent()) {
-            final QingPingAccessToken qingPingAccessToken = accessTokenOptional.get();
-            accessToken = qingPingAccessToken.accessToken();
-            accessTokenValidUntil = LocalDateTime.now().plusSeconds(qingPingAccessToken.expiresIn() - 60);
+            final QingPingAccessTokenData accessTokenData = accessTokenOptional.get();
+            accessToken = accessTokenData.accessToken();
+            accessTokenValidUntil = LocalDateTime.now().plusSeconds(accessTokenData.expiresIn() - 60);
         }
     }
 

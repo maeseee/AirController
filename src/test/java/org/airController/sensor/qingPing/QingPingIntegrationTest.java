@@ -21,8 +21,8 @@ class QingPingIntegrationTest {
     @Test
     void testQingPingDevice() throws URISyntaxException {
         final String accessTokenResponse = runAccessTokenRequest();
-        final QingPingAccessToken accessToken = runParseAccessToken(accessTokenResponse);
-        final String listDevicesResponse = runListDevicesRequest(accessToken);
+        final QingPingAccessTokenData accessTokenData = runParseAccessToken(accessTokenResponse);
+        final String listDevicesResponse = runListDevicesRequest(accessTokenData);
         final QingPingSensorData sensorData = runParseListDevices(listDevicesResponse);
         assertNotNull(sensorData);
         assertTrue(LocalDateTime.now().minusMinutes(15).isBefore(sensorData.getTimeStamp()));
@@ -44,20 +44,20 @@ class QingPingIntegrationTest {
         return accessTokenResponse.get();
     }
 
-    private QingPingAccessToken runParseAccessToken(String qingPingAccessTokenResponse) {
+    private QingPingAccessTokenData runParseAccessToken(String qingPingAccessTokenResponse) {
         final QingPingJsonParser parser = new QingPingJsonParser();
-        final Optional<QingPingAccessToken> qingPingAccessToken = parser.parseAccessTokenResponse(qingPingAccessTokenResponse);
+        final Optional<QingPingAccessTokenData> qingPingAccessToken = parser.parseAccessTokenResponse(qingPingAccessTokenResponse);
 
         assertTrue(qingPingAccessToken.isPresent());
         return qingPingAccessToken.get();
     }
 
-    private String runListDevicesRequest(QingPingAccessToken accessToken) throws URISyntaxException {
+    private String runListDevicesRequest(QingPingAccessTokenData accessTokenData) throws URISyntaxException {
         final String url = "https://apis.cleargrass.com/v1/apis/devices";
         final URI uri = new URI(url);
         final QingPingListDevicesRequest listDevicesRequest = new QingPingListDevicesRequest(uri);
 
-        final Optional<String> listDevicesResponse = listDevicesRequest.sendRequest(accessToken.accessToken());
+        final Optional<String> listDevicesResponse = listDevicesRequest.sendRequest(accessTokenData.accessToken());
 
         assertTrue(listDevicesResponse.isPresent());
         return listDevicesResponse.get();

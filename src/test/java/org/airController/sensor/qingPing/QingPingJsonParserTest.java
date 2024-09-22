@@ -121,7 +121,7 @@ class QingPingJsonParserTest {
                 """;
         final QingPingJsonParser testee = new QingPingJsonParser();
 
-        final Optional<QingPingAccessToken> result = testee.parseAccessTokenResponse(sampleAccessTokenResponse);
+        final Optional<QingPingAccessTokenData> result = testee.parseAccessTokenResponse(sampleAccessTokenResponse);
 
         assertTrue(result.isPresent());
         assertEquals("5E05GrH9bv-yVbtzpbgrHt2sXLl6SKNUJCYNizY2E58.FpNVQZjkKka1Yn7bgxlAHJ-V-33DD3J-pz_hRwMa_gY", result.get().accessToken());
@@ -136,7 +136,7 @@ class QingPingJsonParserTest {
                 """;
         final QingPingJsonParser testee = new QingPingJsonParser();
 
-        final Optional<QingPingAccessToken> result = testee.parseAccessTokenResponse(sampleAccessTokenResponse);
+        final Optional<QingPingAccessTokenData> result = testee.parseAccessTokenResponse(sampleAccessTokenResponse);
 
         assertFalse(result.isPresent());
     }
