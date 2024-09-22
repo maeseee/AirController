@@ -117,7 +117,7 @@ class QingPingSensorTest {
     @Test
     void testWhenInvalidSensorDataThenDoNotNotifyObservers() {
         final QingPingAccessTokenRequest accessTokenRequest = mock(QingPingAccessTokenRequest.class);
-        when(accessTokenRequest.sendRequest()).thenReturn(Optional.empty());
+        when(accessTokenRequest.sendRequest()).thenReturn(Optional.of("something"));
         final QingPingListDevicesRequest listDevicesRequest = mock(QingPingListDevicesRequest.class);
         when(listDevicesRequest.sendRequest(any())).thenReturn(Optional.empty());
         final QingPingSensor testee = new QingPingSensor(accessTokenRequest, listDevicesRequest, new QingPingJsonParser(),

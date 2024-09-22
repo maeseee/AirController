@@ -58,33 +58,24 @@ public class QingPingSensor implements IndoorSensor {
         }
     }
 
-    private void doRun() {
+    private void doRun() throws CommunicationException {
         if (accessTokenValidUntil == null || accessTokenValidUntil.isBefore(LocalDateTime.now())) {
             updateAccessToken();
         }
 
-        final Optional<String> request = listDevicesRequest.sendRequest(accessToken);
-        if (request.isEmpty()) {
-            logger.error("QingPing sensor request failed");
-            return;
-        }
-
+        final Optional<String> responseOptional = listDevicesRequest.sendRequest(accessToken);
+        final String response = responseOptional.orElseThrow(() -> new CommunicationException("QingPing sensor request failed"));
         final List<QingPingSensorData> sensorDataList = new ArrayList<>();
-        for (String mac : deviceMacAddresses) {
-            parser.parseDeviceListResponse(request.get(), mac).ifPresent(sensorDataList::add);
-
-        }
-        final Optional<SensorData> sensorData = getAverageSensorData(sensorDataList);
-        sensorData.ifPresentOrElse(
-                this::notifyObservers,
-                () -> logger.error("QingPing sensor out of order"));
+        deviceMacAddresses.forEach(mac -> parser.parseDeviceListResponse(response, mac).ifPresent(sensorDataList::add));
+        final Optional<SensorData> sensorDataOptional = getAverageSensorData(sensorDataList);
+        final SensorData sensorData = sensorDataOptional.orElseThrow(() -> new CommunicationException("QingPing sensors out of order"));
+        notifyObservers(sensorData);
     }
 
-    private void updateAccessToken() {
+    private void updateAccessToken() throws CommunicationException {
         final Optional<String> request = accessTokenRequest.sendRequest();
         if (request.isEmpty()) {
-            logger.error("Access token could not be updated");
-            return;
+            throw new CommunicationException("QingPing access token could not be updated");
         }
 
         final Optional<QingPingAccessToken> accessTokenOptional = parser.parseAccessTokenResponse(request.get());
