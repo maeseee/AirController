@@ -10,7 +10,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class QingPingJsonDeviceListParserTest {
+class QingPingListDevicesJsonParserTest {
 
     private final String SAMPLE_DEVICE_LIST_RESPONSE = """
             {
@@ -112,7 +112,7 @@ class QingPingJsonDeviceListParserTest {
 
     @Test
     void testParsingDeviceListOfPressureDevice() {
-        final QingPingJsonDeviceListParser testee = new QingPingJsonDeviceListParser();
+        final QingPingListDevicesJsonParser testee = new QingPingListDevicesJsonParser();
 
         final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, QingPingSensor.MAC_PRESSURE_DEVICE);
 
@@ -128,7 +128,7 @@ class QingPingJsonDeviceListParserTest {
 
     @Test
     void testParsingDeviceListOfCo2Device() {
-        final QingPingJsonDeviceListParser testee = new QingPingJsonDeviceListParser();
+        final QingPingListDevicesJsonParser testee = new QingPingListDevicesJsonParser();
 
         final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, QingPingSensor.MAC_CO2_DEVICE);
 
@@ -145,7 +145,7 @@ class QingPingJsonDeviceListParserTest {
 
     @Test
     void testWhenParsingDeviceListWithWringMacAddressThenOptionalEmpty() {
-        final QingPingJsonDeviceListParser testee = new QingPingJsonDeviceListParser();
+        final QingPingListDevicesJsonParser testee = new QingPingListDevicesJsonParser();
 
         final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, "mac");
 

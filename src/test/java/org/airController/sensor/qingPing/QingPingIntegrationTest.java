@@ -64,7 +64,7 @@ class QingPingIntegrationTest {
     }
 
     private QingPingSensorData runParseListDevices(String listDevicesResponse) {
-        final QingPingJsonDeviceListParser parser = new QingPingJsonDeviceListParser();
+        final QingPingListDevicesJsonParser parser = new QingPingListDevicesJsonParser();
         final Optional<QingPingSensorData> sensorData = parser.parseDeviceListResponse(listDevicesResponse, QingPingSensor.MAC_PRESSURE_DEVICE);
 
         assertTrue(sensorData.isPresent());

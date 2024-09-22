@@ -19,8 +19,8 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalLong;
 
-class QingPingJsonDeviceListParser {
-    private static final Logger logger = LogManager.getLogger(QingPingJsonDeviceListParser.class);
+class QingPingListDevicesJsonParser {
+    private static final Logger logger = LogManager.getLogger(QingPingListDevicesJsonParser.class);
 
     public Optional<QingPingSensorData> parseDeviceListResponse(String jsonString, String macAddress) {
         // https://developer.qingping.co/main/openApi
