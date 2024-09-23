@@ -67,7 +67,6 @@ class CurrentSensorValuesTest {
         final SensorData outdoorSensorData = mock(SensorData.class);
         when(outdoorSensorData.getTemperature()).thenReturn(Optional.of(temperature));
         when(outdoorSensorData.getHumidity()).thenReturn(Optional.of(outdoorHumidity));
-
         final CurrentSensorValues testee = new CurrentSensorValues();
 
         testee.updateIndoorSensorData(indoorSensorData);

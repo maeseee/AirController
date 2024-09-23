@@ -2,7 +2,7 @@ package org.airController;
 
 import org.airController.gpioAdapter.GpioPin;
 import org.airController.persistence.SensorDataPersistenceObserver;
-import org.airController.sensorAdapter.IndoorSensor;
+import org.airController.sensor.qingPing.QingPingSensor;
 import org.airController.sensorAdapter.OutdoorSensor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +26,7 @@ class ApplicationTest {
     @Mock
     private OutdoorSensor outdoorSensor;
     @Mock
-    private IndoorSensor indoorSensor;
+    private QingPingSensor indoorSensor;
     @Mock
     private SensorDataPersistenceObserver persistenceObserver;
     @Mock
@@ -34,7 +34,7 @@ class ApplicationTest {
 
     @Test
     void testWhenCreateApplicationThenScheduleExecutor() {
-        final Application testee = new Application(airFlow, humidityExchanger, outdoorSensor, indoorSensor, persistenceObserver, executor);
+        final Application testee = new Application(airFlow, humidityExchanger, outdoorSensor, indoorSensor, null, persistenceObserver, executor);
 
         testee.run();
 

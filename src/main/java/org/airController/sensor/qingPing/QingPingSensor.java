@@ -21,6 +21,7 @@ public class QingPingSensor implements IndoorSensor {
     private final QingPingAccessToken accessToken;
     private final QingPingListDevices listDevices;
     private final QingPingSensorReducer sensorReducer = new QingPingSensorReducer();
+    private IndoorSensor backupSensor;
 
     public QingPingSensor() throws URISyntaxException {
         this(new QingPingAccessToken(), new QingPingListDevices());
@@ -37,6 +38,9 @@ public class QingPingSensor implements IndoorSensor {
             doRun();
         } catch (Exception exception) {
             logger.error("Exception in QingPing sensor loop:", exception);
+            if (backupSensor != null) {
+                backupSensor.run();
+            }
         }
     }
 
@@ -52,10 +56,13 @@ public class QingPingSensor implements IndoorSensor {
         observers.add(observer);
     }
 
+    public void addBackupSensor(IndoorSensor backupSensor) {
+        this.backupSensor = backupSensor;
+    }
+
     private void notifyObservers(SensorData sensorData) {
         logger.info("New indoor sensor data: {}", sensorData);
         observers.forEach(observer -> observer.updateIndoorSensorData(sensorData));
     }
-
 
 }

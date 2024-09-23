@@ -7,7 +7,6 @@ import org.airController.gpioAdapter.GpioPin;
 import org.airController.persistence.SensorDataPersistenceObserver;
 import org.airController.sensor.openWeatherApi.OutdoorSensorImpl;
 import org.airController.sensor.qingPing.QingPingSensor;
-import org.airController.sensorAdapter.IndoorSensor;
 import org.airController.sensorAdapter.OutdoorSensor;
 import org.airController.util.RaspberryPiPin;
 
@@ -23,10 +22,11 @@ class MainMock {
         final RaspberryPiPin humidityExchangerPin = mock(RaspberryPiPin.class);
         final GpioPin humidityExchanger = new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER.name(), humidityExchangerPin, true);
         final OutdoorSensor outdoorSensor = new OutdoorSensorImpl();
-        final IndoorSensor indoorSensor = new QingPingSensor();
+        final QingPingSensor indoorSensor = new QingPingSensor();
         final SensorDataPersistenceObserver persistenceObserver = new SensorDataPersistenceObserver();
         final Application application =
-                new Application(airFlow, humidityExchanger, outdoorSensor, indoorSensor, persistenceObserver, Executors.newScheduledThreadPool(1));
+                new Application(airFlow, humidityExchanger, outdoorSensor, indoorSensor, null, persistenceObserver,
+                        Executors.newScheduledThreadPool(1));
         application.run();
         Thread.currentThread().join();
     }
