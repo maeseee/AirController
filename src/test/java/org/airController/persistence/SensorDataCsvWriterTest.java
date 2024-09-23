@@ -32,7 +32,8 @@ class SensorDataCsvWriterTest {
         final double co2Value = random.nextDouble() * 100000;
         final CarbonDioxide co2 = CarbonDioxide.createFromPpm(co2Value);
         final LocalDateTime now = LocalDateTime.now();
-        final LocalDateTime time = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), now.getHour(), now.getMinute(), now.getSecond());
+        final LocalDateTime time =
+                LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), now.getHour(), now.getMinute(), now.getSecond());
         final SensorData sensorData = new QingPingSensorData(temperature, humidity, co2, time);
         final SensorValuePersistence testee = new SensorDataCsvWriter(FILE_PATH);
 

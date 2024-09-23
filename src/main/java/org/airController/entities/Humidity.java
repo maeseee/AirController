@@ -51,7 +51,8 @@ public class Humidity {
 
     private static Humidity getAbsoluteHumidity(double relativeHumidity, Temperature temperature) {
         final double saturationVaporPressure = getSaturationVaporPressure(temperature);
-        final double absoluteHumidity = relativeHumidity * saturationVaporPressure * 1000 / (SPECIFIC_GAS_CONSTANT_FOR_WATER * temperature.getKelvin() * 100);
+        final double absoluteHumidity =
+                relativeHumidity * saturationVaporPressure * 1000 / (SPECIFIC_GAS_CONSTANT_FOR_WATER * temperature.getKelvin() * 100);
         return new Humidity(absoluteHumidity);
     }
 

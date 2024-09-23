@@ -29,7 +29,8 @@ class HumidityControlExchangerTest {
             "40, false, -1.0",
             "40, true, 1.0"
     })
-    void shouldControlHumidity(double indoorHumidity, boolean indoorHumidityAboveOutdoorHumidity, double expectedResult) throws InvaildArgumentException {
+    void shouldControlHumidity(double indoorHumidity, boolean indoorHumidityAboveOutdoorHumidity, double expectedResult)
+            throws InvaildArgumentException {
         Temperature temperature = Temperature.createFromCelsius(22.0);
         when(sensorValues.getIndoorTemperature()).thenReturn(Optional.of(temperature));
         when(sensorValues.getIndoorHumidity()).thenReturn(Optional.of(Humidity.createFromRelative(indoorHumidity, temperature)));

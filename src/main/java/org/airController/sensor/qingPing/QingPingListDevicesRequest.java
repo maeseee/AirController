@@ -21,7 +21,8 @@ class QingPingListDevicesRequest {
         final HttpURLConnection connection = getConnection(accessToken);
         final int responseCode = connection.getResponseCode();
         if (responseCode != HttpURLConnection.HTTP_OK) {
-            throw new CommunicationException("QingPingListDevicesRequest failure with responseCode " + responseCode + " and message " + connection.getResponseMessage());
+            throw new CommunicationException(
+                    "QingPingListDevicesRequest failure with responseCode " + responseCode + " and message " + connection.getResponseMessage());
         }
         return readResponseFromServer(connection.getInputStream());
     }

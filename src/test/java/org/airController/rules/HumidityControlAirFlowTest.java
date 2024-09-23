@@ -30,7 +30,8 @@ class HumidityControlAirFlowTest {
             "44, -1.0",
             "40, -1.0",
     })
-    void shouldCalculateHumidityPercentage_whenOutdoorHumidityIsBelowIndoor(double indoorHumidity, double expectedResult) throws InvaildArgumentException {
+    void shouldCalculateHumidityPercentage_whenOutdoorHumidityIsBelowIndoor(double indoorHumidity, double expectedResult)
+            throws InvaildArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(22.0);
         final Humidity humidity = Humidity.createFromRelative(indoorHumidity, temperature);
         when(sensorValues.getIndoorTemperature()).thenReturn(Optional.of(temperature));
@@ -51,7 +52,8 @@ class HumidityControlAirFlowTest {
             "44, 1.0",
             "40, 1.0",
     })
-    void shouldCalculateHumidityPercentage_whenOutdoorHumidityIsAboveIndoor(double indoorHumidity, double expectedResult) throws InvaildArgumentException {
+    void shouldCalculateHumidityPercentage_whenOutdoorHumidityIsAboveIndoor(double indoorHumidity, double expectedResult)
+            throws InvaildArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(22.0);
         final Humidity humidity = Humidity.createFromRelative(indoorHumidity, temperature);
         when(sensorValues.getIndoorTemperature()).thenReturn(Optional.of(temperature));

@@ -73,14 +73,16 @@ class QingPingSensorTest {
     @ParameterizedTest(name = "{index} => temperature1={0}, humidity1={1}, co2_1={2}, age_1={3}, temperatureExp={4}, humidityExp={5}")
     @ArgumentsSource(SensorDataArgumentProvider.class)
     void testWhenMultipleSensorsWithoutCo2ThenAverage(double temperature1, double humidity1, CarbonDioxide co2, int age_1, double temperatureExp,
-                                                      double humidityExp) throws InvaildArgumentException, CommunicationException, IOException, URISyntaxException {
+            double humidityExp)
+            throws InvaildArgumentException, CommunicationException, IOException, URISyntaxException {
         final QingPingAccessToken accessToken = mock(QingPingAccessToken.class);
         when(accessToken.readToken()).thenReturn("token");
         final Temperature temperature = Temperature.createFromCelsius(temperature1);
         final Humidity humidity = Humidity.createFromAbsolute(humidity1);
         final LocalDateTime time1 = LocalDateTime.now().minusMinutes(age_1);
         final QingPingSensorData sensorData1 = new QingPingSensorData(temperature, humidity, co2, time1);
-        final QingPingSensorData sensorData2 = new QingPingSensorData(Temperature.createFromCelsius(40.0), Humidity.createFromAbsolute(15.0), LocalDateTime.now());
+        final QingPingSensorData sensorData2 =
+                new QingPingSensorData(Temperature.createFromCelsius(40.0), Humidity.createFromAbsolute(15.0), LocalDateTime.now());
         final QingPingListDevices listDevices = mock(QingPingListDevices.class);
         when(listDevices.readSensorDataList(any())).thenReturn(List.of(sensorData1, sensorData2));
         final QingPingSensor testee = new QingPingSensor(accessToken, listDevices);
