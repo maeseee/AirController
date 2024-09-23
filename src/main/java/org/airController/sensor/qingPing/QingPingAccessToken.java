@@ -28,7 +28,7 @@ public class QingPingAccessToken {
         this.accessTokenRequest = accessTokenRequest;
     }
 
-    public String getToken() throws CommunicationException {
+    public String readToken() throws CommunicationException {
         if (accessTokenValidUntil == null || accessTokenValidUntil.isBefore(LocalDateTime.now())) {
             updateAccessToken();
         }

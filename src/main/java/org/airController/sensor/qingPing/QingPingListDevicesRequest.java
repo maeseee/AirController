@@ -1,8 +1,5 @@
 package org.airController.sensor.qingPing;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,31 +9,21 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Optional;
 
 class QingPingListDevicesRequest {
-    private static final Logger logger = LogManager.getLogger(QingPingListDevicesRequest.class);
-
     private final URI uri;
 
     public QingPingListDevicesRequest(URI uri) {
         this.uri = uri;
     }
 
-    public Optional<String> sendRequest(String accessToken) {
-        String responseFromUrl = null;
-        try {
-            final HttpURLConnection connection = getConnection(accessToken);
-
-            final int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                responseFromUrl = readResponseFromServer(connection.getInputStream());
-            }
-        } catch (Exception exception) {
-            logger.error("QingPingListDevicesRequest failure: ", exception);
-            return Optional.empty();
+    public String sendRequest(String accessToken) throws IOException, URISyntaxException, CommunicationException {
+        final HttpURLConnection connection = getConnection(accessToken);
+        final int responseCode = connection.getResponseCode();
+        if (responseCode != HttpURLConnection.HTTP_OK) {
+            throw new CommunicationException("QingPingListDevicesRequest failure with responseCode " + responseCode + " and message " + connection.getResponseMessage());
         }
-        return Optional.ofNullable(responseFromUrl);
+        return readResponseFromServer(connection.getInputStream());
     }
 
     private HttpURLConnection getConnection(String accessToken) throws IOException, URISyntaxException {

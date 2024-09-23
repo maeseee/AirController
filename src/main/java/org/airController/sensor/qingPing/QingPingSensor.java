@@ -10,10 +10,12 @@ import org.airController.sensorAdapter.IndoorSensorObserver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.net.URI;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.OptionalDouble;
 
 
 public class QingPingSensor implements IndoorSensor {
@@ -24,21 +26,15 @@ public class QingPingSensor implements IndoorSensor {
 
     private final List<IndoorSensorObserver> observers = new ArrayList<>();
     private final QingPingAccessToken accessToken;
-    private final QingPingListDevicesRequest listDevicesRequest;
-    private final QingPingListDevicesJsonParser parser;
-    private final List<String> deviceMacAddresses;
+    private final QingPingListDevices listDevices;
 
     public QingPingSensor() throws URISyntaxException {
-        this(new QingPingAccessToken(), createListDevicesRequest(), new QingPingListDevicesJsonParser(),
-                Arrays.asList(MAC_PRESSURE_DEVICE, MAC_CO2_DEVICE));
+        this(new QingPingAccessToken(), new QingPingListDevices());
     }
 
-    QingPingSensor(QingPingAccessToken accessToken, QingPingListDevicesRequest listDevicesRequest, QingPingListDevicesJsonParser parser,
-                   List<String> deviceMacAddresses) {
+    QingPingSensor(QingPingAccessToken accessToken, QingPingListDevices listDevices) {
         this.accessToken = accessToken;
-        this.listDevicesRequest = listDevicesRequest;
-        this.parser = parser;
-        this.deviceMacAddresses = deviceMacAddresses;
+        this.listDevices = listDevices;
     }
 
     @Override
@@ -50,14 +46,10 @@ public class QingPingSensor implements IndoorSensor {
         }
     }
 
-    private void doRun() throws CommunicationException {
-        final String token = accessToken.getToken();
-        final Optional<String> responseOptional = listDevicesRequest.sendRequest(token);
-        final String response = responseOptional.orElseThrow(() -> new CommunicationException("QingPing sensor request failed"));
-        final List<QingPingSensorData> sensorDataList = new ArrayList<>();
-        deviceMacAddresses.forEach(mac -> parser.parseDeviceListResponse(response, mac).ifPresent(sensorDataList::add));
-        final Optional<SensorData> sensorDataOptional = getAverageSensorData(sensorDataList);
-        final SensorData sensorData = sensorDataOptional.orElseThrow(() -> new CommunicationException("QingPing sensors out of order"));
+    private void doRun() throws CommunicationException, IOException, URISyntaxException, InvaildArgumentException, CalculationException {
+        final String token = accessToken.readToken();
+        final List<QingPingSensorData> sensorDataList = listDevices.readSensorDataList(token);
+        final SensorData sensorData = getAverageSensorData(sensorDataList);
         notifyObservers(sensorData);
     }
 
@@ -66,35 +58,23 @@ public class QingPingSensor implements IndoorSensor {
         observers.add(observer);
     }
 
-    private static QingPingListDevicesRequest createListDevicesRequest() throws URISyntaxException {
-        final String urlString = "https://apis.cleargrass.com/v1/apis/devices";
-        final URI uri = new URI(urlString);
-        return new QingPingListDevicesRequest(uri);
-    }
-
     private void notifyObservers(SensorData sensorData) {
         logger.info("New indoor sensor data: {}", sensorData);
         observers.forEach(observer -> observer.updateIndoorSensorData(sensorData));
     }
 
-    private Optional<SensorData> getAverageSensorData(List<QingPingSensorData> sensorDataList) {
+    private SensorData getAverageSensorData(List<QingPingSensorData> sensorDataList) throws CalculationException, InvaildArgumentException {
         final List<QingPingSensorData> currentSensorDataList = sensorDataList.stream()
                 .filter(sensorData -> sensorData.getTimeStamp().isAfter(LocalDateTime.now().minusHours(1)))
                 .toList();
         if (currentSensorDataList.isEmpty()) {
-            logger.info("No current indoor data at the moment");
-            return Optional.empty();
+            throw new CalculationException("No current indoor data at the moment");
         }
-        try {
-            final Temperature temperature = getAverageTemperature(currentSensorDataList);
-            final Humidity humidity = getAverageHumidity(currentSensorDataList);
-            final CarbonDioxide co2 = getAverageCo2(currentSensorDataList);
-            final LocalDateTime time = getNewestTimestamp(currentSensorDataList);
-            return Optional.of(new QingPingSensorData(temperature, humidity, co2, time));
-        } catch (InvaildArgumentException | NoSuchElementException exception) {
-            logger.error("Unexpected error in Exception in getAverageSensorData: :", exception);
-        }
-        return Optional.empty();
+        final Temperature temperature = getAverageTemperature(currentSensorDataList);
+        final Humidity humidity = getAverageHumidity(currentSensorDataList);
+        final CarbonDioxide co2 = getAverageCo2(currentSensorDataList);
+        final LocalDateTime time = getNewestTimestamp(currentSensorDataList);
+        return new QingPingSensorData(temperature, humidity, co2, time);
     }
 
     private Temperature getAverageTemperature(List<QingPingSensorData> currentSensorDataList) throws InvaildArgumentException {

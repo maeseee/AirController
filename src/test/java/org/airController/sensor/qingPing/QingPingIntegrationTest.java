@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class QingPingIntegrationTest {
 
     @Test
-    void testQingPingDevice() throws URISyntaxException {
+    void testQingPingDevice() throws URISyntaxException, CommunicationException, IOException {
         final String accessTokenResponse = runAccessTokenRequest();
         final QingPingAccessTokenData accessTokenData = runParseAccessToken(accessTokenResponse);
         final String listDevicesResponse = runListDevicesRequest(accessTokenData);
@@ -52,15 +53,12 @@ class QingPingIntegrationTest {
         return qingPingAccessToken.get();
     }
 
-    private String runListDevicesRequest(QingPingAccessTokenData accessTokenData) throws URISyntaxException {
+    private String runListDevicesRequest(QingPingAccessTokenData accessTokenData) throws URISyntaxException, CommunicationException, IOException {
         final String url = "https://apis.cleargrass.com/v1/apis/devices";
         final URI uri = new URI(url);
         final QingPingListDevicesRequest listDevicesRequest = new QingPingListDevicesRequest(uri);
 
-        final Optional<String> listDevicesResponse = listDevicesRequest.sendRequest(accessTokenData.accessToken());
-
-        assertTrue(listDevicesResponse.isPresent());
-        return listDevicesResponse.get();
+        return listDevicesRequest.sendRequest(accessTokenData.accessToken());
     }
 
     private QingPingSensorData runParseListDevices(String listDevicesResponse) {

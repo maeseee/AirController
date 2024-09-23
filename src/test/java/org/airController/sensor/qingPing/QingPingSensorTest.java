@@ -18,90 +18,32 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class QingPingSensorTest {
 
-    private final static String SAMPLE_ACCESS_TOKEN_RESPONSE = """
-            {
-                "access_token": "tYYQPa8MIZax-9J8DXErfiE_k9II4GOpDBerco2XfCQ.-7cROIxh0DvPJ53QJc-ZOSHrfkNDdMcdtbU9aW1wjjw",
-                "expires_in": 7199,
-                "scope": "device_full_access",
-                "token_type": "bearer"
-            }
-            """;
-    private final static String SAMPLE_LIST_DEVICES_RESPONSE = String.format("""
-            {
-                "total": 1,
-                "devices": [
-                    {
-                        "info": {
-                            "mac": "582D3480A7F4",
-                            "product": {
-                                "id": 1101,
-                                "code": "CGP1N",
-                                "name": "青萍温湿度气压计",
-                                "en_name": "Qingping Temp & RH Barometer",
-                                "noBleSetting": false
-                            },
-                            "name": "Wohnzimmer",
-                            "version": "2.0.0",
-                            "created_at": 1704390261,
-                            "group_id": 37830,
-                            "group_name": "S42",
-                            "status": {
-                                "offline": false
-                            },
-                            "connection_type": "WiFi",
-                            "setting": {
-                                "report_interval": 7200,
-                                "collect_interval": 600
-                            }
-                        },
-                        "data": {
-                            "timestamp": {
-                                "value": %d
-                            },
-                            "battery": {
-                                "value": 86
-                            },
-                            "signal": {
-                                "value": -42
-                            },
-                            "temperature": {
-                                "value": 21.5
-                            },
-                            "humidity": {
-                                "value": 54.2
-                            },
-                            "pressure": {
-                                "value": 93.64
-                            }
-                        }
-                    }
-                ]
-            }
-            """, LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond());
-
     @Captor
     ArgumentCaptor<SensorData> indoorSensorDataArgumentCaptor;
 
     @Test
-    void testWhenRunThenNotifyObservers() throws InvaildArgumentException, CommunicationException {
+    void testWhenRunThenNotifyObservers() throws InvaildArgumentException, CommunicationException, IOException, URISyntaxException {
         final QingPingAccessToken accessToken = mock(QingPingAccessToken.class);
-        when(accessToken.getToken()).thenReturn("token");
-        final QingPingListDevicesRequest listDevicesRequest = mock(QingPingListDevicesRequest.class);
-        when(listDevicesRequest.sendRequest(any())).thenReturn(Optional.of(SAMPLE_LIST_DEVICES_RESPONSE));
-        final QingPingSensor testee = new QingPingSensor(accessToken, listDevicesRequest, new QingPingListDevicesJsonParser(),
-                singletonList(QingPingSensor.MAC_PRESSURE_DEVICE));
+        when(accessToken.readToken()).thenReturn("token");
+        final QingPingListDevices listDevices = mock(QingPingListDevices.class);
+        final Temperature temperature = Temperature.createFromCelsius(21.5);
+        final Humidity humidity = Humidity.createFromAbsolute(10.0);
+        final LocalDateTime time1 = LocalDateTime.now();
+        final QingPingSensorData sensorData = new QingPingSensorData(temperature, humidity, null, time1);
+        when(listDevices.readSensorDataList(any())).thenReturn(List.of(sensorData));
+        final QingPingSensor testee = new QingPingSensor(accessToken, listDevices);
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
 
@@ -110,18 +52,16 @@ class QingPingSensorTest {
         verify(observer).updateIndoorSensorData(indoorSensorDataArgumentCaptor.capture());
         final SensorData indoorSensorDataCapture = indoorSensorDataArgumentCaptor.getValue();
         Assertions.assertThat(indoorSensorDataCapture.getTemperature()).isPresent().hasValue(Temperature.createFromCelsius(21.5));
-        final Temperature expectedTemperature = Temperature.createFromCelsius(21.5);
-        Assertions.assertThat(indoorSensorDataCapture.getHumidity()).isPresent().hasValue(Humidity.createFromRelative(54.2, expectedTemperature));
+        Assertions.assertThat(indoorSensorDataCapture.getHumidity()).isPresent().hasValue(Humidity.createFromAbsolute(10.0));
     }
 
     @Test
-    void testWhenInvalidSensorDataThenDoNotNotifyObservers() throws CommunicationException {
+    void testWhenInvalidSensorDataThenDoNotNotifyObservers() throws CommunicationException, IOException, URISyntaxException {
         final QingPingAccessToken accessToken = mock(QingPingAccessToken.class);
-        when(accessToken.getToken()).thenReturn("token");
-        final QingPingListDevicesRequest listDevicesRequest = mock(QingPingListDevicesRequest.class);
-        when(listDevicesRequest.sendRequest(any())).thenReturn(Optional.empty());
-        final QingPingSensor testee = new QingPingSensor(accessToken, listDevicesRequest, new QingPingListDevicesJsonParser(),
-                singletonList(QingPingSensor.MAC_PRESSURE_DEVICE));
+        when(accessToken.readToken()).thenReturn("token");
+        final QingPingListDevices listDevices = mock(QingPingListDevices.class);
+        when(listDevices.readSensorDataList(any())).thenReturn(new ArrayList<>());
+        final QingPingSensor testee = new QingPingSensor(accessToken, listDevices);
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
 
@@ -133,20 +73,17 @@ class QingPingSensorTest {
     @ParameterizedTest(name = "{index} => temperature1={0}, humidity1={1}, co2_1={2}, age_1={3}, temperatureExp={4}, humidityExp={5}")
     @ArgumentsSource(SensorDataArgumentProvider.class)
     void testWhenMultipleSensorsWithoutCo2ThenAverage(double temperature1, double humidity1, CarbonDioxide co2, int age_1, double temperatureExp,
-                                                      double humidityExp) throws InvaildArgumentException, CommunicationException {
+                                                      double humidityExp) throws InvaildArgumentException, CommunicationException, IOException, URISyntaxException {
         final QingPingAccessToken accessToken = mock(QingPingAccessToken.class);
-        when(accessToken.getToken()).thenReturn("token");
-        final QingPingListDevicesRequest listDevicesRequest = mock(QingPingListDevicesRequest.class);
-        when(listDevicesRequest.sendRequest(any())).thenReturn(Optional.of(SAMPLE_LIST_DEVICES_RESPONSE));
-        final QingPingListDevicesJsonParser parser = mock(QingPingListDevicesJsonParser.class);
+        when(accessToken.readToken()).thenReturn("token");
         final Temperature temperature = Temperature.createFromCelsius(temperature1);
         final Humidity humidity = Humidity.createFromAbsolute(humidity1);
         final LocalDateTime time1 = LocalDateTime.now().minusMinutes(age_1);
         final QingPingSensorData sensorData1 = new QingPingSensorData(temperature, humidity, co2, time1);
         final QingPingSensorData sensorData2 = new QingPingSensorData(Temperature.createFromCelsius(40.0), Humidity.createFromAbsolute(15.0), LocalDateTime.now());
-        when(parser.parseDeviceListResponse(any(), eq("mac1"))).thenReturn(Optional.of(sensorData1));
-        when(parser.parseDeviceListResponse(any(), eq("mac2"))).thenReturn(Optional.of(sensorData2));
-        final QingPingSensor testee = new QingPingSensor(accessToken, listDevicesRequest, parser, asList("mac1", "mac2"));
+        final QingPingListDevices listDevices = mock(QingPingListDevices.class);
+        when(listDevices.readSensorDataList(any())).thenReturn(List.of(sensorData1, sensorData2));
+        final QingPingSensor testee = new QingPingSensor(accessToken, listDevices);
         final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
         testee.addObserver(observer);
 
