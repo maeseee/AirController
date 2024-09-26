@@ -14,6 +14,7 @@ import java.util.Base64;
 import java.util.Optional;
 
 import static org.airController.sensor.qingPing.QingPingAccessToken.*;
+import static org.airController.sensor.qingPing.QingPingDevices.MAC_AIR_PRESSURE_DEVICE;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -63,8 +64,7 @@ class QingPingIntegrationTest {
 
     private QingPingSensorData runParseListDevices(String listDevicesResponse) {
         final QingPingListDevicesJsonParser parser = new QingPingListDevicesJsonParser();
-        final String macOfAirPressureDevice = QingPingDevices.getAirPressureDevices().get(0);
-        final Optional<QingPingSensorData> sensorData = parser.parseDeviceListResponse(listDevicesResponse, macOfAirPressureDevice);
+        final Optional<QingPingSensorData> sensorData = parser.parseDeviceListResponse(listDevicesResponse, MAC_AIR_PRESSURE_DEVICE);
 
         assertTrue(sensorData.isPresent());
         return sensorData.get();

@@ -10,6 +10,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
+import static org.airController.sensor.qingPing.QingPingDevices.MAC_AIR_PRESSURE_DEVICE;
+import static org.airController.sensor.qingPing.QingPingDevices.MAC_CO2_DEVICE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -35,8 +37,8 @@ class QingPingListDevicesTest {
 
         final List<QingPingSensorData> sensorDataList = testee.readSensorDataList(token);
 
-        verify(parser).parseDeviceListResponse(response, QingPingDevices.getAirPressureDevices().get(0));
-        verify(parser).parseDeviceListResponse(response, QingPingDevices.getCo2Devices().get(0));
+        verify(parser).parseDeviceListResponse(response, MAC_AIR_PRESSURE_DEVICE);
+        verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE);
         assertThat(sensorDataList).hasSize(2);
     }
 
@@ -50,8 +52,8 @@ class QingPingListDevicesTest {
 
         final List<QingPingSensorData> sensorDataList = testee.readSensorDataList(token);
 
-        verify(parser).parseDeviceListResponse(response, QingPingDevices.getAirPressureDevices().get(0));
-        verify(parser).parseDeviceListResponse(response, QingPingDevices.getCo2Devices().get(0));
+        verify(parser).parseDeviceListResponse(response, MAC_AIR_PRESSURE_DEVICE);
+        verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE);
         assertThat(sensorDataList).hasSize(0);
     }
 }
