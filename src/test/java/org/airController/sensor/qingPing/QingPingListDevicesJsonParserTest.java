@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.time.ZoneId;
 import java.util.Optional;
 
-import static org.airController.sensor.qingPing.QingPingListDevices.MAC_CO2_DEVICE;
-import static org.airController.sensor.qingPing.QingPingListDevices.MAC_PRESSURE_DEVICE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -113,10 +111,11 @@ class QingPingListDevicesJsonParserTest {
             """;
 
     @Test
-    void testParsingDeviceListOfPressureDevice() {
+    void testParsingDeviceListOfAirPressureDevice() {
+        final String macOfAirPressureDevice = QingPingDevices.getAirPressureDevices().get(0);
         final QingPingListDevicesJsonParser testee = new QingPingListDevicesJsonParser();
 
-        final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, MAC_PRESSURE_DEVICE);
+        final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, macOfAirPressureDevice);
 
         assertTrue(result.isPresent());
         assertTrue(result.get().getTemperature().isPresent());
@@ -130,9 +129,10 @@ class QingPingListDevicesJsonParserTest {
 
     @Test
     void testParsingDeviceListOfCo2Device() {
+        final String macOfCo2Device = QingPingDevices.getCo2Devices().get(0);
         final QingPingListDevicesJsonParser testee = new QingPingListDevicesJsonParser();
 
-        final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, MAC_CO2_DEVICE);
+        final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, macOfCo2Device);
 
         assertTrue(result.isPresent());
         assertTrue(result.get().getTemperature().isPresent());

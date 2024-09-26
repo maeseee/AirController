@@ -4,25 +4,20 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class QingPingListDevices {
-    static final String MAC_PRESSURE_DEVICE = "582D3480A7F4";
-    static final String MAC_CO2_DEVICE = "582D34831850";
-
     private final QingPingListDevicesRequest listDevicesRequest;
     private final QingPingListDevicesJsonParser parser;
-    private final List<String> deviceMacAddresses;
+    private final List<String> deviceMacAddresses = QingPingDevices.getDeviceList();
 
     public QingPingListDevices() throws URISyntaxException {
-        this(createListDevicesRequest(), new QingPingListDevicesJsonParser(), Arrays.asList(MAC_PRESSURE_DEVICE, MAC_CO2_DEVICE));
+        this(createListDevicesRequest(), new QingPingListDevicesJsonParser());
     }
 
-    QingPingListDevices(QingPingListDevicesRequest listDevicesRequest, QingPingListDevicesJsonParser parser, List<String> deviceMacAddresses) {
+    QingPingListDevices(QingPingListDevicesRequest listDevicesRequest, QingPingListDevicesJsonParser parser) {
         this.listDevicesRequest = listDevicesRequest;
         this.parser = parser;
-        this.deviceMacAddresses = deviceMacAddresses;
     }
 
     public List<QingPingSensorData> readSensorDataList(String token) throws CommunicationException, IOException, URISyntaxException {
