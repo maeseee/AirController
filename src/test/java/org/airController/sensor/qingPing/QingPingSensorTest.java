@@ -6,7 +6,6 @@ import org.airController.entities.Humidity;
 import org.airController.entities.InvaildArgumentException;
 import org.airController.entities.Temperature;
 import org.airController.sensorAdapter.IndoorSensorObserver;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -25,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,8 +51,8 @@ class QingPingSensorTest {
 
         verify(observer).updateIndoorSensorData(indoorSensorDataArgumentCaptor.capture());
         final SensorData indoorSensorDataCapture = indoorSensorDataArgumentCaptor.getValue();
-        Assertions.assertThat(indoorSensorDataCapture.getTemperature()).isPresent().hasValue(Temperature.createFromCelsius(21.5));
-        Assertions.assertThat(indoorSensorDataCapture.getHumidity()).isPresent().hasValue(Humidity.createFromAbsolute(10.0));
+        assertThat(indoorSensorDataCapture.getTemperature()).isPresent().hasValue(Temperature.createFromCelsius(21.5));
+        assertThat(indoorSensorDataCapture.getHumidity()).isPresent().hasValue(Humidity.createFromAbsolute(10.0));
     }
 
     @Test
@@ -93,8 +93,8 @@ class QingPingSensorTest {
 
         verify(observer).updateIndoorSensorData(indoorSensorDataArgumentCaptor.capture());
         final SensorData indoorSensorDataCapture = indoorSensorDataArgumentCaptor.getValue();
-        Assertions.assertThat(indoorSensorDataCapture.getTemperature()).isPresent().hasValue(Temperature.createFromCelsius(temperatureExp));
-        Assertions.assertThat(indoorSensorDataCapture.getHumidity()).isPresent().hasValue(Humidity.createFromAbsolute(humidityExp));
+        assertThat(indoorSensorDataCapture.getTemperature()).isPresent().hasValue(Temperature.createFromCelsius(temperatureExp));
+        assertThat(indoorSensorDataCapture.getHumidity()).isPresent().hasValue(Humidity.createFromAbsolute(humidityExp));
     }
 
     static class SensorDataArgumentProvider implements ArgumentsProvider {
