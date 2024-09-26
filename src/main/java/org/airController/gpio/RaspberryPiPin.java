@@ -3,6 +3,7 @@ package org.airController.gpio;
 import com.pi4j.wiringpi.Gpio;
 import com.pi4j.wiringpi.GpioUtil;
 import org.airController.gpioAdapter.GpioFunction;
+import org.airController.gpioAdapter.GpioPin;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
@@ -41,7 +42,7 @@ public class RaspberryPiPin {
     }
 
     public static void main(String[] args) throws IOException {
-        final GpioPinImpl gpioPin = new GpioPinImpl(GpioFunction.AIR_FLOW, true);
+        final GpioPin gpioPin = new GpioPinImpl(GpioFunction.AIR_FLOW, true);
         final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(() -> gpioPin.setGpioState(!gpioPin.getGpioState()), 0, 2, TimeUnit.SECONDS);
     }
