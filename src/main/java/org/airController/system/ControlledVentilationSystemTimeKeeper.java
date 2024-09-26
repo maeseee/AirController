@@ -17,7 +17,6 @@ public class ControlledVentilationSystemTimeKeeper implements ControlledVentilat
 
     private final List<TimePeriod> timePeriods = new ArrayList<>();
     private LocalDateTime onTime;
-    private LocalDate lastDailyReport = LocalDate.now();
 
     @Override
     public void setAirFlowOn(boolean on) {
@@ -30,7 +29,6 @@ public class ControlledVentilationSystemTimeKeeper implements ControlledVentilat
             timePeriods.add(timePeriod);
             onTime = null;
         }
-        dailyReportOnDayChange(now.toLocalDate());
     }
 
     @Override
@@ -52,6 +50,15 @@ public class ControlledVentilationSystemTimeKeeper implements ControlledVentilat
         return getDuration(startTime, endTime);
     }
 
+    @Override public void run() {
+        final LocalDateTime now = LocalDateTime.now();
+        LocalDate yesterday = now.toLocalDate().minusDays(1);
+        final Duration totalAirFlowYesterday = getTotalAirFlowFromDay(yesterday);
+        logger.info("Daily on time is {} minutes ({} %)", totalAirFlowYesterday.toMinutes(), getOnPercentage(totalAirFlowYesterday));
+
+        removeTimePeriods(yesterday.minusDays(1));
+    }
+
     private void removeTimePeriods(LocalDate date) {
         timePeriods.removeIf(timePeriod -> timePeriod.off().toLocalDate().isBefore(date));
     }
@@ -68,16 +75,6 @@ public class ControlledVentilationSystemTimeKeeper implements ControlledVentilat
         LocalDateTime durationStart = timePeriod.on().isAfter(startTime) ? timePeriod.on() : startTime;
         LocalDateTime durationEnd = timePeriod.off().isBefore(endTime) ? timePeriod.off() : endTime;
         return Duration.between(durationStart, durationEnd);
-    }
-
-    private void dailyReportOnDayChange(LocalDate now) {
-        if (!now.equals(lastDailyReport)) {
-            LocalDate yesterday = now.minusDays(1);
-            removeTimePeriods(yesterday.minusDays(1));
-            Duration totalAirFlowYesterday = getTotalAirFlowFromDay(yesterday);
-            logger.info("Daily on time is {} minutes ({} %)", totalAirFlowYesterday.toMinutes(), getOnPercentage(totalAirFlowYesterday));
-            lastDailyReport = now;
-        }
     }
 
     private double getOnPercentage(Duration onTime) {

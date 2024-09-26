@@ -22,6 +22,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -36,6 +38,7 @@ public class Application {
     private final OutdoorSensor outdoorSensor;
     private final IndoorSensor indoorSensor;
     private final FreshAirController freshAirController;
+    private final TimeKeeper timeKeeper;
     private final ScheduledExecutorService executor;
 
     public Application() throws IOException, URISyntaxException {
@@ -43,12 +46,44 @@ public class Application {
                 new QingPingSensor(), new OneWireSensor(), new SensorDataPersistenceObserver(), Executors.newScheduledThreadPool(1));
     }
 
+    // Used for MainMock
     Application(GpioPin airFlow, GpioPin humidityExchanger, OutdoorSensor outdoorSensor, QingPingSensor indoorSensor,
-            @Nullable IndoorSensor backupSensor,
-            SensorDataPersistenceObserver persistenceObserver, ScheduledExecutorService executor) {
-        final ControlledVentilationSystem ventilationSystem = new ControlledVentilationSystemImpl(airFlow, humidityExchanger);
+            @Nullable IndoorSensor backupSensor, SensorDataPersistenceObserver persistenceObserver, ScheduledExecutorService executor) {
+        this(new ControlledVentilationSystemImpl(airFlow, humidityExchanger), outdoorSensor, indoorSensor,
+                createSensorValues(outdoorSensor, indoorSensor, backupSensor, persistenceObserver),
+                new ControlledVentilationSystemTimeKeeper(), executor);
+    }
+
+    private Application(ControlledVentilationSystem ventilationSystem, OutdoorSensor outdoorSensor, QingPingSensor indoorSensor,
+            CurrentSensorValues sensorValues, ControlledVentilationSystemTimeKeeper timeKeeper, ScheduledExecutorService executor) {
+        this(outdoorSensor, indoorSensor, createFreshAirController(ventilationSystem, sensorValues, timeKeeper), timeKeeper, executor);
+    }
+
+    // Used for tests
+    Application(OutdoorSensor outdoorSensor, IndoorSensor indoorSensor, FreshAirController freshAirController, TimeKeeper timeKeeper,
+            ScheduledExecutorService executor) {
         this.outdoorSensor = outdoorSensor;
         this.indoorSensor = indoorSensor;
+        this.freshAirController = freshAirController;
+        this.timeKeeper = timeKeeper;
+        this.executor = executor;
+    }
+
+    public void run() {
+        executor.scheduleAtFixedRate(outdoorSensor, 0, OUTDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(indoorSensor, 0, INDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(freshAirController, 0, VENTILATION_SYSTEM_PERIOD_MINUTES, TimeUnit.MINUTES);
+
+        final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime midnight = now.toLocalDate().atStartOfDay().plusDays(1);
+        final long initialDelay = Duration.between(now, midnight).plusSeconds(1).toSeconds();
+        executor.scheduleAtFixedRate(timeKeeper, initialDelay, TimeUnit.DAYS.toSeconds(1), TimeUnit.SECONDS);
+
+        logger.info("All setup and running...");
+    }
+
+    private static CurrentSensorValues createSensorValues(OutdoorSensor outdoorSensor, QingPingSensor indoorSensor, IndoorSensor backupSensor,
+            SensorDataPersistenceObserver persistenceObserver) {
         final CurrentSensorValues sensorValues = new CurrentSensorValues();
         outdoorSensor.addObserver(sensorValues);
         outdoorSensor.addObserver(persistenceObserver);
@@ -59,21 +94,12 @@ public class Application {
             backupSensor.addObserver(sensorValues);
             backupSensor.addObserver(persistenceObserver);
         }
-        this.freshAirController = createFreshAirController(ventilationSystem, sensorValues);
-        this.executor = executor;
+        return sensorValues;
     }
 
-    public void run() {
-        executor.scheduleAtFixedRate(outdoorSensor, 0, OUTDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
-        executor.scheduleAtFixedRate(indoorSensor, 0, INDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
-        executor.scheduleAtFixedRate(freshAirController, 0, VENTILATION_SYSTEM_PERIOD_MINUTES, TimeUnit.MINUTES);
-
-        logger.info("All setup and running...");
-    }
-
-    private FreshAirController createFreshAirController(ControlledVentilationSystem ventilationSystem, CurrentSensorValues sensorValues) {
-        List<ControlledVentilationSystem> ventilationSystems = List.of(ventilationSystem, new ControlledVentilationSystemTimeKeeper());
-        ControlledVentilationSystemTimeKeeper timeKeeper = new ControlledVentilationSystemTimeKeeper();
+    private static FreshAirController createFreshAirController(ControlledVentilationSystem ventilationSystem, CurrentSensorValues sensorValues,
+            ControlledVentilationSystemTimeKeeper timeKeeper) {
+        List<ControlledVentilationSystem> ventilationSystems = List.of(ventilationSystem, timeKeeper);
         CO2ControlAirFlow co2ControlAirFlow = new CO2ControlAirFlow(sensorValues);
         DailyAirFlow dailyAirFlow = new DailyAirFlow();
         HumidityControlAirFlow humidityControlAirFlow = new HumidityControlAirFlow(sensorValues);
