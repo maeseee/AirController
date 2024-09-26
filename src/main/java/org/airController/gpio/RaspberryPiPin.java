@@ -1,8 +1,7 @@
-package org.airController.util;
+package org.airController.gpio;
 
 import com.pi4j.wiringpi.Gpio;
 import com.pi4j.wiringpi.GpioUtil;
-import org.airController.gpio.GpioPinImpl;
 import org.airController.gpioAdapter.GpioFunction;
 
 import java.io.IOException;

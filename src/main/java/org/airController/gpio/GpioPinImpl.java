@@ -2,7 +2,6 @@ package org.airController.gpio;
 
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
-import org.airController.util.RaspberryPiPin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

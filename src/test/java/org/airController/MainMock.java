@@ -2,13 +2,13 @@ package org.airController;
 
 import org.airController.gpio.GpioPinImpl;
 import org.airController.gpio.MockGpioPin;
+import org.airController.gpio.RaspberryPiPin;
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
 import org.airController.persistence.SensorDataPersistenceObserver;
 import org.airController.sensor.openWeatherApi.OutdoorSensorImpl;
 import org.airController.sensor.qingPing.QingPingSensor;
 import org.airController.sensorAdapter.OutdoorSensor;
-import org.airController.util.RaspberryPiPin;
 
 import java.net.URISyntaxException;
 import java.util.concurrent.Executors;
