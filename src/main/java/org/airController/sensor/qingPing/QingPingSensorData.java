@@ -47,4 +47,13 @@ public class QingPingSensorData implements SensorData {
     public LocalDateTime getTimeStamp() {
         return timestamp;
     }
+
+    @Override public String toString() {
+        return "QingPingSensorData{" +
+                "temperature=" + temperature +
+                ", humidity=" + humidity +
+                ", co2=" + co2 +
+                ", timestamp=" + timestamp +
+                '}';
+    }
 }

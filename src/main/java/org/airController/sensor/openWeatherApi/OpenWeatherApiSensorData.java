@@ -38,4 +38,12 @@ public class OpenWeatherApiSensorData implements SensorData {
     public LocalDateTime getTimeStamp() {
         return timestamp;
     }
+
+    @Override public String toString() {
+        return "OpenWeatherApiSensorData{" +
+                "temperature=" + temperature +
+                ", humidity=" + humidity +
+                ", timestamp=" + timestamp +
+                '}';
+    }
 }

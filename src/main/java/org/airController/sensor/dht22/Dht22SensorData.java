@@ -38,4 +38,12 @@ public class Dht22SensorData implements SensorData {
     public LocalDateTime getTimeStamp() {
         return timestamp;
     }
+
+    @Override public String toString() {
+        return "Dht22SensorData{" +
+                "temperature=" + temperature +
+                ", humidity=" + humidity +
+                ", timestamp=" + timestamp +
+                '}';
+    }
 }

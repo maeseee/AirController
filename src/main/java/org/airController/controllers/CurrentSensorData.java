@@ -60,6 +60,15 @@ public class CurrentSensorData implements SensorData {
     private boolean isSensorValid() {
         return LocalDateTime.now().minus(SENSOR_INVALIDATION).isBefore(timestamp);
     }
+
+    @Override public String toString() {
+        return "CurrentSensorData{" +
+                "temperature=" + temperature +
+                ", humidity=" + humidity +
+                ", co2=" + co2 +
+                ", timestamp=" + timestamp +
+                '}';
+    }
 }
 
 
