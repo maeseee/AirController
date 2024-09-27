@@ -8,7 +8,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class JsonOpenWeatherApiParserTest {
+class OpenWeatherApiJsonParserTest {
 
     @Test
     void testParsing() {
@@ -31,7 +31,7 @@ class JsonOpenWeatherApiParserTest {
                 }
                 """;
 
-        final Optional<OpenWeatherApiSensorData> result = JsonOpenWeatherApiParser.parse(sampleHttpResponse);
+        final Optional<OpenWeatherApiSensorData> result = OpenWeatherApiJsonParser.parse(sampleHttpResponse);
 
         assertTrue(result.isPresent());
         assertTrue(result.get().getTemperature().isPresent());
@@ -61,7 +61,7 @@ class JsonOpenWeatherApiParserTest {
                 }
                 """;
 
-        final Optional<OpenWeatherApiSensorData> result = JsonOpenWeatherApiParser.parse(sampleHttpResponse);
+        final Optional<OpenWeatherApiSensorData> result = OpenWeatherApiJsonParser.parse(sampleHttpResponse);
 
         assertTrue(result.isEmpty());
     }
@@ -87,7 +87,7 @@ class JsonOpenWeatherApiParserTest {
                 }
                 """;
 
-        final Optional<OpenWeatherApiSensorData> result = JsonOpenWeatherApiParser.parse(sampleHttpResponse);
+        final Optional<OpenWeatherApiSensorData> result = OpenWeatherApiJsonParser.parse(sampleHttpResponse);
 
         assertTrue(result.isEmpty());
     }

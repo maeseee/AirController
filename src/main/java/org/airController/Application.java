@@ -10,7 +10,7 @@ import org.airController.gpioAdapter.GpioPin;
 import org.airController.persistence.SensorDataPersistenceObserver;
 import org.airController.rules.*;
 import org.airController.sensor.dht22.OneWireSensor;
-import org.airController.sensor.openWeatherApi.OutdoorSensorImpl;
+import org.airController.sensor.openWeatherApi.OpenWeatherApiSensor;
 import org.airController.sensor.qingPing.QingPingSensor;
 import org.airController.sensorAdapter.IndoorSensor;
 import org.airController.sensorAdapter.OutdoorSensor;
@@ -42,7 +42,7 @@ public class Application {
     private final ScheduledExecutorService executor;
 
     public Application() throws IOException, URISyntaxException {
-        this(new GpioPinImpl(GpioFunction.AIR_FLOW, true), new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER, false), new OutdoorSensorImpl(),
+        this(new GpioPinImpl(GpioFunction.AIR_FLOW, true), new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER, false), new OpenWeatherApiSensor(),
                 new QingPingSensor(), new OneWireSensor(), new SensorDataPersistenceObserver(), Executors.newScheduledThreadPool(1));
     }
 

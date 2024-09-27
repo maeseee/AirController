@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 
-public class OutdoorSensorImpl implements OutdoorSensor {
-    private static final Logger logger = LogManager.getLogger(OutdoorSensorImpl.class);
+public class OpenWeatherApiSensor implements OutdoorSensor {
+    private static final Logger logger = LogManager.getLogger(OpenWeatherApiSensor.class);
     private static final String LAT = "47.127459";
     private static final String LON = "8.245553";
     private static final String ENVIRONMENT_VARIABLE_API_KEY = "weather_api_key";
@@ -23,11 +23,11 @@ public class OutdoorSensorImpl implements OutdoorSensor {
     private final List<OutdoorSensorObserver> observers = new ArrayList<>();
     private final HttpsGetRequest httpsGetRequest;
 
-    public OutdoorSensorImpl() throws URISyntaxException {
+    public OpenWeatherApiSensor() throws URISyntaxException {
         this(createHttpsGetRequest(getApiKeyForHttpRequest()));
     }
 
-    OutdoorSensorImpl(HttpsGetRequest httpsGetRequest) {
+    OpenWeatherApiSensor(HttpsGetRequest httpsGetRequest) {
         this.httpsGetRequest = httpsGetRequest;
     }
 
@@ -47,7 +47,7 @@ public class OutdoorSensorImpl implements OutdoorSensor {
             return;
         }
 
-        final Optional<OpenWeatherApiSensorData> sensorData = JsonOpenWeatherApiParser.parse(request.get());
+        final Optional<OpenWeatherApiSensorData> sensorData = OpenWeatherApiJsonParser.parse(request.get());
         sensorData.ifPresentOrElse(
                 this::notifyObservers,
                 () -> logger.error("Outdoor sensor out of order"));

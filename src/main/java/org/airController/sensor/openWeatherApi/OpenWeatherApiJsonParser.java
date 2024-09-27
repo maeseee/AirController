@@ -7,7 +7,7 @@ import org.json.JSONTokener;
 
 import java.util.Optional;
 
-class JsonOpenWeatherApiParser {
+class OpenWeatherApiJsonParser {
 
     public static Optional<OpenWeatherApiSensorData> parse(String jsonString) {
         try {

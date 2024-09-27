@@ -8,7 +8,7 @@ import org.airController.entities.Temperature;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public class OpenWeatherApiSensorData implements SensorData {
+class OpenWeatherApiSensorData implements SensorData {
 
     private final Temperature temperature;
     private final Humidity humidity;
