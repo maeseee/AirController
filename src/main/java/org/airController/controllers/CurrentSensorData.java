@@ -10,12 +10,14 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.OptionalDouble;
 
-@Setter
 public class CurrentSensorData implements SensorData {
     private static final Duration SENSOR_INVALIDATION = Duration.ofHours(4);
 
+    @Setter
     private Temperature temperature;
+    @Setter
     private Humidity humidity;
+    @Setter
     private CarbonDioxide co2;
     private LocalDateTime timestamp = LocalDateTime.now();
 
@@ -59,3 +61,5 @@ public class CurrentSensorData implements SensorData {
         return LocalDateTime.now().minus(SENSOR_INVALIDATION).isBefore(timestamp);
     }
 }
+
+

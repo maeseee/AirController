@@ -34,6 +34,8 @@ class CurrentSensorValuesTest {
         final CurrentSensorValues testee = new CurrentSensorValues();
 
         assertThat(testee.getIndoorHumidity()).isNotPresent();
+        assertThat(testee.getIndoorTemperature()).isNotPresent();
+        assertThat(testee.getIndoorCo2()).isNotPresent();
     }
 
     @Test
@@ -54,6 +56,8 @@ class CurrentSensorValuesTest {
         testee.updateOutdoorSensorData(outdoorSensorData);
 
         assertThat(testee.isIndoorHumidityAboveOutdoorHumidity()).isTrue();
+        assertThat(testee.getIndoorHumidity()).isEqualTo(Optional.of(indoorHumidity));
+        assertThat(testee.getIndoorTemperature()).isEqualTo(Optional.of(temperature));
     }
 
     @Test

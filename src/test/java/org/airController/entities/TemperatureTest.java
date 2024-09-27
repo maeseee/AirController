@@ -2,6 +2,7 @@ package org.airController.entities;
 
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TemperatureTest {
@@ -40,6 +41,16 @@ class TemperatureTest {
         final double kelvin = testee.getKelvin();
 
         assertEquals(273.15, kelvin);
+    }
+
+    @Test
+    void shouldThrow_whenValueBelowMinus60() {
+        assertThatExceptionOfType(InvaildArgumentException.class).isThrownBy(() -> Temperature.createFromCelsius(-61.0));
+    }
+
+    @Test
+    void shouldThrow_whenValueAbove100() {
+        assertThatExceptionOfType(InvaildArgumentException.class).isThrownBy(() -> Temperature.createFromCelsius(101.0));
     }
 
 }
