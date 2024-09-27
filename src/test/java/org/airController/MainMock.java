@@ -6,9 +6,9 @@ import org.airController.gpio.RaspberryPiPin;
 import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
 import org.airController.persistence.SensorDataPersistenceObserver;
+import org.airController.sensor.OutdoorSensor;
 import org.airController.sensor.openWeatherApi.OpenWeatherApiSensor;
 import org.airController.sensor.qingPing.QingPingSensor;
-import org.airController.sensorAdapter.OutdoorSensor;
 
 import java.net.URISyntaxException;
 import java.util.concurrent.Executors;

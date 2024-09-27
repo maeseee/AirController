@@ -1,7 +1,7 @@
 package org.airController.controllers;
 
 import org.airController.rules.Percentage;
-import org.airController.systemAdapter.VentilationSystem;
+import org.airController.system.VentilationSystem;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

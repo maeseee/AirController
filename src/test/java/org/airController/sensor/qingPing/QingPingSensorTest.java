@@ -5,7 +5,7 @@ import org.airController.entities.CarbonDioxide;
 import org.airController.entities.Humidity;
 import org.airController.entities.InvaildArgumentException;
 import org.airController.entities.Temperature;
-import org.airController.sensorAdapter.IndoorSensorObserver;
+import org.airController.sensor.IndoorSensorObserver;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;

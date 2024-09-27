@@ -1,8 +1,8 @@
 package org.airController.sensor.openWeatherApi;
 
 import org.airController.secrets.Secret;
-import org.airController.sensorAdapter.OutdoorSensor;
-import org.airController.sensorAdapter.OutdoorSensorObserver;
+import org.airController.sensor.OutdoorSensor;
+import org.airController.sensor.OutdoorSensorObserver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

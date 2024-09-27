@@ -1,8 +1,8 @@
 package org.airController.sensor.dht22;
 
 import org.airController.controllers.SensorData;
-import org.airController.sensorAdapter.IndoorSensor;
-import org.airController.sensorAdapter.IndoorSensorObserver;
+import org.airController.sensor.IndoorSensor;
+import org.airController.sensor.IndoorSensorObserver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -1,4 +1,4 @@
-package org.airController.systemAdapter;
+package org.airController.system;
 
 public interface VentilationSystem {
 

@@ -9,14 +9,14 @@ import org.airController.gpioAdapter.GpioFunction;
 import org.airController.gpioAdapter.GpioPin;
 import org.airController.persistence.SensorDataPersistenceObserver;
 import org.airController.rules.*;
+import org.airController.sensor.IndoorSensor;
+import org.airController.sensor.OutdoorSensor;
 import org.airController.sensor.dht22.OneWireSensor;
 import org.airController.sensor.openWeatherApi.OpenWeatherApiSensor;
 import org.airController.sensor.qingPing.QingPingSensor;
-import org.airController.sensorAdapter.IndoorSensor;
-import org.airController.sensorAdapter.OutdoorSensor;
 import org.airController.system.ControlledVentilationSystem;
+import org.airController.system.VentilationSystem;
 import org.airController.system.VentilationSystemTimeKeeper;
-import org.airController.systemAdapter.VentilationSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

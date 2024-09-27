@@ -2,8 +2,8 @@ package org.airController;
 
 import org.airController.controllers.FreshAirController;
 import org.airController.rules.TimeKeeper;
-import org.airController.sensorAdapter.IndoorSensor;
-import org.airController.sensorAdapter.OutdoorSensor;
+import org.airController.sensor.IndoorSensor;
+import org.airController.sensor.OutdoorSensor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

@@ -1,4 +1,4 @@
-package org.airController.sensorAdapter;
+package org.airController.sensor;
 
 import org.airController.controllers.SensorData;
 
