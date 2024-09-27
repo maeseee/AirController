@@ -14,9 +14,9 @@ import org.airController.sensor.openWeatherApi.OpenWeatherApiSensor;
 import org.airController.sensor.qingPing.QingPingSensor;
 import org.airController.sensorAdapter.IndoorSensor;
 import org.airController.sensorAdapter.OutdoorSensor;
-import org.airController.system.ControlledVentilationSystemImpl;
-import org.airController.system.ControlledVentilationSystemTimeKeeper;
-import org.airController.systemAdapter.ControlledVentilationSystem;
+import org.airController.system.ControlledVentilationSystem;
+import org.airController.system.VentilationSystemTimeKeeper;
+import org.airController.systemAdapter.VentilationSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,13 +49,12 @@ public class Application {
     // Used for MainMock
     Application(GpioPin airFlow, GpioPin humidityExchanger, OutdoorSensor outdoorSensor, QingPingSensor indoorSensor,
             @Nullable IndoorSensor backupSensor, SensorDataPersistenceObserver persistenceObserver, ScheduledExecutorService executor) {
-        this(new ControlledVentilationSystemImpl(airFlow, humidityExchanger), outdoorSensor, indoorSensor,
-                createSensorValues(outdoorSensor, indoorSensor, backupSensor, persistenceObserver),
-                new ControlledVentilationSystemTimeKeeper(), executor);
+        this(new ControlledVentilationSystem(airFlow, humidityExchanger), outdoorSensor, indoorSensor,
+                createSensorValues(outdoorSensor, indoorSensor, backupSensor, persistenceObserver), new VentilationSystemTimeKeeper(), executor);
     }
 
-    private Application(ControlledVentilationSystem ventilationSystem, OutdoorSensor outdoorSensor, QingPingSensor indoorSensor,
-            CurrentSensorValues sensorValues, ControlledVentilationSystemTimeKeeper timeKeeper, ScheduledExecutorService executor) {
+    private Application(VentilationSystem ventilationSystem, OutdoorSensor outdoorSensor, QingPingSensor indoorSensor,
+            CurrentSensorValues sensorValues, VentilationSystemTimeKeeper timeKeeper, ScheduledExecutorService executor) {
         this(outdoorSensor, indoorSensor, createFreshAirController(ventilationSystem, sensorValues, timeKeeper), timeKeeper, executor);
     }
 
@@ -97,9 +96,9 @@ public class Application {
         return sensorValues;
     }
 
-    private static FreshAirController createFreshAirController(ControlledVentilationSystem ventilationSystem, CurrentSensorValues sensorValues,
-            ControlledVentilationSystemTimeKeeper timeKeeper) {
-        List<ControlledVentilationSystem> ventilationSystems = List.of(ventilationSystem, timeKeeper);
+    private static FreshAirController createFreshAirController(VentilationSystem ventilationSystem, CurrentSensorValues sensorValues,
+            VentilationSystemTimeKeeper timeKeeper) {
+        List<VentilationSystem> ventilationSystems = List.of(ventilationSystem, timeKeeper);
         CO2ControlAirFlow co2ControlAirFlow = new CO2ControlAirFlow(sensorValues);
         DailyAirFlow dailyAirFlow = new DailyAirFlow();
         HumidityControlAirFlow humidityControlAirFlow = new HumidityControlAirFlow(sensorValues);

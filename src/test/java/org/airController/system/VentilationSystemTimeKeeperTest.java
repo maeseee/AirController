@@ -15,7 +15,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mockStatic;
 
 @ExtendWith(MockitoExtension.class)
-class ControlledVentilationSystemTimeKeeperTest {
+class VentilationSystemTimeKeeperTest {
 
     @ParameterizedTest(name = "{index} => onMinutesBeforeNow={0}, offMinutesBeforeNow={1}, expectedResult={2}")
     @CsvSource({
@@ -28,7 +28,7 @@ class ControlledVentilationSystemTimeKeeperTest {
         final LocalDateTime now = LocalDateTime.now();
         final LocalDateTime onTime = now.minusMinutes(onMinutesBeforeNow);
         final LocalDateTime offTime = now.minusMinutes(offMinutesBeforeNow);
-        final ControlledVentilationSystemTimeKeeper testee = new ControlledVentilationSystemTimeKeeper();
+        final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper();
         try (MockedStatic<LocalDateTime> mocked = mockStatic(LocalDateTime.class)) {
             mocked.when(LocalDateTime::now)
                     .thenReturn(onTime)
@@ -50,7 +50,7 @@ class ControlledVentilationSystemTimeKeeperTest {
         final LocalDateTime offTime1 = now.minusMinutes(40);
         final LocalDateTime onTime2 = now.minusMinutes(20);
         final LocalDateTime offTime2 = now.minusMinutes(10);
-        final ControlledVentilationSystemTimeKeeper testee = new ControlledVentilationSystemTimeKeeper();
+        final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper();
         try (MockedStatic<LocalDateTime> mocked = mockStatic(LocalDateTime.class)) {
             mocked.when(LocalDateTime::now)
                     .thenReturn(onTime1)
@@ -73,7 +73,7 @@ class ControlledVentilationSystemTimeKeeperTest {
     void shouldReturnReportFromYesterday() {
         final LocalDateTime onTime1 = LocalDateTime.of(2024, 9, 17, 12, 0);
         final LocalDateTime offTime1 = onTime1.plusMinutes(10);
-        final ControlledVentilationSystemTimeKeeper testee = new ControlledVentilationSystemTimeKeeper();
+        final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper();
         try (MockedStatic<LocalDateTime> mocked = mockStatic(LocalDateTime.class)) {
             mocked.when(LocalDateTime::now)
                     .thenReturn(onTime1)

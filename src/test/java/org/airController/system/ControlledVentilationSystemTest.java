@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.*;
 
-class ControlledVentilationSystemImplTest {
+class ControlledVentilationSystemTest {
 
     @Test
     void shouldSetAirFlowOn() {
         final GpioPin airFlow = mock(GpioPin.class);
         final GpioPin humidityExchanger = mock(GpioPin.class);
-        final ControlledVentilationSystemImpl testee = new ControlledVentilationSystemImpl(airFlow, humidityExchanger);
+        final ControlledVentilationSystem testee = new ControlledVentilationSystem(airFlow, humidityExchanger);
 
         testee.setAirFlowOn(true);
 
@@ -23,7 +23,7 @@ class ControlledVentilationSystemImplTest {
     void shouldSetHumidityExchangerOn() {
         final GpioPin airFlow = mock(GpioPin.class);
         final GpioPin humidityExchanger = mock(GpioPin.class);
-        final ControlledVentilationSystemImpl testee = new ControlledVentilationSystemImpl(airFlow, humidityExchanger);
+        final ControlledVentilationSystem testee = new ControlledVentilationSystem(airFlow, humidityExchanger);
 
         testee.setHumidityExchangerOn(true);
 

@@ -1,7 +1,7 @@
 package org.airController.system;
 
 import org.airController.rules.TimeKeeper;
-import org.airController.systemAdapter.ControlledVentilationSystem;
+import org.airController.systemAdapter.VentilationSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,8 +12,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ControlledVentilationSystemTimeKeeper implements ControlledVentilationSystem, TimeKeeper {
-    private static final Logger logger = LogManager.getLogger(ControlledVentilationSystemTimeKeeper.class);
+public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeeper {
+    private static final Logger logger = LogManager.getLogger(VentilationSystemTimeKeeper.class);
 
     private final List<TimePeriod> timePeriods = new ArrayList<>();
     private LocalDateTime onTime;

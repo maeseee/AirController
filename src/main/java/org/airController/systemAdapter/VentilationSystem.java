@@ -1,6 +1,6 @@
 package org.airController.systemAdapter;
 
-public interface ControlledVentilationSystem {
+public interface VentilationSystem {
 
     void setAirFlowOn(boolean on);
 

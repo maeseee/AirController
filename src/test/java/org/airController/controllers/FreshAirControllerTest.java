@@ -1,7 +1,7 @@
 package org.airController.controllers;
 
 import org.airController.rules.Percentage;
-import org.airController.systemAdapter.ControlledVentilationSystem;
+import org.airController.systemAdapter.VentilationSystem;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 class FreshAirControllerTest {
 
     @Mock
-    private ControlledVentilationSystem ventilationSystem;
+    private VentilationSystem ventilationSystem;
 
     @Mock
     private Rule rule;

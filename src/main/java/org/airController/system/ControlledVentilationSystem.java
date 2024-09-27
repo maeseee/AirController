@@ -1,14 +1,14 @@
 package org.airController.system;
 
 import org.airController.gpioAdapter.GpioPin;
-import org.airController.systemAdapter.ControlledVentilationSystem;
+import org.airController.systemAdapter.VentilationSystem;
 
-public class ControlledVentilationSystemImpl implements ControlledVentilationSystem {
+public class ControlledVentilationSystem implements VentilationSystem {
 
     private final GpioPin airFlow;
     private final GpioPin humidityExchanger;
 
-    public ControlledVentilationSystemImpl(GpioPin airFlow, GpioPin humidityExchanger) {
+    public ControlledVentilationSystem(GpioPin airFlow, GpioPin humidityExchanger) {
         this.airFlow = airFlow;
         this.humidityExchanger = humidityExchanger;
     }
