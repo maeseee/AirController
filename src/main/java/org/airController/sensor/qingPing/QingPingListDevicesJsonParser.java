@@ -1,9 +1,9 @@
 package org.airController.sensor.qingPing;
 
-import org.airController.entities.CarbonDioxide;
-import org.airController.entities.Humidity;
-import org.airController.entities.InvaildArgumentException;
-import org.airController.entities.Temperature;
+import org.airController.sensorValues.CarbonDioxide;
+import org.airController.sensorValues.Humidity;
+import org.airController.sensorValues.InvaildArgumentException;
+import org.airController.sensorValues.Temperature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;

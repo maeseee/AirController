@@ -1,6 +1,6 @@
 package org.airController.persistence;
 
-import org.airController.controllers.SensorData;
+import org.airController.sensorValues.SensorData;
 
 public interface SensorValuePersistence {
 

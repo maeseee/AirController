@@ -1,10 +1,11 @@
 package org.airController.controllers;
 
-import org.airController.entities.CarbonDioxide;
-import org.airController.entities.Humidity;
-import org.airController.entities.Temperature;
 import org.airController.sensor.IndoorSensorObserver;
 import org.airController.sensor.OutdoorSensorObserver;
+import org.airController.sensorValues.CarbonDioxide;
+import org.airController.sensorValues.Humidity;
+import org.airController.sensorValues.SensorData;
+import org.airController.sensorValues.Temperature;
 
 import java.util.Optional;
 import java.util.OptionalDouble;

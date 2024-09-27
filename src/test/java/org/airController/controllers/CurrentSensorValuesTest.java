@@ -1,8 +1,9 @@
 package org.airController.controllers;
 
-import org.airController.entities.Humidity;
-import org.airController.entities.InvaildArgumentException;
-import org.airController.entities.Temperature;
+import org.airController.sensorValues.Humidity;
+import org.airController.sensorValues.InvaildArgumentException;
+import org.airController.sensorValues.SensorData;
+import org.airController.sensorValues.Temperature;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;

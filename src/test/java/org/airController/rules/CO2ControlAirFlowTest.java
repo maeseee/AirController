@@ -1,8 +1,8 @@
 package org.airController.rules;
 
 import org.airController.controllers.CurrentSensorValues;
-import org.airController.entities.CarbonDioxide;
-import org.airController.entities.InvaildArgumentException;
+import org.airController.sensorValues.CarbonDioxide;
+import org.airController.sensorValues.InvaildArgumentException;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

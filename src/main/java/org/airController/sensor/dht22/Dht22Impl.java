@@ -1,10 +1,10 @@
 package org.airController.sensor.dht22;
 
-import org.airController.controllers.SensorData;
-import org.airController.entities.Humidity;
-import org.airController.entities.InvaildArgumentException;
-import org.airController.entities.Temperature;
 import org.airController.gpio.GpioFunction;
+import org.airController.sensorValues.Humidity;
+import org.airController.sensorValues.InvaildArgumentException;
+import org.airController.sensorValues.SensorData;
+import org.airController.sensorValues.Temperature;
 
 import java.io.IOException;
 import java.util.Optional;

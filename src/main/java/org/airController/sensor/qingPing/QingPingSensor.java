@@ -1,9 +1,9 @@
 package org.airController.sensor.qingPing;
 
-import org.airController.controllers.SensorData;
-import org.airController.entities.InvaildArgumentException;
 import org.airController.sensor.IndoorSensor;
 import org.airController.sensor.IndoorSensorObserver;
+import org.airController.sensorValues.InvaildArgumentException;
+import org.airController.sensorValues.SensorData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

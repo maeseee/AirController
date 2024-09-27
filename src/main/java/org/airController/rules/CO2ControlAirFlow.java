@@ -2,7 +2,7 @@ package org.airController.rules;
 
 import org.airController.controllers.CurrentSensorValues;
 import org.airController.controllers.Rule;
-import org.airController.entities.CarbonDioxide;
+import org.airController.sensorValues.CarbonDioxide;
 
 import java.util.Optional;
 

@@ -1,9 +1,9 @@
 package org.airController.sensor.openWeatherApi;
 
-import org.airController.controllers.SensorData;
-import org.airController.entities.CarbonDioxide;
-import org.airController.entities.Humidity;
-import org.airController.entities.Temperature;
+import org.airController.sensorValues.CarbonDioxide;
+import org.airController.sensorValues.Humidity;
+import org.airController.sensorValues.SensorData;
+import org.airController.sensorValues.Temperature;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

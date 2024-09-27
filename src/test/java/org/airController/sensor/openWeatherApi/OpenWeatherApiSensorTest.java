@@ -1,8 +1,8 @@
 package org.airController.sensor.openWeatherApi;
 
-import org.airController.entities.Humidity;
-import org.airController.entities.Temperature;
 import org.airController.sensor.OutdoorSensorObserver;
+import org.airController.sensorValues.Humidity;
+import org.airController.sensorValues.Temperature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

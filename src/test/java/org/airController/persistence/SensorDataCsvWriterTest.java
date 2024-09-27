@@ -1,10 +1,6 @@
 package org.airController.persistence;
 
-import org.airController.controllers.SensorData;
-import org.airController.entities.CarbonDioxide;
-import org.airController.entities.Humidity;
-import org.airController.entities.InvaildArgumentException;
-import org.airController.entities.Temperature;
+import org.airController.sensorValues.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;

@@ -1,4 +1,4 @@
-package org.airController.entities;
+package org.airController.sensorValues;
 
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;

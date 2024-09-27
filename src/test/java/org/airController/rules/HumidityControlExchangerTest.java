@@ -1,9 +1,9 @@
 package org.airController.rules;
 
 import org.airController.controllers.CurrentSensorValues;
-import org.airController.entities.Humidity;
-import org.airController.entities.InvaildArgumentException;
-import org.airController.entities.Temperature;
+import org.airController.sensorValues.Humidity;
+import org.airController.sensorValues.InvaildArgumentException;
+import org.airController.sensorValues.Temperature;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;

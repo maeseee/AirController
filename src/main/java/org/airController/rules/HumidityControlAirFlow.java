@@ -2,8 +2,8 @@ package org.airController.rules;
 
 import org.airController.controllers.CurrentSensorValues;
 import org.airController.controllers.Rule;
-import org.airController.entities.Humidity;
-import org.airController.entities.Temperature;
+import org.airController.sensorValues.Humidity;
+import org.airController.sensorValues.Temperature;
 
 import java.util.Optional;
 

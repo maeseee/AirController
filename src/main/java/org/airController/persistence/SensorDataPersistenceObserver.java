@@ -1,8 +1,8 @@
 package org.airController.persistence;
 
-import org.airController.controllers.SensorData;
 import org.airController.sensor.IndoorSensorObserver;
 import org.airController.sensor.OutdoorSensorObserver;
+import org.airController.sensorValues.SensorData;
 
 public class SensorDataPersistenceObserver implements IndoorSensorObserver, OutdoorSensorObserver {
 

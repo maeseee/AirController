@@ -1,7 +1,7 @@
 package org.airController.sensor.dht22;
 
-import org.airController.controllers.SensorData;
-import org.airController.entities.Temperature;
+import org.airController.sensorValues.SensorData;
+import org.airController.sensorValues.Temperature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

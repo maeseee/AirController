@@ -1,7 +1,7 @@
 package org.airController.sensor.openWeatherApi;
 
-import org.airController.entities.Humidity;
-import org.airController.entities.Temperature;
+import org.airController.sensorValues.Humidity;
+import org.airController.sensorValues.Temperature;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
