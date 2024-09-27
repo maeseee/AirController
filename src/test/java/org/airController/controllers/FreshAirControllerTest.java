@@ -1,6 +1,7 @@
 package org.airController.controllers;
 
 import org.airController.rules.Percentage;
+import org.airController.rules.Rule;
 import org.airController.system.VentilationSystem;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,7 +1,5 @@
 package org.airController.rules;
 
-import org.airController.controllers.Rule;
-
 public class HumidityControlExchanger implements Rule {
 
     private final HumidityControlAirFlow humidityControlAirFlow;

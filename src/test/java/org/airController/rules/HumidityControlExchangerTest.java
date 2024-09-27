@@ -1,6 +1,6 @@
 package org.airController.rules;
 
-import org.airController.controllers.CurrentSensorValues;
+import org.airController.sensorValues.CurrentSensorValues;
 import org.airController.sensorValues.Humidity;
 import org.airController.sensorValues.InvaildArgumentException;
 import org.airController.sensorValues.Temperature;

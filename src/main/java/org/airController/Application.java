@@ -1,9 +1,7 @@
 package org.airController;
 
 import com.google.inject.internal.Nullable;
-import org.airController.controllers.CurrentSensorValues;
 import org.airController.controllers.FreshAirController;
-import org.airController.controllers.Rule;
 import org.airController.gpio.GpioFunction;
 import org.airController.gpio.GpioPin;
 import org.airController.gpio.RaspberryGpioPin;
@@ -14,6 +12,7 @@ import org.airController.sensor.OutdoorSensor;
 import org.airController.sensor.dht22.OneWireSensor;
 import org.airController.sensor.openWeatherApi.OpenWeatherApiSensor;
 import org.airController.sensor.qingPing.QingPingSensor;
+import org.airController.sensorValues.CurrentSensorValues;
 import org.airController.system.ControlledVentilationSystem;
 import org.airController.system.VentilationSystem;
 import org.airController.system.VentilationSystemTimeKeeper;

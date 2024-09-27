@@ -1,7 +1,6 @@
 package org.airController.rules;
 
-import org.airController.controllers.CurrentSensorValues;
-import org.airController.controllers.Rule;
+import org.airController.sensorValues.CurrentSensorValues;
 import org.airController.sensorValues.Humidity;
 import org.airController.sensorValues.Temperature;
 

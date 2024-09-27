@@ -1,5 +1,6 @@
 package org.airController.controllers;
 
+import org.airController.rules.Rule;
 import org.airController.system.VentilationSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

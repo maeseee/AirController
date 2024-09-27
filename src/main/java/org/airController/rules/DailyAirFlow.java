@@ -1,7 +1,5 @@
 package org.airController.rules;
 
-import org.airController.controllers.Rule;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
