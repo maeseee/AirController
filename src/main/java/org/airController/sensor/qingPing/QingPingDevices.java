@@ -2,7 +2,7 @@ package org.airController.sensor.qingPing;
 
 import java.util.List;
 
-public class QingPingDevices {
+class QingPingDevices {
     static final String MAC_AIR_PRESSURE_DEVICE = "582D3480A7F4";
     static final String MAC_CO2_DEVICE = "582D34831850";
 

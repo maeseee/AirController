@@ -5,7 +5,6 @@ import org.airController.entities.CarbonDioxide;
 import org.airController.entities.Humidity;
 import org.airController.entities.InvaildArgumentException;
 import org.airController.entities.Temperature;
-import org.airController.sensor.qingPing.QingPingSensorData;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -13,6 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,20 +26,39 @@ class SensorDataCsvWriterTest {
     void testWhenWritingCsvThenValuesInCsvFile() throws InvaildArgumentException, IOException {
         final Random random = new Random();
         final double temperatureValue = random.nextDouble() * 100;
-        final Temperature temperature = Temperature.createFromCelsius(temperatureValue);
         final double humidityValue = random.nextDouble() * 100;
-        final Humidity humidity = Humidity.createFromRelative(humidityValue, temperature);
         final double co2Value = random.nextDouble() * 100000;
-        final CarbonDioxide co2 = CarbonDioxide.createFromPpm(co2Value);
-        final LocalDateTime now = LocalDateTime.now();
-        final LocalDateTime time =
-                LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), now.getHour(), now.getMinute(), now.getSecond());
-        final SensorData sensorData = new QingPingSensorData(temperature, humidity, co2, time);
+        final LocalDateTime time = LocalDateTime.of(2024, 9, 27, 20, 51, 12);
+        final SensorData sensorData = createSensorData(temperatureValue, humidityValue, co2Value, time);
         final SensorValuePersistence testee = new SensorDataCsvWriter(FILE_PATH);
 
         testee.persist(sensorData);
 
         assertCsvFile(time, temperatureValue, humidityValue, co2Value);
+    }
+
+    private SensorData createSensorData(double temperatureValue, double humidityValue, double co2Value, LocalDateTime time)
+            throws InvaildArgumentException {
+        final Temperature temperature = Temperature.createFromCelsius(temperatureValue);
+        final Humidity humidity = Humidity.createFromRelative(humidityValue, temperature);
+        final CarbonDioxide co2 = CarbonDioxide.createFromPpm(co2Value);
+        return new SensorData() {
+            @Override public Optional<Temperature> getTemperature() {
+                return Optional.of(temperature);
+            }
+
+            @Override public Optional<Humidity> getHumidity() {
+                return Optional.of(humidity);
+            }
+
+            @Override public Optional<CarbonDioxide> getCo2() {
+                return Optional.of(co2);
+            }
+
+            @Override public LocalDateTime getTimeStamp() {
+                return time;
+            }
+        };
     }
 
     private void assertCsvFile(LocalDateTime time, double temperature, double humidity, double co2) throws IOException {

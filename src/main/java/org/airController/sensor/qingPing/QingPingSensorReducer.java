@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.OptionalDouble;
 
-public class QingPingSensorReducer {
+class QingPingSensorReducer {
 
     public SensorData reduce(List<QingPingSensorData> sensorDataList) throws CalculationException, InvaildArgumentException {
         final List<QingPingSensorData> currentSensorDataList = sensorDataList.stream()

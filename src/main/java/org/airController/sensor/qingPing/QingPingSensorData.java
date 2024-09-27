@@ -9,7 +9,7 @@ import org.airController.entities.Temperature;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public class QingPingSensorData implements SensorData {
+class QingPingSensorData implements SensorData {
 
     private final Temperature temperature;
     private final Humidity humidity;

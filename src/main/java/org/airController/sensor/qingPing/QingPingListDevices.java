@@ -6,7 +6,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QingPingListDevices {
+class QingPingListDevices {
     private final QingPingListDevicesRequest listDevicesRequest;
     private final QingPingListDevicesJsonParser parser;
     private final List<String> deviceMacAddresses = QingPingDevices.getDeviceList();

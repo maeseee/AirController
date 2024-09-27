@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Optional;
 
-public class QingPingAccessToken {
+class QingPingAccessToken {
     static final String APP_KEY = "me8h7AKSR";
     static final String ENVIRONMENT_VARIABLE_APP_SECRET = "qingping_app_secret";
     static final String ENCRYPTED_APP_SECRET = "P2Yg64Btliolc1DDvQFQKYZAb2ufYF10khTLrGfrb9d2kM1tA8ciYhZ2bbQeHdOLlIGmSfM4JQcG6EcnYtvm8w==";
