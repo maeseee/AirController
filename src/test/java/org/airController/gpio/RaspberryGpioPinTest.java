@@ -1,6 +1,5 @@
 package org.airController.gpio;
 
-import org.airController.gpioAdapter.GpioFunction;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class GpioPinImplTest {
+class RaspberryGpioPinTest {
 
     @Mock
     private RaspberryPiPin raspberryPiPin;
@@ -23,7 +22,7 @@ class GpioPinImplTest {
     @ParameterizedTest
     @CsvSource({"true", "false"})
     void testInitialGpioState(boolean initialHigh) {
-        final GpioPinImpl testee = new GpioPinImpl(GpioFunction.AIR_FLOW.name(), raspberryPiPin, initialHigh);
+        final RaspberryGpioPin testee = new RaspberryGpioPin(GpioFunction.AIR_FLOW.name(), raspberryPiPin, initialHigh);
 
         testee.getGpioState();
 
@@ -34,7 +33,7 @@ class GpioPinImplTest {
     void testGpioStateOffWhenSetOff() {
         final boolean initialState = true;
         when(raspberryPiPin.read()).thenReturn(initialState);
-        final GpioPinImpl testee = new GpioPinImpl(GpioFunction.AIR_FLOW.name(), raspberryPiPin, initialState);
+        final RaspberryGpioPin testee = new RaspberryGpioPin(GpioFunction.AIR_FLOW.name(), raspberryPiPin, initialState);
 
         testee.setGpioState(false);
 
@@ -50,7 +49,7 @@ class GpioPinImplTest {
     void testKeepStateOnWhenSetOn() {
         final boolean initialState = true;
         when(raspberryPiPin.read()).thenReturn(initialState);
-        final GpioPinImpl testee = new GpioPinImpl(GpioFunction.AIR_FLOW.name(), raspberryPiPin, initialState);
+        final RaspberryGpioPin testee = new RaspberryGpioPin(GpioFunction.AIR_FLOW.name(), raspberryPiPin, initialState);
 
         testee.setGpioState(true);
 

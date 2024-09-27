@@ -1,23 +1,21 @@
 package org.airController.gpio;
 
-import org.airController.gpioAdapter.GpioFunction;
-import org.airController.gpioAdapter.GpioPin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
-public class GpioPinImpl implements GpioPin {
-    private static final Logger logger = LogManager.getLogger(GpioPinImpl.class);
+public class RaspberryGpioPin implements GpioPin {
+    private static final Logger logger = LogManager.getLogger(RaspberryGpioPin.class);
 
     private final String name;
     private final RaspberryPiPin raspberryPiPin;
 
-    public GpioPinImpl(GpioFunction pinFunction, boolean initialHigh) throws IOException {
+    public RaspberryGpioPin(GpioFunction pinFunction, boolean initialHigh) throws IOException {
         this(pinFunction.name(), new RaspberryPiPin(pinFunction), initialHigh);
     }
 
-    public GpioPinImpl(String name, RaspberryPiPin raspberryPiPin, boolean initialHigh) {
+    public RaspberryGpioPin(String name, RaspberryPiPin raspberryPiPin, boolean initialHigh) {
         this.name = name;
         this.raspberryPiPin = raspberryPiPin;
 

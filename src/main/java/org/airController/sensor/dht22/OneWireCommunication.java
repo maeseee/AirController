@@ -1,7 +1,7 @@
 package org.airController.sensor.dht22;
 
 import com.pi4j.wiringpi.Gpio;
-import org.airController.gpioAdapter.GpioFunction;
+import org.airController.gpio.GpioFunction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

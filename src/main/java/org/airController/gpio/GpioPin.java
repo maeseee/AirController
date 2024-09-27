@@ -1,4 +1,4 @@
-package org.airController.gpioAdapter;
+package org.airController.gpio;
 
 public interface GpioPin {
 

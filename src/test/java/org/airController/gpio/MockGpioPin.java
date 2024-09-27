@@ -1,6 +1,5 @@
 package org.airController.gpio;
 
-import org.airController.gpioAdapter.GpioPin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

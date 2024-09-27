@@ -1,6 +1,6 @@
 package org.airController.system;
 
-import org.airController.gpioAdapter.GpioPin;
+import org.airController.gpio.GpioPin;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.*;

@@ -1,4 +1,4 @@
-package org.airController.gpioAdapter;
+package org.airController.gpio;
 
 import lombok.Getter;
 

@@ -4,7 +4,7 @@ import org.airController.controllers.SensorData;
 import org.airController.entities.Humidity;
 import org.airController.entities.InvaildArgumentException;
 import org.airController.entities.Temperature;
-import org.airController.gpioAdapter.GpioFunction;
+import org.airController.gpio.GpioFunction;
 
 import java.io.IOException;
 import java.util.Optional;

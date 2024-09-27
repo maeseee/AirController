@@ -4,9 +4,9 @@ import com.google.inject.internal.Nullable;
 import org.airController.controllers.CurrentSensorValues;
 import org.airController.controllers.FreshAirController;
 import org.airController.controllers.Rule;
-import org.airController.gpio.GpioPinImpl;
-import org.airController.gpioAdapter.GpioFunction;
-import org.airController.gpioAdapter.GpioPin;
+import org.airController.gpio.GpioFunction;
+import org.airController.gpio.GpioPin;
+import org.airController.gpio.RaspberryGpioPin;
 import org.airController.persistence.SensorDataPersistenceObserver;
 import org.airController.rules.*;
 import org.airController.sensor.IndoorSensor;
@@ -42,7 +42,8 @@ public class Application {
     private final ScheduledExecutorService executor;
 
     public Application() throws IOException, URISyntaxException {
-        this(new GpioPinImpl(GpioFunction.AIR_FLOW, true), new GpioPinImpl(GpioFunction.HUMIDITY_EXCHANGER, false), new OpenWeatherApiSensor(),
+        this(new RaspberryGpioPin(GpioFunction.AIR_FLOW, true), new RaspberryGpioPin(GpioFunction.HUMIDITY_EXCHANGER, false),
+                new OpenWeatherApiSensor(),
                 new QingPingSensor(), new OneWireSensor(), new SensorDataPersistenceObserver(), Executors.newScheduledThreadPool(1));
     }
 
