@@ -1,6 +1,5 @@
-package org.airController.controllers;
+package org.airController.rules;
 
-import org.airController.rules.Rule;
 import org.airController.system.VentilationSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,8 +7,8 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FreshAirController implements Runnable {
-    private static final Logger logger = LogManager.getLogger(FreshAirController.class);
+public class RuleApplier implements Runnable {
+    private static final Logger logger = LogManager.getLogger(RuleApplier.class);
 
     private final List<VentilationSystem> ventilationSystem;
     private final List<Rule> freshAirRules;
@@ -17,7 +16,7 @@ public class FreshAirController implements Runnable {
     private boolean airFlowStateOn = true;
     private boolean humidityExchangerStateOn = false;
 
-    public FreshAirController(List<VentilationSystem> ventilationSystem, List<Rule> freshAirRules, List<Rule> exchangeHumidityRules) {
+    public RuleApplier(List<VentilationSystem> ventilationSystem, List<Rule> freshAirRules, List<Rule> exchangeHumidityRules) {
         this.ventilationSystem = ventilationSystem;
         this.freshAirRules = freshAirRules;
         this.exchangeHumidityRules = exchangeHumidityRules;

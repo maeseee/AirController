@@ -1,7 +1,6 @@
 package org.airController;
 
 import com.google.inject.internal.Nullable;
-import org.airController.controllers.FreshAirController;
 import org.airController.gpio.GpioFunction;
 import org.airController.gpio.GpioPin;
 import org.airController.gpio.RaspberryGpioPin;
@@ -36,7 +35,7 @@ public class Application {
 
     private final OutdoorSensor outdoorSensor;
     private final IndoorSensor indoorSensor;
-    private final FreshAirController freshAirController;
+    private final RuleApplier ruleApplier;
     private final TimeKeeper timeKeeper;
     private final ScheduledExecutorService executor;
 
@@ -59,11 +58,11 @@ public class Application {
     }
 
     // Used for tests
-    Application(OutdoorSensor outdoorSensor, IndoorSensor indoorSensor, FreshAirController freshAirController, TimeKeeper timeKeeper,
+    Application(OutdoorSensor outdoorSensor, IndoorSensor indoorSensor, RuleApplier ruleApplier, TimeKeeper timeKeeper,
             ScheduledExecutorService executor) {
         this.outdoorSensor = outdoorSensor;
         this.indoorSensor = indoorSensor;
-        this.freshAirController = freshAirController;
+        this.ruleApplier = ruleApplier;
         this.timeKeeper = timeKeeper;
         this.executor = executor;
     }
@@ -71,7 +70,7 @@ public class Application {
     public void run() {
         executor.scheduleAtFixedRate(outdoorSensor, 0, OUTDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
         executor.scheduleAtFixedRate(indoorSensor, 0, INDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
-        executor.scheduleAtFixedRate(freshAirController, 0, VENTILATION_SYSTEM_PERIOD_MINUTES, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(ruleApplier, 0, VENTILATION_SYSTEM_PERIOD_MINUTES, TimeUnit.MINUTES);
 
         final LocalDateTime now = LocalDateTime.now();
         final LocalDateTime midnight = now.toLocalDate().atStartOfDay().plusDays(1);
@@ -96,7 +95,7 @@ public class Application {
         return sensorValues;
     }
 
-    private static FreshAirController createFreshAirController(VentilationSystem ventilationSystem, CurrentSensorValues sensorValues,
+    private static RuleApplier createFreshAirController(VentilationSystem ventilationSystem, CurrentSensorValues sensorValues,
             VentilationSystemTimeKeeper timeKeeper) {
         List<VentilationSystem> ventilationSystems = List.of(ventilationSystem, timeKeeper);
         CO2ControlAirFlow co2ControlAirFlow = new CO2ControlAirFlow(sensorValues);
@@ -107,7 +106,7 @@ public class Application {
 
         List<Rule> freshAirRules = List.of(co2ControlAirFlow, dailyAirFlow, humidityControlAirFlow, periodicallyAirFlow);
         List<Rule> exchangeHumidityRules = List.of(humidityControlExchanger);
-        return new FreshAirController(ventilationSystems, freshAirRules, exchangeHumidityRules);
+        return new RuleApplier(ventilationSystems, freshAirRules, exchangeHumidityRules);
     }
 
 }

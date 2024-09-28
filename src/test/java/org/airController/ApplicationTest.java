@@ -1,6 +1,6 @@
 package org.airController;
 
-import org.airController.controllers.FreshAirController;
+import org.airController.rules.RuleApplier;
 import org.airController.rules.TimeKeeper;
 import org.airController.sensor.IndoorSensor;
 import org.airController.sensor.OutdoorSensor;
@@ -24,7 +24,7 @@ class ApplicationTest {
     @Mock
     private IndoorSensor indoorSensor;
     @Mock
-    private FreshAirController freshAirController;
+    private RuleApplier ruleApplier;
     @Mock
     private TimeKeeper timeKeeper;
     @Mock
@@ -32,13 +32,13 @@ class ApplicationTest {
 
     @Test
     void testWhenCreateApplicationThenScheduleExecutor() {
-        final Application testee = new Application(outdoorSensor, indoorSensor, freshAirController, timeKeeper, executor);
+        final Application testee = new Application(outdoorSensor, indoorSensor, ruleApplier, timeKeeper, executor);
 
         testee.run();
 
         verify(executor).scheduleAtFixedRate(outdoorSensor, 0, 10, TimeUnit.MINUTES);
         verify(executor).scheduleAtFixedRate(indoorSensor, 0, 10, TimeUnit.MINUTES);
-        verify(executor).scheduleAtFixedRate(freshAirController, 0, 1, TimeUnit.MINUTES);
+        verify(executor).scheduleAtFixedRate(ruleApplier, 0, 1, TimeUnit.MINUTES);
         verify(executor).scheduleAtFixedRate(eq(timeKeeper), anyLong(), eq(86400L), eq(TimeUnit.SECONDS));
     }
 }
