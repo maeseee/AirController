@@ -8,8 +8,8 @@ import java.util.Optional;
 
 public class HumidityControlAirFlow implements Rule {
 
-    private static final double UPPER_LIMIT = 60.0;
-    private static final double LOWER_LIMIT = 44.0;
+    private static final double UPPER_LIMIT = 65.0;
+    private static final double LOWER_LIMIT = 40.0;
     private static final double M = 2.0 / (UPPER_LIMIT - LOWER_LIMIT); // y = xm + b
     private static final double B = 1 - (UPPER_LIMIT * M); // y = xm + b
 

@@ -24,11 +24,11 @@ class HumidityControlAirFlowTest {
 
     @ParameterizedTest(name = "{index} => humidity %={0}, expectedResult={1}")
     @CsvSource({
-            "52, 0.0",
-            "60, 1.0",
-            "64, 1.0",
-            "44, -1.0",
+            "52.5, 0.0",
+            "65, 1.0",
+            "70, 1.0",
             "40, -1.0",
+            "39, -1.0"
     })
     void shouldCalculateHumidityPercentage_whenOutdoorHumidityIsBelowIndoor(double indoorHumidity, double expectedResult)
             throws InvaildArgumentException {
@@ -46,11 +46,11 @@ class HumidityControlAirFlowTest {
 
     @ParameterizedTest(name = "{index} => humidity %={0}, expectedResult={1}")
     @CsvSource({
-            "52, 0.0",
-            "60, -1.0",
-            "64, -1.0",
-            "44, 1.0",
+            "52.5, 0.0",
+            "65, -1.0",
+            "70, -1.0",
             "40, 1.0",
+            "39, 1.0"
     })
     void shouldCalculateHumidityPercentage_whenOutdoorHumidityIsAboveIndoor(double indoorHumidity, double expectedResult)
             throws InvaildArgumentException {
