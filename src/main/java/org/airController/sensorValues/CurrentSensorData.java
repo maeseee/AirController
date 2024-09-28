@@ -1,5 +1,6 @@
 package org.airController.sensorValues;
 
+import com.google.inject.internal.Nullable;
 import lombok.Setter;
 
 import java.time.Duration;
@@ -7,14 +8,13 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.OptionalDouble;
 
+@Setter
 public class CurrentSensorData implements SensorData {
     private static final Duration SENSOR_INVALIDATION = Duration.ofHours(4);
 
-    @Setter
     private Temperature temperature;
-    @Setter
     private Humidity humidity;
-    @Setter
+    @Nullable
     private CarbonDioxide co2;
     private LocalDateTime timestamp = LocalDateTime.now();
 
@@ -48,10 +48,6 @@ public class CurrentSensorData implements SensorData {
         return isSensorValid() && humidity != null ?
                 OptionalDouble.of(humidity.getAbsoluteHumidity()) :
                 OptionalDouble.empty();
-    }
-
-    public void updateTimestamp() {
-        this.timestamp = LocalDateTime.now();
     }
 
     private boolean isSensorValid() {

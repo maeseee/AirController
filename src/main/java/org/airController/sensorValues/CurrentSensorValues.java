@@ -34,17 +34,18 @@ public class CurrentSensorValues implements IndoorSensorObserver, OutdoorSensorO
 
     @Override
     public void updateIndoorSensorData(SensorData indoorSensorData) {
-        indoorSensorData.getTemperature().ifPresent(this.indoorSensorData::setTemperature);
-        indoorSensorData.getHumidity().ifPresent(this.indoorSensorData::setHumidity);
-        indoorSensorData.getCo2().ifPresent(this.indoorSensorData::setCo2);
-        this.indoorSensorData.updateTimestamp();
+        updateSensorData(indoorSensorData, this.indoorSensorData);
     }
 
     @Override
-    public void updateOutdoorSensorData(SensorData sensorData) {
-        sensorData.getTemperature().ifPresent(this.outdoorSensorData::setTemperature);
-        sensorData.getHumidity().ifPresent(this.outdoorSensorData::setHumidity);
-        sensorData.getCo2().ifPresent(this.outdoorSensorData::setCo2);
-        this.outdoorSensorData.updateTimestamp();
+    public void updateOutdoorSensorData(SensorData outdoorSensorData) {
+        updateSensorData(outdoorSensorData, this.outdoorSensorData);
+    }
+
+    private void updateSensorData(SensorData newSensorData, CurrentSensorData targetSensorData) {
+        targetSensorData.setTemperature(newSensorData.getTemperature().orElse(null));
+        targetSensorData.setHumidity(newSensorData.getHumidity().orElse(null));
+        targetSensorData.setCo2(newSensorData.getCo2().orElse(null));
+        targetSensorData.setTimestamp(newSensorData.getTimeStamp());
     }
 }
