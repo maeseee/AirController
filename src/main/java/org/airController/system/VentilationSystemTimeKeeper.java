@@ -63,11 +63,18 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     }
 
     private Duration getDuration(LocalDateTime startTime, LocalDateTime endTime) {
-        return timePeriods.stream()
-                .filter(timePeriod -> timePeriod.on().isBefore(endTime))
-                .filter(timePeriod -> timePeriod.off().isAfter(startTime))
+        final ArrayList<TimePeriod> timePeriodsCopy = new ArrayList<>(timePeriods);
+        if (onTime != null) {
+            timePeriodsCopy.add(new TimePeriod(onTime, endTime));
+        }
+        return timePeriodsCopy.stream()
+                .filter(timePeriod -> isBetween(startTime, endTime, timePeriod))
                 .map(timePeriod -> getDurationInTimePeriod(timePeriod, startTime, endTime))
                 .reduce(Duration.ZERO, Duration::plus);
+    }
+
+    private static boolean isBetween(LocalDateTime startTime, LocalDateTime endTime, TimePeriod timePeriod) {
+        return timePeriod.on().isBefore(endTime) || timePeriod.off().isAfter(startTime);
     }
 
     private Duration getDurationInTimePeriod(TimePeriod timePeriod, LocalDateTime startTime, LocalDateTime endTime) {
