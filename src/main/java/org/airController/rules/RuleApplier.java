@@ -55,9 +55,9 @@ public class RuleApplier implements Runnable {
             ventilationSystem.forEach(system -> system.setAirFlowOn(nextAirFlowState == OutputState.ON));
             airFlowState = nextAirFlowState;
             String ruleValues = freshAirRules.stream()
-                    .map(rule -> rule.name() + ": " + rule.turnOn().getPercentage() + ", ")
+                    .map(rule -> String.format("%s: %.2f, ", rule.name(), rule.turnOn().getPercentage()))
                     .collect(Collectors.joining());
-            logger.info("Fresh air state changed because of {}", ruleValues);
+            logger.info("Fresh air state changed to {} because of {}", nextAirFlowState, ruleValues);
         }
     }
 
