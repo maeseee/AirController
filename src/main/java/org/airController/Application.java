@@ -31,7 +31,7 @@ public class Application {
     private static final Logger logger = LogManager.getLogger(Application.class);
     private static final int OUTDOOR_SENSOR_READ_PERIOD_MINUTES = 10;
     private static final int INDOOR_SENSOR_READ_PERIOD_MINUTES = 10;
-    private static final int VENTILATION_SYSTEM_PERIOD_MINUTES = 1;
+    private static final int RULE_APPLIER_PERIOD_MINUTES = 1;
 
     private final OutdoorSensor outdoorSensor;
     private final IndoorSensor indoorSensor;
@@ -70,7 +70,7 @@ public class Application {
     public void run() {
         executor.scheduleAtFixedRate(outdoorSensor, 0, OUTDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
         executor.scheduleAtFixedRate(indoorSensor, 0, INDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
-        executor.scheduleAtFixedRate(ruleApplier, 0, VENTILATION_SYSTEM_PERIOD_MINUTES, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(ruleApplier, 0, RULE_APPLIER_PERIOD_MINUTES, TimeUnit.MINUTES);
 
         final LocalDateTime now = LocalDateTime.now();
         final LocalDateTime midnight = now.toLocalDate().atStartOfDay().plusDays(1);
