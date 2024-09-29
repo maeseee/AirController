@@ -54,13 +54,16 @@ class QingPingListDevicesJsonParser {
     }
 
     private QingPingSensorData getSensorData(JSONObject deviceData) throws InvaildArgumentException {
-        final double temperatureCelsius = getDoubleValue("temperature", deviceData).orElseThrow();
+        final double temperatureCelsius = getDoubleValue("temperature", deviceData)
+                .orElseThrow(() -> new InvaildArgumentException("Not Possible"));
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
-        final double humidityRelative = getDoubleValue("humidity", deviceData).orElseThrow();
+        final double humidityRelative = getDoubleValue("humidity", deviceData)
+                .orElseThrow(() -> new InvaildArgumentException("Not Possible"));
         final Humidity humidity = Humidity.createFromRelative(humidityRelative, temperature);
-        final OptionalDouble co2Optinal = getDoubleValue("co2", deviceData);
-        final CarbonDioxide co2 = co2Optinal.isPresent() ? CarbonDioxide.createFromPpm(co2Optinal.getAsDouble()) : null;
-        final long timeFromEpoch = getLongValue("timestamp", deviceData).orElseThrow();
+        final OptionalDouble co2Optional = getDoubleValue("co2", deviceData);
+        final CarbonDioxide co2 = co2Optional.isPresent() ? CarbonDioxide.createFromPpm(co2Optional.getAsDouble()) : null;
+        final long timeFromEpoch = getLongValue("timestamp", deviceData)
+                .orElseThrow(() -> new InvaildArgumentException("Not Possible"));
         final LocalDateTime time = LocalDateTime.ofInstant(
                 Instant.ofEpochSecond(timeFromEpoch),
                 ZoneId.systemDefault());

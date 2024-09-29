@@ -7,6 +7,7 @@ import org.airController.sensorValues.SensorData;
 import org.airController.sensorValues.Temperature;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 class QingPingSensorData implements SensorData {
@@ -55,5 +56,21 @@ class QingPingSensorData implements SensorData {
                 ", co2=" + co2 +
                 ", timestamp=" + timestamp +
                 '}';
+    }
+
+    @Override public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof QingPingSensorData that)) return false;
+
+        return temperature.equals(that.temperature) && humidity.equals(that.humidity) && Objects.equals(co2, that.co2) &&
+                timestamp.equals(that.timestamp);
+    }
+
+    @Override public int hashCode() {
+        int result = temperature.hashCode();
+        result = 31 * result + humidity.hashCode();
+        result = 31 * result + Objects.hashCode(co2);
+        result = 31 * result + timestamp.hashCode();
+        return result;
     }
 }
