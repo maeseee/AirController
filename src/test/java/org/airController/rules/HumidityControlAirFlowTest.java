@@ -5,6 +5,7 @@ import org.airController.sensorValues.Humidity;
 import org.airController.sensorValues.InvaildArgumentException;
 import org.airController.sensorValues.Temperature;
 import org.assertj.core.data.Offset;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -64,5 +65,16 @@ class HumidityControlAirFlowTest {
         final Percentage result = testee.turnOn();
 
         assertThat(result.getPercentage()).isCloseTo(expectedResult, Offset.offset(0.01));
+    }
+
+    @Test
+    void shouldReturn0_whenTemperatureValueNotAvailable() throws InvaildArgumentException {
+        when(sensorValues.getIndoorTemperature()).thenReturn(Optional.empty());
+        when(sensorValues.getIndoorHumidity()).thenReturn(Optional.empty());
+        final HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
+
+        final Percentage result = testee.turnOn();
+
+        assertThat(result.getPercentage()).isEqualTo(0.0);
     }
 }
