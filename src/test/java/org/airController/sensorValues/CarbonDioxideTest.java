@@ -9,16 +9,16 @@ class CarbonDioxideTest {
 
     @Test
     void shouldThrow_whenValueBelow0() {
-        assertThatExceptionOfType(InvaildArgumentException.class).isThrownBy(() -> CarbonDioxide.createFromPpm(-1.0));
+        assertThatExceptionOfType(InvalidArgumentException.class).isThrownBy(() -> CarbonDioxide.createFromPpm(-1.0));
     }
 
     @Test
     void shouldThrow_whenValueAboveOneMillion() {
-        assertThatExceptionOfType(InvaildArgumentException.class).isThrownBy(() -> CarbonDioxide.createFromPpm(1000001.0));
+        assertThatExceptionOfType(InvalidArgumentException.class).isThrownBy(() -> CarbonDioxide.createFromPpm(1000001.0));
     }
 
     @Test
-    void shouldReturnInitializedValue() throws InvaildArgumentException {
+    void shouldReturnInitializedValue() throws InvalidArgumentException {
         CarbonDioxide testee = CarbonDioxide.createFromPpm(123456.0);
 
         double co2 = testee.getPpm();
@@ -27,7 +27,7 @@ class CarbonDioxideTest {
     }
 
     @Test
-    void shouldCompareValueOnEqualsTo() throws InvaildArgumentException {
+    void shouldCompareValueOnEqualsTo() throws InvalidArgumentException {
         CarbonDioxide carbonDioxide1 = CarbonDioxide.createFromPpm(123456.0);
         CarbonDioxide carbonDioxide2 = CarbonDioxide.createFromPpm(123456.0);
 

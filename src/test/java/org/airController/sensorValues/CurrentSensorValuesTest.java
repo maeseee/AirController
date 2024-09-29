@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class CurrentSensorValuesTest {
 
     @Test
-    void testWhenUpdateIndoorSensorDataThenUseNewData() throws InvaildArgumentException {
+    void testWhenUpdateIndoorSensorDataThenUseNewData() throws InvalidArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(23.0);
         final Humidity humidity = Humidity.createFromRelative(50.0, temperature);
         final SensorData sensorData = createSensorData(temperature, humidity);
@@ -33,7 +33,7 @@ class CurrentSensorValuesTest {
     }
 
     @Test
-    void testIndoorHumidityHigher() throws InvaildArgumentException {
+    void testIndoorHumidityHigher() throws InvalidArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(23.0);
         final Humidity indoorHumidity = Humidity.createFromRelative(60.0, temperature);
         final SensorData indoorSensorData = createSensorData(temperature, indoorHumidity);
@@ -51,7 +51,7 @@ class CurrentSensorValuesTest {
     }
 
     @Test
-    void testIndoorHumidityLower() throws InvaildArgumentException {
+    void testIndoorHumidityLower() throws InvalidArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(23.0);
         final Humidity indoorHumidity = Humidity.createFromRelative(40.0, temperature);
         final SensorData indoorSensorData = createSensorData(temperature, indoorHumidity);

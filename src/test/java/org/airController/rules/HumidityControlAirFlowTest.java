@@ -2,7 +2,7 @@ package org.airController.rules;
 
 import org.airController.sensorValues.CurrentSensorValues;
 import org.airController.sensorValues.Humidity;
-import org.airController.sensorValues.InvaildArgumentException;
+import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.Temperature;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class HumidityControlAirFlowTest {
             "39, -1.0"
     })
     void shouldCalculateHumidityPercentage_whenOutdoorHumidityIsBelowIndoor(double indoorHumidity, double expectedResult)
-            throws InvaildArgumentException {
+            throws InvalidArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(22.0);
         final Humidity humidity = Humidity.createFromRelative(indoorHumidity, temperature);
         when(sensorValues.getIndoorTemperature()).thenReturn(Optional.of(temperature));
@@ -54,7 +54,7 @@ class HumidityControlAirFlowTest {
             "39, 1.0"
     })
     void shouldCalculateHumidityPercentage_whenOutdoorHumidityIsAboveIndoor(double indoorHumidity, double expectedResult)
-            throws InvaildArgumentException {
+            throws InvalidArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(22.0);
         final Humidity humidity = Humidity.createFromRelative(indoorHumidity, temperature);
         when(sensorValues.getIndoorTemperature()).thenReturn(Optional.of(temperature));
@@ -68,7 +68,7 @@ class HumidityControlAirFlowTest {
     }
 
     @Test
-    void shouldReturn0_whenTemperatureValueNotAvailable() throws InvaildArgumentException {
+    void shouldReturn0_whenTemperatureValueNotAvailable() throws InvalidArgumentException {
         when(sensorValues.getIndoorTemperature()).thenReturn(Optional.empty());
         when(sensorValues.getIndoorHumidity()).thenReturn(Optional.empty());
         final HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);

@@ -2,7 +2,7 @@ package org.airController.sensor.qingPing;
 
 import org.airController.sensor.IndoorSensor;
 import org.airController.sensor.IndoorSensorObserver;
-import org.airController.sensorValues.InvaildArgumentException;
+import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.SensorData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,7 +44,7 @@ public class QingPingSensor implements IndoorSensor {
         }
     }
 
-    private void doRun() throws CommunicationException, IOException, URISyntaxException, InvaildArgumentException, CalculationException {
+    private void doRun() throws CommunicationException, IOException, URISyntaxException, InvalidArgumentException, CalculationException {
         final String token = accessToken.readToken();
         final List<QingPingSensorData> sensorDataList = listDevices.readSensorDataList(token);
         final SensorData sensorData = sensorReducer.reduce(sensorDataList);

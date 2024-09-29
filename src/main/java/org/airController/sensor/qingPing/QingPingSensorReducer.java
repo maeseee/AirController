@@ -8,7 +8,7 @@ import java.util.OptionalDouble;
 
 class QingPingSensorReducer {
 
-    public SensorData reduce(List<QingPingSensorData> sensorDataList) throws CalculationException, InvaildArgumentException {
+    public SensorData reduce(List<QingPingSensorData> sensorDataList) throws CalculationException, InvalidArgumentException {
         final List<QingPingSensorData> currentSensorDataList = sensorDataList.stream()
                 .filter(sensorData -> sensorData.getTimeStamp().isAfter(LocalDateTime.now().minusHours(1)))
                 .toList();
@@ -22,7 +22,7 @@ class QingPingSensorReducer {
         return new QingPingSensorData(temperature, humidity, co2, time);
     }
 
-    private Temperature getAverageTemperature(List<QingPingSensorData> currentSensorDataList) throws InvaildArgumentException {
+    private Temperature getAverageTemperature(List<QingPingSensorData> currentSensorDataList) throws InvalidArgumentException {
         final OptionalDouble averageTemperature = currentSensorDataList.stream()
                 .filter(sensorData -> sensorData.getTemperature().isPresent())
                 .mapToDouble(value -> value.getTemperature().get().getCelsius())
@@ -30,7 +30,7 @@ class QingPingSensorReducer {
         return averageTemperature.isPresent() ? Temperature.createFromCelsius(averageTemperature.getAsDouble()) : null;
     }
 
-    private Humidity getAverageHumidity(List<QingPingSensorData> currentSensorDataList) throws InvaildArgumentException {
+    private Humidity getAverageHumidity(List<QingPingSensorData> currentSensorDataList) throws InvalidArgumentException {
         final OptionalDouble averageHumidity = currentSensorDataList.stream()
                 .filter(sensorData -> sensorData.getHumidity().isPresent())
                 .mapToDouble(sensorData -> sensorData.getHumidity().get().getAbsoluteHumidity())
@@ -38,7 +38,7 @@ class QingPingSensorReducer {
         return averageHumidity.isPresent() ? Humidity.createFromAbsolute(averageHumidity.getAsDouble()) : null;
     }
 
-    private CarbonDioxide getAverageCo2(List<QingPingSensorData> currentSensorDataList) throws InvaildArgumentException {
+    private CarbonDioxide getAverageCo2(List<QingPingSensorData> currentSensorDataList) throws InvalidArgumentException {
         final OptionalDouble averageCo2 = currentSensorDataList.stream()
                 .filter(sensorData -> sensorData.getCo2().isPresent())
                 .mapToDouble(value -> value.getCo2().get().getPpm())

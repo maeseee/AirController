@@ -2,7 +2,7 @@ package org.airController.sensor.dht22;
 
 import org.airController.sensor.IndoorSensorObserver;
 import org.airController.sensorValues.Humidity;
-import org.airController.sensorValues.InvaildArgumentException;
+import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.SensorData;
 import org.airController.sensorValues.Temperature;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ class OneWireSensorTest {
     ArgumentCaptor<SensorData> indoorSensorDataArgumentCaptor;
 
     @Test
-    void testWhenRunThenNotifyObservers() throws InvaildArgumentException {
+    void testWhenRunThenNotifyObservers() throws InvalidArgumentException {
         final Dht22 dht22 = mock(Dht22.class);
         final Temperature temperature = Temperature.createFromCelsius(23.0);
         final SensorData indoorSensorData = new Dht22SensorData(temperature, Humidity.createFromRelative(50.0, temperature));

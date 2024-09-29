@@ -19,7 +19,7 @@ class SensorDataCsvWriterTest {
     private final String FILE_PATH = "log/sensorValueCsvWriterTest.csv";
 
     @Test
-    void testWhenWritingCsvThenValuesInCsvFile() throws InvaildArgumentException, IOException {
+    void testWhenWritingCsvThenValuesInCsvFile() throws InvalidArgumentException, IOException {
         final Random random = new Random();
         final double temperatureValue = random.nextDouble() * 100;
         final double humidityValue = random.nextDouble() * 100;
@@ -34,7 +34,7 @@ class SensorDataCsvWriterTest {
     }
 
     private SensorData createSensorData(double temperatureValue, double humidityValue, double co2Value, LocalDateTime time)
-            throws InvaildArgumentException {
+            throws InvalidArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(temperatureValue);
         final Humidity humidity = Humidity.createFromRelative(humidityValue, temperature);
         final CarbonDioxide co2 = CarbonDioxide.createFromPpm(co2Value);

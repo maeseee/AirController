@@ -2,7 +2,7 @@ package org.airController.rules;
 
 import org.airController.sensorValues.CurrentSensorValues;
 import org.airController.sensorValues.Humidity;
-import org.airController.sensorValues.InvaildArgumentException;
+import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.Temperature;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +30,7 @@ class HumidityControlExchangerTest {
             "40, true, 1.0"
     })
     void shouldControlHumidity(double indoorHumidity, boolean indoorHumidityAboveOutdoorHumidity, double expectedResult)
-            throws InvaildArgumentException {
+            throws InvalidArgumentException {
         Temperature temperature = Temperature.createFromCelsius(22.0);
         when(sensorValues.getIndoorTemperature()).thenReturn(Optional.of(temperature));
         when(sensorValues.getIndoorHumidity()).thenReturn(Optional.of(Humidity.createFromRelative(indoorHumidity, temperature)));

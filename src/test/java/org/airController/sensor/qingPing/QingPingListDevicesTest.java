@@ -1,7 +1,7 @@
 package org.airController.sensor.qingPing;
 
 import org.airController.sensorValues.Humidity;
-import org.airController.sensorValues.InvaildArgumentException;
+import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.Temperature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -62,7 +62,7 @@ class QingPingListDevicesTest {
     }
 
     @Test
-    void shouldCorrectHumidity_whenCo2Sensor() throws CommunicationException, IOException, URISyntaxException, InvaildArgumentException {
+    void shouldCorrectHumidity_whenCo2Sensor() throws CommunicationException, IOException, URISyntaxException, InvalidArgumentException {
         final String token = "token";
         final String response = "response";
         when(listDevicesRequest.sendRequest(token)).thenReturn(response);
@@ -80,7 +80,7 @@ class QingPingListDevicesTest {
         assertThat(sensorDataList).contains(sensorDataCo2Device);
     }
 
-    private QingPingSensorData createSensorData(double absoluteHumidity, LocalDateTime timestamp) throws InvaildArgumentException {
+    private QingPingSensorData createSensorData(double absoluteHumidity, LocalDateTime timestamp) throws InvalidArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(22.0);
         final Humidity humidity = Humidity.createFromAbsolute(absoluteHumidity);
         return new QingPingSensorData(temperature, humidity, null, timestamp);

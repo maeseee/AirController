@@ -21,7 +21,7 @@ class CurrentSensorDataTest {
     }
 
     @Test
-    void shouldReturnTemperature() throws InvaildArgumentException {
+    void shouldReturnTemperature() throws InvalidArgumentException {
         final CurrentSensorData testee = new CurrentSensorData();
         final Temperature temperature = Temperature.createFromCelsius(20.0);
 
@@ -32,7 +32,7 @@ class CurrentSensorDataTest {
     }
 
     @Test
-    void shouldReturnHumidity() throws InvaildArgumentException {
+    void shouldReturnHumidity() throws InvalidArgumentException {
         final CurrentSensorData testee = new CurrentSensorData();
         final Humidity humidity = Humidity.createFromAbsolute(10.0);
 
@@ -43,7 +43,7 @@ class CurrentSensorDataTest {
     }
 
     @Test
-    void shouldReturnCo2() throws InvaildArgumentException {
+    void shouldReturnCo2() throws InvalidArgumentException {
         final CurrentSensorData testee = new CurrentSensorData();
         final CarbonDioxide co2 = CarbonDioxide.createFromPpm(600);
 

@@ -16,9 +16,9 @@ public class CarbonDioxide {
         return String.format("%.0fppm", ppm);
     }
 
-    public static CarbonDioxide createFromPpm(double ppm) throws InvaildArgumentException {
+    public static CarbonDioxide createFromPpm(double ppm) throws InvalidArgumentException {
         if (ppm < 0.0 || ppm > 1000000.0) {
-            throw new InvaildArgumentException("Given humidity of " + ppm + "% is out of range!");
+            throw new InvalidArgumentException("Given humidity of " + ppm + "% is out of range!");
         }
         return new CarbonDioxide(ppm);
     }

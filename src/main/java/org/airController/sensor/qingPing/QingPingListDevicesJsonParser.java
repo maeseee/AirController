@@ -2,7 +2,7 @@ package org.airController.sensor.qingPing;
 
 import org.airController.sensorValues.CarbonDioxide;
 import org.airController.sensorValues.Humidity;
-import org.airController.sensorValues.InvaildArgumentException;
+import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.Temperature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,17 +53,17 @@ class QingPingListDevicesJsonParser {
         return Optional.empty();
     }
 
-    private QingPingSensorData getSensorData(JSONObject deviceData) throws InvaildArgumentException {
+    private QingPingSensorData getSensorData(JSONObject deviceData) throws InvalidArgumentException {
         final double temperatureCelsius = getDoubleValue("temperature", deviceData)
-                .orElseThrow(() -> new InvaildArgumentException("Not Possible"));
+                .orElseThrow(() -> new InvalidArgumentException("Not Possible"));
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
         final double humidityRelative = getDoubleValue("humidity", deviceData)
-                .orElseThrow(() -> new InvaildArgumentException("Not Possible"));
+                .orElseThrow(() -> new InvalidArgumentException("Not Possible"));
         final Humidity humidity = Humidity.createFromRelative(humidityRelative, temperature);
         final OptionalDouble co2Optional = getDoubleValue("co2", deviceData);
         final CarbonDioxide co2 = co2Optional.isPresent() ? CarbonDioxide.createFromPpm(co2Optional.getAsDouble()) : null;
         final long timeFromEpoch = getLongValue("timestamp", deviceData)
-                .orElseThrow(() -> new InvaildArgumentException("Not Possible"));
+                .orElseThrow(() -> new InvalidArgumentException("Not Possible"));
         final LocalDateTime time = LocalDateTime.ofInstant(
                 Instant.ofEpochSecond(timeFromEpoch),
                 ZoneId.systemDefault());

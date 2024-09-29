@@ -2,7 +2,7 @@ package org.airController.rules;
 
 import org.airController.sensorValues.CarbonDioxide;
 import org.airController.sensorValues.CurrentSensorValues;
-import org.airController.sensorValues.InvaildArgumentException;
+import org.airController.sensorValues.InvalidArgumentException;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -27,7 +27,7 @@ class CO2ControlAirFlowTest {
             "1400, 1.0",
             "800, 0.0"
     })
-    void shouldCalculateCo2Percentage(double co2, double expectedResult) throws InvaildArgumentException {
+    void shouldCalculateCo2Percentage(double co2, double expectedResult) throws InvalidArgumentException {
         Optional<CarbonDioxide> carbonDioxide = Optional.of(CarbonDioxide.createFromPpm(co2));
         when(sensorValues.getIndoorCo2()).thenReturn(carbonDioxide);
         CO2ControlAirFlow testee = new CO2ControlAirFlow(sensorValues);

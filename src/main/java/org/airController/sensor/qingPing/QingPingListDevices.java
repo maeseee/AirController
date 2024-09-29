@@ -3,7 +3,7 @@ package org.airController.sensor.qingPing;
 import org.airController.gpio.RaspberryGpioPin;
 import org.airController.sensorValues.CarbonDioxide;
 import org.airController.sensorValues.Humidity;
-import org.airController.sensorValues.InvaildArgumentException;
+import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.Temperature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,11 +49,11 @@ class QingPingListDevices {
         final Temperature temperature = sensorData.getTemperature().orElse(null);
         final CarbonDioxide co2 = sensorData.getCo2().orElse(null);
         try {
-            final Humidity humidity = sensorData.getHumidity().orElseThrow(() -> new InvaildArgumentException("Not Possible"));
+            final Humidity humidity = sensorData.getHumidity().orElseThrow(() -> new InvalidArgumentException("Not Possible"));
             final double absoluteHumidity = humidity.getAbsoluteHumidity();
             final Humidity updatedHumidity = Humidity.createFromAbsolute(absoluteHumidity + absoluteHumidityOffset);
             return new QingPingSensorData(temperature, updatedHumidity, co2, sensorData.getTimeStamp());
-        } catch (InvaildArgumentException e) {
+        } catch (InvalidArgumentException e) {
             logger.error("Invalid Humidity: {}", e.getMessage());
             return sensorData;
         }

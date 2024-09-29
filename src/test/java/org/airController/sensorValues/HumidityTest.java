@@ -17,7 +17,7 @@ class HumidityTest {
             "90.0",
             "100.0",
             "-0.0"})
-    void testRelativHumidity(double relativeHumidity) throws InvaildArgumentException {
+    void testRelativHumidity(double relativeHumidity) throws InvalidArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(25.0);
         final Humidity testee = Humidity.createFromRelative(relativeHumidity, temperature);
 
@@ -30,14 +30,14 @@ class HumidityTest {
     @CsvSource({
             "100.1, false",
             "-0.1"})
-    void testRelativeEdgeCases(double relativeHumidity) throws InvaildArgumentException {
+    void testRelativeEdgeCases(double relativeHumidity) throws InvalidArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(25.0);
-        assertThrows(InvaildArgumentException.class, () -> Humidity.createFromRelative(relativeHumidity, temperature));
+        assertThrows(InvalidArgumentException.class, () -> Humidity.createFromRelative(relativeHumidity, temperature));
     }
 
     @Test
     void testAbsoluteEdgeCases() {
-        assertThrows(InvaildArgumentException.class, () -> Humidity.createFromAbsolute(-1.0));
+        assertThrows(InvalidArgumentException.class, () -> Humidity.createFromAbsolute(-1.0));
     }
 
     @ParameterizedTest
@@ -56,7 +56,7 @@ class HumidityTest {
             "35.0, 39.58",
             "40.0, 51.1",
             "45.0, 65.35",})
-    void testCalculationOfRelativeHumidity100Percent(double temperatureCelsius, double weightFor100Percent) throws InvaildArgumentException {
+    void testCalculationOfRelativeHumidity100Percent(double temperatureCelsius, double weightFor100Percent) throws InvalidArgumentException {
         final double relativeHumidity = 100.0;
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
         final Humidity testee = Humidity.createFromRelative(relativeHumidity, temperature);
@@ -85,7 +85,7 @@ class HumidityTest {
             "35.0, 39.58",
             "40.0, 51.1",
             "45.0, 65.35",})
-    void testCalculationOfAbsoluteHumidity50Percent(double temperatureCelsius, double weightFor100Percent) throws InvaildArgumentException {
+    void testCalculationOfAbsoluteHumidity50Percent(double temperatureCelsius, double weightFor100Percent) throws InvalidArgumentException {
         final double relativeHumidity = 50.0;
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
         final Humidity testee = Humidity.createFromRelative(relativeHumidity, temperature);
@@ -98,7 +98,7 @@ class HumidityTest {
     }
 
     @Test
-    void calculationAbsoluteHumidity() throws InvaildArgumentException {
+    void calculationAbsoluteHumidity() throws InvalidArgumentException {
         final double relativeHumidity = 63.0;
         final Temperature temperature = Temperature.createFromCelsius(9.5);
         final Humidity testee = Humidity.createFromRelative(relativeHumidity, temperature);

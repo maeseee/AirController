@@ -2,7 +2,7 @@ package org.airController.sensor.dht22;
 
 import org.airController.gpio.GpioFunction;
 import org.airController.sensorValues.Humidity;
-import org.airController.sensorValues.InvaildArgumentException;
+import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.SensorData;
 import org.airController.sensorValues.Temperature;
 
@@ -53,18 +53,18 @@ class Dht22Impl implements Dht22 {
             final Humidity humidity = getHumidityFromData(rawSensorData, temperature);
             final SensorData sensorData = new Dht22SensorData(temperature, humidity);
             return Optional.of(sensorData);
-        } catch (InvaildArgumentException e) {
+        } catch (InvalidArgumentException e) {
             return Optional.empty();
         }
     }
 
-    private Humidity getHumidityFromData(long sensorData, Temperature temperature) throws InvaildArgumentException {
+    private Humidity getHumidityFromData(long sensorData, Temperature temperature) throws InvalidArgumentException {
         final long humidityData = (sensorData >> 24) & 0xFFFF;
         final double humidity = (double) humidityData / 10.0;
         return Humidity.createFromRelative(humidity, temperature);
     }
 
-    private Temperature getTemperatureFromData(long sensorData) throws InvaildArgumentException {
+    private Temperature getTemperatureFromData(long sensorData) throws InvalidArgumentException {
         final long temperatureData = (sensorData >> 8) & 0xFFFF;
         final double sign = (temperatureData & 0x8000) == 0 ? 1 : -1;
         final double temperature = (double) (temperatureData & 0x7FFF) / 10.0 * sign;

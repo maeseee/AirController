@@ -35,16 +35,16 @@ public class Humidity {
         return Double.hashCode(absoluteHumidity);
     }
 
-    public static Humidity createFromRelative(double relativeHumidity, Temperature temperature) throws InvaildArgumentException {
+    public static Humidity createFromRelative(double relativeHumidity, Temperature temperature) throws InvalidArgumentException {
         if (relativeHumidity < 0.0 || relativeHumidity > 100.0) {
-            throw new InvaildArgumentException("Given humidity of " + relativeHumidity + "% is out of range!");
+            throw new InvalidArgumentException("Given humidity of " + relativeHumidity + "% is out of range!");
         }
         return getAbsoluteHumidity(relativeHumidity, temperature);
     }
 
-    public static Humidity createFromAbsolute(double absoluteHumidity) throws InvaildArgumentException {
+    public static Humidity createFromAbsolute(double absoluteHumidity) throws InvalidArgumentException {
         if (absoluteHumidity < 0.0) {
-            throw new InvaildArgumentException("Given humidity of " + absoluteHumidity + "g/m3% is negativ!");
+            throw new InvalidArgumentException("Given humidity of " + absoluteHumidity + "g/m3% is negativ!");
         }
         return new Humidity(absoluteHumidity);
     }

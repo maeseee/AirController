@@ -30,7 +30,7 @@ class QingPingSensorTest {
     ArgumentCaptor<SensorData> indoorSensorDataArgumentCaptor;
 
     @Test
-    void testWhenRunThenNotifyObservers() throws InvaildArgumentException, CommunicationException, IOException, URISyntaxException {
+    void testWhenRunThenNotifyObservers() throws InvalidArgumentException, CommunicationException, IOException, URISyntaxException {
         final QingPingAccessToken accessToken = mock(QingPingAccessToken.class);
         when(accessToken.readToken()).thenReturn("token");
         final QingPingListDevices listDevices = mock(QingPingListDevices.class);
@@ -70,7 +70,7 @@ class QingPingSensorTest {
     @ArgumentsSource(SensorDataArgumentProvider.class)
     void testWhenMultipleSensorsWithoutCo2ThenAverage(double temperature1, double humidity1, CarbonDioxide co2, int age_1, double temperatureExp,
             double humidityExp)
-            throws InvaildArgumentException, CommunicationException, IOException, URISyntaxException {
+            throws InvalidArgumentException, CommunicationException, IOException, URISyntaxException {
         final QingPingAccessToken accessToken = mock(QingPingAccessToken.class);
         when(accessToken.readToken()).thenReturn("token");
         final Temperature temperature = Temperature.createFromCelsius(temperature1);
@@ -95,7 +95,7 @@ class QingPingSensorTest {
 
     static class SensorDataArgumentProvider implements ArgumentsProvider {
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws InvaildArgumentException {
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws InvalidArgumentException {
             return Stream.of(
                     Arguments.of(20.0, 10.0, null, 0, 30.0, 12.5),
                     Arguments.of(20.0, 10.0, CarbonDioxide.createFromPpm(500.0), 0, 30.0, 12.5),
