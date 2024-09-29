@@ -68,7 +68,7 @@ class HumidityControlAirFlowTest {
     }
 
     @Test
-    void shouldReturn0_whenTemperatureValueNotAvailable() throws InvalidArgumentException {
+    void shouldReturn0_whenTemperatureValueNotAvailable() {
         when(sensorValues.getIndoorTemperature()).thenReturn(Optional.empty());
         when(sensorValues.getIndoorHumidity()).thenReturn(Optional.empty());
         final HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
