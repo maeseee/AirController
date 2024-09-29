@@ -14,15 +14,13 @@ public class RuleApplier implements Runnable {
     private final List<VentilationSystem> ventilationSystem;
     private final List<Rule> freshAirRules;
     private final List<Rule> exchangeHumidityRules;
-    private OutputState airFlowState = OutputState.INITIALIZING;
-    private OutputState humidityExchangerState = OutputState.INITIALIZING;
+    private OutputState airFlowState = OutputState.INITIALIZING; // The system for fresh air should be on by default
+    private OutputState humidityExchangerState = OutputState.INITIALIZING; // The system to exchange humidity should be off by default
 
     public RuleApplier(List<VentilationSystem> ventilationSystem, List<Rule> freshAirRules, List<Rule> exchangeHumidityRules) {
         this.ventilationSystem = ventilationSystem;
         this.freshAirRules = freshAirRules;
         this.exchangeHumidityRules = exchangeHumidityRules;
-        ventilationSystem.forEach(system -> system.setAirFlowOn(true)); // The system for fresh air should be on by default
-        ventilationSystem.forEach(system -> system.setHumidityExchangerOn(false)); // The system to exchange humidity should be off by default
     }
 
     @Override

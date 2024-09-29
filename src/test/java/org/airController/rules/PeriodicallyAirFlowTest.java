@@ -23,16 +23,16 @@ class PeriodicallyAirFlowTest {
 
         Percentage airFlowNeed = testee.turnOn();
 
-        assertThat(airFlowNeed.getPercentage()).isEqualTo(0.5);
+        assertThat(airFlowNeed.getPercentage()).isEqualTo(1);
     }
 
     @Test
-    void shouldReturnMin_when20OnTime() {
-        when(timekeeper.getAirFlowOnDurationInLastHour()).thenReturn(Duration.ofMinutes(20));
+    void shouldReturnMin_when60OnTime() {
+        when(timekeeper.getAirFlowOnDurationInLastHour()).thenReturn(Duration.ofMinutes(60));
         PeriodicallyAirFlow testee = new PeriodicallyAirFlow(timekeeper);
 
         Percentage airFlowNeed = testee.turnOn();
 
-        assertThat(airFlowNeed.getPercentage()).isEqualTo(-0.5);
+        assertThat(airFlowNeed.getPercentage()).isEqualTo(-1);
     }
 }
