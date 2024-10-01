@@ -31,14 +31,14 @@ class HumidityControlExchangerTest {
     })
     void shouldControlHumidity(double indoorHumidity, boolean indoorHumidityAboveOutdoorHumidity, double expectedResult)
             throws InvalidArgumentException {
-        Temperature temperature = Temperature.createFromCelsius(22.0);
+        final Temperature temperature = Temperature.createFromCelsius(22.0);
         when(sensorValues.getIndoorTemperature()).thenReturn(Optional.of(temperature));
         when(sensorValues.getIndoorHumidity()).thenReturn(Optional.of(Humidity.createFromRelative(indoorHumidity, temperature)));
         when(sensorValues.isIndoorHumidityAboveOutdoorHumidity()).thenReturn(indoorHumidityAboveOutdoorHumidity);
-        HumidityControlAirFlow humidityControlAirFlow = new HumidityControlAirFlow(sensorValues);
-        HumidityControlExchanger testee = new HumidityControlExchanger(humidityControlAirFlow);
+        final HumidityControlAirFlow humidityControlAirFlow = new HumidityControlAirFlow(sensorValues);
+        final HumidityControlExchanger testee = new HumidityControlExchanger(humidityControlAirFlow);
 
-        Confidence result = testee.turnOnConfidence();
+        final Confidence result = testee.turnOnConfidence();
 
         assertThat(result.getWeightedConfidenceValue()).isCloseTo(expectedResult, Offset.offset(0.01));
     }

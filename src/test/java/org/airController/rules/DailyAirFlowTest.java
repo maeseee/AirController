@@ -28,14 +28,14 @@ class DailyAirFlowTest {
             "2023-01-20 00:00, -0.5",
             "2023-01-20 08:00, -0.5"
     })
-    void shouldCalculateFreshAirPercentageOnSummer(String dateTimeString, double expectedResult) {
+    void shouldCalculateFreshAirConfidenceAccordingToSeason(String dateTimeString, double expectedResult) {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         final LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, formatter);
         final DailyAirFlow testee = new DailyAirFlow();
         try (MockedStatic<LocalDateTime> mocked = mockStatic(LocalDateTime.class)) {
             mocked.when(LocalDateTime::now).thenReturn(dateTime);
 
-            Confidence result = testee.turnOnConfidence();
+            final Confidence result = testee.turnOnConfidence();
 
             assertThat(result.getWeightedConfidenceValue()).isCloseTo(expectedResult, Offset.offset(0.01));
         }

@@ -20,7 +20,7 @@ class SecretsEncryptionTest {
 
     @ParameterizedTest(name = "{index} => secret={0}")
     @ArgumentsSource(SecretsEncryptionArgumentProvider.class)
-    void testEncryptenAndDecryption(String secret) {
+    void shouldEncryptAndDecrypt(String secret) {
         final SecretsEncryption testee = new SecretsEncryption(MASTER_TEST_PASSWORD);
 
         final String encryptedSecret = testee.encrypt(secret);
@@ -31,7 +31,7 @@ class SecretsEncryptionTest {
 
     @ParameterizedTest(name = "{index} => secret={0}")
     @ArgumentsSource(SecretsEncryptionArgumentProvider.class)
-    void testEncryptenAndDecryptionWithNewInstance(String secret) {
+    void shouldEncryptAndDecryptWithNewInstance(String secret) {
         final SecretsEncryption encryptionTestee = new SecretsEncryption(MASTER_TEST_PASSWORD);
         final String encryptedSecret = encryptionTestee.encrypt(secret);
 
@@ -55,7 +55,7 @@ class SecretsEncryptionTest {
     }
 
     @Test
-    void testWhenWrongPasswordThenThrow() {
+    void shouldThrow_whenWrongPassword() {
         final SecretsEncryption encryptionTestee = new SecretsEncryption(MASTER_TEST_PASSWORD);
         final String secret = "secret";
         final String encryptedSecret = encryptionTestee.encrypt(secret);
