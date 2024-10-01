@@ -28,8 +28,8 @@ class PeriodicallyAirFlowTest {
         when(timekeeper.getAirFlowOnDurationInLastHour()).thenReturn(Duration.ofMinutes(onDuration));
         PeriodicallyAirFlow testee = new PeriodicallyAirFlow(timekeeper);
 
-        Confident airFlowNeed = testee.turnOnConfident();
+        Confidence airFlowNeed = testee.turnOnConfidence();
 
-        assertThat(airFlowNeed.getWeightedConfidentValue()).isCloseTo(expectedResult, Offset.offset(0.01));
+        assertThat(airFlowNeed.getWeightedConfidenceValue()).isCloseTo(expectedResult, Offset.offset(0.01));
     }
 }

@@ -1,6 +1,6 @@
 package org.airController.controllers;
 
-import org.airController.rules.Confident;
+import org.airController.rules.Confidence;
 import org.airController.rules.Rule;
 import org.airController.rules.RuleApplier;
 import org.airController.system.VentilationSystem;
@@ -28,8 +28,8 @@ class RuleApplierTest {
     private final List<Rule> exchangeHumidityRules = new ArrayList<>();
 
     @Test
-    void shouldTurnAirFlowOn_whenPositivConfident() {
-        when(rule.turnOnConfident()).thenReturn(new Confident(1.0));
+    void shouldTurnAirFlowOn_whenPositivConfidence() {
+        when(rule.turnOnConfidence()).thenReturn(new Confidence(1.0));
         freshAirRules.add(rule);
         final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
 
@@ -40,8 +40,8 @@ class RuleApplierTest {
     }
 
     @Test
-    void shouldNotTurnAirFlowOn_whenNegativConfident() {
-        when(rule.turnOnConfident()).thenReturn(new Confident(-1.0));
+    void shouldNotTurnAirFlowOn_whenNegativConfidence() {
+        when(rule.turnOnConfidence()).thenReturn(new Confidence(-1.0));
         freshAirRules.add(rule);
         final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
 
@@ -52,8 +52,8 @@ class RuleApplierTest {
     }
 
     @Test
-    void shouldTurnHumidityExchangerOn_whenPositivConfidentForHumidityAndAirFlow() {
-        when(rule.turnOnConfident()).thenReturn(new Confident(1.0));
+    void shouldTurnHumidityExchangerOn_whenPositivConfidenceForHumidityAndAirFlow() {
+        when(rule.turnOnConfidence()).thenReturn(new Confidence(1.0));
         freshAirRules.add(rule);
         exchangeHumidityRules.add(rule);
         final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
@@ -66,10 +66,10 @@ class RuleApplierTest {
 
     @Test
     void shouldNotTurnHumidityExchangerOn_whenAirFlowOff() {
-        when(rule.turnOnConfident()).thenReturn(new Confident(-1.0));
+        when(rule.turnOnConfidence()).thenReturn(new Confidence(-1.0));
         freshAirRules.add(rule);
         final Rule humidityRule = mock(Rule.class);
-        when(humidityRule.turnOnConfident()).thenReturn(new Confident(1.0));
+        when(humidityRule.turnOnConfidence()).thenReturn(new Confidence(1.0));
         exchangeHumidityRules.add(humidityRule);
         final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
 

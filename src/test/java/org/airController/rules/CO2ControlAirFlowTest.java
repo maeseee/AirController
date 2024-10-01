@@ -20,20 +20,20 @@ class CO2ControlAirFlowTest {
     @Mock
     private CurrentSensorValues sensorValues;
 
-    @ParameterizedTest(name = "{index} => co2 ppm={0}, expectedResult={1}")
+    @ParameterizedTest(name = "{index} => co2 ppm={0}, expectedConfidence={1}")
     @CsvSource({
             "500, -1.0",
             "1100, 1.0",
             "1400, 1.0",
             "800, 0.0"
     })
-    void shouldCalculateCo2Percentage(double co2, double expectedResult) throws InvalidArgumentException {
+    void shouldCalculateCo2Confidence(double co2, double expectedConfidence) throws InvalidArgumentException {
         Optional<CarbonDioxide> carbonDioxide = Optional.of(CarbonDioxide.createFromPpm(co2));
         when(sensorValues.getIndoorCo2()).thenReturn(carbonDioxide);
         CO2ControlAirFlow testee = new CO2ControlAirFlow(sensorValues);
 
-        Confident result = testee.turnOnConfident();
+        Confidence result = testee.turnOnConfidence();
 
-        assertThat(result.getWeightedConfidentValue()).isEqualTo(expectedResult);
+        assertThat(result.getWeightedConfidenceValue()).isEqualTo(expectedConfidence);
     }
 }

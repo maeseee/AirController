@@ -24,12 +24,12 @@ public class CO2ControlAirFlow implements Rule {
     }
 
     @Override
-    public Confident turnOnConfident() {
+    public Confidence turnOnConfidence() {
         Optional<CarbonDioxide> indoorCo2 = sensorValues.getIndoorCo2();
         if (indoorCo2.isEmpty()) {
-            return new Confident(0.0);
+            return new Confidence(0.0);
         }
         double impact = M * indoorCo2.get().getPpm() + B;
-        return new Confident(impact);
+        return new Confidence(impact);
     }
 }

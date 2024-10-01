@@ -17,7 +17,7 @@ public class DailyAirFlow implements Rule {
     }
 
     @Override
-    public Confident turnOnConfident() {
+    public Confidence turnOnConfidence() {
         LocalDateTime now = LocalDateTime.now();
         return isSummerTime(MonthDay.from(now)) ?
                 calculateFreshAirPercentageOnSummer(now.toLocalTime()) :
@@ -28,12 +28,12 @@ public class DailyAirFlow implements Rule {
         return dateNow.isAfter(SUMMER_TIME_START) && dateNow.isBefore(SUMMER_TIME_END);
     }
 
-    private Confident calculateFreshAirPercentageOnSummer(LocalTime timeNow) {
-        return new Confident(getCosinusOfDailyTemperatur(timeNow));
+    private Confidence calculateFreshAirPercentageOnSummer(LocalTime timeNow) {
+        return new Confidence(getCosinusOfDailyTemperatur(timeNow));
     }
 
-    private Confident calculateFreshAirPercentageOnWinter(LocalTime timeNow) {
-        return new Confident(-getCosinusOfDailyTemperatur(timeNow));
+    private Confidence calculateFreshAirPercentageOnWinter(LocalTime timeNow) {
+        return new Confidence(-getCosinusOfDailyTemperatur(timeNow));
     }
 
     private double getCosinusOfDailyTemperatur(LocalTime timeNow) {
