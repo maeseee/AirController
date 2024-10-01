@@ -64,7 +64,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
 
     private Duration getDuration(LocalDateTime startTime, LocalDateTime endTime) {
         final ArrayList<TimePeriod> timePeriodsCopy = new ArrayList<>(timePeriods);
-        if (onTime != null) {
+        if (onTime != null && onTime.isBefore(endTime)) {
             timePeriodsCopy.add(new TimePeriod(onTime, endTime));
         }
         return timePeriodsCopy.stream()
@@ -74,7 +74,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     }
 
     private static boolean isBetween(LocalDateTime startTime, LocalDateTime endTime, TimePeriod timePeriod) {
-        return timePeriod.on().isBefore(endTime) || timePeriod.off().isAfter(startTime);
+        return timePeriod.off().isAfter(startTime) && timePeriod.on().isBefore(endTime);
     }
 
     private Duration getDurationInTimePeriod(TimePeriod timePeriod, LocalDateTime startTime, LocalDateTime endTime) {
