@@ -28,10 +28,10 @@ class RuleApplierTest {
     private final List<Rule> exchangeHumidityRules = new ArrayList<>();
 
     @Test
-    void shouldTurnAirFlowOn_WhenPositivConfident() {
-        when(rule.turnOn()).thenReturn(new Percentage(1.0));
+    void shouldTurnAirFlowOn_whenPositivConfident() {
+        when(rule.turnOnConfident()).thenReturn(new Percentage(1.0));
         freshAirRules.add(rule);
-        RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
+        final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
 
         testee.run();
 
@@ -40,10 +40,10 @@ class RuleApplierTest {
     }
 
     @Test
-    void shouldNotTurnAirFlowOn_WhenNegativConfident() {
-        when(rule.turnOn()).thenReturn(new Percentage(-1.0));
+    void shouldNotTurnAirFlowOn_whenNegativConfident() {
+        when(rule.turnOnConfident()).thenReturn(new Percentage(-1.0));
         freshAirRules.add(rule);
-        RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
+        final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
 
         testee.run();
 
@@ -52,11 +52,11 @@ class RuleApplierTest {
     }
 
     @Test
-    void shouldTurnHumidityExchangerOn_WhenPositivConfident() {
-        when(rule.turnOn()).thenReturn(new Percentage(1.0));
+    void shouldTurnHumidityExchangerOn_whenPositivConfidentForHumidityAndAirFlow() {
+        when(rule.turnOnConfident()).thenReturn(new Percentage(1.0));
         freshAirRules.add(rule);
         exchangeHumidityRules.add(rule);
-        RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
+        final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
 
         testee.run();
 
@@ -65,13 +65,13 @@ class RuleApplierTest {
     }
 
     @Test
-    void shouldNotTurnHumidityExchangerOn_WhenAirFlowOff() {
-        when(rule.turnOn()).thenReturn(new Percentage(-1.0));
+    void shouldNotTurnHumidityExchangerOn_whenAirFlowOff() {
+        when(rule.turnOnConfident()).thenReturn(new Percentage(-1.0));
         freshAirRules.add(rule);
-        Rule humidityRule = mock(Rule.class);
-        when(humidityRule.turnOn()).thenReturn(new Percentage(1.0));
+        final Rule humidityRule = mock(Rule.class);
+        when(humidityRule.turnOnConfident()).thenReturn(new Percentage(1.0));
         exchangeHumidityRules.add(humidityRule);
-        RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
+        final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
 
         testee.run();
 

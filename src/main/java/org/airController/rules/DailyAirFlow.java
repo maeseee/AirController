@@ -17,7 +17,7 @@ public class DailyAirFlow implements Rule {
     }
 
     @Override
-    public Percentage turnOn() {
+    public Percentage turnOnConfident() {
         LocalDateTime now = LocalDateTime.now();
         return isSummerTime(MonthDay.from(now)) ?
                 calculateFreshAirPercentageOnSummer(now.toLocalTime()) :

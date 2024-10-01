@@ -24,7 +24,7 @@ public class CO2ControlAirFlow implements Rule {
     }
 
     @Override
-    public Percentage turnOn() {
+    public Percentage turnOnConfident() {
         Optional<CarbonDioxide> indoorCo2 = sensorValues.getIndoorCo2();
         if (indoorCo2.isEmpty()) {
             return new Percentage(0.0);

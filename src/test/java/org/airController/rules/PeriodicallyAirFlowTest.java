@@ -28,7 +28,7 @@ class PeriodicallyAirFlowTest {
         when(timekeeper.getAirFlowOnDurationInLastHour()).thenReturn(Duration.ofMinutes(onDuration));
         PeriodicallyAirFlow testee = new PeriodicallyAirFlow(timekeeper);
 
-        Percentage airFlowNeed = testee.turnOn();
+        Percentage airFlowNeed = testee.turnOnConfident();
 
         assertThat(airFlowNeed.getPercentage()).isCloseTo(expectedResult, Offset.offset(0.01));
     }

@@ -20,7 +20,7 @@ public class PeriodicallyAirFlow implements Rule {
     }
 
     @Override
-    public Percentage turnOn() {
+    public Percentage turnOnConfident() {
         Duration airFlowOnDurationInLastHour = timeKeeper.getAirFlowOnDurationInLastHour();
         double impact = M * airFlowOnDurationInLastHour.toMinutes() + B;
         return new Percentage(impact);

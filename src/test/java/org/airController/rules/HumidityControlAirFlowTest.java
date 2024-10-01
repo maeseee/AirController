@@ -40,7 +40,7 @@ class HumidityControlAirFlowTest {
         when(sensorValues.isIndoorHumidityAboveOutdoorHumidity()).thenReturn(true);
         final HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
 
-        final Percentage result = testee.turnOn();
+        final Percentage result = testee.turnOnConfident();
 
         assertThat(result.getPercentage()).isCloseTo(expectedResult, Offset.offset(0.01));
     }
@@ -62,7 +62,7 @@ class HumidityControlAirFlowTest {
         when(sensorValues.isIndoorHumidityAboveOutdoorHumidity()).thenReturn(false);
         final HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
 
-        final Percentage result = testee.turnOn();
+        final Percentage result = testee.turnOnConfident();
 
         assertThat(result.getPercentage()).isCloseTo(expectedResult, Offset.offset(0.01));
     }
@@ -73,7 +73,7 @@ class HumidityControlAirFlowTest {
         when(sensorValues.getIndoorHumidity()).thenReturn(Optional.empty());
         final HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
 
-        final Percentage result = testee.turnOn();
+        final Percentage result = testee.turnOnConfident();
 
         assertThat(result.getPercentage()).isEqualTo(0.0);
     }

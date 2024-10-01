@@ -25,7 +25,7 @@ public class HumidityControlAirFlow implements Rule {
     }
 
     @Override
-    public Percentage turnOn() {
+    public Percentage turnOnConfident() {
         Optional<Humidity> indoorHumidity = sensorValues.getIndoorHumidity();
         Optional<Temperature> indoorTemperature = sensorValues.getIndoorTemperature();
         if (indoorHumidity.isEmpty() || indoorTemperature.isEmpty()) {
