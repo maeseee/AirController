@@ -28,11 +28,11 @@ class CO2ControlAirFlowTest {
             "800, 0.0"
     })
     void shouldCalculateCo2Confidence(double co2, double expectedConfidence) throws InvalidArgumentException {
-        Optional<CarbonDioxide> carbonDioxide = Optional.of(CarbonDioxide.createFromPpm(co2));
+        final Optional<CarbonDioxide> carbonDioxide = Optional.of(CarbonDioxide.createFromPpm(co2));
         when(sensorValues.getIndoorCo2()).thenReturn(carbonDioxide);
-        CO2ControlAirFlow testee = new CO2ControlAirFlow(sensorValues);
+        final CO2ControlAirFlow testee = new CO2ControlAirFlow(sensorValues);
 
-        Confidence result = testee.turnOnConfidence();
+        final Confidence result = testee.turnOnConfidence();
 
         assertThat(result.getWeightedConfidenceValue()).isEqualTo(expectedConfidence);
     }
