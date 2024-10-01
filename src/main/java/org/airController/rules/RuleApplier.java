@@ -34,14 +34,14 @@ public class RuleApplier implements Runnable {
 
     private void doRun() {
         final double confidentForFreshAir = freshAirRules.stream()
-                .mapToDouble(rule -> rule.turnOnConfident().getPercentage())
+                .mapToDouble(rule -> rule.turnOnConfident().getWeightedConfidentValue())
                 .sum();
         final boolean freshAirOn = confidentForFreshAir > 0;
         final OutputState nextAirFlowState = freshAirOn ? OutputState.ON : OutputState.OFF;
         updateAirFlow(nextAirFlowState);
 
         final double confidentHumidityExchange = exchangeHumidityRules.stream()
-                .mapToDouble(rule -> rule.turnOnConfident().getPercentage())
+                .mapToDouble(rule -> rule.turnOnConfident().getWeightedConfidentValue())
                 .sum();
         final boolean humidityExchangerOn = confidentHumidityExchange > 0;
         final OutputState nextHumidityExchangerState = humidityExchangerOn && freshAirOn ? OutputState.ON : OutputState.OFF;
@@ -53,7 +53,7 @@ public class RuleApplier implements Runnable {
             ventilationSystem.forEach(system -> system.setAirFlowOn(nextAirFlowState == OutputState.ON));
             airFlowState = nextAirFlowState;
             String ruleValues = freshAirRules.stream()
-                    .map(rule -> String.format("%s: %.2f, ", rule.name(), rule.turnOnConfident().getPercentage()))
+                    .map(rule -> String.format("%s: %.2f, ", rule.name(), rule.turnOnConfident().getWeightedConfidentValue()))
                     .collect(Collectors.joining());
             logger.info("Fresh air state changed to {} because of {}", nextAirFlowState, ruleValues);
         }

@@ -19,7 +19,7 @@ class SensorDataCsvWriterTest {
     private final String FILE_PATH = "log/sensorValueCsvWriterTest.csv";
 
     @Test
-    void testWhenWritingCsvThenValuesInCsvFile() throws InvalidArgumentException, IOException {
+    void shouldWriteSensorDataIntoCsvFiles_whenPersist() throws InvalidArgumentException, IOException {
         final Random random = new Random();
         final double temperatureValue = random.nextDouble() * 100;
         final double humidityValue = random.nextDouble() * 100;

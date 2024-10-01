@@ -25,14 +25,14 @@ public class HumidityControlAirFlow implements Rule {
     }
 
     @Override
-    public Percentage turnOnConfident() {
+    public Confident turnOnConfident() {
         Optional<Humidity> indoorHumidity = sensorValues.getIndoorHumidity();
         Optional<Temperature> indoorTemperature = sensorValues.getIndoorTemperature();
         if (indoorHumidity.isEmpty() || indoorTemperature.isEmpty()) {
-            return new Percentage(0.0);
+            return new Confident(0.0);
         }
         double impact = M * indoorHumidity.get().getRelativeHumidity(indoorTemperature.get()) + B;
         double sign = sensorValues.isIndoorHumidityAboveOutdoorHumidity() ? 1.0 : -1.0;
-        return new Percentage(impact * sign);
+        return new Confident(impact * sign);
     }
 }

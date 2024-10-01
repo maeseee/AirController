@@ -38,8 +38,8 @@ class HumidityControlExchangerTest {
         HumidityControlAirFlow humidityControlAirFlow = new HumidityControlAirFlow(sensorValues);
         HumidityControlExchanger testee = new HumidityControlExchanger(humidityControlAirFlow);
 
-        Percentage result = testee.turnOnConfident();
+        Confident result = testee.turnOnConfident();
 
-        assertThat(result.getPercentage()).isCloseTo(expectedResult, Offset.offset(0.01));
+        assertThat(result.getWeightedConfidentValue()).isCloseTo(expectedResult, Offset.offset(0.01));
     }
 }

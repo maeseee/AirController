@@ -40,9 +40,9 @@ class HumidityControlAirFlowTest {
         when(sensorValues.isIndoorHumidityAboveOutdoorHumidity()).thenReturn(true);
         final HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
 
-        final Percentage result = testee.turnOnConfident();
+        final Confident result = testee.turnOnConfident();
 
-        assertThat(result.getPercentage()).isCloseTo(expectedResult, Offset.offset(0.01));
+        assertThat(result.getWeightedConfidentValue()).isCloseTo(expectedResult, Offset.offset(0.01));
     }
 
     @ParameterizedTest(name = "{index} => humidity %={0}, expectedResult={1}")
@@ -62,9 +62,9 @@ class HumidityControlAirFlowTest {
         when(sensorValues.isIndoorHumidityAboveOutdoorHumidity()).thenReturn(false);
         final HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
 
-        final Percentage result = testee.turnOnConfident();
+        final Confident result = testee.turnOnConfident();
 
-        assertThat(result.getPercentage()).isCloseTo(expectedResult, Offset.offset(0.01));
+        assertThat(result.getWeightedConfidentValue()).isCloseTo(expectedResult, Offset.offset(0.01));
     }
 
     @Test
@@ -73,8 +73,8 @@ class HumidityControlAirFlowTest {
         when(sensorValues.getIndoorHumidity()).thenReturn(Optional.empty());
         final HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
 
-        final Percentage result = testee.turnOnConfident();
+        final Confident result = testee.turnOnConfident();
 
-        assertThat(result.getPercentage()).isEqualTo(0.0);
+        assertThat(result.getWeightedConfidentValue()).isEqualTo(0.0);
     }
 }

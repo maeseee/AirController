@@ -35,9 +35,9 @@ class DailyAirFlowTest {
         try (MockedStatic<LocalDateTime> mocked = mockStatic(LocalDateTime.class)) {
             mocked.when(LocalDateTime::now).thenReturn(dateTime);
 
-            Percentage result = testee.turnOnConfident();
+            Confident result = testee.turnOnConfident();
 
-            assertThat(result.getPercentage()).isCloseTo(expectedResult, Offset.offset(0.01));
+            assertThat(result.getWeightedConfidentValue()).isCloseTo(expectedResult, Offset.offset(0.01));
         }
     }
 }

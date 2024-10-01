@@ -32,8 +32,8 @@ class CO2ControlAirFlowTest {
         when(sensorValues.getIndoorCo2()).thenReturn(carbonDioxide);
         CO2ControlAirFlow testee = new CO2ControlAirFlow(sensorValues);
 
-        Percentage result = testee.turnOnConfident();
+        Confident result = testee.turnOnConfident();
 
-        assertThat(result.getPercentage()).isEqualTo(expectedResult);
+        assertThat(result.getWeightedConfidentValue()).isEqualTo(expectedResult);
     }
 }
