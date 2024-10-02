@@ -5,18 +5,21 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class ConfidenceTest {
 
     @ParameterizedTest(name = "{index} => confidenceValue={0}")
     @CsvSource({
-            "-1.1",
-            "1.1",
-            "10.0",
+            "-1.1, -1.0",
+            "1.1, 1.0",
+            "10.0, 1.0",
     })
-    void shouldThrow_whenInvalidConfidenceValue(double confidenceValue) {
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new Confidence(confidenceValue));
+    void shouldLimitValue_whenAboveExpectation(double confidenceValue, double expectedValue) {
+        final Confidence testee = new Confidence(confidenceValue);
+
+        final double weightedConfidenceValue = testee.getWeightedConfidenceValue();
+
+        assertThat(weightedConfidenceValue).isEqualTo(expectedValue);
     }
 
     @ParameterizedTest(name = "{index} => confidenceValue={0}, weight={1}, expectedWeightedValue{2}")

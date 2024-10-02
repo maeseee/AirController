@@ -12,9 +12,6 @@ public class Confidence {
     }
 
     public Confidence(double confidenceValue, double weight) {
-        if (Math.abs(confidenceValue) > 1) {
-            throw new IllegalArgumentException("confidenceValue must be between -1 and 1");
-        }
-        weightedConfidenceValue = confidenceValue * weight;
+        weightedConfidenceValue = Math.max(Math.min(confidenceValue, 1.0), -1.0) * weight;
     }
 }
