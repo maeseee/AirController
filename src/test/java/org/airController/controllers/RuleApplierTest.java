@@ -78,4 +78,35 @@ class RuleApplierTest {
         verify(ventilationSystem).setAirFlowOn(false);
         verify(ventilationSystem).setHumidityExchangerOn(false);
     }
+
+    @Test
+    void shouldNotTurnOff_whenAirFlowInHysteresis() {
+        when(rule.turnOnConfidence())
+                .thenReturn(new Confidence(1.0)) // on
+                .thenReturn(new Confidence(-0.04)); // in hysteresis
+        freshAirRules.add(rule);
+        final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
+
+        testee.run(); // on
+        testee.run(); // nothing
+
+        verify(ventilationSystem).setAirFlowOn(true);
+        verify(ventilationSystem).setHumidityExchangerOn(false);
+    }
+
+    @Test
+    void shouldTurnOff_whenAirFlowOutOfHysteresis() {
+        when(rule.turnOnConfidence())
+                .thenReturn(new Confidence(1.0)) // on
+                .thenReturn(new Confidence(-0.06)); // out of hysteresis
+        freshAirRules.add(rule);
+        final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
+
+        testee.run(); // on
+        testee.run(); // off
+
+        verify(ventilationSystem).setAirFlowOn(true);
+        verify(ventilationSystem).setAirFlowOn(false);
+        verify(ventilationSystem).setHumidityExchangerOn(false);
+    }
 }

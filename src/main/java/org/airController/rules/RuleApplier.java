@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 public class RuleApplier implements Runnable {
     private static final Logger logger = LogManager.getLogger(RuleApplier.class);
+    private static final double HYSTERESIS = 0.05;
 
     private final List<VentilationSystem> ventilationSystem;
     private final List<Rule> freshAirRules;
@@ -33,26 +34,33 @@ public class RuleApplier implements Runnable {
     }
 
     private void doRun() {
-        final double confidenceForFreshAir = freshAirRules.stream()
-                .mapToDouble(rule -> rule.turnOnConfidence().getWeightedConfidenceValue())
-                .sum();
-        final boolean freshAirOn = confidenceForFreshAir > 0;
-        final OutputState nextAirFlowState = freshAirOn ? OutputState.ON : OutputState.OFF;
+        final double confidenceForFreshAir = getTotalConfidence(freshAirRules);
+        final OutputState nextAirFlowState = nextStateWithHysteresis(confidenceForFreshAir, airFlowState);
         updateAirFlow(nextAirFlowState);
 
-        final double confidenceHumidityExchange = exchangeHumidityRules.stream()
-                .mapToDouble(rule -> rule.turnOnConfidence().getWeightedConfidenceValue())
-                .sum();
-        final boolean humidityExchangerOn = confidenceHumidityExchange > 0;
-        final OutputState nextHumidityExchangerState = humidityExchangerOn && freshAirOn ? OutputState.ON : OutputState.OFF;
+        final double confidenceForHumidityExchange = getTotalConfidence(exchangeHumidityRules);
+        final OutputState nextHumidityExchangerState =
+                nextAirFlowState.isOn() ? nextStateWithHysteresis(confidenceForHumidityExchange, humidityExchangerState) : OutputState.OFF;
         updateHumidityExchanger(nextHumidityExchangerState);
     }
 
+    private double getTotalConfidence(List<Rule> rules) {
+        return rules.stream()
+                .mapToDouble(rule -> rule.turnOnConfidence().getWeightedConfidenceValue())
+                .sum();
+    }
+
+    private OutputState nextStateWithHysteresis(double confidence, OutputState currentState) {
+        confidence += (currentState.isOn()) ? HYSTERESIS : -HYSTERESIS;
+        return confidence >= 0 ? OutputState.ON : OutputState.OFF;
+    }
+
+
     private void updateAirFlow(OutputState nextAirFlowState) {
         if (airFlowState != nextAirFlowState) {
-            ventilationSystem.forEach(system -> system.setAirFlowOn(nextAirFlowState == OutputState.ON));
+            ventilationSystem.forEach(system -> system.setAirFlowOn(nextAirFlowState.isOn()));
             airFlowState = nextAirFlowState;
-            String ruleValues = freshAirRules.stream()
+            final String ruleValues = freshAirRules.stream()
                     .map(rule -> String.format("%s: %.2f, ", rule.name(), rule.turnOnConfidence().getWeightedConfidenceValue()))
                     .collect(Collectors.joining());
             logger.info("Fresh air state changed to {} because of {}", nextAirFlowState, ruleValues);
@@ -61,7 +69,7 @@ public class RuleApplier implements Runnable {
 
     private void updateHumidityExchanger(OutputState nextHumidityExchangerState) {
         if (humidityExchangerState != nextHumidityExchangerState) {
-            ventilationSystem.forEach(system -> system.setHumidityExchangerOn(nextHumidityExchangerState == OutputState.ON));
+            ventilationSystem.forEach(system -> system.setHumidityExchangerOn(nextHumidityExchangerState.isOn()));
             humidityExchangerState = nextHumidityExchangerState;
         }
     }
