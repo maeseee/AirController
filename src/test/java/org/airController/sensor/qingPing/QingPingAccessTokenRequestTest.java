@@ -12,14 +12,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 class QingPingAccessTokenRequestTest {
 
     @Test
-    void testWhenSendPostRequestThenRequestIsInResponse() throws URISyntaxException {
+    void shouldHaveRequestInResponse_whenSendingPostRequest() throws URISyntaxException {
         final String credentials = "just a secret";
         final String base64Credentials = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
         final String url = "https://httpbin.org/anything";
@@ -28,16 +27,16 @@ class QingPingAccessTokenRequestTest {
 
         final Optional<String> result = testee.sendRequest();
 
-        assertTrue(result.isPresent());
+        assertThat(result).isPresent();
         final JSONTokener tokener = new JSONTokener(result.get());
         final JSONObject jsonObject = new JSONObject(tokener);
         final JSONObject form = jsonObject.getJSONObject("form");
         final String grantType = form.getString("grant_type");
-        assertEquals("client_credentials", grantType);
+        assertThat(grantType).isEqualTo("client_credentials");
         final String scope = form.getString("scope");
-        assertEquals("device_full_access", scope);
+        assertThat(scope).isEqualTo("device_full_access");
         final JSONObject headers = jsonObject.getJSONObject("headers");
         final String contentType = headers.getString("Content-Type");
-        assertEquals("application/x-www-form-urlencoded", contentType);
+        assertThat(contentType).isEqualTo("application/x-www-form-urlencoded");
     }
 }
