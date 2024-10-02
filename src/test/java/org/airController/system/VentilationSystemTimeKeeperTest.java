@@ -145,6 +145,7 @@ class VentilationSystemTimeKeeperTest {
                     .thenReturn(onTimeYesterday)
                     .thenReturn(offTimeYesterday)
                     .thenReturn(onTimeToday)
+                    .thenReturn(now)
                     .thenReturn(now);
             testee.setAirFlowOn(true);
             testee.setAirFlowOn(false);
@@ -157,7 +158,7 @@ class VentilationSystemTimeKeeperTest {
         assertThat(result2DayAgo.toMinutes()).isCloseTo(10, Offset.offset(1L));
         assertThat(resultYesterday.toMinutes()).isCloseTo(10, Offset.offset(1L));
 
-        testee.run();
+        testee.removeTimePeriods(onTimeYesterday.toLocalDate());
 
         result2DayAgo = testee.getTotalAirFlowFromDay(onTime2DaysAgo.toLocalDate());
         resultYesterday = testee.getTotalAirFlowFromDay(onTimeYesterday.toLocalDate());

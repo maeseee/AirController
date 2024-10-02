@@ -1,5 +1,6 @@
 package org.airController.system;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.airController.rules.TimeKeeper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,11 +56,12 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
         final Duration totalAirFlowYesterday = getTotalAirFlowFromDay(yesterday);
         logger.info("Daily on time is {} minutes ({} %)", totalAirFlowYesterday.toMinutes(), getOnPercentage(totalAirFlowYesterday));
 
-        removeTimePeriods(yesterday.minusDays(1));
+        removeTimePeriods(yesterday);
     }
 
-    private void removeTimePeriods(LocalDate date) {
-        timePeriods.removeIf(timePeriod -> timePeriod.off().toLocalDate().isBefore(date));
+    @VisibleForTesting
+    void removeTimePeriods(LocalDate lastDayToKeep) {
+        timePeriods.removeIf(timePeriod -> timePeriod.off().toLocalDate().isBefore(lastDayToKeep));
     }
 
     private Duration getDuration(LocalDateTime startTime, LocalDateTime endTime) {
