@@ -4,12 +4,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class QingPingAccessTokenJsonParserTest {
 
     @Test
-    void testParsingAccessToken() {
+    void shouldParsAccessToken() {
         final String sampleAccessTokenResponse = """
                 {
                 "access_token": "5E05GrH9bv-yVbtzpbgrHt2sXLl6SKNUJCYNizY2E58.FpNVQZjkKka1Yn7bgxlAHJ-V-33DD3J-pz_hRwMa_gY",
@@ -22,13 +22,15 @@ class QingPingAccessTokenJsonParserTest {
 
         final Optional<QingPingAccessTokenData> result = testee.parse(sampleAccessTokenResponse);
 
-        assertTrue(result.isPresent());
-        assertEquals("5E05GrH9bv-yVbtzpbgrHt2sXLl6SKNUJCYNizY2E58.FpNVQZjkKka1Yn7bgxlAHJ-V-33DD3J-pz_hRwMa_gY", result.get().accessToken());
-        assertEquals(7199, result.get().expiresIn());
+        assertThat(result).isPresent().hasValueSatisfying(accessTokenData -> {
+            assertThat(accessTokenData.accessToken()).isEqualTo(
+                    "5E05GrH9bv-yVbtzpbgrHt2sXLl6SKNUJCYNizY2E58.FpNVQZjkKka1Yn7bgxlAHJ-V-33DD3J-pz_hRwMa_gY");
+            assertThat(accessTokenData.expiresIn()).isEqualTo(7199);
+        });
     }
 
     @Test
-    void testWhenAccessTokenMissingInResponseThenOptionalEmpty() {
+    void shouldReturnOptionalEmpty_whenAccessTokenMissingInResponse() {
         final String sampleAccessTokenResponse = """
                 {
                 }
@@ -37,6 +39,6 @@ class QingPingAccessTokenJsonParserTest {
 
         final Optional<QingPingAccessTokenData> result = testee.parse(sampleAccessTokenResponse);
 
-        assertFalse(result.isPresent());
+        assertThat(result).isEmpty();
     }
 }
