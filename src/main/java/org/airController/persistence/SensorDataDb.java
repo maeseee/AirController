@@ -25,12 +25,6 @@ public class SensorDataDb implements SensorDataPersistence {
     public SensorDataDb(String sensorDataTableName) {
         this.sensorDataTableName = sensorDataTableName;
         this.password = Secret.getSecret(ENVIRONMENT_VARIBLE_DB, ENCRYPTED_DB_SECRET);
-
-        try {
-            Class.forName("org.h2.Driver"); // Load H2 JDBC Driver
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
@@ -66,8 +60,6 @@ public class SensorDataDb implements SensorDataPersistence {
                 final String entry = String.format("%f,%f,%f,%s\n", temp, hum, carbonDioxide, timestamp);
                 entries.add(entry);
             }
-
-            resultSet.close();
             return entries;
         } catch (SQLException e) {
             logger.error("SQL Exception! {}", e.getMessage());
@@ -78,10 +70,11 @@ public class SensorDataDb implements SensorDataPersistence {
     private String getCreateTableSql() {
         final String unformattedSql = """
                 CREATE TABLE IF NOT EXISTS public.%s (
+                     id INT PRIMARY KEY AUTO_INCREMENT,
                     temperature DOUBLE PRECISION,
                     humidity DOUBLE PRECISION,
                     co2 DOUBLE PRECISION,
-                    event_time TIMESTAMP)
+                    event_time TIMESTAMP);
                 """;
         return String.format(unformattedSql, sensorDataTableName);
     }
@@ -92,12 +85,12 @@ public class SensorDataDb implements SensorDataPersistence {
         final Double carbonDioxide = sensorData.getCo2().map(CarbonDioxide::getPpm).orElse(null);
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         final String timeStamp = sensorData.getTimeStamp().format(formatter);
-        final String unformattedSql = "INSERT INTO %s (temperature, humidity, co2, event_time) VALUES (%f, %f, %f, '%s')";
+        final String unformattedSql = "INSERT INTO %s (temperature, humidity, co2, event_time) VALUES (%f, %f, %f, '%s');";
         return String.format(unformattedSql, sensorDataTableName, temp, hum, carbonDioxide, timeStamp);
     }
 
     private String getEntriesSql() {
-        final String unformattedSql = "SELECT * FROM %s";
+        final String unformattedSql = "SELECT * FROM %s;";
         return String.format(unformattedSql, sensorDataTableName);
     }
 }
