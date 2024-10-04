@@ -29,7 +29,7 @@ class QingPingListDevicesRequestTest {
         assertThat(response).contains("data");
         assertThat(response).contains("product");
         QingPingDevices.getDeviceList().forEach(device -> assertThat(response).contains(device));
-        assertThatNoException().isThrownBy(() -> System.out.println(testee.sendRequest(token)));
+        assertThatNoException().isThrownBy(() -> testee.sendRequest(token));
     }
 
     @Test

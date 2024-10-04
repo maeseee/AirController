@@ -62,7 +62,6 @@ class HumidityTest {
         final Humidity testee = Humidity.createFromRelative(relativeHumidity, temperature);
 
         final double absoluteHumidity = testee.getAbsoluteHumidity();
-        System.out.println(testee);
 
         final double expectedMaxDeltaInPercent = 1.0;
         final double expectedMaxDelta = expectedMaxDeltaInPercent * weightFor100Percent / 100.0;
