@@ -19,7 +19,7 @@ class SensorDataDbTest {
 
         testee.persist(createSensorData());
 
-        final List<String> entries = testee.read();
+        final List<SensorData> entries = testee.read();
         assertThat(entries.size()).isEqualTo(numberOfEntries + 1);
     }
 

@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +19,7 @@ public class SensorDataDb implements SensorDataPersistence {
     private static final String USER = "SensorData";
     private static final String ENVIRONMENT_VARIBLE_DB = "sensorDataDbPassword";
     private static final String ENCRYPTED_DB_SECRET = "mMwIpBLqf8oVg+ahrUTiKRRjx/hdEffKEw6klDCNY3c=";
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final String sensorDataTableName;
     private final String password;
@@ -29,11 +31,10 @@ public class SensorDataDb implements SensorDataPersistence {
 
     @Override
     public void persist(SensorData sensorData) {
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USER, password);
-             Statement statement = connection.createStatement()) {
+        try (final Connection connection = DriverManager.getConnection(JDBC_URL, USER, password);
+             final Statement statement = connection.createStatement()) {
             final String createTableSql = getCreateTableSql();
             statement.execute(createTableSql);
-
             final String insertDataSql = getInsertDataSql(sensorData);
             statement.execute(insertDataSql);
         } catch (SQLException e) {
@@ -43,28 +44,37 @@ public class SensorDataDb implements SensorDataPersistence {
         }
     }
 
-    List<String> read() {
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USER, password);
-             Statement statement = connection.createStatement()) {
+    List<SensorData> read() {
+        try (final Connection connection = DriverManager.getConnection(JDBC_URL, USER, password);
+             final Statement statement = connection.createStatement()) {
 
             final String querySQL = getEntriesSql();
             final ResultSet resultSet = statement.executeQuery(querySQL);
 
-            List<String> entries = new ArrayList<>();
+            final List<SensorData> entries = new ArrayList<>();
             while (resultSet.next()) {
-                // Read the object as it can handle null
-                final Double temp = resultSet.getObject("temperature", Double.class);
-                final Double hum = resultSet.getObject("humidity", Double.class);
-                final Double carbonDioxide = resultSet.getObject("co2", Double.class);
-                final String timestamp = resultSet.getTimestamp("event_time").toString();
-                final String entry = String.format("%f,%f,%f,%s\n", temp, hum, carbonDioxide, timestamp);
-                entries.add(entry);
+                try {
+                    final SensorData entry = createSensorData(resultSet);
+                    entries.add(entry);
+                } catch (InvalidArgumentException e) {
+                    logger.error("Invalid sensor data! {}", e.getMessage());
+                }
             }
             return entries;
         } catch (SQLException e) {
             logger.error("SQL Exception! {}", e.getMessage());
         }
         return Collections.emptyList();
+    }
+
+    private static SensorData createSensorData(ResultSet resultSet) throws SQLException, InvalidArgumentException {
+        // Read the object as it can handle null
+        final Double temp = resultSet.getObject("temperature", Double.class);
+        final Double hum = resultSet.getObject("humidity", Double.class);
+        final Double carbonDioxide = resultSet.getObject("co2", Double.class);
+        final String timestampStr = resultSet.getTimestamp("event_time").toString();
+        final LocalDateTime timestamp = LocalDateTime.from(formatter.parse(timestampStr));
+        return new SensorDataImpl(temp, hum, carbonDioxide, timestamp);
     }
 
     private String getCreateTableSql() {
@@ -83,7 +93,6 @@ public class SensorDataDb implements SensorDataPersistence {
         final Double temp = sensorData.getTemperature().map(Temperature::getCelsius).orElse(null);
         final Double hum = sensorData.getHumidity().map(Humidity::getAbsoluteHumidity).orElse(null);
         final Double carbonDioxide = sensorData.getCo2().map(CarbonDioxide::getPpm).orElse(null);
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         final String timeStamp = sensorData.getTimeStamp().format(formatter);
         final String unformattedSql = "INSERT INTO %s (temperature, humidity, co2, event_time) VALUES (%f, %f, %f, '%s');";
         return String.format(unformattedSql, sensorDataTableName, temp, hum, carbonDioxide, timeStamp);
