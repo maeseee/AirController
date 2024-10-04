@@ -4,21 +4,23 @@ import org.airController.sensor.IndoorSensorObserver;
 import org.airController.sensor.OutdoorSensorObserver;
 import org.airController.sensorValues.SensorData;
 
+import java.util.List;
+
 public class SensorDataPersistenceObserver implements IndoorSensorObserver, OutdoorSensorObserver {
 
     private static final String INDOOR_SENSOR_VALUES_FILE_PATH = "log/indoorSensorValuesV2.csv";
     private static final String OUTDOOR_SENSOR_VALUES_FILE_PATH = "log/outdoorSensorValuesV2.csv";
 
-    private final SensorValuePersistence indoorValuePersistence = new SensorDataCsvWriter(INDOOR_SENSOR_VALUES_FILE_PATH);
-    private final SensorValuePersistence outdoorValuePersistence = new SensorDataCsvWriter(OUTDOOR_SENSOR_VALUES_FILE_PATH);
+    private final List<SensorValuePersistence> indoorValuePersistence = List.of(new SensorDataCsvWriter(INDOOR_SENSOR_VALUES_FILE_PATH));
+    private final List<SensorValuePersistence> outdoorValuePersistence = List.of(new SensorDataCsvWriter(OUTDOOR_SENSOR_VALUES_FILE_PATH));
 
     @Override
     public void updateIndoorSensorData(SensorData indoorSensorData) {
-        indoorValuePersistence.persist(indoorSensorData);
+        indoorValuePersistence.forEach(persistence -> persistence.persist(indoorSensorData));
     }
 
     @Override
-    public void updateOutdoorSensorData(SensorData sensorData) {
-        outdoorValuePersistence.persist(sensorData);
+    public void updateOutdoorSensorData(SensorData outdoorSensorData) {
+        outdoorValuePersistence.forEach(persistence -> persistence.persist(outdoorSensorData));
     }
 }
