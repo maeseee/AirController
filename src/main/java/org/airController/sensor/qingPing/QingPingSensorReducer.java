@@ -2,15 +2,17 @@ package org.airController.sensor.qingPing;
 
 import org.airController.sensorValues.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.OptionalDouble;
 
 class QingPingSensorReducer {
+    private final static Duration SENSOR_INVALIDATION_TIME = Duration.ofHours(1);
 
     public SensorData reduce(List<QingPingSensorData> sensorDataList) throws CalculationException, InvalidArgumentException {
         final List<QingPingSensorData> currentSensorDataList = sensorDataList.stream()
-                .filter(sensorData -> sensorData.getTimeStamp().isAfter(LocalDateTime.now().minusHours(1)))
+                .filter(sensorData -> sensorData.getTimeStamp().isAfter(LocalDateTime.now().minus(SENSOR_INVALIDATION_TIME)))
                 .toList();
         if (currentSensorDataList.isEmpty()) {
             throw new CalculationException("No current indoor data at the moment");
