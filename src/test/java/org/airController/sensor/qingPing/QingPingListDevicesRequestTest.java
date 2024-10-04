@@ -9,42 +9,56 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class QingPingListDevicesRequestTest {
 
     @Test
-    void testWhenSendGetRequestThenReturnWithValues() throws URISyntaxException {
+    void shouldResponseToToken_whenSensingToQingPing() throws URISyntaxException, CommunicationException, IOException {
         final String url = "https://apis.cleargrass.com/v1/apis/devices";
         final URI uri = new URI(url);
         final QingPingAccessToken accessToken = new QingPingAccessToken();
+        final String token = accessToken.readToken();
         final QingPingListDevicesRequest testee = new QingPingListDevicesRequest(uri);
 
-        assertThatNoException().isThrownBy(() -> System.out.println(testee.sendRequest(accessToken.readToken())));
+        final String response = testee.sendRequest(token);
+
+        assertThat(response).contains("data");
+        assertThat(response).contains("product");
+        QingPingDevices.getDeviceList().forEach(device -> assertThat(response).contains(device));
+        assertThatNoException().isThrownBy(() -> System.out.println(testee.sendRequest(token)));
     }
 
     @Test
-    void testWhenSendGetRequestThenRequestIsInResponse() throws URISyntaxException, CommunicationException, IOException {
+    void shouldResponseToToken_whenSendingToAnything() throws URISyntaxException, CommunicationException, IOException {
         final String url = "https://httpbin.org/anything";
         final URI uri = new URI(url);
         final String accessToken = "accessToken";
         final QingPingListDevicesRequest testee = new QingPingListDevicesRequest(uri);
 
-        final String result = testee.sendRequest(accessToken);
+        final String response = testee.sendRequest(accessToken);
 
-        System.out.println(result);
-        final JSONTokener tokener = new JSONTokener(result);
+        final JSONTokener tokener = new JSONTokener(response);
         final JSONObject jsonObject = new JSONObject(tokener);
         final JSONObject args = jsonObject.getJSONObject("args");
-        assertTrue(args.has("timestamp"));
+        assertThat(args.has("timestamp")).isTrue();
         final JSONObject headers = jsonObject.getJSONObject("headers");
         final String authorization = headers.getString("Authorization");
-        assertEquals("Bearer accessToken", authorization);
+        assertThat(authorization).isEqualTo("Bearer accessToken");
         final String contentType = headers.getString("Content-Type");
-        assertEquals("application/x-www-form-urlencoded", contentType);
+        assertThat(contentType).isEqualTo("application/x-www-form-urlencoded");
+    }
+
+    @Test
+    void shouldThrow_whenInvalidUrl() throws URISyntaxException {
+        final String url = "https://httpbinInvalid.org/anything";
+        final URI uri = new URI(url);
+        final String accessToken = "accessToken";
+        final QingPingListDevicesRequest testee = new QingPingListDevicesRequest(uri);
+
+        assertThatExceptionOfType(UnknownHostException.class).isThrownBy(() -> testee.sendRequest(accessToken));
     }
 }
