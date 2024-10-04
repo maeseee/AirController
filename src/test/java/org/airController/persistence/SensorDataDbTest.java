@@ -7,17 +7,20 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class SensorDataDbTest {
     private final String sensorDataTableName = "TestSensorTable";
 
     @Test
     void shouldAddTable() {
         final SensorDataDb testee = new SensorDataDb(sensorDataTableName);
+        final int numberOfEntries = testee.read().size();
 
         testee.persist(createSensorData());
 
         final List<String> entries = testee.read();
-        System.out.println(entries);
+        assertThat(entries.size()).isEqualTo(numberOfEntries + 1);
     }
 
     private SensorData createSensorData() {
