@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
     @Mock
     private QingPingAccessTokenRequest request;
 
-    @Test void shouldThrow_WhenRequestFails() {
+    @Test void shouldThrow_whenRequestFails() {
         when(request.sendRequest()).thenReturn(Optional.empty());
         final QingPingAccessToken testee = new QingPingAccessToken(request);
 

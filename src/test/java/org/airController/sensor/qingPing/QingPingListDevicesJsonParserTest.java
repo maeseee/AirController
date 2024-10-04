@@ -1,6 +1,8 @@
 package org.airController.sensor.qingPing;
 
+import org.airController.sensorValues.CarbonDioxide;
 import org.airController.sensorValues.Humidity;
+import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.Temperature;
 import org.junit.jupiter.api.Test;
 
@@ -9,8 +11,7 @@ import java.util.Optional;
 
 import static org.airController.sensor.qingPing.QingPingDevices.MAC_AIR_PRESSURE_DEVICE;
 import static org.airController.sensor.qingPing.QingPingDevices.MAC_CO2_DEVICE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class QingPingListDevicesJsonParserTest {
 
@@ -113,44 +114,50 @@ class QingPingListDevicesJsonParserTest {
             """;
 
     @Test
-    void testParsingDeviceListOfAirPressureDevice() {
+    void shouldParseSensorDataOfAirPressureDevice() throws InvalidArgumentException {
         final QingPingListDevicesJsonParser testee = new QingPingListDevicesJsonParser();
 
         final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, MAC_AIR_PRESSURE_DEVICE);
 
-        assertTrue(result.isPresent());
-        assertTrue(result.get().getTemperature().isPresent());
-        assertTrue(result.get().getHumidity().isPresent());
-        final Temperature temperature = result.get().getTemperature().get();
-        assertEquals(21.5, temperature.getCelsius(), 0.1);
-        final Humidity humidity = result.get().getHumidity().get();
-        assertEquals(54.2, humidity.getRelativeHumidity(temperature), 0.1);
-        assertEquals(1704516210, result.get().getTimeStamp().atZone(ZoneId.systemDefault()).toEpochSecond());
+        final Temperature expectedTemperature = Temperature.createFromCelsius(21.5);
+        final Humidity expectedHumidity = Humidity.createFromRelative(54.2, expectedTemperature);
+
+        assertThat(result).isPresent().hasValueSatisfying(sensorData -> {
+            assertThat(sensorData.getTemperature()).isPresent().hasValueSatisfying(temperature ->
+                    assertThat(temperature).isEqualTo(expectedTemperature));
+            assertThat(sensorData.getHumidity()).isPresent().hasValueSatisfying(humidity ->
+                    assertThat(humidity).isEqualTo(expectedHumidity));
+            assertThat(sensorData.getCo2()).isEmpty();
+            assertThat(sensorData.getTimeStamp().atZone(ZoneId.systemDefault()).toEpochSecond()).isEqualTo(1704516210);
+        });
     }
 
     @Test
-    void testParsingDeviceListOfCo2Device() {
+    void shouldParseSensorDataOfCo2Device() throws InvalidArgumentException {
         final QingPingListDevicesJsonParser testee = new QingPingListDevicesJsonParser();
 
         final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, MAC_CO2_DEVICE);
 
-        assertTrue(result.isPresent());
-        assertTrue(result.get().getTemperature().isPresent());
-        assertTrue(result.get().getHumidity().isPresent());
-        final Temperature temperature = result.get().getTemperature().get();
-        assertEquals(22.3, temperature.getCelsius(), 0.1);
-        assertEquals(47.1, result.get().getHumidity().get().getRelativeHumidity(temperature), 0.1);
-        assertTrue(result.get().getCo2().isPresent());
-        assertEquals(400, result.get().getCo2().get().getPpm(), 0.1);
-        assertEquals(1704516210, result.get().getTimeStamp().atZone(ZoneId.systemDefault()).toEpochSecond());
+        final Temperature expectedTemperature = Temperature.createFromCelsius(22.3);
+        final Humidity expectedHumidity = Humidity.createFromRelative(47.1, expectedTemperature);
+        final CarbonDioxide expectedCo2 = CarbonDioxide.createFromPpm(400);
+        assertThat(result).isPresent().hasValueSatisfying(sensorData -> {
+            assertThat(sensorData.getTemperature()).isPresent().hasValueSatisfying(temperature ->
+                    assertThat(temperature).isEqualTo(expectedTemperature));
+            assertThat(sensorData.getHumidity()).isPresent().hasValueSatisfying(humidity ->
+                    assertThat(humidity).isEqualTo(expectedHumidity));
+            assertThat(sensorData.getCo2()).isPresent().hasValueSatisfying(co2 ->
+                    assertThat(co2).isEqualTo(expectedCo2));
+            assertThat(sensorData.getTimeStamp().atZone(ZoneId.systemDefault()).toEpochSecond()).isEqualTo(1704516210);
+        });
     }
 
     @Test
-    void testWhenParsingDeviceListWithWringMacAddressThenOptionalEmpty() {
+    void shouldReturnOptionalEmpty_whenInvalidMacAddress() {
         final QingPingListDevicesJsonParser testee = new QingPingListDevicesJsonParser();
 
         final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, "mac");
 
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 }

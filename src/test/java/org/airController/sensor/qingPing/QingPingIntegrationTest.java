@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class QingPingIntegrationTest {
 
     @Test
-    void testQingPingDevice() throws URISyntaxException, CommunicationException, IOException {
+    void shouldTestQingPingDevice() throws URISyntaxException, CommunicationException, IOException {
         final String accessTokenResponse = runAccessTokenRequest();
         final QingPingAccessTokenData accessTokenData = runParseAccessToken(accessTokenResponse);
         final String listDevicesResponse = runListDevicesRequest(accessTokenData);
