@@ -9,7 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
-class SensorDataCsvWriter implements SensorValuePersistence {
+class SensorDataCsvWriter implements SensorDataPersistence {
     private static final Logger logger = LogManager.getLogger(SensorDataCsvWriter.class);
 
     private final String filePath;

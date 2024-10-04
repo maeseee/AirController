@@ -26,7 +26,7 @@ class SensorDataCsvWriterTest {
         final double co2Value = random.nextDouble() * 100000;
         final LocalDateTime time = LocalDateTime.of(2024, 9, 27, 20, 51, 12);
         final SensorData sensorData = createSensorData(temperatureValue, humidityValue, co2Value, time);
-        final SensorValuePersistence testee = new SensorDataCsvWriter(FILE_PATH);
+        final SensorDataPersistence testee = new SensorDataCsvWriter(FILE_PATH);
 
         testee.persist(sensorData);
 

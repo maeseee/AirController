@@ -11,8 +11,8 @@ public class SensorDataPersistenceObserver implements IndoorSensorObserver, Outd
     private static final String INDOOR_SENSOR_VALUES_FILE_PATH = "log/indoorSensorValuesV2.csv";
     private static final String OUTDOOR_SENSOR_VALUES_FILE_PATH = "log/outdoorSensorValuesV2.csv";
 
-    private final List<SensorValuePersistence> indoorValuePersistence = List.of(new SensorDataCsvWriter(INDOOR_SENSOR_VALUES_FILE_PATH));
-    private final List<SensorValuePersistence> outdoorValuePersistence = List.of(new SensorDataCsvWriter(OUTDOOR_SENSOR_VALUES_FILE_PATH));
+    private final List<SensorDataPersistence> indoorValuePersistence = List.of(new SensorDataCsvWriter(INDOOR_SENSOR_VALUES_FILE_PATH));
+    private final List<SensorDataPersistence> outdoorValuePersistence = List.of(new SensorDataCsvWriter(OUTDOOR_SENSOR_VALUES_FILE_PATH));
 
     @Override
     public void updateIndoorSensorData(SensorData indoorSensorData) {
