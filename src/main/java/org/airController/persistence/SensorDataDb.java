@@ -37,17 +37,11 @@ public class SensorDataDb implements SensorDataPersistence {
     public void persist(SensorData sensorData) {
         try (Connection connection = DriverManager.getConnection(JDBC_URL, USER, password);
              Statement statement = connection.createStatement()) {
-            //    final Connection connection = DriverManager.getConnection(JDBC_URL, USER, password);
-            //   final Statement statement = connection.createStatement();
-
             final String createTableSql = getCreateTableSql();
             statement.execute(createTableSql);
 
             final String insertDataSql = getInsertDataSql(sensorData);
             statement.execute(insertDataSql);
-
-            //statement.close();
-            //connection.close();
         } catch (SQLException e) {
             logger.error("SQL Exception! {}", e.getMessage());
         } catch (InvalidArgumentException e) {
@@ -56,9 +50,8 @@ public class SensorDataDb implements SensorDataPersistence {
     }
 
     List<String> read() {
-        try {
-            final Connection connection = DriverManager.getConnection(JDBC_URL, USER, password);
-            final Statement statement = connection.createStatement();
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USER, password);
+             Statement statement = connection.createStatement()) {
 
             final String querySQL = getEntriesSql();
             final ResultSet resultSet = statement.executeQuery(querySQL);
@@ -75,8 +68,6 @@ public class SensorDataDb implements SensorDataPersistence {
             }
 
             resultSet.close();
-            statement.close();
-            connection.close();
             return entries;
         } catch (SQLException e) {
             logger.error("SQL Exception! {}", e.getMessage());
