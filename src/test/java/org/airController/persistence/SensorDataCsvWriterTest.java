@@ -8,7 +8,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,23 +37,7 @@ class SensorDataCsvWriterTest {
         final Temperature temperature = Temperature.createFromCelsius(temperatureValue);
         final Humidity humidity = Humidity.createFromRelative(humidityValue, temperature);
         final CarbonDioxide co2 = CarbonDioxide.createFromPpm(co2Value);
-        return new SensorData() {
-            @Override public Optional<Temperature> getTemperature() {
-                return Optional.of(temperature);
-            }
-
-            @Override public Optional<Humidity> getHumidity() {
-                return Optional.of(humidity);
-            }
-
-            @Override public Optional<CarbonDioxide> getCo2() {
-                return Optional.of(co2);
-            }
-
-            @Override public LocalDateTime getTimeStamp() {
-                return time;
-            }
-        };
+        return new SensorDataImpl(temperature, humidity, co2, time);
     }
 
     private void assertCsvFile(LocalDateTime time, double temperature, double humidity, double co2) throws IOException {

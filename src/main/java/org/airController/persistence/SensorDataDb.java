@@ -19,7 +19,7 @@ public class SensorDataDb implements SensorDataPersistence {
     private static final String USER = "SensorData";
     private static final String ENVIRONMENT_VARIBLE_DB = "sensorDataDbPassword";
     private static final String ENCRYPTED_DB_SECRET = "mMwIpBLqf8oVg+ahrUTiKRRjx/hdEffKEw6klDCNY3c=";
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
     private final String sensorDataTableName;
     private final String password;

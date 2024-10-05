@@ -1,11 +1,12 @@
 package org.airController.persistence;
 
-import org.airController.sensorValues.*;
+import org.airController.sensorValues.InvalidArgumentException;
+import org.airController.sensorValues.SensorData;
+import org.airController.sensorValues.SensorDataImpl;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,41 +14,14 @@ class SensorDataDbTest {
     private final String sensorDataTableName = "TestSensorTable";
 
     @Test
-    void shouldAddTable() {
+    void shouldAddTable() throws InvalidArgumentException {
+        final SensorData sensorData = new SensorDataImpl(21.0, 10.0, 500.0, LocalDateTime.now());
         final SensorDataDb testee = new SensorDataDb(sensorDataTableName);
         final int numberOfEntries = testee.read().size();
 
-        testee.persist(createSensorData());
+        testee.persist(sensorData);
 
         final List<SensorData> entries = testee.read();
         assertThat(entries.size()).isEqualTo(numberOfEntries + 1);
-    }
-
-    private SensorData createSensorData() {
-        return new SensorData() {
-            @Override public Optional<Temperature> getTemperature() {
-                try {
-                    return Optional.of(Temperature.createFromCelsius(21.0));
-                } catch (InvalidArgumentException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            @Override public Optional<Humidity> getHumidity() {
-                try {
-                    return Optional.of(Humidity.createFromAbsolute(10.0));
-                } catch (InvalidArgumentException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            @Override public Optional<CarbonDioxide> getCo2() {
-                return Optional.empty();
-            }
-
-            @Override public LocalDateTime getTimeStamp() {
-                return LocalDateTime.now();
-            }
-        };
     }
 }

@@ -3,7 +3,6 @@ package org.airController.sensorValues;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -68,22 +67,6 @@ class CurrentSensorValuesTest {
     }
 
     private static SensorData createSensorData(Temperature temperature, Humidity humidity) {
-        return new SensorData() {
-            @Override public Optional<Temperature> getTemperature() {
-                return Optional.of(temperature);
-            }
-
-            @Override public Optional<Humidity> getHumidity() {
-                return Optional.of(humidity);
-            }
-
-            @Override public Optional<CarbonDioxide> getCo2() {
-                return Optional.empty();
-            }
-
-            @Override public LocalDateTime getTimeStamp() {
-                return LocalDateTime.now();
-            }
-        };
+        return new SensorDataImpl(temperature, humidity, null, LocalDateTime.now());
     }
 }

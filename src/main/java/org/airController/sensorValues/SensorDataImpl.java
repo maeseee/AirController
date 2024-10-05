@@ -10,10 +10,17 @@ public class SensorDataImpl implements SensorData {
     private final CarbonDioxide co2;
     private final LocalDateTime timeStamp;
 
-    public SensorDataImpl(double tempCelsius, double humAbsolute, double co2Ppm, LocalDateTime timeStamp) throws InvalidArgumentException {
-        this.temperature = Temperature.createFromCelsius(tempCelsius);
-        this.humidity = Humidity.createFromAbsolute(humAbsolute);
-        this.co2 = CarbonDioxide.createFromPpm(co2Ppm);
+    public SensorDataImpl(Double tempCelsius, Double humAbsolute, Double co2Ppm, LocalDateTime timeStamp) throws InvalidArgumentException {
+        this.temperature = tempCelsius != null ? Temperature.createFromCelsius(tempCelsius) : null;
+        this.humidity = humAbsolute != null ? Humidity.createFromAbsolute(humAbsolute) : null;
+        this.co2 = co2Ppm != null ? CarbonDioxide.createFromPpm(co2Ppm) : null;
+        this.timeStamp = timeStamp;
+    }
+
+    public SensorDataImpl(Temperature temperature, Humidity humidity, CarbonDioxide co2, LocalDateTime timeStamp) {
+        this.temperature = temperature;
+        this.humidity = humidity;
+        this.co2 = co2;
         this.timeStamp = timeStamp;
     }
 
