@@ -3,15 +3,12 @@ package org.airController.persistence;
 import org.airController.sensorValues.*;
 import org.junit.jupiter.api.Test;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class SensorDataCsvTest {
 
@@ -20,43 +17,32 @@ class SensorDataCsvTest {
     @Test
     void shouldWriteSensorDataIntoCsvFiles_whenPersist() throws InvalidArgumentException, IOException {
         final Random random = new Random();
-        final double temperatureValue = random.nextDouble() * 100;
-        final double humidityValue = random.nextDouble() * 100;
-        final double co2Value = random.nextDouble() * 100000;
+        final double celsiusTemperature = random.nextDouble() * 100;
+        final double relativeHumidity = random.nextDouble() * 100;
+        final double co2Ppm = random.nextDouble() * 100000;
         final LocalDateTime time = LocalDateTime.of(2024, 9, 27, 20, 51, 12);
-        final SensorData sensorData = createSensorData(temperatureValue, humidityValue, co2Value, time);
+        final SensorData inputSensorData = createSensorData(celsiusTemperature, relativeHumidity, co2Ppm, time);
         final SensorDataPersistence testee = new SensorDataCsv(FILE_PATH);
 
-        testee.persist(sensorData);
+        testee.persist(inputSensorData);
+        final List<SensorData> sensorDataList = testee.read();
 
-        assertCsvFile(time, temperatureValue, humidityValue, co2Value);
+        final SensorData lastSensorData = sensorDataList.get(sensorDataList.size() - 1);
+        assertThat(lastSensorData.getTemperature()).isPresent()
+                .hasValueSatisfying(temperature -> assertThat(temperature.getCelsius()).isEqualTo(celsiusTemperature));
+        assertThat(lastSensorData.getHumidity()).isPresent()
+                .hasValueSatisfying(
+                        humidity -> assertThat(humidity.getRelativeHumidity(lastSensorData.getTemperature().get())).isEqualTo(relativeHumidity));
+        assertThat(lastSensorData.getCo2()).isPresent()
+                .hasValueSatisfying(co2 -> assertThat(co2.getPpm()).isEqualTo(co2Ppm));
+        assertThat(lastSensorData.getTimeStamp()).isEqualTo(time);
     }
 
-    private SensorData createSensorData(double temperatureValue, double humidityValue, double co2Value, LocalDateTime time)
+    private SensorData createSensorData(double celsiusTemperatur, double relativeHumidity, double co2Ppm, LocalDateTime time)
             throws InvalidArgumentException {
-        final Temperature temperature = Temperature.createFromCelsius(temperatureValue);
-        final Humidity humidity = Humidity.createFromRelative(humidityValue, temperature);
-        final CarbonDioxide co2 = CarbonDioxide.createFromPpm(co2Value);
+        final Temperature temperature = Temperature.createFromCelsius(celsiusTemperatur);
+        final Humidity humidity = Humidity.createFromRelative(relativeHumidity, temperature);
+        final CarbonDioxide co2 = CarbonDioxide.createFromPpm(co2Ppm);
         return new SensorDataImpl(temperature, humidity, co2, time);
     }
-
-    private void assertCsvFile(LocalDateTime time, double temperature, double humidity, double co2) throws IOException {
-        final BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH));
-        String lastLine = null;
-        String currentLine;
-        while ((currentLine = reader.readLine()) != null) {
-            lastLine = currentLine;
-        }
-
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        assertNotNull(lastLine);
-        final String[] csv = lastLine.split(",");
-        assertEquals(4, csv.length);
-        final LocalDateTime csvTime = LocalDateTime.parse(csv[0], formatter);
-        assertEquals(time, csvTime);
-        assertEquals(temperature, Double.parseDouble(csv[1]), 0.02);
-        assertEquals(humidity, Double.parseDouble(csv[2]), 0.02);
-        assertEquals(co2, Double.parseDouble(csv[3]), 0.02);
-    }
-
 }
