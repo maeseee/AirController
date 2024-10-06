@@ -1,9 +1,5 @@
 package org.airController.persistence;
 
-import org.airController.sensorValues.SensorData;
-
-import java.util.List;
-
 public class DbToCsv {
     static final String INDOOR_SENSOR_CSV_PATH = "log/indoorSensorDataFromDb.csv";
     static final String OUTDOOR_SENSOR_CSV_PATH = "log/outdoorSensorDataFromDb.csv";
@@ -11,8 +7,7 @@ public class DbToCsv {
     public void persistToCsvFromDb(String tableName, String csvFilePath) {
         final SensorDataDb sensorDataDb = new SensorDataDb(tableName);
         final SensorDataCsv sensorDataCsv = new SensorDataCsv(csvFilePath);
-        final List<SensorData> sensorData = sensorDataDb.read();
-        sensorData.forEach(sensorDataCsv::persist);
+        PersistenceConverter.convert(sensorDataDb, sensorDataCsv);
     }
 
     public static void main(String[] args) {
