@@ -27,21 +27,17 @@ EOF
 
 # Config startup behaviour
 cd || exit
-echo "export weather_api_key=<key>" >> .bashrc
-echo "export qingping_app_secret=<secret>" >> .bashrc
-echo "export sensorDataDbPassword=<secret>" >> .bashrc
+echo "export weather_api_key=<api_key>" >> /home/pi/.bashrc
+echo "export qingping_app_secret=<secret>" >> /home/pi/.bashrc
+echo "export sensorDataDbPassword=<secret>" >> /home/pi/.bashrc
 cd AirController || exit
+# Add variables to airController.service as well
 sudo cp doc/RaspberryPi3/airController.service /etc/systemd/system/
 sudo systemctl enable airController.service # Enable the service to start at boot time
 chmod +x run.sh
 
 # See the log of the systemd service
 journalctl -fu airController.service -n 10
-
-# Set variables on raspberry pi
-# Add the following command to the /home/pi/.bashrc (without "")
-#export weather_api_key=<api_key>
-#export qingping_app_secret=<app_secret>
 
 # Set variables on windows machine
 #setx weather_api_key "<api_key>"
