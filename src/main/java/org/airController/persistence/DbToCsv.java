@@ -9,10 +9,10 @@ public class DbToCsv {
     static final String OUTDOOR_SENSOR_CSV_PATH = "log/outdoorSensorDataFromDb.csv";
 
     public void persistToCsvFromDb(String tableName, String csvFilePath) {
-        final SensorDataDb indoorSensorDataDb = new SensorDataDb(tableName);
-        final SensorDataCsv indoorSensorDataCsvWriter = new SensorDataCsv(csvFilePath);
-        final List<SensorData> indoorSensorData = indoorSensorDataDb.read();
-        indoorSensorData.forEach(indoorSensorDataCsvWriter::persist);
+        final SensorDataDb sensorDataDb = new SensorDataDb(tableName);
+        final SensorDataCsv sensorDataCsv = new SensorDataCsv(csvFilePath);
+        final List<SensorData> sensorData = sensorDataDb.read();
+        sensorData.forEach(sensorDataCsv::persist);
     }
 
     public static void main(String[] args) {
