@@ -11,11 +11,11 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SensorDataDbTest {
-    private final String sensorDataTableName = "TestSensorTable";
 
     @Test
     void shouldAddTable() throws InvalidArgumentException {
         final SensorData sensorData = new SensorDataImpl(21.0, 10.0, 500.0, LocalDateTime.now());
+        final String sensorDataTableName = "TestSensorTable";
         final SensorDataDb testee = new SensorDataDb(sensorDataTableName);
         final int numberOfEntries = testee.read().size();
 
