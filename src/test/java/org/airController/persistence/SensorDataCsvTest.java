@@ -13,7 +13,7 @@ import java.util.Random;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class SensorDataCsvWriterTest {
+class SensorDataCsvTest {
 
     private final String FILE_PATH = "log/sensorValueCsvWriterTest.csv";
 
@@ -25,7 +25,7 @@ class SensorDataCsvWriterTest {
         final double co2Value = random.nextDouble() * 100000;
         final LocalDateTime time = LocalDateTime.of(2024, 9, 27, 20, 51, 12);
         final SensorData sensorData = createSensorData(temperatureValue, humidityValue, co2Value, time);
-        final SensorDataPersistence testee = new SensorDataCsvWriter(FILE_PATH);
+        final SensorDataPersistence testee = new SensorDataCsv(FILE_PATH);
 
         testee.persist(sensorData);
 

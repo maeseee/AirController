@@ -44,18 +44,18 @@ public class SensorDataDb implements SensorDataPersistence {
         }
     }
 
-    List<SensorData> read() {
+    @Override
+    public List<SensorData> read() {
+        final List<SensorData> entries = new ArrayList<>();
         try (final Connection connection = DriverManager.getConnection(JDBC_URL, USER, password);
              final Statement statement = connection.createStatement()) {
 
             final String querySQL = getEntriesSql();
             final ResultSet resultSet = statement.executeQuery(querySQL);
 
-            final List<SensorData> entries = new ArrayList<>();
             while (resultSet.next()) {
                 try {
-                    final SensorData entry = createSensorData(resultSet);
-                    entries.add(entry);
+                    entries.add(createSensorData(resultSet));
                 } catch (InvalidArgumentException e) {
                     logger.error("Invalid sensor data! {}", e.getMessage());
                 }
