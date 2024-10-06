@@ -28,13 +28,12 @@ class SensorDataCsvTest {
         final List<SensorData> sensorDataList = testee.read();
 
         final SensorData lastSensorData = sensorDataList.get(sensorDataList.size() - 1);
-        assertThat(lastSensorData.getTemperature()).isPresent()
-                .hasValueSatisfying(temperature -> assertThat(temperature.getCelsius()).isEqualTo(celsiusTemperature));
-        assertThat(lastSensorData.getHumidity()).isPresent()
-                .hasValueSatisfying(
-                        humidity -> assertThat(humidity.getRelativeHumidity(lastSensorData.getTemperature().get())).isEqualTo(relativeHumidity));
-        assertThat(lastSensorData.getCo2()).isPresent()
-                .hasValueSatisfying(co2 -> assertThat(co2.getPpm()).isEqualTo(co2Ppm));
+        assertThat(lastSensorData.getTemperature()).isPresent().hasValueSatisfying(
+                temperature -> assertThat(temperature.getCelsius()).isEqualTo(celsiusTemperature));
+        assertThat(lastSensorData.getHumidity()).isPresent().hasValueSatisfying(
+                humidity -> assertThat(humidity.getRelativeHumidity(lastSensorData.getTemperature().get())).isEqualTo(relativeHumidity));
+        assertThat(lastSensorData.getCo2()).isPresent().hasValueSatisfying(
+                co2 -> assertThat(co2.getPpm()).isEqualTo(co2Ppm));
         assertThat(lastSensorData.getTimeStamp()).isEqualTo(time);
     }
 
