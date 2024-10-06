@@ -18,22 +18,19 @@ public class DailyAirFlow implements Rule {
 
     @Override
     public Confidence turnOnConfidence() {
-        LocalDateTime now = LocalDateTime.now();
-        return isSummerTime(MonthDay.from(now)) ?
-                calculateFreshAirPercentageOnSummer(now.toLocalTime()) :
-                calculateFreshAirPercentageOnWinter(now.toLocalTime());
+        final LocalDateTime now = LocalDateTime.now();
+        final double sign = isSummerTime(MonthDay.from(now)) ? 1.0 : -1.0;
+        final double summerConfidence = getSummerConfidence(now.toLocalTime());
+        return new Confidence(summerConfidence * sign);
     }
 
     private boolean isSummerTime(MonthDay dateNow) {
         return dateNow.isAfter(SUMMER_TIME_START) && dateNow.isBefore(SUMMER_TIME_END);
     }
 
-    private Confidence calculateFreshAirPercentageOnSummer(LocalTime timeNow) {
-        return new Confidence(getCosinusOfDailyTemperatur(timeNow));
-    }
-
-    private Confidence calculateFreshAirPercentageOnWinter(LocalTime timeNow) {
-        return new Confidence(-getCosinusOfDailyTemperatur(timeNow));
+    private double getSummerConfidence(LocalTime now) {
+        double cosConfidence = getCosinusOfDailyTemperatur(now);
+        return Math.abs(cosConfidence) > Math.sin(Math.PI / 4.0) ? cosConfidence : 0.0;
     }
 
     private double getCosinusOfDailyTemperatur(LocalTime timeNow) {

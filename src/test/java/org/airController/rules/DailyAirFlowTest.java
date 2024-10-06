@@ -19,14 +19,14 @@ class DailyAirFlowTest {
             "2023-07-20 16:00, -1.0",
             "2023-07-20 10:00, 0.0",
             "2023-07-20 22:00, 0.0",
-            "2023-07-20 00:00, 0.5",
-            "2023-07-20 08:00, 0.5",
+            "2023-07-20 00:00, 0.0", // only 3 hours in cosinus
+            "2023-07-20 08:00, 0.0", // only 3 hours in cosinus
             "2023-01-20 04:00, -1.0",
             "2023-01-20 16:00, 1.0",
             "2023-01-20 10:00, 0.0",
             "2023-01-20 22:00, 0.0",
-            "2023-01-20 00:00, -0.5",
-            "2023-01-20 08:00, -0.5"
+            "2023-01-20 00:00, 0.0", // only 3 hours in cosinus
+            "2023-01-20 08:00, 0.0"  // only 3 hours in cosinus
     })
     void shouldCalculateFreshAirConfidenceAccordingToSeason(String dateTimeString, double expectedResult) {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
