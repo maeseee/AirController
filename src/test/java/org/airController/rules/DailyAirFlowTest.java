@@ -16,6 +16,7 @@ class DailyAirFlowTest {
     @ParameterizedTest(name = "{index} => dateTime={0}, expectedResult={1}")
     @CsvSource({
             "2023-07-20 04:00, 1.0",
+            "2023-07-20 06:30, 0.5",
             "2023-07-20 16:00, -1.0",
             "2023-07-20 10:00, 0.0",
             "2023-07-20 22:00, 0.0",

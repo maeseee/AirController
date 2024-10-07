@@ -29,13 +29,14 @@ public class DailyAirFlow implements Rule {
     }
 
     private double getSummerConfidence(LocalTime now) {
-        double cosConfidence = getCosinusOfDailyTemperatur(now);
-        return Math.abs(cosConfidence) > Math.sin(Math.PI / 4.0) ? cosConfidence : 0.0;
+        final double cosConfidence = getCosinus(now, Duration.ofDays(1).dividedBy(2));
+        final double sign = Math.signum(getCosinus(now, Duration.ofDays(1)));
+        return cosConfidence > 0 ? cosConfidence * sign : 0.0;
     }
 
-    private double getCosinusOfDailyTemperatur(LocalTime timeNow) {
-        double m = 2.0 * Math.PI / Duration.ofDays(1).toHours();
-        double b = 2.0 * Math.PI * -SUMMER_ON_TIME.getHour() / Duration.ofDays(1).toHours();
+    private double getCosinus(LocalTime timeNow, Duration period) {
+        final double m = 2 * Math.PI / period.toHours();
+        final double b = -m * SUMMER_ON_TIME.getHour();
         return Math.cos(m * timeNow.getHour() + b);
     }
 }
