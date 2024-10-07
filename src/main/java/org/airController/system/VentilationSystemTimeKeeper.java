@@ -50,13 +50,18 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
         return getDuration(startTime, endTime);
     }
 
-    @Override public void run() {
-        final LocalDateTime now = LocalDateTime.now();
-        LocalDate yesterday = now.toLocalDate().minusDays(1);
-        final Duration totalAirFlowYesterday = getTotalAirFlowFromDay(yesterday);
-        logger.info("Daily on time is {} minutes ({} %)", totalAirFlowYesterday.toMinutes(), getOnPercentage(totalAirFlowYesterday));
+    @Override
+    public void run() {
+        try {
+            final LocalDateTime now = LocalDateTime.now();
+            final LocalDate yesterday = now.toLocalDate().minusDays(1);
+            final Duration totalAirFlowYesterday = getTotalAirFlowFromDay(yesterday);
+            logger.info("Daily on time is {} minutes ({} %)", totalAirFlowYesterday.toMinutes(), getOnPercentage(totalAirFlowYesterday));
 
-        removeTimePeriods(yesterday);
+            removeTimePeriods(yesterday);
+        } catch (Exception e) {
+            logger.error("Exception occurred while running VentilationSystemTimeKeeper! ", e);
+        }
     }
 
     @VisibleForTesting
