@@ -1,6 +1,6 @@
 # AirController
 
-The goal of this application is to control the humidity in the air with a controlled apartment ventilation while
+The goal of this application is to control the humidity in the air with controlled apartment ventilation while
 minimizing the heating cost.
 
 The controlling mechanisms are on one hand to switch the air flow on or off. On the other hand, a humidity exchanger can

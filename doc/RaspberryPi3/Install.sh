@@ -16,7 +16,7 @@ git clone https://github.com/WiringPi/WiringPi --branch master --single-branch w
 cd wiringpi || exit
 sudo ./build
 
-# Set startup pin config (RasperryPi will not run without failure without this config when connected to the PiOT Relay Board)
+# Set startup pin config (RaspberryPi will not run without failure without this config when connected to the PiOT Relay Board)
 sudo tee -a /boot/config.txt << EOF
 dtoverlay=w1-gpio
 gpio=5=op,dh

@@ -39,8 +39,6 @@ public class SensorDataDb implements SensorDataPersistence {
             statement.execute(insertDataSql);
         } catch (SQLException e) {
             logger.error("SQL Exception! {}", e.getMessage());
-        } catch (InvalidArgumentException e) {
-            logger.error("Invalid sensor data! {}", e.getMessage());
         } catch (Exception e) {
             logger.error("Unknown error! {}", e.getMessage());
         }
@@ -91,7 +89,7 @@ public class SensorDataDb implements SensorDataPersistence {
         return String.format(unformattedSql, sensorDataTableName);
     }
 
-    private String getInsertDataSql(SensorData sensorData) throws InvalidArgumentException {
+    private String getInsertDataSql(SensorData sensorData) {
         final Double temp = sensorData.getTemperature().map(Temperature::getCelsius).orElse(null);
         final Double hum = sensorData.getHumidity().map(Humidity::getAbsoluteHumidity).orElse(null);
         final Double carbonDioxide = sensorData.getCo2().map(CarbonDioxide::getPpm).orElse(null);
