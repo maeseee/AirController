@@ -41,6 +41,8 @@ public class SensorDataDb implements SensorDataPersistence {
             logger.error("SQL Exception! {}", e.getMessage());
         } catch (InvalidArgumentException e) {
             logger.error("Invalid sensor data! {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("Unknown error! {}", e.getMessage());
         }
     }
 
@@ -57,12 +59,12 @@ public class SensorDataDb implements SensorDataPersistence {
                 try {
                     entries.add(createSensorData(resultSet));
                 } catch (InvalidArgumentException e) {
-                    logger.error("Invalid sensor data! {}", e.getMessage());
+                    logger.error("Next entry could not be loaded! {}", e.getMessage());
                 }
             }
             return entries;
         } catch (SQLException e) {
-            logger.error("SQL Exception! {}", e.getMessage());
+            logger.error("SQL Exception on read ! {}", e.getMessage());
         }
         return Collections.emptyList();
     }
