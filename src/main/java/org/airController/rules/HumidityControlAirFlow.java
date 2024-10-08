@@ -2,16 +2,28 @@ package org.airController.rules;
 
 import org.airController.sensorValues.CurrentSensorValues;
 import org.airController.sensorValues.Humidity;
+import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.Temperature;
 
 import java.util.Optional;
 
 public class HumidityControlAirFlow implements Rule {
 
-    private static final double UPPER_LIMIT = 65.0;
-    private static final double LOWER_LIMIT = 40.0;
-    private static final double M = 2.0 / (UPPER_LIMIT - LOWER_LIMIT); // y = xm + b
-    private static final double B = 1 - (UPPER_LIMIT * M); // y = xm + b
+    private static final Temperature REFERENCE_TEMPERATURE;
+    private static final Humidity UPPER_HUMIDITY;
+    private static final Humidity IDEAL_HUMIDITY;
+
+    static {
+        try {
+            REFERENCE_TEMPERATURE = Temperature.createFromCelsius(22.0);
+            UPPER_HUMIDITY = Humidity.createFromRelative(65.0, REFERENCE_TEMPERATURE);
+            IDEAL_HUMIDITY = Humidity.createFromRelative(52.5, REFERENCE_TEMPERATURE);
+        } catch (InvalidArgumentException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static final double HUMIDITY_FACTOR = UPPER_HUMIDITY.getAbsoluteHumidity() - IDEAL_HUMIDITY.getAbsoluteHumidity();
 
     private final CurrentSensorValues sensorValues;
 
@@ -27,12 +39,21 @@ public class HumidityControlAirFlow implements Rule {
     @Override
     public Confidence turnOnConfidence() {
         final Optional<Humidity> indoorHumidity = sensorValues.getIndoorHumidity();
-        final Optional<Temperature> indoorTemperature = sensorValues.getIndoorTemperature();
-        if (indoorHumidity.isEmpty() || indoorTemperature.isEmpty()) {
+        final Optional<Humidity> outdoorHumidity = sensorValues.getOutdoorHumidity();
+        if (indoorHumidity.isEmpty() || outdoorHumidity.isEmpty()) {
             return new Confidence(0.0);
         }
-        final double impact = M * indoorHumidity.get().getRelativeHumidity(indoorTemperature.get()) + B;
-        final double sign = sensorValues.isIndoorHumidityAboveOutdoorHumidity() ? 1.0 : -1.0;
-        return new Confidence(impact * sign);
+        return calculateConfidence(indoorHumidity.get(), outdoorHumidity.get());
+    }
+
+    private Confidence calculateConfidence(Humidity indoorHumidity, Humidity outdoorHumidity) {
+        final double indoorConfidence = Math.abs(indoorHumidity.getAbsoluteHumidity() - IDEAL_HUMIDITY.getAbsoluteHumidity());
+        final double outdoorCorrectionFactor = calculateOutdoorCorrectionFactor(indoorHumidity, outdoorHumidity);
+        return new Confidence(indoorConfidence * outdoorCorrectionFactor / HUMIDITY_FACTOR);
+    }
+
+    private double calculateOutdoorCorrectionFactor(Humidity indoorHumidity, Humidity outdoorHumidity) {
+        final double sign = Math.signum(indoorHumidity.getAbsoluteHumidity() - IDEAL_HUMIDITY.getAbsoluteHumidity());
+        return (indoorHumidity.getAbsoluteHumidity() - outdoorHumidity.getAbsoluteHumidity()) * sign;
     }
 }

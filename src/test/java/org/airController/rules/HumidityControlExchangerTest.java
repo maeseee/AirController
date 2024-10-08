@@ -22,19 +22,23 @@ class HumidityControlExchangerTest {
     @Mock
     private CurrentSensorValues sensorValues;
 
-    @ParameterizedTest(name = "{index} => humidity %={0}, indoorHumidityAboveOutdoorHumidity = {1}, expectedResult={2}")
+    @ParameterizedTest(name = "{index} => indoorHumidity={0}%, outdoorHumidity={1}%, expectedResult={2}")
     @CsvSource({
-            "60, true, -1.0",
-            "60, false, 1.0",
-            "40, false, -1.0",
-            "40, true, 1.0"
+            "52.0, 65.0, -1.0",
+            "60.0, 52.5, -1.0",
+            "45.0, 52.5, -1.0",
+            "45.0, 65.0, -1.0",
+            "40.0, 27.5, 1.0",
+            "65.0, 77.5, 1.0",
     })
-    void shouldControlHumidity(double indoorHumidity, boolean indoorHumidityAboveOutdoorHumidity, double expectedResult)
+    void shouldControlHumidityExchanger(double indoorHumidityValue, double outdoorHumidityValue,
+            double expectedResult)
             throws InvalidArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(22.0);
-        when(sensorValues.getIndoorTemperature()).thenReturn(Optional.of(temperature));
-        when(sensorValues.getIndoorHumidity()).thenReturn(Optional.of(Humidity.createFromRelative(indoorHumidity, temperature)));
-        when(sensorValues.isIndoorHumidityAboveOutdoorHumidity()).thenReturn(indoorHumidityAboveOutdoorHumidity);
+        final Humidity indoorHumidity = Humidity.createFromRelative(indoorHumidityValue, temperature);
+        final Humidity outdoorHumidity = Humidity.createFromRelative(outdoorHumidityValue, temperature);
+        when(sensorValues.getIndoorHumidity()).thenReturn(Optional.of(indoorHumidity));
+        when(sensorValues.getOutdoorHumidity()).thenReturn(Optional.of(outdoorHumidity));
         final HumidityControlAirFlow humidityControlAirFlow = new HumidityControlAirFlow(sensorValues);
         final HumidityControlExchanger testee = new HumidityControlExchanger(humidityControlAirFlow);
 

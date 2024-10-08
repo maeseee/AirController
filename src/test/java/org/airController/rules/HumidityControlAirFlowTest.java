@@ -23,43 +23,26 @@ class HumidityControlAirFlowTest {
     @Mock
     private CurrentSensorValues sensorValues;
 
-    @ParameterizedTest(name = "{index} => humidity %={0}, expectedResult={1}")
+    @ParameterizedTest(name = "{index} => indoorHumidity={0}%, outdoorHumidity={1}%, expectedResult={2}")
     @CsvSource({
-            "52.5, 0.0",
-            "65, 1.0",
-            "70, 1.0",
-            "40, -1.0",
-            "39, -1.0"
+            "52.5, 52.5, 0.0",
+            "52.5, 65.0, 0.0",
+            "65.0, 65.0, 0.0",
+            "65.0, 52.5, 1.0",
+            "70.0, 52.5, 1.0",
+            "40.0, 52.5, 1.0",
+            "40.0, 65.0, 1.0",
+            "40.0, 27.5, -1.0",
+            "65.0, 77.5, -1.0",
     })
-    void shouldCalculateHumidityPercentage_whenOutdoorHumidityIsBelowIndoor(double indoorHumidity, double expectedResult)
+    void shouldCalculateHumidityPercentage(double indoorHumidityValue, double outdoorHumidityValue,
+            double expectedResult)
             throws InvalidArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(22.0);
-        final Humidity humidity = Humidity.createFromRelative(indoorHumidity, temperature);
-        when(sensorValues.getIndoorTemperature()).thenReturn(Optional.of(temperature));
-        when(sensorValues.getIndoorHumidity()).thenReturn(Optional.of(humidity));
-        when(sensorValues.isIndoorHumidityAboveOutdoorHumidity()).thenReturn(true);
-        final HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
-
-        final Confidence result = testee.turnOnConfidence();
-
-        assertThat(result.getWeightedConfidenceValue()).isCloseTo(expectedResult, Offset.offset(0.01));
-    }
-
-    @ParameterizedTest(name = "{index} => humidity %={0}, expectedResult={1}")
-    @CsvSource({
-            "52.5, 0.0",
-            "65, -1.0",
-            "70, -1.0",
-            "40, 1.0",
-            "39, 1.0"
-    })
-    void shouldCalculateHumidityPercentage_whenOutdoorHumidityIsAboveIndoor(double indoorHumidity, double expectedResult)
-            throws InvalidArgumentException {
-        final Temperature temperature = Temperature.createFromCelsius(22.0);
-        final Humidity humidity = Humidity.createFromRelative(indoorHumidity, temperature);
-        when(sensorValues.getIndoorTemperature()).thenReturn(Optional.of(temperature));
-        when(sensorValues.getIndoorHumidity()).thenReturn(Optional.of(humidity));
-        when(sensorValues.isIndoorHumidityAboveOutdoorHumidity()).thenReturn(false);
+        final Humidity indoorHumidity = Humidity.createFromRelative(indoorHumidityValue, temperature);
+        final Humidity outdoorHumidity = Humidity.createFromRelative(outdoorHumidityValue, temperature);
+        when(sensorValues.getIndoorHumidity()).thenReturn(Optional.of(indoorHumidity));
+        when(sensorValues.getOutdoorHumidity()).thenReturn(Optional.of(outdoorHumidity));
         final HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
 
         final Confidence result = testee.turnOnConfidence();
@@ -69,7 +52,6 @@ class HumidityControlAirFlowTest {
 
     @Test
     void shouldReturn0_whenTemperatureValueNotAvailable() {
-        when(sensorValues.getIndoorTemperature()).thenReturn(Optional.empty());
         when(sensorValues.getIndoorHumidity()).thenReturn(Optional.empty());
         final HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
 
