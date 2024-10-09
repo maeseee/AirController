@@ -20,12 +20,12 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
 
     @Override
     public void setAirFlowOn(boolean on) {
-        LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime now = LocalDateTime.now();
         if (on && onTime == null) {
             onTime = now;
         }
         if (!on && onTime != null) {
-            TimePeriod timePeriod = new TimePeriod(onTime, now);
+            final TimePeriod timePeriod = new TimePeriod(onTime, now);
             timePeriods.add(timePeriod);
             onTime = null;
         }
@@ -38,15 +38,15 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
 
     @Override
     public Duration getAirFlowOnDurationInLastHour() {
-        LocalDateTime endTime = LocalDateTime.now();
-        LocalDateTime startTime = endTime.minusHours(1);
+        final LocalDateTime endTime = LocalDateTime.now();
+        final LocalDateTime startTime = endTime.minusHours(1);
         return getDuration(startTime, endTime);
     }
 
     @Override
     public Duration getTotalAirFlowFromDay(LocalDate day) {
-        LocalDateTime startTime = day.atStartOfDay();
-        LocalDateTime endTime = day.atTime(LocalTime.MAX);
+        final LocalDateTime startTime = day.atStartOfDay();
+        final LocalDateTime endTime = day.atTime(LocalTime.MAX);
         return getDuration(startTime, endTime);
     }
 
@@ -86,8 +86,8 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     }
 
     private Duration getDurationInTimePeriod(TimePeriod timePeriod, LocalDateTime startTime, LocalDateTime endTime) {
-        LocalDateTime durationStart = timePeriod.on().isAfter(startTime) ? timePeriod.on() : startTime;
-        LocalDateTime durationEnd = timePeriod.off().isBefore(endTime) ? timePeriod.off() : endTime;
+        final LocalDateTime durationStart = timePeriod.on().isAfter(startTime) ? timePeriod.on() : startTime;
+        final LocalDateTime durationEnd = timePeriod.off().isBefore(endTime) ? timePeriod.off() : endTime;
         return Duration.between(durationStart, durationEnd);
     }
 
