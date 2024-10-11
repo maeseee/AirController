@@ -22,17 +22,23 @@ public class SensorDataDb implements SensorDataPersistence {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
     private final String sensorDataTableName;
-    private final String password;
+    private final Connection connection;
 
     public SensorDataDb(String sensorDataTableName) {
         this.sensorDataTableName = sensorDataTableName;
-        this.password = Secret.getSecret(ENVIRONMENT_VARIBLE_DB, ENCRYPTED_DB_SECRET);
+        String password = Secret.getSecret(ENVIRONMENT_VARIBLE_DB, ENCRYPTED_DB_SECRET);
+        try {
+            connection = DriverManager.getConnection(JDBC_URL, USER, password);
+        } catch (SQLException e) {
+            logger.error("SQL Exception on creating connection! {}", e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void persist(SensorData sensorData) {
-        try (final Connection connection = DriverManager.getConnection(JDBC_URL, USER, password);
-             final Statement statement = connection.createStatement()) {
+        try {
+            final Statement statement = connection.createStatement();
             final String createTableSql = getCreateTableSql();
             statement.execute(createTableSql);
             final String insertDataSql = getInsertDataSql(sensorData);
@@ -47,9 +53,8 @@ public class SensorDataDb implements SensorDataPersistence {
     @Override
     public List<SensorData> read() {
         final List<SensorData> entries = new ArrayList<>();
-        try (final Connection connection = DriverManager.getConnection(JDBC_URL, USER, password);
-             final Statement statement = connection.createStatement()) {
-
+        try {
+            final Statement statement = connection.createStatement();
             final String querySQL = getEntriesSql();
             final ResultSet resultSet = statement.executeQuery(querySQL);
 
@@ -67,7 +72,7 @@ public class SensorDataDb implements SensorDataPersistence {
         return Collections.emptyList();
     }
 
-    private static SensorData createSensorData(ResultSet resultSet) throws SQLException, InvalidArgumentException {
+    private SensorData createSensorData(ResultSet resultSet) throws SQLException, InvalidArgumentException {
         // Read the object as it can handle null
         final Double temp = resultSet.getObject("temperature", Double.class);
         final Double hum = resultSet.getObject("humidity", Double.class);
