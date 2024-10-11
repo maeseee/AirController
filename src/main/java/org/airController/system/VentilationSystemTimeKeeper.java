@@ -81,7 +81,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
                 .reduce(Duration.ZERO, Duration::plus);
     }
 
-    private static boolean isBetween(LocalDateTime startTime, LocalDateTime endTime, TimePeriod timePeriod) {
+    private boolean isBetween(LocalDateTime startTime, LocalDateTime endTime, TimePeriod timePeriod) {
         return timePeriod.off().isAfter(startTime) && timePeriod.on().isBefore(endTime);
     }
 

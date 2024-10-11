@@ -48,7 +48,7 @@ class QingPingSensorReducer {
         return averageCo2.isPresent() ? CarbonDioxide.createFromPpm(averageCo2.getAsDouble()) : null;
     }
 
-    private static LocalDateTime getNewestTimestamp(List<QingPingSensorData> currentSensorDataList) {
+    private LocalDateTime getNewestTimestamp(List<QingPingSensorData> currentSensorDataList) {
         return currentSensorDataList.stream()
                 .map(QingPingSensorData::getTimeStamp)
                 .max(LocalDateTime::compareTo).orElse(LocalDateTime.now());
