@@ -1,6 +1,5 @@
 package org.airController.sensor.qingPing;
 
-import org.airController.gpio.RaspberryGpioPin;
 import org.airController.sensorValues.CarbonDioxide;
 import org.airController.sensorValues.Humidity;
 import org.airController.sensorValues.InvalidArgumentException;
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class QingPingListDevices {
-    private static final Logger logger = LogManager.getLogger(RaspberryGpioPin.class);
+    private static final Logger logger = LogManager.getLogger(QingPingListDevices.class);
 
     private final QingPingListDevicesRequest listDevicesRequest;
     private final QingPingListDevicesJsonParser parser;

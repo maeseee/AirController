@@ -6,7 +6,6 @@ import lombok.Setter;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.OptionalDouble;
 
 @Setter
 public class CurrentSensorData implements SensorData {
@@ -42,12 +41,6 @@ public class CurrentSensorData implements SensorData {
     @Override
     public LocalDateTime getTimeStamp() {
         return timestamp;
-    }
-
-    public OptionalDouble getAbsoluteHumidity() {
-        return isSensorValid() && humidity != null ?
-                OptionalDouble.of(humidity.getAbsoluteHumidity()) :
-                OptionalDouble.empty();
     }
 
     private boolean isSensorValid() {

@@ -18,10 +18,6 @@ class QingPingSensorData implements SensorData {
     private final CarbonDioxide co2;
     private final LocalDateTime timestamp;
 
-    public QingPingSensorData(Temperature temperature, Humidity humidity, LocalDateTime timestamp) {
-        this(temperature, humidity, null, timestamp);
-    }
-
     public QingPingSensorData(Temperature temperature, Humidity humidity, CarbonDioxide co2, LocalDateTime timestamp) {
         this.temperature = temperature;
         this.humidity = humidity;
