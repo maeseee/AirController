@@ -12,6 +12,7 @@ import java.util.List;
 
 class SensorDataCsv implements SensorDataPersistence {
     private static final Logger logger = LogManager.getLogger(SensorDataCsv.class);
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final String filePath;
 
@@ -21,8 +22,7 @@ class SensorDataCsv implements SensorDataPersistence {
 
     @Override
     public void persist(SensorData sensorData) {
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        final String formattedTime = sensorData.getTimeStamp().format(formatter);
+        final String formattedTime = sensorData.getTimeStamp().format(FORMATTER);
         final String formattedTemperature = sensorData.getTemperature()
                 .map(temperature -> String.valueOf(temperature.getCelsius()))
                 .orElse("");
@@ -60,16 +60,15 @@ class SensorDataCsv implements SensorDataPersistence {
         return entries;
     }
 
-    private static SensorData createSensorData(String csvLine) throws InvalidArgumentException {
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private SensorData createSensorData(String csvLine) throws InvalidArgumentException {
         final String[] csv = csvLine.split(",");
-        final LocalDateTime timestamp = LocalDateTime.parse(csv[0], formatter);
+        assert (csv.length > 2);
+        final LocalDateTime timestamp = LocalDateTime.parse(csv[0], FORMATTER);
         final double tempCelsius = Double.parseDouble(csv[1]);
         final Temperature temperature = Temperature.createFromCelsius(tempCelsius);
         final double humRelative = Double.parseDouble(csv[2]);
         final Humidity humidity = Humidity.createFromRelative(humRelative, temperature);
-        final double co2Ppm = Double.parseDouble(csv[3]);
-        final CarbonDioxide co2 = CarbonDioxide.createFromPpm(co2Ppm);
+        final CarbonDioxide co2 = csv.length > 3 ? CarbonDioxide.createFromPpm(Double.parseDouble(csv[3])) : null;
         return new SensorDataImpl(temperature, humidity, co2, timestamp);
     }
 }
