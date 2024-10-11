@@ -30,12 +30,12 @@ class SensorDataCsvTest {
 
         final SensorData lastSensorData = sensorDataList.get(sensorDataList.size() - 1);
         assertThat(lastSensorData.getTemperature()).isPresent().hasValueSatisfying(
-                temperature -> assertThat(temperature.getCelsius()).isCloseTo(temperature.getCelsius(), Offset.offset(0.001)));
+                temperature -> assertThat(temperature.getCelsius()).isCloseTo(temperature.getCelsius(), Offset.offset(0.01)));
         assertThat(lastSensorData.getHumidity()).isPresent().hasValueSatisfying(
                 humidity -> assertThat(humidity.getRelativeHumidity(lastSensorData.getTemperature().get())).isCloseTo(relativeHumidity,
-                        Offset.offset(0.001)));
+                        Offset.offset(0.01)));
         assertThat(lastSensorData.getCo2()).isPresent().hasValueSatisfying(
-                co2 -> assertThat(co2.getPpm()).isCloseTo(co2Ppm, Offset.offset(0.001)));
+                co2 -> assertThat(co2.getPpm()).isCloseTo(co2Ppm, Offset.offset(1.0)));
         assertThat(lastSensorData.getTimeStamp()).isCloseTo(time, within(1, ChronoUnit.SECONDS));
     }
 

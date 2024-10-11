@@ -24,13 +24,13 @@ class SensorDataCsv implements SensorDataPersistence {
     public void persist(SensorData sensorData) {
         final String formattedTime = sensorData.getTimeStamp().format(FORMATTER);
         final String formattedTemperature = sensorData.getTemperature()
-                .map(temperature -> String.valueOf(temperature.getCelsius()))
+                .map(temperature -> String.format("%.2f", temperature.getCelsius()))
                 .orElse("");
         final String formattedHumidity = sensorData.getHumidity()
-                .map(humidity -> String.valueOf(humidity.getRelativeHumidity(sensorData.getTemperature().get())))
+                .map(humidity -> String.format("%.2f", humidity.getRelativeHumidity(sensorData.getTemperature().get())))
                 .orElse("");
         final String formattedCo2 = sensorData.getCo2()
-                .map(co2 -> String.valueOf(co2.getPpm()))
+                .map(co2 -> String.format("%.0f", co2.getPpm()))
                 .orElse("");
         final String csvLine = String.format("%s,%s,%s,%s", formattedTime, formattedTemperature, formattedHumidity, formattedCo2);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
