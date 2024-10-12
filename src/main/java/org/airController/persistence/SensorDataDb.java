@@ -38,11 +38,8 @@ public class SensorDataDb implements SensorDataPersistence {
     @Override
     public void persist(SensorData sensorData) {
         try {
-            final Statement statement = connection.createStatement();
-            final String createTableSql = getCreateTableSql();
-            statement.execute(createTableSql);
-            final String insertDataSql = getInsertDataSql(sensorData);
-            statement.execute(insertDataSql);
+            createTable();
+            insertSensorData(sensorData);
         } catch (SQLException e) {
             logger.error("SQL Exception! {}", e.getMessage());
         } catch (Exception e) {
@@ -82,7 +79,8 @@ public class SensorDataDb implements SensorDataPersistence {
         return new SensorDataImpl(temp, hum, carbonDioxide, timestamp);
     }
 
-    private String getCreateTableSql() {
+    private void createTable() throws SQLException {
+        final Statement statement = connection.createStatement();
         final String unformattedSql = """
                 CREATE TABLE IF NOT EXISTS public.%s (
                      id INT PRIMARY KEY AUTO_INCREMENT,
@@ -91,16 +89,27 @@ public class SensorDataDb implements SensorDataPersistence {
                     co2 DOUBLE PRECISION,
                     event_time TIMESTAMP);
                 """;
-        return String.format(unformattedSql, sensorDataTableName);
+        final String sql = String.format(unformattedSql, sensorDataTableName);
+        statement.execute(sql);
     }
 
-    private String getInsertDataSql(SensorData sensorData) {
+    private void insertSensorData(SensorData sensorData) throws SQLException {
+        final String sql = "INSERT INTO " + sensorDataTableName + " (temperature, humidity, co2, event_time) VALUES (?, ?, ?, ?)";
+        final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
         final Double temp = sensorData.getTemperature().map(Temperature::getCelsius).orElse(null);
+        preparedStatement.setObject(1, temp);
+
         final Double hum = sensorData.getHumidity().map(Humidity::getAbsoluteHumidity).orElse(null);
+        preparedStatement.setObject(2, hum);
+
         final Double carbonDioxide = sensorData.getCo2().map(CarbonDioxide::getPpm).orElse(null);
+        preparedStatement.setObject(3, carbonDioxide);
+
         final String timeStamp = sensorData.getTimeStamp().format(formatter);
-        final String unformattedSql = "INSERT INTO %s (temperature, humidity, co2, event_time) VALUES (%f, %f, %f, '%s');";
-        return String.format(unformattedSql, sensorDataTableName, temp, hum, carbonDioxide, timeStamp);
+        preparedStatement.setObject(4, timeStamp);
+
+        preparedStatement.executeUpdate();
     }
 
     private String getEntriesSql() {
