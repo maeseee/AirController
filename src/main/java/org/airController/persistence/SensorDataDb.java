@@ -81,15 +81,12 @@ public class SensorDataDb implements SensorDataPersistence {
 
     private void createTable() throws SQLException {
         final Statement statement = connection.createStatement();
-        final String unformattedSql = """
-                CREATE TABLE IF NOT EXISTS public.%s (
-                     id INT PRIMARY KEY AUTO_INCREMENT,
-                    temperature DOUBLE PRECISION,
-                    humidity DOUBLE PRECISION,
-                    co2 DOUBLE PRECISION,
-                    event_time TIMESTAMP);
-                """;
-        final String sql = String.format(unformattedSql, sensorDataTableName);
+        final String sql = "CREATE TABLE IF NOT EXISTS public." + sensorDataTableName + " (\n" +
+                "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
+                "temperature DOUBLE,\n" +
+                "humidity DOUBLE,\n" +
+                "co2 DOUBLE,\n" +
+                "event_time TIMESTAMP);";
         statement.execute(sql);
     }
 
