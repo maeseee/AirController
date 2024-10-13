@@ -36,8 +36,11 @@ public class SensorDataDb implements SensorDataPersistence {
 
     @Override
     public void persist(SensorData sensorData) {
+        final Double temperature = sensorData.getTemperature().map(Temperature::getCelsius).orElse(null);
+        final Double humidity = sensorData.getHumidity().map(Humidity::getAbsoluteHumidity).orElse(null);
+        final Double co2 = sensorData.getCo2().map(CarbonDioxide::getPpm).orElse(null);
         try {
-            insertSensorData(sensorData);
+            insertSensorData(temperature, humidity, co2, sensorData.getTimeStamp());
         } catch (SQLException e) {
             logger.error("SQL Exception! {}", e.getMessage());
         } catch (Exception e) {
@@ -87,21 +90,13 @@ public class SensorDataDb implements SensorDataPersistence {
         statement.execute(sql);
     }
 
-    private void insertSensorData(SensorData sensorData) throws SQLException {
+    private void insertSensorData(Double temperature, Double humidity, Double co2, LocalDateTime timestamp) throws SQLException {
         final String sql = "INSERT INTO " + sensorDataTableName + " (temperature, humidity, co2, event_time) VALUES (?, ?, ?, ?)";
         final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-
-        final Double temp = sensorData.getTemperature().map(Temperature::getCelsius).orElse(null);
-        preparedStatement.setObject(1, temp);
-
-        final Double hum = sensorData.getHumidity().map(Humidity::getAbsoluteHumidity).orElse(null);
-        preparedStatement.setObject(2, hum);
-
-        final Double carbonDioxide = sensorData.getCo2().map(CarbonDioxide::getPpm).orElse(null);
-        preparedStatement.setObject(3, carbonDioxide);
-
-        preparedStatement.setObject(4, sensorData.getTimeStamp());
-
+        preparedStatement.setObject(1, temperature);
+        preparedStatement.setObject(2, humidity);
+        preparedStatement.setObject(3, co2);
+        preparedStatement.setObject(4, timestamp);
         preparedStatement.executeUpdate();
     }
 }
