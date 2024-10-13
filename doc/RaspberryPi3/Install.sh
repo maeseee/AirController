@@ -29,7 +29,7 @@ EOF
 cd || exit
 echo "export weather_api_key=<api_key>" >> /home/pi/.bashrc
 echo "export qingping_app_secret=<secret>" >> /home/pi/.bashrc
-echo "export sensorDataDbPassword=<secret>" >> /home/pi/.bashrc
+echo "export dbPassword=<secret>" >> /home/pi/.bashrc
 cd AirController || exit
 # Add variables to airController.service as well
 sudo cp doc/RaspberryPi3/airController.service /etc/systemd/system/

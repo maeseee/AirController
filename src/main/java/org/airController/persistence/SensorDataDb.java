@@ -13,8 +13,8 @@ import java.util.List;
 
 public class SensorDataDb implements SensorDataPersistence {
     private static final Logger logger = LogManager.getLogger(SensorDataDb.class);
-    private static final String DB_NAME = "SensorDataH2Db";
-    private static final String JDBC_URL = "jdbc:h2:./" + DB_NAME;
+    private static final String SCHEMA_NAME = "AirControllerSystem";
+    private static final String JDBC_URL = "jdbc:h2:./" + SCHEMA_NAME;
     private static final String USER = "SensorData";
     private static final String ENVIRONMENT_VARIBLE_DB = "sensorDataDbPassword";
     private static final String ENCRYPTED_DB_SECRET = "mMwIpBLqf8oVg+ahrUTiKRRjx/hdEffKEw6klDCNY3c=";
@@ -24,7 +24,7 @@ public class SensorDataDb implements SensorDataPersistence {
 
     public SensorDataDb(String sensorDataTableName) {
         this.sensorDataTableName = sensorDataTableName;
-        String password = Secret.getSecret(ENVIRONMENT_VARIBLE_DB, ENCRYPTED_DB_SECRET);
+        final String password = Secret.getSecret(ENVIRONMENT_VARIBLE_DB, ENCRYPTED_DB_SECRET);
         try {
             connection = DriverManager.getConnection(JDBC_URL, USER, password);
             createTableIfNotExists();
