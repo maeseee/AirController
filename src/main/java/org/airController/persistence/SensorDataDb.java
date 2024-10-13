@@ -27,6 +27,7 @@ public class SensorDataDb implements SensorDataPersistence {
         String password = Secret.getSecret(ENVIRONMENT_VARIBLE_DB, ENCRYPTED_DB_SECRET);
         try {
             connection = DriverManager.getConnection(JDBC_URL, USER, password);
+            createTableIfNotExists();
         } catch (SQLException e) {
             logger.error("SQL Exception on creating connection! {}", e.getMessage());
             throw new RuntimeException(e);
@@ -36,7 +37,6 @@ public class SensorDataDb implements SensorDataPersistence {
     @Override
     public void persist(SensorData sensorData) {
         try {
-            createTable();
             insertSensorData(sensorData);
         } catch (SQLException e) {
             logger.error("SQL Exception! {}", e.getMessage());
@@ -76,7 +76,7 @@ public class SensorDataDb implements SensorDataPersistence {
         return new SensorDataImpl(temp, hum, carbonDioxide, timestamp);
     }
 
-    private void createTable() throws SQLException {
+    private void createTableIfNotExists() throws SQLException {
         final Statement statement = connection.createStatement();
         final String sql = "CREATE TABLE IF NOT EXISTS public." + sensorDataTableName + " (\n" +
                 "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
