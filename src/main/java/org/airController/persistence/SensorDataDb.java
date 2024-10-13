@@ -52,8 +52,8 @@ public class SensorDataDb implements SensorDataPersistence {
         final List<SensorData> entries = new ArrayList<>();
         try {
             final Statement statement = connection.createStatement();
-            final String querySQL = getEntriesSql();
-            final ResultSet resultSet = statement.executeQuery(querySQL);
+            final String sql = "SELECT * FROM " + sensorDataTableName + ";";
+            final ResultSet resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()) {
                 try {
@@ -107,10 +107,5 @@ public class SensorDataDb implements SensorDataPersistence {
         preparedStatement.setObject(4, timeStamp);
 
         preparedStatement.executeUpdate();
-    }
-
-    private String getEntriesSql() {
-        final String unformattedSql = "SELECT * FROM %s;";
-        return String.format(unformattedSql, sensorDataTableName);
     }
 }
