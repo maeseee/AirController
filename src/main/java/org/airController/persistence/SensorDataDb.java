@@ -7,7 +7,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +18,6 @@ public class SensorDataDb implements SensorDataPersistence {
     private static final String USER = "SensorData";
     private static final String ENVIRONMENT_VARIBLE_DB = "sensorDataDbPassword";
     private static final String ENCRYPTED_DB_SECRET = "mMwIpBLqf8oVg+ahrUTiKRRjx/hdEffKEw6klDCNY3c=";
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
     private final String sensorDataTableName;
     private final Connection connection;
@@ -74,8 +72,7 @@ public class SensorDataDb implements SensorDataPersistence {
         final Double temp = resultSet.getObject("temperature", Double.class);
         final Double hum = resultSet.getObject("humidity", Double.class);
         final Double carbonDioxide = resultSet.getObject("co2", Double.class);
-        final String timestampStr = resultSet.getTimestamp("event_time").toString();
-        final LocalDateTime timestamp = LocalDateTime.from(formatter.parse(timestampStr));
+        final LocalDateTime timestamp = resultSet.getObject("event_time", LocalDateTime.class);
         return new SensorDataImpl(temp, hum, carbonDioxide, timestamp);
     }
 
@@ -103,8 +100,7 @@ public class SensorDataDb implements SensorDataPersistence {
         final Double carbonDioxide = sensorData.getCo2().map(CarbonDioxide::getPpm).orElse(null);
         preparedStatement.setObject(3, carbonDioxide);
 
-        final String timeStamp = sensorData.getTimeStamp().format(formatter);
-        preparedStatement.setObject(4, timeStamp);
+        preparedStatement.setObject(4, sensorData.getTimeStamp());
 
         preparedStatement.executeUpdate();
     }
