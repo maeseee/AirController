@@ -1,7 +1,7 @@
 package org.airController.rules;
 
 import org.airController.sensorValues.CarbonDioxide;
-import org.airController.sensorValues.CurrentSensorValues;
+import org.airController.sensorValues.CurrentSensorData;
 
 import java.util.Optional;
 
@@ -12,10 +12,10 @@ public class CO2ControlAirFlow implements Rule {
     private static final double M = 2.0 / (UPPER_LIMIT - LOWER_LIMIT); // y = xm + b
     private static final double B = 1 - (UPPER_LIMIT * M); // y = xm + b
 
-    private final CurrentSensorValues sensorValues;
+    private final CurrentSensorData currentIndoorSensorData;
 
-    public CO2ControlAirFlow(CurrentSensorValues sensorValues) {
-        this.sensorValues = sensorValues;
+    public CO2ControlAirFlow(CurrentSensorData currentIndoorSensorData) {
+        this.currentIndoorSensorData = currentIndoorSensorData;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class CO2ControlAirFlow implements Rule {
 
     @Override
     public Confidence turnOnConfidence() {
-        Optional<CarbonDioxide> indoorCo2 = sensorValues.getIndoorCo2();
+        Optional<CarbonDioxide> indoorCo2 = currentIndoorSensorData.getCo2();
         if (indoorCo2.isEmpty()) {
             return new Confidence(0.0);
         }

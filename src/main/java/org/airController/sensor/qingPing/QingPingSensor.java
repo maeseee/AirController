@@ -1,7 +1,7 @@
 package org.airController.sensor.qingPing;
 
-import org.airController.sensor.IndoorSensor;
-import org.airController.sensor.IndoorSensorObserver;
+import org.airController.sensor.Sensor;
+import org.airController.sensor.SensorObserver;
 import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.SensorData;
 import org.apache.logging.log4j.LogManager;
@@ -13,15 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class QingPingSensor implements IndoorSensor {
+public class QingPingSensor implements Sensor {
 
     private static final Logger logger = LogManager.getLogger(QingPingSensor.class);
 
-    private final List<IndoorSensorObserver> observers = new ArrayList<>();
+    private final List<SensorObserver> observers = new ArrayList<>();
     private final QingPingAccessToken accessToken;
     private final QingPingListDevices listDevices;
     private final QingPingSensorReducer sensorReducer = new QingPingSensorReducer();
-    private IndoorSensor backupSensor;
+    private Sensor backupSensor;
 
     public QingPingSensor() throws URISyntaxException {
         this(new QingPingAccessToken(), new QingPingListDevices());
@@ -52,17 +52,17 @@ public class QingPingSensor implements IndoorSensor {
     }
 
     @Override
-    public void addObserver(IndoorSensorObserver observer) {
+    public void addObserver(SensorObserver observer) {
         observers.add(observer);
     }
 
-    public void addBackupSensor(IndoorSensor backupSensor) {
+    public void addBackupSensor(Sensor backupSensor) {
         this.backupSensor = backupSensor;
     }
 
     private void notifyObservers(SensorData sensorData) {
         logger.info("New indoor sensor data: {}", sensorData);
-        observers.forEach(observer -> observer.updateIndoorSensorData(sensorData));
+        observers.forEach(observer -> observer.updateSensorData(sensorData));
     }
 
 }

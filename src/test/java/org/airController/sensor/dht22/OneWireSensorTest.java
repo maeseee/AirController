@@ -1,6 +1,6 @@
 package org.airController.sensor.dht22;
 
-import org.airController.sensor.IndoorSensorObserver;
+import org.airController.sensor.SensorObserver;
 import org.airController.sensorValues.Humidity;
 import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.SensorData;
@@ -29,12 +29,12 @@ class OneWireSensorTest {
         final SensorData indoorSensorData = new Dht22SensorData(temperature, Humidity.createFromRelative(50.0, temperature));
         when(dht22.refreshData()).thenReturn(Optional.of(indoorSensorData));
         final OneWireSensor testee = new OneWireSensor(dht22);
-        final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
+        final SensorObserver observer = mock(SensorObserver.class);
         testee.addObserver(observer);
 
         testee.run();
 
-        verify(observer).updateIndoorSensorData(indoorSensorDataArgumentCaptor.capture());
+        verify(observer).updateSensorData(indoorSensorDataArgumentCaptor.capture());
         final SensorData indoorSensorDataCapture = indoorSensorDataArgumentCaptor.getValue();
         assertEquals(indoorSensorData, indoorSensorDataCapture);
     }
@@ -44,7 +44,7 @@ class OneWireSensorTest {
         final Dht22 dht22 = mock(Dht22.class);
         when(dht22.refreshData()).thenReturn(Optional.empty());
         final OneWireSensor testee = new OneWireSensor(dht22);
-        final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
+        final SensorObserver observer = mock(SensorObserver.class);
         testee.addObserver(observer);
 
         testee.run();

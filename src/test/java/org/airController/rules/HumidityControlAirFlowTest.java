@@ -1,6 +1,6 @@
 package org.airController.rules;
 
-import org.airController.sensorValues.CurrentSensorValues;
+import org.airController.sensorValues.CurrentSensorData;
 import org.airController.sensorValues.Humidity;
 import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.Temperature;
@@ -21,7 +21,9 @@ import static org.mockito.Mockito.when;
 class HumidityControlAirFlowTest {
 
     @Mock
-    private CurrentSensorValues sensorValues;
+    private CurrentSensorData currentIndoorSensorData;
+    @Mock
+    private CurrentSensorData currentOutdoorSensorData;
 
     @ParameterizedTest(name = "{index} => indoorHumidity={0}%, outdoorHumidity={1}%, expectedResult={2}")
     @CsvSource({
@@ -41,9 +43,9 @@ class HumidityControlAirFlowTest {
         final Temperature temperature = Temperature.createFromCelsius(22.0);
         final Humidity indoorHumidity = Humidity.createFromRelative(indoorHumidityValue, temperature);
         final Humidity outdoorHumidity = Humidity.createFromRelative(outdoorHumidityValue, temperature);
-        when(sensorValues.getIndoorHumidity()).thenReturn(Optional.of(indoorHumidity));
-        when(sensorValues.getOutdoorHumidity()).thenReturn(Optional.of(outdoorHumidity));
-        final HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
+        when(currentIndoorSensorData.getHumidity()).thenReturn(Optional.of(indoorHumidity));
+        when(currentOutdoorSensorData.getHumidity()).thenReturn(Optional.of(outdoorHumidity));
+        final HumidityControlAirFlow testee = new HumidityControlAirFlow(currentIndoorSensorData, currentOutdoorSensorData);
 
         final Confidence result = testee.turnOnConfidence();
 
@@ -52,8 +54,8 @@ class HumidityControlAirFlowTest {
 
     @Test
     void shouldReturn0_whenTemperatureValueNotAvailable() {
-        when(sensorValues.getIndoorHumidity()).thenReturn(Optional.empty());
-        final HumidityControlAirFlow testee = new HumidityControlAirFlow(sensorValues);
+        when(currentIndoorSensorData.getHumidity()).thenReturn(Optional.empty());
+        final HumidityControlAirFlow testee = new HumidityControlAirFlow(currentIndoorSensorData, currentOutdoorSensorData);
 
         final Confidence result = testee.turnOnConfidence();
 

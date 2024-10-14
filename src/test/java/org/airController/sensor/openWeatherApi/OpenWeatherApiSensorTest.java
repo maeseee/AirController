@@ -1,6 +1,6 @@
 package org.airController.sensor.openWeatherApi;
 
-import org.airController.sensor.OutdoorSensorObserver;
+import org.airController.sensor.SensorObserver;
 import org.airController.sensorValues.Humidity;
 import org.airController.sensorValues.Temperature;
 import org.junit.jupiter.api.Test;
@@ -44,13 +44,13 @@ class OpenWeatherApiSensorTest {
     void testWhenMeasureValuesThenCallObservers() {
         final HttpsGetRequest httpsGetRequest = mock(HttpsGetRequest.class);
         when(httpsGetRequest.sendRequest()).thenReturn(Optional.of(SAMPLE_HTTP_RESPONSE));
-        final OutdoorSensorObserver observer = mock(OutdoorSensorObserver.class);
+        final SensorObserver observer = mock(SensorObserver.class);
         final OpenWeatherApiSensor testee = new OpenWeatherApiSensor(httpsGetRequest);
         testee.addObserver(observer);
 
         testee.run();
 
-        verify(observer).updateOutdoorSensorData(outdoorSensorDataArgumentCaptor.capture());
+        verify(observer).updateSensorData(outdoorSensorDataArgumentCaptor.capture());
         final OpenWeatherApiSensorData sensorData = outdoorSensorDataArgumentCaptor.getValue();
         assertTrue(sensorData.getTemperature().isPresent());
         assertTrue(sensorData.getHumidity().isPresent());
@@ -64,7 +64,7 @@ class OpenWeatherApiSensorTest {
     void testWhenMeasureValuesEmptyThenDontCallObservers() {
         final HttpsGetRequest httpsGetRequest = mock(HttpsGetRequest.class);
         when(httpsGetRequest.sendRequest()).thenReturn(Optional.empty());
-        final OutdoorSensorObserver observer = mock(OutdoorSensorObserver.class);
+        final SensorObserver observer = mock(SensorObserver.class);
         final OpenWeatherApiSensor testee = new OpenWeatherApiSensor(httpsGetRequest);
         testee.addObserver(observer);
 

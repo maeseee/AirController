@@ -148,7 +148,7 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>org.airController.sensor.IndoorSensor</mainClass>
+                            <mainClass>org.airController.sensor.Sensor</mainClass>
                         </configuration>
                     </execution>
                 </executions>

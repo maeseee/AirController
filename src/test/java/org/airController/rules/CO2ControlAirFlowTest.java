@@ -1,7 +1,7 @@
 package org.airController.rules;
 
 import org.airController.sensorValues.CarbonDioxide;
-import org.airController.sensorValues.CurrentSensorValues;
+import org.airController.sensorValues.CurrentSensorData;
 import org.airController.sensorValues.InvalidArgumentException;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 class CO2ControlAirFlowTest {
 
     @Mock
-    private CurrentSensorValues sensorValues;
+    private CurrentSensorData currentIndoorSensorData;
 
     @ParameterizedTest(name = "{index} => co2 ppm={0}, expectedConfidence={1}")
     @CsvSource({
@@ -29,8 +29,8 @@ class CO2ControlAirFlowTest {
     })
     void shouldCalculateCo2Confidence(double co2, double expectedConfidence) throws InvalidArgumentException {
         final Optional<CarbonDioxide> carbonDioxide = Optional.of(CarbonDioxide.createFromPpm(co2));
-        when(sensorValues.getIndoorCo2()).thenReturn(carbonDioxide);
-        final CO2ControlAirFlow testee = new CO2ControlAirFlow(sensorValues);
+        when(currentIndoorSensorData.getCo2()).thenReturn(carbonDioxide);
+        final CO2ControlAirFlow testee = new CO2ControlAirFlow(currentIndoorSensorData);
 
         final Confidence result = testee.turnOnConfidence();
 

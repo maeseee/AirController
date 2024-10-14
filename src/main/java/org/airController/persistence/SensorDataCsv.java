@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-class SensorDataCsv implements SensorDataPersistence {
+public class SensorDataCsv implements SensorDataPersistence {
     private static final Logger logger = LogManager.getLogger(SensorDataCsv.class);
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 

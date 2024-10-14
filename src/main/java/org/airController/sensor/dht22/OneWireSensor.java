@@ -1,7 +1,7 @@
 package org.airController.sensor.dht22;
 
-import org.airController.sensor.IndoorSensor;
-import org.airController.sensor.IndoorSensorObserver;
+import org.airController.sensor.Sensor;
+import org.airController.sensor.SensorObserver;
 import org.airController.sensorValues.SensorData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,10 +14,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class OneWireSensor implements IndoorSensor {
+public class OneWireSensor implements Sensor {
     private static final Logger logger = LogManager.getLogger(OneWireSensor.class);
 
-    private final List<IndoorSensorObserver> observers = new ArrayList<>();
+    private final List<SensorObserver> observers = new ArrayList<>();
     private final Dht22 dht22;
 
     public OneWireSensor() throws IOException {
@@ -41,13 +41,13 @@ public class OneWireSensor implements IndoorSensor {
     }
 
     @Override
-    public void addObserver(IndoorSensorObserver observer) {
+    public void addObserver(SensorObserver observer) {
         observers.add(observer);
     }
 
     private void notifyObservers(SensorData indoorSensorData) {
         logger.info("New indoor sensor data: {}", indoorSensorData);
-        observers.forEach(observer -> observer.updateIndoorSensorData(indoorSensorData));
+        observers.forEach(observer -> observer.updateSensorData(indoorSensorData));
     }
 
     public static void main(String[] args) throws IOException {

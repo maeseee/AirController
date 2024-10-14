@@ -1,6 +1,6 @@
 package org.airController.rules;
 
-import org.airController.sensorValues.CurrentSensorValues;
+import org.airController.sensorValues.CurrentSensorData;
 import org.airController.sensorValues.Humidity;
 import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.Temperature;
@@ -25,10 +25,12 @@ public class HumidityControlAirFlow implements Rule {
 
     private static final double HUMIDITY_FACTOR = UPPER_HUMIDITY.getAbsoluteHumidity() - IDEAL_HUMIDITY.getAbsoluteHumidity();
 
-    private final CurrentSensorValues sensorValues;
+    private final CurrentSensorData currentIndoorSensorData;
+    private final CurrentSensorData currentOutdoorSensorData;
 
-    public HumidityControlAirFlow(CurrentSensorValues sensorValues) {
-        this.sensorValues = sensorValues;
+    public HumidityControlAirFlow(CurrentSensorData currentIndoorSensorData, CurrentSensorData currentOutdoorSensorData) {
+        this.currentIndoorSensorData = currentIndoorSensorData;
+        this.currentOutdoorSensorData = currentOutdoorSensorData;
     }
 
     @Override
@@ -38,8 +40,8 @@ public class HumidityControlAirFlow implements Rule {
 
     @Override
     public Confidence turnOnConfidence() {
-        final Optional<Humidity> indoorHumidity = sensorValues.getIndoorHumidity();
-        final Optional<Humidity> outdoorHumidity = sensorValues.getOutdoorHumidity();
+        final Optional<Humidity> indoorHumidity = currentIndoorSensorData.getHumidity();
+        final Optional<Humidity> outdoorHumidity = currentOutdoorSensorData.getHumidity();
         if (indoorHumidity.isEmpty() || outdoorHumidity.isEmpty()) {
             return new Confidence(0.0);
         }

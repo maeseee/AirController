@@ -1,5 +1,7 @@
 package org.airController.persistence;
 
+import static org.airController.persistence.SensorDataPersistenceObserver.*;
+
 public class CsvToDb {
 
     public void persistToDbFromCsv(String csvFilePath, String tableName) {
@@ -10,7 +12,7 @@ public class CsvToDb {
 
     public static void main(String[] args) {
         final CsvToDb csvToDb = new CsvToDb();
-        csvToDb.persistToDbFromCsv(SensorDataPersistenceObserver.INDOOR_SENSOR_CSV_PATH, SensorDataPersistenceObserver.INDOOR_TABLE_NAME);
-        csvToDb.persistToDbFromCsv(SensorDataPersistenceObserver.OUTDOOR_SENSOR_CSV_PATH, SensorDataPersistenceObserver.OUTDOOR_TABLE_NAME);
+        csvToDb.persistToDbFromCsv(INDOOR_SENSOR_CSV_PATH, INDOOR_TABLE_NAME);
+        csvToDb.persistToDbFromCsv(OUTDOOR_SENSOR_CSV_PATH, OUTDOOR_TABLE_NAME);
     }
 }

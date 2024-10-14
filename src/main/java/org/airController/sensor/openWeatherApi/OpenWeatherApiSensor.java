@@ -1,8 +1,8 @@
 package org.airController.sensor.openWeatherApi;
 
 import org.airController.secrets.Secret;
-import org.airController.sensor.OutdoorSensor;
-import org.airController.sensor.OutdoorSensorObserver;
+import org.airController.sensor.Sensor;
+import org.airController.sensor.SensorObserver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,14 +13,14 @@ import java.util.List;
 import java.util.Optional;
 
 
-public class OpenWeatherApiSensor implements OutdoorSensor {
+public class OpenWeatherApiSensor implements Sensor {
     private static final Logger logger = LogManager.getLogger(OpenWeatherApiSensor.class);
     private static final String LAT = "47.127459";
     private static final String LON = "8.245553";
     private static final String ENVIRONMENT_VARIABLE_API_KEY = "weather_api_key";
     private static final String ENCRYPTED_API_KEY = "JWHqsiARWGfnwhAp/qvt7aWlmhsyXvOtnsYN32HH5J2m2/QGb/OnuhnGzooxh1onTK+ynB9f038EMbUnOZMjNw==";
 
-    private final List<OutdoorSensorObserver> observers = new ArrayList<>();
+    private final List<SensorObserver> observers = new ArrayList<>();
     private final HttpsGetRequest httpsGetRequest;
 
     public OpenWeatherApiSensor() throws URISyntaxException {
@@ -54,7 +54,7 @@ public class OpenWeatherApiSensor implements OutdoorSensor {
     }
 
     @Override
-    public void addObserver(OutdoorSensorObserver observer) {
+    public void addObserver(SensorObserver observer) {
         observers.add(observer);
     }
 
@@ -70,6 +70,6 @@ public class OpenWeatherApiSensor implements OutdoorSensor {
 
     private void notifyObservers(OpenWeatherApiSensorData outdoorSensorData) {
         logger.info("New outdoor sensor data: {}", outdoorSensorData);
-        observers.forEach(observer -> observer.updateOutdoorSensorData(outdoorSensorData));
+        observers.forEach(observer -> observer.updateSensorData(outdoorSensorData));
     }
 }

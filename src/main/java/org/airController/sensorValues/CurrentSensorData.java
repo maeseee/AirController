@@ -2,13 +2,14 @@ package org.airController.sensorValues;
 
 import com.google.inject.internal.Nullable;
 import lombok.Setter;
+import org.airController.sensor.SensorObserver;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Setter
-public class CurrentSensorData implements SensorData {
+public class CurrentSensorData implements SensorData, SensorObserver {
     private static final Duration SENSOR_INVALIDATION = Duration.ofHours(4);
 
     private Temperature temperature;
@@ -43,11 +44,20 @@ public class CurrentSensorData implements SensorData {
         return timestamp;
     }
 
+    @Override
+    public void updateSensorData(SensorData sensorData) {
+        temperature = sensorData.getTemperature().orElse(null);
+        humidity = sensorData.getHumidity().orElse(null);
+        co2 = sensorData.getCo2().orElse(null);
+        timestamp = sensorData.getTimeStamp();
+    }
+
     private boolean isSensorValid() {
         return LocalDateTime.now().minus(SENSOR_INVALIDATION).isBefore(timestamp);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "CurrentSensorData{" +
                 "temperature=" + temperature +
                 ", humidity=" + humidity +

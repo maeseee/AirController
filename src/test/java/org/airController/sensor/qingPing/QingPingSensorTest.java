@@ -1,6 +1,6 @@
 package org.airController.sensor.qingPing;
 
-import org.airController.sensor.IndoorSensorObserver;
+import org.airController.sensor.SensorObserver;
 import org.airController.sensorValues.Humidity;
 import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.SensorData;
@@ -37,12 +37,12 @@ class QingPingSensorTest {
         final QingPingSensorData sensorData = new QingPingSensorData(temperature, humidity, null, time1);
         when(listDevices.readSensorDataList(any())).thenReturn(List.of(sensorData));
         final QingPingSensor testee = new QingPingSensor(accessToken, listDevices);
-        final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
+        final SensorObserver observer = mock(SensorObserver.class);
         testee.addObserver(observer);
 
         testee.run();
 
-        verify(observer).updateIndoorSensorData(indoorSensorDataArgumentCaptor.capture());
+        verify(observer).updateSensorData(indoorSensorDataArgumentCaptor.capture());
         final SensorData indoorSensorDataCapture = indoorSensorDataArgumentCaptor.getValue();
         assertThat(indoorSensorDataCapture.getTemperature()).isPresent().hasValue(Temperature.createFromCelsius(21.5));
         assertThat(indoorSensorDataCapture.getHumidity()).isPresent().hasValue(Humidity.createFromAbsolute(10.0));
@@ -55,7 +55,7 @@ class QingPingSensorTest {
         final QingPingListDevices listDevices = mock(QingPingListDevices.class);
         when(listDevices.readSensorDataList(any())).thenReturn(new ArrayList<>());
         final QingPingSensor testee = new QingPingSensor(accessToken, listDevices);
-        final IndoorSensorObserver observer = mock(IndoorSensorObserver.class);
+        final SensorObserver observer = mock(SensorObserver.class);
         testee.addObserver(observer);
 
         testee.run();

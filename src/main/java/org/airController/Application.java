@@ -4,14 +4,16 @@ import com.google.inject.internal.Nullable;
 import org.airController.gpio.GpioFunction;
 import org.airController.gpio.GpioPin;
 import org.airController.gpio.RaspberryGpioPin;
+import org.airController.persistence.SensorDataCsv;
+import org.airController.persistence.SensorDataDb;
+import org.airController.persistence.SensorDataPersistence;
 import org.airController.persistence.SensorDataPersistenceObserver;
 import org.airController.rules.*;
-import org.airController.sensor.IndoorSensor;
-import org.airController.sensor.OutdoorSensor;
+import org.airController.sensor.Sensor;
 import org.airController.sensor.dht22.OneWireSensor;
 import org.airController.sensor.openWeatherApi.OpenWeatherApiSensor;
 import org.airController.sensor.qingPing.QingPingSensor;
-import org.airController.sensorValues.CurrentSensorValues;
+import org.airController.sensorValues.CurrentSensorData;
 import org.airController.system.ControlledVentilationSystem;
 import org.airController.system.VentilationSystem;
 import org.airController.system.VentilationSystemTimeKeeper;
@@ -27,14 +29,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static org.airController.persistence.SensorDataPersistenceObserver.*;
+
 public class Application {
     private static final Logger logger = LogManager.getLogger(Application.class);
     private static final int OUTDOOR_SENSOR_READ_PERIOD_MINUTES = 10;
     private static final int INDOOR_SENSOR_READ_PERIOD_MINUTES = 10;
     private static final int RULE_APPLIER_PERIOD_MINUTES = 1;
 
-    private final OutdoorSensor outdoorSensor;
-    private final IndoorSensor indoorSensor;
+    private final Sensor outdoorSensor;
+    private final Sensor indoorSensor;
     private final RuleApplier ruleApplier;
     private final TimeKeeper timeKeeper;
     private final ScheduledExecutorService executor;
@@ -42,25 +46,25 @@ public class Application {
     public Application() throws IOException, URISyntaxException {
         this(new RaspberryGpioPin(GpioFunction.AIR_FLOW, true), new RaspberryGpioPin(GpioFunction.HUMIDITY_EXCHANGER, false),
                 new OpenWeatherApiSensor(),
-                new QingPingSensor(), new OneWireSensor(), new SensorDataPersistenceObserver());
+                new QingPingSensor(), new OneWireSensor());
     }
 
     // Used for MainMock
-    Application(GpioPin airFlow, GpioPin humidityExchanger, OutdoorSensor outdoorSensor, QingPingSensor indoorSensor,
-            @Nullable IndoorSensor backupSensor, SensorDataPersistenceObserver persistenceObserver) {
+    Application(GpioPin airFlow, GpioPin humidityExchanger, Sensor outdoorSensor, QingPingSensor indoorSensor,
+            @Nullable Sensor backupSensor) {
         this(new ControlledVentilationSystem(airFlow, humidityExchanger), outdoorSensor, indoorSensor,
-                createSensorValues(outdoorSensor, indoorSensor, backupSensor, persistenceObserver), new VentilationSystemTimeKeeper());
+                createCurrentIndoorSensorValue(indoorSensor, backupSensor),
+                createCurrentOutdoorSensorValue(outdoorSensor), new VentilationSystemTimeKeeper());
     }
 
-    private Application(VentilationSystem ventilationSystem, OutdoorSensor outdoorSensor, QingPingSensor indoorSensor,
-            CurrentSensorValues sensorValues, VentilationSystemTimeKeeper timeKeeper) {
-        this(outdoorSensor, indoorSensor, createFreshAirController(ventilationSystem, sensorValues, timeKeeper), timeKeeper,
+    private Application(VentilationSystem ventilationSystem, Sensor outdoorSensor, QingPingSensor indoorSensor,
+            CurrentSensorData indoorSensorData, CurrentSensorData outdoorSensorData, VentilationSystemTimeKeeper timeKeeper) {
+        this(outdoorSensor, indoorSensor, createFreshAirController(ventilationSystem, indoorSensorData, outdoorSensorData, timeKeeper), timeKeeper,
                 Executors.newScheduledThreadPool(1));
     }
 
     // Used for tests
-    Application(OutdoorSensor outdoorSensor, IndoorSensor indoorSensor, RuleApplier ruleApplier, TimeKeeper timeKeeper,
-            ScheduledExecutorService executor) {
+    Application(Sensor outdoorSensor, Sensor indoorSensor, RuleApplier ruleApplier, TimeKeeper timeKeeper, ScheduledExecutorService executor) {
         this.outdoorSensor = outdoorSensor;
         this.indoorSensor = indoorSensor;
         this.ruleApplier = ruleApplier;
@@ -81,32 +85,44 @@ public class Application {
         logger.info("All setup and running...");
     }
 
-    private static CurrentSensorValues createSensorValues(OutdoorSensor outdoorSensor, QingPingSensor indoorSensor, IndoorSensor backupSensor,
-            SensorDataPersistenceObserver persistenceObserver) {
-        final CurrentSensorValues sensorValues = new CurrentSensorValues();
+    private static CurrentSensorData createCurrentOutdoorSensorValue(Sensor outdoorSensor) {
+        final List<SensorDataPersistence> persistences = List.of(
+                new SensorDataCsv(OUTDOOR_SENSOR_CSV_PATH),
+                new SensorDataDb(OUTDOOR_TABLE_NAME));
+        final SensorDataPersistenceObserver observer = new SensorDataPersistenceObserver(persistences);
+        final CurrentSensorData sensorValues = new CurrentSensorData();
         outdoorSensor.addObserver(sensorValues);
-        outdoorSensor.addObserver(persistenceObserver);
-        indoorSensor.addObserver(sensorValues);
-        indoorSensor.addObserver(persistenceObserver);
-        if (backupSensor != null) {
-            indoorSensor.addBackupSensor(backupSensor);
-            backupSensor.addObserver(sensorValues);
-            backupSensor.addObserver(persistenceObserver);
-        }
+        outdoorSensor.addObserver(observer);
         return sensorValues;
     }
 
-    private static RuleApplier createFreshAirController(VentilationSystem ventilationSystem, CurrentSensorValues sensorValues,
-            VentilationSystemTimeKeeper timeKeeper) {
-        List<VentilationSystem> ventilationSystems = List.of(ventilationSystem, timeKeeper);
-        CO2ControlAirFlow co2ControlAirFlow = new CO2ControlAirFlow(sensorValues);
-        DailyAirFlow dailyAirFlow = new DailyAirFlow();
-        HumidityControlAirFlow humidityControlAirFlow = new HumidityControlAirFlow(sensorValues);
-        PeriodicallyAirFlow periodicallyAirFlow = new PeriodicallyAirFlow(timeKeeper);
-        HumidityControlExchanger humidityControlExchanger = new HumidityControlExchanger(humidityControlAirFlow);
+    private static CurrentSensorData createCurrentIndoorSensorValue(QingPingSensor indoorSensor, Sensor backupSensor) {
+        final List<SensorDataPersistence> persistences = List.of(
+                new SensorDataCsv(INDOOR_SENSOR_CSV_PATH),
+                new SensorDataDb(INDOOR_TABLE_NAME));
+        final SensorDataPersistenceObserver observer = new SensorDataPersistenceObserver(persistences);
+        final CurrentSensorData sensorValue = new CurrentSensorData();
+        indoorSensor.addObserver(sensorValue);
+        indoorSensor.addObserver(observer);
+        if (backupSensor != null) {
+            indoorSensor.addBackupSensor(backupSensor);
+            backupSensor.addObserver(sensorValue);
+            backupSensor.addObserver(observer);
+        }
+        return sensorValue;
+    }
 
-        List<Rule> freshAirRules = List.of(co2ControlAirFlow, dailyAirFlow, humidityControlAirFlow, periodicallyAirFlow);
-        List<Rule> exchangeHumidityRules = List.of(humidityControlExchanger);
+    private static RuleApplier createFreshAirController(VentilationSystem ventilationSystem, CurrentSensorData indoorSensorData,
+            CurrentSensorData outdoorSensorData, VentilationSystemTimeKeeper timeKeeper) {
+        final List<VentilationSystem> ventilationSystems = List.of(ventilationSystem, timeKeeper);
+        final CO2ControlAirFlow co2ControlAirFlow = new CO2ControlAirFlow(indoorSensorData);
+        final DailyAirFlow dailyAirFlow = new DailyAirFlow();
+        final HumidityControlAirFlow humidityControlAirFlow = new HumidityControlAirFlow(indoorSensorData, outdoorSensorData);
+        final PeriodicallyAirFlow periodicallyAirFlow = new PeriodicallyAirFlow(timeKeeper);
+        final HumidityControlExchanger humidityControlExchanger = new HumidityControlExchanger(humidityControlAirFlow);
+
+        final List<Rule> freshAirRules = List.of(co2ControlAirFlow, dailyAirFlow, humidityControlAirFlow, periodicallyAirFlow);
+        final List<Rule> exchangeHumidityRules = List.of(humidityControlExchanger);
         return new RuleApplier(ventilationSystems, freshAirRules, exchangeHumidityRules);
     }
 
