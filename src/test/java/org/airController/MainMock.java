@@ -7,7 +7,6 @@ import org.airController.sensor.openWeatherApi.OpenWeatherApiSensor;
 import org.airController.sensor.qingPing.QingPingSensor;
 
 import java.net.URISyntaxException;
-import java.util.concurrent.Executors;
 
 import static org.mockito.Mockito.mock;
 
@@ -20,9 +19,7 @@ class MainMock {
         final OutdoorSensor outdoorSensor = new OpenWeatherApiSensor();
         final QingPingSensor indoorSensor = new QingPingSensor();
         final SensorDataPersistenceObserver persistenceObserver = new SensorDataPersistenceObserver();
-        final Application application =
-                new Application(airFlow, humidityExchanger, outdoorSensor, indoorSensor, null, persistenceObserver,
-                        Executors.newScheduledThreadPool(1));
+        final Application application = new Application(airFlow, humidityExchanger, outdoorSensor, indoorSensor, null, persistenceObserver);
         application.run();
         Thread.currentThread().join();
     }

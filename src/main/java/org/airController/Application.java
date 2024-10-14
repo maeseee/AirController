@@ -42,19 +42,20 @@ public class Application {
     public Application() throws IOException, URISyntaxException {
         this(new RaspberryGpioPin(GpioFunction.AIR_FLOW, true), new RaspberryGpioPin(GpioFunction.HUMIDITY_EXCHANGER, false),
                 new OpenWeatherApiSensor(),
-                new QingPingSensor(), new OneWireSensor(), new SensorDataPersistenceObserver(), Executors.newScheduledThreadPool(1));
+                new QingPingSensor(), new OneWireSensor(), new SensorDataPersistenceObserver());
     }
 
     // Used for MainMock
     Application(GpioPin airFlow, GpioPin humidityExchanger, OutdoorSensor outdoorSensor, QingPingSensor indoorSensor,
-            @Nullable IndoorSensor backupSensor, SensorDataPersistenceObserver persistenceObserver, ScheduledExecutorService executor) {
+            @Nullable IndoorSensor backupSensor, SensorDataPersistenceObserver persistenceObserver) {
         this(new ControlledVentilationSystem(airFlow, humidityExchanger), outdoorSensor, indoorSensor,
-                createSensorValues(outdoorSensor, indoorSensor, backupSensor, persistenceObserver), new VentilationSystemTimeKeeper(), executor);
+                createSensorValues(outdoorSensor, indoorSensor, backupSensor, persistenceObserver), new VentilationSystemTimeKeeper());
     }
 
     private Application(VentilationSystem ventilationSystem, OutdoorSensor outdoorSensor, QingPingSensor indoorSensor,
-            CurrentSensorValues sensorValues, VentilationSystemTimeKeeper timeKeeper, ScheduledExecutorService executor) {
-        this(outdoorSensor, indoorSensor, createFreshAirController(ventilationSystem, sensorValues, timeKeeper), timeKeeper, executor);
+            CurrentSensorValues sensorValues, VentilationSystemTimeKeeper timeKeeper) {
+        this(outdoorSensor, indoorSensor, createFreshAirController(ventilationSystem, sensorValues, timeKeeper), timeKeeper,
+                Executors.newScheduledThreadPool(1));
     }
 
     // Used for tests
