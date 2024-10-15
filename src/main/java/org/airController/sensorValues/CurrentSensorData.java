@@ -1,69 +1,47 @@
 package org.airController.sensorValues;
 
-import com.google.inject.internal.Nullable;
-import lombok.Setter;
-import org.airController.sensor.SensorObserver;
+import org.airController.persistence.SensorDataPersistence;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@Setter
-public class CurrentSensorData implements SensorData, SensorObserver {
+public class CurrentSensorData implements SensorData {
     private static final Duration SENSOR_INVALIDATION = Duration.ofHours(4);
 
-    private Temperature temperature;
-    private Humidity humidity;
-    @Nullable
-    private CarbonDioxide co2;
-    private LocalDateTime timestamp = LocalDateTime.now();
+    private final LocalDateTime initializationTimestamp = LocalDateTime.now();
+    private final SensorDataPersistence persistence;
+
+    public CurrentSensorData(SensorDataPersistence persistence) {
+        this.persistence = persistence;
+    }
 
     @Override
     public Optional<Temperature> getTemperature() {
-        return isSensorValid() ?
-                Optional.ofNullable(temperature) :
-                Optional.empty();
+        final Optional<SensorData> sensorData = persistence.getMostCurrentSensorData(getLastValidTimestamp());
+        return sensorData.flatMap(SensorData::getTemperature);
     }
 
     @Override
     public Optional<Humidity> getHumidity() {
-        return isSensorValid() ?
-                Optional.ofNullable(humidity) :
-                Optional.empty();
+        final Optional<SensorData> sensorData = persistence.getMostCurrentSensorData(getLastValidTimestamp());
+        return sensorData.flatMap(SensorData::getHumidity);
     }
 
     @Override
     public Optional<CarbonDioxide> getCo2() {
-        return isSensorValid() ?
-                Optional.ofNullable(co2) :
-                Optional.empty();
+        final Optional<SensorData> sensorData = persistence.getMostCurrentSensorData(getLastValidTimestamp());
+        return sensorData.flatMap(SensorData::getCo2);
     }
 
     @Override
     public LocalDateTime getTimeStamp() {
-        return timestamp;
+        final Optional<SensorData> sensorData = persistence.getMostCurrentSensorData(getLastValidTimestamp());
+        return sensorData.map(SensorData::getTimeStamp).orElse(initializationTimestamp);
     }
 
-    @Override
-    public void updateSensorData(SensorData sensorData) {
-        temperature = sensorData.getTemperature().orElse(null);
-        humidity = sensorData.getHumidity().orElse(null);
-        co2 = sensorData.getCo2().orElse(null);
-        timestamp = sensorData.getTimeStamp();
-    }
-
-    private boolean isSensorValid() {
-        return LocalDateTime.now().minus(SENSOR_INVALIDATION).isBefore(timestamp);
-    }
-
-    @Override
-    public String toString() {
-        return "CurrentSensorData{" +
-                "temperature=" + temperature +
-                ", humidity=" + humidity +
-                ", co2=" + co2 +
-                ", timestamp=" + timestamp +
-                '}';
+    private LocalDateTime getLastValidTimestamp() {
+        return LocalDateTime.now().minus(SENSOR_INVALIDATION);
     }
 }
 

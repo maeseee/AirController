@@ -1,6 +1,6 @@
 package org.airController.sensor.qingPing;
 
-import org.airController.sensor.SensorObserver;
+import org.airController.persistence.SensorDataPersistence;
 import org.airController.sensorValues.Humidity;
 import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.SensorData;
@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
@@ -23,8 +24,11 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class QingPingSensorTest {
 
+    @Mock
+    private SensorDataPersistence persistence;
+
     @Captor
-    ArgumentCaptor<SensorData> indoorSensorDataArgumentCaptor;
+    private ArgumentCaptor<SensorData> indoorSensorDataArgumentCaptor;
 
     @Test
     void shouldNotifyObservers_whenRun() throws InvalidArgumentException, CommunicationException, IOException, URISyntaxException {
@@ -36,13 +40,11 @@ class QingPingSensorTest {
         final LocalDateTime time1 = LocalDateTime.now();
         final QingPingSensorData sensorData = new QingPingSensorData(temperature, humidity, null, time1);
         when(listDevices.readSensorDataList(any())).thenReturn(List.of(sensorData));
-        final QingPingSensor testee = new QingPingSensor(accessToken, listDevices);
-        final SensorObserver observer = mock(SensorObserver.class);
-        testee.addObserver(observer);
+        final QingPingSensor testee = new QingPingSensor(persistence, null, accessToken, listDevices);
 
         testee.run();
 
-        verify(observer).updateSensorData(indoorSensorDataArgumentCaptor.capture());
+        verify(persistence).persist(indoorSensorDataArgumentCaptor.capture());
         final SensorData indoorSensorDataCapture = indoorSensorDataArgumentCaptor.getValue();
         assertThat(indoorSensorDataCapture.getTemperature()).isPresent().hasValue(Temperature.createFromCelsius(21.5));
         assertThat(indoorSensorDataCapture.getHumidity()).isPresent().hasValue(Humidity.createFromAbsolute(10.0));
@@ -54,12 +56,10 @@ class QingPingSensorTest {
         when(accessToken.readToken()).thenReturn("token");
         final QingPingListDevices listDevices = mock(QingPingListDevices.class);
         when(listDevices.readSensorDataList(any())).thenReturn(new ArrayList<>());
-        final QingPingSensor testee = new QingPingSensor(accessToken, listDevices);
-        final SensorObserver observer = mock(SensorObserver.class);
-        testee.addObserver(observer);
+        final QingPingSensor testee = new QingPingSensor(persistence, null, accessToken, listDevices);
 
         testee.run();
 
-        verifyNoInteractions(observer);
+        verifyNoInteractions(persistence);
     }
 }

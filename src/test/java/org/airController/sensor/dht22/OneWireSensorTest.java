@@ -1,6 +1,6 @@
 package org.airController.sensor.dht22;
 
-import org.airController.sensor.SensorObserver;
+import org.airController.persistence.SensorDataPersistence;
 import org.airController.sensorValues.Humidity;
 import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.SensorData;
@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -19,8 +20,11 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class OneWireSensorTest {
 
+    @Mock
+    private SensorDataPersistence persistence;
+
     @Captor
-    ArgumentCaptor<SensorData> indoorSensorDataArgumentCaptor;
+    private ArgumentCaptor<SensorData> indoorSensorDataArgumentCaptor;
 
     @Test
     void testWhenRunThenNotifyObservers() throws InvalidArgumentException {
@@ -28,13 +32,11 @@ class OneWireSensorTest {
         final Temperature temperature = Temperature.createFromCelsius(23.0);
         final SensorData indoorSensorData = new Dht22SensorData(temperature, Humidity.createFromRelative(50.0, temperature));
         when(dht22.refreshData()).thenReturn(Optional.of(indoorSensorData));
-        final OneWireSensor testee = new OneWireSensor(dht22);
-        final SensorObserver observer = mock(SensorObserver.class);
-        testee.addObserver(observer);
+        final OneWireSensor testee = new OneWireSensor(persistence, dht22);
 
         testee.run();
 
-        verify(observer).updateSensorData(indoorSensorDataArgumentCaptor.capture());
+        verify(persistence).persist(indoorSensorDataArgumentCaptor.capture());
         final SensorData indoorSensorDataCapture = indoorSensorDataArgumentCaptor.getValue();
         assertEquals(indoorSensorData, indoorSensorDataCapture);
     }
@@ -43,13 +45,11 @@ class OneWireSensorTest {
     void testWhenInvalidSensorDataThenDoNotNotifyObservers() {
         final Dht22 dht22 = mock(Dht22.class);
         when(dht22.refreshData()).thenReturn(Optional.empty());
-        final OneWireSensor testee = new OneWireSensor(dht22);
-        final SensorObserver observer = mock(SensorObserver.class);
-        testee.addObserver(observer);
+        final OneWireSensor testee = new OneWireSensor(persistence, dht22);
 
         testee.run();
 
-        verifyNoInteractions(observer);
+        verifyNoInteractions(persistence);
     }
 
 }

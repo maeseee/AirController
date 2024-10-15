@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class SensorDataDb implements SensorDataPersistence {
     private static final Logger logger = LogManager.getLogger(SensorDataDb.class);
@@ -70,6 +71,30 @@ public class SensorDataDb implements SensorDataPersistence {
         return Collections.emptyList();
     }
 
+    @Override
+    public Optional<SensorData> getMostCurrentSensorData(LocalDateTime lastValidTimestamp) {
+        try {
+            final String sql = "SELECT * FROM " + sensorDataTableName + " i" +
+                    "ORDER BY i.EVENT_TIME DESC\n" +
+                    "WHERE i.EVENT_TIME > ?" +
+                    "LIMIT 1;";
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(lastValidTimestamp));
+            final ResultSet resultSet = preparedStatement.executeQuery(sql);
+
+            if (resultSet.next()) {
+                try {
+                    return Optional.of(createSensorData(resultSet));
+                } catch (InvalidArgumentException e) {
+                    logger.error("Next entry could not be loaded! {}", e.getMessage());
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("SQL Exception on read ! {}", e.getMessage());
+        }
+        return Optional.empty();
+    }
+
     private SensorData createSensorData(ResultSet resultSet) throws SQLException, InvalidArgumentException {
         // Read the object as it can handle null
         final Double temp = resultSet.getObject("temperature", Double.class);
@@ -96,7 +121,7 @@ public class SensorDataDb implements SensorDataPersistence {
         preparedStatement.setObject(1, temperature);
         preparedStatement.setObject(2, humidity);
         preparedStatement.setObject(3, co2);
-        preparedStatement.setObject(4, timestamp);
+        preparedStatement.setTimestamp(4, Timestamp.valueOf(timestamp));
         preparedStatement.executeUpdate();
     }
 }

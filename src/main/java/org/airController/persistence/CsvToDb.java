@@ -1,6 +1,6 @@
 package org.airController.persistence;
 
-import static org.airController.persistence.SensorDataPersistenceObserver.*;
+import static org.airController.persistence.Persistence.*;
 
 public class CsvToDb {
 

@@ -1,14 +1,13 @@
 package org.airController.sensor.dht22;
 
+import org.airController.persistence.SensorDataPersistence;
+import org.airController.persistence.SensorDataPrinter;
 import org.airController.sensor.Sensor;
-import org.airController.sensor.SensorObserver;
 import org.airController.sensorValues.SensorData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -17,14 +16,15 @@ import java.util.concurrent.TimeUnit;
 public class OneWireSensor implements Sensor {
     private static final Logger logger = LogManager.getLogger(OneWireSensor.class);
 
-    private final List<SensorObserver> observers = new ArrayList<>();
+    private final SensorDataPersistence persistence;
     private final Dht22 dht22;
 
-    public OneWireSensor() throws IOException {
-        this.dht22 = new Dht22Impl();
+    public OneWireSensor(SensorDataPersistence persistence) throws IOException {
+        this(persistence, new Dht22Impl());
     }
 
-    public OneWireSensor(Dht22 dht22) {
+    public OneWireSensor(SensorDataPersistence persistence, Dht22 dht22) {
+        this.persistence = persistence;
         this.dht22 = dht22;
     }
 
@@ -40,20 +40,15 @@ public class OneWireSensor implements Sensor {
         }
     }
 
-    @Override
-    public void addObserver(SensorObserver observer) {
-        observers.add(observer);
-    }
-
     private void notifyObservers(SensorData indoorSensorData) {
         logger.info("New indoor sensor data: {}", indoorSensorData);
-        observers.forEach(observer -> observer.updateSensorData(indoorSensorData));
+        persistence.persist(indoorSensorData);
     }
 
     public static void main(String[] args) throws IOException {
         final Dht22Impl dht22 = new Dht22Impl();
-        final OneWireSensor indoorSensor = new OneWireSensor(dht22);
-        indoorSensor.addObserver(System.out::println);
+        final SensorDataPersistence persistence = new SensorDataPrinter();
+        final OneWireSensor indoorSensor = new OneWireSensor(persistence, dht22);
         final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(indoorSensor, 0, 10, TimeUnit.SECONDS);
     }

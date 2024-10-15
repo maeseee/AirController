@@ -1,12 +1,13 @@
 package org.airController.sensor.openWeatherApi;
 
-import org.airController.sensor.SensorObserver;
+import org.airController.persistence.SensorDataPersistence;
 import org.airController.sensorValues.Humidity;
 import org.airController.sensorValues.Temperature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -37,20 +38,20 @@ class OpenWeatherApiSensorTest {
             }
             """;
 
+    @Mock
+    private SensorDataPersistence persistence;
     @Captor
-    ArgumentCaptor<OpenWeatherApiSensorData> outdoorSensorDataArgumentCaptor;
+    private ArgumentCaptor<OpenWeatherApiSensorData> outdoorSensorDataArgumentCaptor;
 
     @Test
     void testWhenMeasureValuesThenCallObservers() {
         final HttpsGetRequest httpsGetRequest = mock(HttpsGetRequest.class);
         when(httpsGetRequest.sendRequest()).thenReturn(Optional.of(SAMPLE_HTTP_RESPONSE));
-        final SensorObserver observer = mock(SensorObserver.class);
-        final OpenWeatherApiSensor testee = new OpenWeatherApiSensor(httpsGetRequest);
-        testee.addObserver(observer);
+        final OpenWeatherApiSensor testee = new OpenWeatherApiSensor(persistence, httpsGetRequest);
 
         testee.run();
 
-        verify(observer).updateSensorData(outdoorSensorDataArgumentCaptor.capture());
+        verify(persistence).persist(outdoorSensorDataArgumentCaptor.capture());
         final OpenWeatherApiSensorData sensorData = outdoorSensorDataArgumentCaptor.getValue();
         assertTrue(sensorData.getTemperature().isPresent());
         assertTrue(sensorData.getHumidity().isPresent());
@@ -64,12 +65,10 @@ class OpenWeatherApiSensorTest {
     void testWhenMeasureValuesEmptyThenDontCallObservers() {
         final HttpsGetRequest httpsGetRequest = mock(HttpsGetRequest.class);
         when(httpsGetRequest.sendRequest()).thenReturn(Optional.empty());
-        final SensorObserver observer = mock(SensorObserver.class);
-        final OpenWeatherApiSensor testee = new OpenWeatherApiSensor(httpsGetRequest);
-        testee.addObserver(observer);
+        final OpenWeatherApiSensor testee = new OpenWeatherApiSensor(persistence, httpsGetRequest);
 
         testee.run();
 
-        verifyNoInteractions(observer);
+        verifyNoInteractions(persistence);
     }
 }

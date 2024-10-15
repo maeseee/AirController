@@ -1,13 +1,10 @@
 package org.airController;
 
-import com.google.inject.internal.Nullable;
 import org.airController.gpio.GpioFunction;
 import org.airController.gpio.GpioPin;
 import org.airController.gpio.RaspberryGpioPin;
 import org.airController.persistence.SensorDataCsv;
-import org.airController.persistence.SensorDataDb;
 import org.airController.persistence.SensorDataPersistence;
-import org.airController.persistence.SensorDataPersistenceObserver;
 import org.airController.rules.*;
 import org.airController.sensor.Sensor;
 import org.airController.sensor.dht22.OneWireSensor;
@@ -29,7 +26,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static org.airController.persistence.SensorDataPersistenceObserver.*;
+import static org.airController.persistence.Persistence.INDOOR_SENSOR_CSV_PATH;
+import static org.airController.persistence.Persistence.OUTDOOR_SENSOR_CSV_PATH;
 
 public class Application {
     private static final Logger logger = LogManager.getLogger(Application.class);
@@ -44,20 +42,16 @@ public class Application {
     private final ScheduledExecutorService executor;
 
     public Application() throws IOException, URISyntaxException {
-        this(new RaspberryGpioPin(GpioFunction.AIR_FLOW, true), new RaspberryGpioPin(GpioFunction.HUMIDITY_EXCHANGER, false),
-                new OpenWeatherApiSensor(),
-                new QingPingSensor(), new OneWireSensor());
+        this(new RaspberryGpioPin(GpioFunction.AIR_FLOW, true), new RaspberryGpioPin(GpioFunction.HUMIDITY_EXCHANGER, false));
     }
 
     // Used for MainMock
-    Application(GpioPin airFlow, GpioPin humidityExchanger, Sensor outdoorSensor, QingPingSensor indoorSensor,
-            @Nullable Sensor backupSensor) {
-        this(new ControlledVentilationSystem(airFlow, humidityExchanger), outdoorSensor, indoorSensor,
-                createCurrentIndoorSensorValue(indoorSensor, backupSensor),
-                createCurrentOutdoorSensorValue(outdoorSensor), new VentilationSystemTimeKeeper());
+    Application(GpioPin airFlow, GpioPin humidityExchanger) throws URISyntaxException {
+        this(new ControlledVentilationSystem(airFlow, humidityExchanger), createOutdoorSensor(), createIndoorSensor(),
+                createCurrentIndoorSensorValue(), createCurrentOutdoorSensorValue(), new VentilationSystemTimeKeeper());
     }
 
-    private Application(VentilationSystem ventilationSystem, Sensor outdoorSensor, QingPingSensor indoorSensor,
+    private Application(VentilationSystem ventilationSystem, Sensor outdoorSensor, Sensor indoorSensor,
             CurrentSensorData indoorSensorData, CurrentSensorData outdoorSensorData, VentilationSystemTimeKeeper timeKeeper) {
         this(outdoorSensor, indoorSensor, createFreshAirController(ventilationSystem, indoorSensorData, outdoorSensorData, timeKeeper), timeKeeper,
                 Executors.newScheduledThreadPool(1));
@@ -85,31 +79,38 @@ public class Application {
         logger.info("All setup and running...");
     }
 
-    private static CurrentSensorData createCurrentOutdoorSensorValue(Sensor outdoorSensor) {
-        final List<SensorDataPersistence> persistences = List.of(
-                new SensorDataCsv(OUTDOOR_SENSOR_CSV_PATH),
-                new SensorDataDb(OUTDOOR_TABLE_NAME));
-        final SensorDataPersistenceObserver observer = new SensorDataPersistenceObserver(persistences);
-        final CurrentSensorData sensorValues = new CurrentSensorData();
-        outdoorSensor.addObserver(sensorValues);
-        outdoorSensor.addObserver(observer);
-        return sensorValues;
+    private static OpenWeatherApiSensor createOutdoorSensor() throws URISyntaxException {
+        final SensorDataPersistence persistence = new SensorDataCsv(OUTDOOR_SENSOR_CSV_PATH);
+        //final SensorDataPersistence persistence = new SensorDataDb(OUTDOOR_TABLE_NAME);
+        return new OpenWeatherApiSensor(persistence);
     }
 
-    private static CurrentSensorData createCurrentIndoorSensorValue(QingPingSensor indoorSensor, Sensor backupSensor) {
-        final List<SensorDataPersistence> persistences = List.of(
-                new SensorDataCsv(INDOOR_SENSOR_CSV_PATH),
-                new SensorDataDb(INDOOR_TABLE_NAME));
-        final SensorDataPersistenceObserver observer = new SensorDataPersistenceObserver(persistences);
-        final CurrentSensorData sensorValue = new CurrentSensorData();
-        indoorSensor.addObserver(sensorValue);
-        indoorSensor.addObserver(observer);
-        if (backupSensor != null) {
-            indoorSensor.addBackupSensor(backupSensor);
-            backupSensor.addObserver(sensorValue);
-            backupSensor.addObserver(observer);
+    private static Sensor createIndoorSensor() {
+        final SensorDataPersistence persistence = new SensorDataCsv(INDOOR_SENSOR_CSV_PATH);
+        //final SensorDataPersistence persistence = new SensorDataDb(INDOOR_TABLE_NAME);
+        Sensor oneWireSensor = null;
+        try {
+            oneWireSensor = new OneWireSensor(persistence);
+        } catch (IOException e) {
+            logger.error("Could not load backup sensor!" + e.getMessage());
         }
-        return sensorValue;
+        try {
+            return new QingPingSensor(persistence, oneWireSensor);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static CurrentSensorData createCurrentOutdoorSensorValue() {
+        final SensorDataPersistence persistence = new SensorDataCsv(OUTDOOR_SENSOR_CSV_PATH);
+        //final SensorDataPersistence persistence = new SensorDataDb(OUTDOOR_TABLE_NAME);
+        return new CurrentSensorData(persistence);
+    }
+
+    private static CurrentSensorData createCurrentIndoorSensorValue() {
+        final SensorDataPersistence persistence = new SensorDataCsv(INDOOR_SENSOR_CSV_PATH);
+        //final SensorDataPersistence persistence = new SensorDataDb(INDOOR_TABLE_NAME);
+        return new CurrentSensorData(persistence);
     }
 
     private static RuleApplier createFreshAirController(VentilationSystem ventilationSystem, CurrentSensorData indoorSensorData,

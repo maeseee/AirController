@@ -1,55 +1,44 @@
 package org.airController.sensorValues;
 
+import org.airController.persistence.SensorDataPersistence;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class CurrentSensorDataTest {
+    @Mock
+    private SensorDataPersistence persistence;
+
     @Test
     void shouldReturnEmpty_whenValuesMissing() {
-        final CurrentSensorData testee = new CurrentSensorData();
+        when(persistence.getMostCurrentSensorData(any())).thenReturn(Optional.empty());
+        final CurrentSensorData testee = new CurrentSensorData(persistence);
 
-        final Optional<Temperature> temperature = testee.getTemperature();
-        final Optional<Temperature> humidity = testee.getTemperature();
-        final Optional<Temperature> co2 = testee.getTemperature();
-
-        assertThat(temperature).isNotPresent();
-        assertThat(humidity).isNotPresent();
-        assertThat(co2).isNotPresent();
+        assertThat(testee.getTemperature()).isNotPresent();
+        assertThat(testee.getHumidity()).isNotPresent();
+        assertThat(testee.getCo2()).isNotPresent();
     }
 
     @Test
-    void shouldReturnTemperature() throws InvalidArgumentException {
-        final CurrentSensorData testee = new CurrentSensorData();
-        final Temperature temperature = Temperature.createFromCelsius(20.0);
+    void shouldReturnValues() throws InvalidArgumentException {
+        final SensorDataImpl sensorData = new SensorDataImpl(20.0, 10.0, 500.0, LocalDateTime.now());
+        when(persistence.getMostCurrentSensorData(any())).thenReturn(Optional.of(sensorData));
+        final CurrentSensorData testee = new CurrentSensorData(persistence);
 
-        testee.setTemperature(temperature);
-        final Optional<Temperature> result = testee.getTemperature();
-
-        assertThat(result).isPresent().hasValue(temperature);
-    }
-
-    @Test
-    void shouldReturnHumidity() throws InvalidArgumentException {
-        final CurrentSensorData testee = new CurrentSensorData();
-        final Humidity humidity = Humidity.createFromAbsolute(10.0);
-
-        testee.setHumidity(humidity);
-        final Optional<Humidity> result = testee.getHumidity();
-
-        assertThat(result).isPresent().hasValue(humidity);
-    }
-
-    @Test
-    void shouldReturnCo2() throws InvalidArgumentException {
-        final CurrentSensorData testee = new CurrentSensorData();
-        final CarbonDioxide co2 = CarbonDioxide.createFromPpm(600);
-
-        testee.setCo2(co2);
-        final Optional<CarbonDioxide> result = testee.getCo2();
-
-        assertThat(result).isPresent().hasValue(co2);
+        assertThat(testee.getTemperature()).isPresent().hasValueSatisfying(temperature ->
+                assertThat(temperature.getCelsius()).isEqualTo(20.0));
+        assertThat(testee.getHumidity()).isPresent().hasValueSatisfying(humidity ->
+                assertThat(humidity.getAbsoluteHumidity()).isEqualTo(10.0));
+        assertThat(testee.getCo2()).isPresent().hasValueSatisfying(carbonDioxide ->
+                assertThat(carbonDioxide.getPpm()).isEqualTo(500.0));
     }
 }

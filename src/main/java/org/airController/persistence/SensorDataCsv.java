@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SensorDataCsv implements SensorDataPersistence {
     private static final Logger logger = LogManager.getLogger(SensorDataCsv.class);
@@ -58,6 +59,11 @@ public class SensorDataCsv implements SensorDataPersistence {
             throw new RuntimeException(e);
         }
         return entries;
+    }
+
+    @Override
+    public Optional<SensorData> getMostCurrentSensorData(LocalDateTime lastValidTimestamp) {
+        return Optional.empty();
     }
 
     private SensorData createSensorData(String csvLine) throws InvalidArgumentException {
