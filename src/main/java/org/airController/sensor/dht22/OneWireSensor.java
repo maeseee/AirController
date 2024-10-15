@@ -33,14 +33,14 @@ public class OneWireSensor implements Sensor {
         try {
             final Optional<SensorData> indoorSensorData = dht22.refreshData();
             indoorSensorData.ifPresentOrElse(
-                    this::notifyObservers,
+                    this::persistData,
                     () -> logger.error("Indoor sensor out of order"));
         } catch (final Exception e) {
             logger.error("OneWireSensor out of order", e);
         }
     }
 
-    private void notifyObservers(SensorData indoorSensorData) {
+    private void persistData(SensorData indoorSensorData) {
         logger.info("New indoor sensor data: {}", indoorSensorData);
         persistence.persist(indoorSensorData);
     }

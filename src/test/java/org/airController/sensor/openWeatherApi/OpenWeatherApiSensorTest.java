@@ -44,7 +44,7 @@ class OpenWeatherApiSensorTest {
     private ArgumentCaptor<OpenWeatherApiSensorData> outdoorSensorDataArgumentCaptor;
 
     @Test
-    void testWhenMeasureValuesThenCallObservers() {
+    void testWhenMeasureValuesThenPersistData() {
         final HttpsGetRequest httpsGetRequest = mock(HttpsGetRequest.class);
         when(httpsGetRequest.sendRequest()).thenReturn(Optional.of(SAMPLE_HTTP_RESPONSE));
         final OpenWeatherApiSensor testee = new OpenWeatherApiSensor(persistence, httpsGetRequest);
@@ -62,7 +62,7 @@ class OpenWeatherApiSensorTest {
     }
 
     @Test
-    void testWhenMeasureValuesEmptyThenDontCallObservers() {
+    void testWhenMeasureValuesEmptyThenDontPersistData() {
         final HttpsGetRequest httpsGetRequest = mock(HttpsGetRequest.class);
         when(httpsGetRequest.sendRequest()).thenReturn(Optional.empty());
         final OpenWeatherApiSensor testee = new OpenWeatherApiSensor(persistence, httpsGetRequest);

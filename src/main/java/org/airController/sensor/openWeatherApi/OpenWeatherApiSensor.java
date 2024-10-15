@@ -48,7 +48,7 @@ public class OpenWeatherApiSensor implements Sensor {
 
         final Optional<OpenWeatherApiSensorData> sensorData = OpenWeatherApiJsonParser.parse(request.get());
         sensorData.ifPresentOrElse(
-                this::notifyObservers,
+                this::persistData,
                 () -> logger.error("Outdoor sensor out of order"));
     }
 
@@ -62,7 +62,7 @@ public class OpenWeatherApiSensor implements Sensor {
         return new HttpsGetRequest(uri);
     }
 
-    private void notifyObservers(OpenWeatherApiSensorData outdoorSensorData) {
+    private void persistData(OpenWeatherApiSensorData outdoorSensorData) {
         logger.info("New outdoor sensor data: {}", outdoorSensorData);
         persistence.persist(outdoorSensorData);
     }

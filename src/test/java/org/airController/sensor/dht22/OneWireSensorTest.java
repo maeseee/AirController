@@ -27,7 +27,7 @@ class OneWireSensorTest {
     private ArgumentCaptor<SensorData> indoorSensorDataArgumentCaptor;
 
     @Test
-    void testWhenRunThenNotifyObservers() throws InvalidArgumentException {
+    void testWhenRunThenPersistData() throws InvalidArgumentException {
         final Dht22 dht22 = mock(Dht22.class);
         final Temperature temperature = Temperature.createFromCelsius(23.0);
         final SensorData indoorSensorData = new Dht22SensorData(temperature, Humidity.createFromRelative(50.0, temperature));
@@ -42,7 +42,7 @@ class OneWireSensorTest {
     }
 
     @Test
-    void testWhenInvalidSensorDataThenDoNotNotifyObservers() {
+    void testWhenInvalidSensorDataThenDoNotPersistData() {
         final Dht22 dht22 = mock(Dht22.class);
         when(dht22.refreshData()).thenReturn(Optional.empty());
         final OneWireSensor testee = new OneWireSensor(persistence, dht22);

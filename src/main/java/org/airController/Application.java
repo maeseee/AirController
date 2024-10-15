@@ -79,14 +79,16 @@ public class Application {
         logger.info("All setup and running...");
     }
 
-    private static OpenWeatherApiSensor createOutdoorSensor() throws URISyntaxException {
+    private static Sensor createOutdoorSensor() throws URISyntaxException {
         final SensorDataPersistence persistence = new SensorDataCsv(OUTDOOR_SENSOR_CSV_PATH);
+        //TODO
         //final SensorDataPersistence persistence = new SensorDataDb(OUTDOOR_TABLE_NAME);
         return new OpenWeatherApiSensor(persistence);
     }
 
     private static Sensor createIndoorSensor() {
         final SensorDataPersistence persistence = new SensorDataCsv(INDOOR_SENSOR_CSV_PATH);
+        //TODO
         //final SensorDataPersistence persistence = new SensorDataDb(INDOOR_TABLE_NAME);
         Sensor oneWireSensor = null;
         try {
@@ -102,14 +104,12 @@ public class Application {
     }
 
     private static CurrentSensorData createCurrentOutdoorSensorValue() {
-        final SensorDataPersistence persistence = new SensorDataCsv(OUTDOOR_SENSOR_CSV_PATH);
-        //final SensorDataPersistence persistence = new SensorDataDb(OUTDOOR_TABLE_NAME);
+        final SensorDataPersistence persistence = new SensorDataCsv(OUTDOOR_SENSOR_CSV_PATH); // TODO get from sensor
         return new CurrentSensorData(persistence);
     }
 
     private static CurrentSensorData createCurrentIndoorSensorValue() {
-        final SensorDataPersistence persistence = new SensorDataCsv(INDOOR_SENSOR_CSV_PATH);
-        //final SensorDataPersistence persistence = new SensorDataDb(INDOOR_TABLE_NAME);
+        final SensorDataPersistence persistence = new SensorDataCsv(INDOOR_SENSOR_CSV_PATH); // TODO get from sensor
         return new CurrentSensorData(persistence);
     }
 
