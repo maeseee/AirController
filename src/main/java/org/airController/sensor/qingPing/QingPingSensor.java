@@ -1,6 +1,7 @@
 package org.airController.sensor.qingPing;
 
 import com.google.inject.internal.Nullable;
+import lombok.Getter;
 import org.airController.persistence.SensorDataPersistence;
 import org.airController.sensor.Sensor;
 import org.airController.sensorValues.InvalidArgumentException;
@@ -17,6 +18,7 @@ public class QingPingSensor implements Sensor {
 
     private static final Logger logger = LogManager.getLogger(QingPingSensor.class);
 
+    @Getter
     private final SensorDataPersistence persistence;
     @Nullable
     private final Sensor backupSensor;

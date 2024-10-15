@@ -1,5 +1,6 @@
 package org.airController.sensor.openWeatherApi;
 
+import lombok.Getter;
 import org.airController.persistence.SensorDataPersistence;
 import org.airController.secrets.Secret;
 import org.airController.sensor.Sensor;
@@ -18,6 +19,7 @@ public class OpenWeatherApiSensor implements Sensor {
     private static final String ENVIRONMENT_VARIABLE_API_KEY = "weather_api_key";
     private static final String ENCRYPTED_API_KEY = "JWHqsiARWGfnwhAp/qvt7aWlmhsyXvOtnsYN32HH5J2m2/QGb/OnuhnGzooxh1onTK+ynB9f038EMbUnOZMjNw==";
 
+    @Getter
     private final SensorDataPersistence persistence;
     private final HttpsGetRequest httpsGetRequest;
 

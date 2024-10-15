@@ -1,5 +1,6 @@
 package org.airController.sensor.dht22;
 
+import lombok.Getter;
 import org.airController.persistence.SensorDataPersistence;
 import org.airController.persistence.SensorDataPrinter;
 import org.airController.sensor.Sensor;
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class OneWireSensor implements Sensor {
     private static final Logger logger = LogManager.getLogger(OneWireSensor.class);
 
+    @Getter
     private final SensorDataPersistence persistence;
     private final Dht22 dht22;
 

@@ -48,12 +48,12 @@ public class Application {
     // Used for MainMock
     Application(GpioPin airFlow, GpioPin humidityExchanger) throws URISyntaxException {
         this(new ControlledVentilationSystem(airFlow, humidityExchanger), createOutdoorSensor(), createIndoorSensor(),
-                createCurrentIndoorSensorValue(), createCurrentOutdoorSensorValue(), new VentilationSystemTimeKeeper());
+                new VentilationSystemTimeKeeper());
     }
 
     private Application(VentilationSystem ventilationSystem, Sensor outdoorSensor, Sensor indoorSensor,
-            CurrentSensorData indoorSensorData, CurrentSensorData outdoorSensorData, VentilationSystemTimeKeeper timeKeeper) {
-        this(outdoorSensor, indoorSensor, createFreshAirController(ventilationSystem, indoorSensorData, outdoorSensorData, timeKeeper), timeKeeper,
+            VentilationSystemTimeKeeper timeKeeper) {
+        this(outdoorSensor, indoorSensor, createFreshAirController(ventilationSystem, outdoorSensor, indoorSensor, timeKeeper), timeKeeper,
                 Executors.newScheduledThreadPool(1));
     }
 
@@ -103,22 +103,14 @@ public class Application {
         }
     }
 
-    private static CurrentSensorData createCurrentOutdoorSensorValue() {
-        final SensorDataPersistence persistence = new SensorDataCsv(OUTDOOR_SENSOR_CSV_PATH); // TODO get from sensor
-        return new CurrentSensorData(persistence);
-    }
-
-    private static CurrentSensorData createCurrentIndoorSensorValue() {
-        final SensorDataPersistence persistence = new SensorDataCsv(INDOOR_SENSOR_CSV_PATH); // TODO get from sensor
-        return new CurrentSensorData(persistence);
-    }
-
-    private static RuleApplier createFreshAirController(VentilationSystem ventilationSystem, CurrentSensorData indoorSensorData,
-            CurrentSensorData outdoorSensorData, VentilationSystemTimeKeeper timeKeeper) {
+    private static RuleApplier createFreshAirController(VentilationSystem ventilationSystem, Sensor outdoorSensor, Sensor indoorSensor,
+            VentilationSystemTimeKeeper timeKeeper) {
+        final CurrentSensorData currentOutdoorSensorData = new CurrentSensorData(outdoorSensor.getPersistence());
+        final CurrentSensorData currentIndoorSensorData = new CurrentSensorData(indoorSensor.getPersistence());
         final List<VentilationSystem> ventilationSystems = List.of(ventilationSystem, timeKeeper);
-        final CO2ControlAirFlow co2ControlAirFlow = new CO2ControlAirFlow(indoorSensorData);
+        final CO2ControlAirFlow co2ControlAirFlow = new CO2ControlAirFlow(currentIndoorSensorData);
         final DailyAirFlow dailyAirFlow = new DailyAirFlow();
-        final HumidityControlAirFlow humidityControlAirFlow = new HumidityControlAirFlow(indoorSensorData, outdoorSensorData);
+        final HumidityControlAirFlow humidityControlAirFlow = new HumidityControlAirFlow(currentIndoorSensorData, currentOutdoorSensorData);
         final PeriodicallyAirFlow periodicallyAirFlow = new PeriodicallyAirFlow(timeKeeper);
         final HumidityControlExchanger humidityControlExchanger = new HumidityControlExchanger(humidityControlAirFlow);
 
