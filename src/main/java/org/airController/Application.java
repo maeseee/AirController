@@ -3,7 +3,9 @@ package org.airController;
 import org.airController.gpio.GpioFunction;
 import org.airController.gpio.GpioPin;
 import org.airController.gpio.RaspberryGpioPin;
+import org.airController.persistence.SensorDataCollection;
 import org.airController.persistence.SensorDataCsv;
+import org.airController.persistence.SensorDataDb;
 import org.airController.persistence.SensorDataPersistence;
 import org.airController.rules.*;
 import org.airController.sensor.Sensor;
@@ -77,16 +79,16 @@ public class Application {
     }
 
     private static Sensor createOutdoorSensor() throws URISyntaxException {
-        final SensorDataPersistence persistence = new SensorDataCsv(SensorDataPersistence.OUTDOOR_SENSOR_CSV_PATH);
-        //TODO
-        //final SensorDataPersistence persistence = new SensorDataDb(SensorDataPersistence.OUTDOOR_TABLE_NAME);
+        final SensorDataPersistence persistence = new SensorDataCollection(List.of(
+                new SensorDataDb(SensorDataPersistence.OUTDOOR_TABLE_NAME),
+                new SensorDataCsv(SensorDataPersistence.OUTDOOR_SENSOR_CSV_PATH)));
         return new OpenWeatherApiSensor(persistence);
     }
 
     private static Sensor createIndoorSensor() {
-        final SensorDataPersistence persistence = new SensorDataCsv(SensorDataPersistence.INDOOR_SENSOR_CSV_PATH);
-        //TODO
-        //final SensorDataPersistence persistence = new SensorDataDb(SensorDataPersistence.INDOOR_TABLE_NAME);
+        final SensorDataPersistence persistence = new SensorDataCollection(List.of(
+                new SensorDataDb(SensorDataPersistence.INDOOR_TABLE_NAME),
+                new SensorDataCsv(SensorDataPersistence.INDOOR_SENSOR_CSV_PATH)));
         Sensor oneWireSensor = null;
         try {
             oneWireSensor = new OneWireSensor(persistence);
