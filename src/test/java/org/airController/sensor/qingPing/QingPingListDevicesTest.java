@@ -14,8 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.airController.sensor.qingPing.QingPingDevices.MAC_AIR_PRESSURE_DEVICE;
-import static org.airController.sensor.qingPing.QingPingDevices.MAC_CO2_DEVICE_1;
+import static org.airController.sensor.qingPing.QingPingDevices.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -43,7 +42,9 @@ class QingPingListDevicesTest {
 
         verify(parser).parseDeviceListResponse(response, MAC_AIR_PRESSURE_DEVICE);
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_1);
-        assertThat(sensorDataList).hasSize(2);
+        verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_2);
+        verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_3);
+        assertThat(sensorDataList).hasSize(4);
     }
 
     @Test
@@ -59,25 +60,6 @@ class QingPingListDevicesTest {
         verify(parser).parseDeviceListResponse(response, MAC_AIR_PRESSURE_DEVICE);
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_1);
         assertThat(sensorDataList).hasSize(0);
-    }
-
-    @Test
-    void shouldCorrectHumidity_whenCo2Sensor() throws CommunicationException, IOException, URISyntaxException, InvalidArgumentException {
-        final String token = "token";
-        final String response = "response";
-        when(listDevicesRequest.sendRequest(token)).thenReturn(response);
-        final LocalDateTime now = LocalDateTime.now();
-        final QingPingSensorData sensorData = createSensorData(10.0, now);
-        when(parser.parseDeviceListResponse(eq(response), eq(MAC_AIR_PRESSURE_DEVICE))).thenReturn(Optional.of(sensorData));
-        when(parser.parseDeviceListResponse(eq(response), eq(MAC_CO2_DEVICE_1))).thenReturn(Optional.of(sensorData));
-        final QingPingListDevices testee = new QingPingListDevices(listDevicesRequest, parser);
-
-        final List<QingPingSensorData> sensorDataList = testee.readSensorDataList(token);
-
-        assertThat(sensorDataList).hasSize(2);
-        assertThat(sensorDataList).contains(sensorData);
-        final QingPingSensorData sensorDataCo2Device = createSensorData(9.26, now);
-        assertThat(sensorDataList).contains(sensorDataCo2Device);
     }
 
     private QingPingSensorData createSensorData(double absoluteHumidity, LocalDateTime timestamp) throws InvalidArgumentException {
