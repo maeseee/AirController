@@ -10,7 +10,7 @@ import java.time.ZoneId;
 import java.util.Optional;
 
 import static org.airController.sensor.qingPing.QingPingDevices.MAC_AIR_PRESSURE_DEVICE;
-import static org.airController.sensor.qingPing.QingPingDevices.MAC_CO2_DEVICE;
+import static org.airController.sensor.qingPing.QingPingDevices.MAC_CO2_DEVICE_1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class QingPingListDevicesJsonParserTest {
@@ -136,7 +136,7 @@ class QingPingListDevicesJsonParserTest {
     void shouldParseSensorDataOfCo2Device() throws InvalidArgumentException {
         final QingPingListDevicesJsonParser testee = new QingPingListDevicesJsonParser();
 
-        final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, MAC_CO2_DEVICE);
+        final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, MAC_CO2_DEVICE_1);
 
         final Temperature expectedTemperature = Temperature.createFromCelsius(22.3);
         final Humidity expectedHumidity = Humidity.createFromRelative(47.1, expectedTemperature);

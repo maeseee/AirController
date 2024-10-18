@@ -38,7 +38,7 @@ class QingPingListDevices {
     }
 
     private QingPingSensorData fixSensorOffset(QingPingSensorData sensorData, String mac) {
-        if (mac.equals(QingPingDevices.MAC_CO2_DEVICE)) {
+        if (mac.equals(QingPingDevices.MAC_CO2_DEVICE_1)) {
             return fixHumidity(sensorData, -0.74); // Is about -4%
         }
         return sensorData;
