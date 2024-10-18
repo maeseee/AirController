@@ -74,13 +74,13 @@ public class SensorDataDb implements SensorDataPersistence {
     @Override
     public Optional<SensorData> getMostCurrentSensorData(LocalDateTime lastValidTimestamp) {
         try {
-            final String sql = "SELECT * FROM " + sensorDataTableName + " i" +
-                    "ORDER BY i.EVENT_TIME DESC\n" +
-                    "WHERE i.EVENT_TIME > ?" +
+            final String sql = "SELECT * FROM " + sensorDataTableName + " i " +
+                    "WHERE i.EVENT_TIME > ? " +
+                    "ORDER BY i.EVENT_TIME DESC " +
                     "LIMIT 1;";
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setTimestamp(1, Timestamp.valueOf(lastValidTimestamp));
-            final ResultSet resultSet = preparedStatement.executeQuery(sql);
+            final ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
                 try {
