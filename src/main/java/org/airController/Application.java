@@ -26,9 +26,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static org.airController.persistence.Persistence.INDOOR_SENSOR_CSV_PATH;
-import static org.airController.persistence.Persistence.OUTDOOR_SENSOR_CSV_PATH;
-
 public class Application {
     private static final Logger logger = LogManager.getLogger(Application.class);
     private static final int OUTDOOR_SENSOR_READ_PERIOD_MINUTES = 10;
@@ -80,16 +77,16 @@ public class Application {
     }
 
     private static Sensor createOutdoorSensor() throws URISyntaxException {
-        final SensorDataPersistence persistence = new SensorDataCsv(OUTDOOR_SENSOR_CSV_PATH);
+        final SensorDataPersistence persistence = new SensorDataCsv(SensorDataPersistence.OUTDOOR_SENSOR_CSV_PATH);
         //TODO
-        //final SensorDataPersistence persistence = new SensorDataDb(OUTDOOR_TABLE_NAME);
+        //final SensorDataPersistence persistence = new SensorDataDb(SensorDataPersistence.OUTDOOR_TABLE_NAME);
         return new OpenWeatherApiSensor(persistence);
     }
 
     private static Sensor createIndoorSensor() {
-        final SensorDataPersistence persistence = new SensorDataCsv(INDOOR_SENSOR_CSV_PATH);
+        final SensorDataPersistence persistence = new SensorDataCsv(SensorDataPersistence.INDOOR_SENSOR_CSV_PATH);
         //TODO
-        //final SensorDataPersistence persistence = new SensorDataDb(INDOOR_TABLE_NAME);
+        //final SensorDataPersistence persistence = new SensorDataDb(SensorDataPersistence.INDOOR_TABLE_NAME);
         Sensor oneWireSensor = null;
         try {
             oneWireSensor = new OneWireSensor(persistence);

@@ -12,7 +12,7 @@ public class DbToCsv {
 
     public static void main(String[] args) {
         final DbToCsv dbToCsv = new DbToCsv();
-        dbToCsv.persistToCsvFromDb(Persistence.INDOOR_TABLE_NAME, INDOOR_SENSOR_CSV_PATH);
-        dbToCsv.persistToCsvFromDb(Persistence.OUTDOOR_TABLE_NAME, OUTDOOR_SENSOR_CSV_PATH);
+        dbToCsv.persistToCsvFromDb(SensorDataPersistence.INDOOR_TABLE_NAME, INDOOR_SENSOR_CSV_PATH);
+        dbToCsv.persistToCsvFromDb(SensorDataPersistence.OUTDOOR_TABLE_NAME, OUTDOOR_SENSOR_CSV_PATH);
     }
 }
