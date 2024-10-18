@@ -93,7 +93,7 @@ public class Application {
         Sensor oneWireSensor = null;
         try {
             oneWireSensor = new OneWireSensor(persistence);
-        } catch (IOException e) {
+        } catch (IOException | IllegalArgumentException | UnsatisfiedLinkError e) {
             logger.error("Could not load backup sensor!" + e.getMessage());
         }
         try {
