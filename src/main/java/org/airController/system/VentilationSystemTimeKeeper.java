@@ -60,7 +60,8 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     public Duration getTotalAirFlowFromDay(LocalDate day) {
         final LocalDateTime startTime = day.atStartOfDay();
         final LocalDateTime endTime = day.atTime(LocalTime.MAX);
-        return getDuration(startTime, endTime);
+        final List<SystemAction> actionsFromLastDay = systemActions.getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
+        return getDuration(actionsFromLastDay, startTime, endTime);
     }
 
     @Override
@@ -81,17 +82,6 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     @VisibleForTesting
     void removeTimePeriods(LocalDate lastDayToKeep) {
         timePeriods.removeIf(timePeriod -> timePeriod.off().toLocalDate().isBefore(lastDayToKeep));
-    }
-
-    private Duration getDuration(LocalDateTime startTime, LocalDateTime endTime) {
-        final ArrayList<TimePeriod> timePeriodsCopy = new ArrayList<>(timePeriods);
-        if (onTime != null && onTime.isBefore(endTime)) {
-            timePeriodsCopy.add(new TimePeriod(onTime, endTime));
-        }
-        return timePeriodsCopy.stream()
-                .filter(timePeriod -> isBetween(startTime, endTime, timePeriod))
-                .map(timePeriod -> getDurationInTimePeriod(timePeriod, startTime, endTime))
-                .reduce(Duration.ZERO, Duration::plus);
     }
 
     private Duration getDuration(List<SystemAction> actionsFromLastHour, LocalDateTime startTime, LocalDateTime endTime) {
