@@ -3,6 +3,7 @@ package org.airController.controllers;
 import org.airController.rules.Confidence;
 import org.airController.rules.Rule;
 import org.airController.rules.RuleApplier;
+import org.airController.system.OutputState;
 import org.airController.system.VentilationSystem;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,8 +36,8 @@ class RuleApplierTest {
 
         testee.run();
 
-        verify(ventilationSystem).setAirFlowOn(true);
-        verify(ventilationSystem).setHumidityExchangerOn(false);
+        verify(ventilationSystem).setAirFlowOn(OutputState.ON);
+        verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
     }
 
     @Test
@@ -47,8 +48,8 @@ class RuleApplierTest {
 
         testee.run();
 
-        verify(ventilationSystem).setAirFlowOn(false);
-        verify(ventilationSystem).setHumidityExchangerOn(false);
+        verify(ventilationSystem).setAirFlowOn(OutputState.OFF);
+        verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
     }
 
     @Test
@@ -60,8 +61,8 @@ class RuleApplierTest {
 
         testee.run();
 
-        verify(ventilationSystem).setAirFlowOn(true);
-        verify(ventilationSystem).setHumidityExchangerOn(true);
+        verify(ventilationSystem).setAirFlowOn(OutputState.ON);
+        verify(ventilationSystem).setHumidityExchangerOn(OutputState.ON);
     }
 
     @Test
@@ -75,8 +76,8 @@ class RuleApplierTest {
 
         testee.run();
 
-        verify(ventilationSystem).setAirFlowOn(false);
-        verify(ventilationSystem).setHumidityExchangerOn(false);
+        verify(ventilationSystem).setAirFlowOn(OutputState.OFF);
+        verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
     }
 
     @Test
@@ -90,8 +91,8 @@ class RuleApplierTest {
         testee.run(); // on
         testee.run(); // nothing
 
-        verify(ventilationSystem).setAirFlowOn(true);
-        verify(ventilationSystem).setHumidityExchangerOn(false);
+        verify(ventilationSystem).setAirFlowOn(OutputState.ON);
+        verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
     }
 
     @Test
@@ -105,8 +106,8 @@ class RuleApplierTest {
         testee.run(); // on
         testee.run(); // off
 
-        verify(ventilationSystem).setAirFlowOn(true);
-        verify(ventilationSystem).setAirFlowOn(false);
-        verify(ventilationSystem).setHumidityExchangerOn(false);
+        verify(ventilationSystem).setAirFlowOn(OutputState.ON);
+        verify(ventilationSystem).setAirFlowOn(OutputState.OFF);
+        verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
     }
 }

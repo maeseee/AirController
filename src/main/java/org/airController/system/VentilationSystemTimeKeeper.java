@@ -2,6 +2,7 @@ package org.airController.system;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.airController.rules.TimeKeeper;
+import org.airController.systemPersitence.SystemActions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,23 +18,32 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
 
     private final List<TimePeriod> timePeriods = new ArrayList<>();
     private LocalDateTime onTime;
+    private SystemActions systemActions;
 
-    @Override
-    public void setAirFlowOn(boolean on) {
-        final LocalDateTime now = LocalDateTime.now();
-        if (on && onTime == null) {
-            onTime = now;
-        }
-        if (!on && onTime != null) {
-            final TimePeriod timePeriod = new TimePeriod(onTime, now);
-            timePeriods.add(timePeriod);
-            onTime = null;
-        }
+    public VentilationSystemTimeKeeper(SystemActions systemActions) {
+        this.systemActions = systemActions;
     }
 
     @Override
-    public void setHumidityExchangerOn(boolean on) {
-        // No need for time keeping
+    public void setAirFlowOn(OutputState state) {
+        { // TODO delete after refactoring
+            final LocalDateTime now = LocalDateTime.now();
+            if (state.isOn() && onTime == null) {
+                onTime = now;
+            }
+            if (!state.isOn() && onTime != null) {
+                final TimePeriod timePeriod = new TimePeriod(onTime, now);
+                timePeriods.add(timePeriod);
+                onTime = null;
+            }
+        }
+
+        systemActions.setAirFlowOn(state);
+    }
+
+    @Override
+    public void setHumidityExchangerOn(OutputState state) {
+        systemActions.setHumidityExchangerOn(state);
     }
 
     @Override
@@ -41,6 +51,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
         final LocalDateTime endTime = LocalDateTime.now();
         final LocalDateTime startTime = endTime.minusHours(1);
         return getDuration(startTime, endTime);
+//        systemActions.getActionsFromLastHour();
     }
 
     @Override

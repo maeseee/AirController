@@ -2,7 +2,7 @@ package org.airController.system;
 
 public interface VentilationSystem {
 
-    void setAirFlowOn(boolean on);
+    void setAirFlowOn(OutputState state);
 
-    void setHumidityExchangerOn(boolean on);
+    void setHumidityExchangerOn(OutputState state);
 }

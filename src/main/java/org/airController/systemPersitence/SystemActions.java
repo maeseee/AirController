@@ -2,6 +2,7 @@ package org.airController.systemPersitence;
 
 import org.airController.persistence.Persistence;
 import org.airController.sensorValues.SensorData;
+import org.airController.system.OutputState;
 import org.airController.system.VentilationSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,9 +32,9 @@ public class SystemActions implements VentilationSystem {
     }
 
     @Override
-    public void setAirFlowOn(boolean on) {
+    public void setAirFlowOn(OutputState state) {
         try {
-            insertAction(AIR_FLOW_ACTION_TABLE_NAME, on, LocalDateTime.now());
+            insertAction(AIR_FLOW_ACTION_TABLE_NAME, SystemPart.AIR_FLOW, state, LocalDateTime.now());
         } catch (SQLException e) {
             logger.error("SQL Exception! {}", e.getMessage());
         } catch (Exception e) {
@@ -42,9 +43,9 @@ public class SystemActions implements VentilationSystem {
     }
 
     @Override
-    public void setHumidityExchangerOn(boolean on) {
+    public void setHumidityExchangerOn(OutputState state) {
         try {
-            insertAction(HUMIDITY_ACTION_TABLE_NAME, on, LocalDateTime.now());
+            insertAction(HUMIDITY_ACTION_TABLE_NAME, SystemPart.HUMIDITY, state, LocalDateTime.now());
         } catch (SQLException e) {
             logger.error("SQL Exception! {}", e.getMessage());
         } catch (Exception e) {
@@ -73,21 +74,27 @@ public class SystemActions implements VentilationSystem {
         return Collections.emptyList();
     }
 
+    public List<SystemAction> getActionsFromLastHour() {
+        return null;
+    }
+
     private void createTableIfNotExists(String tableName) throws SQLException {
         final Statement statement = connection.createStatement();
         final String sql =
                 "CREATE TABLE IF NOT EXISTS public." + tableName + " (\n" +
                         "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
-                        "on_state BOOLEAN,\n" +
-                        "event_time TIMESTAMP);";
+                        "system_part VARCHAR(20),\n" +
+                        "status VARCHAR(20),\n" +
+                        "action_time TIMESTAMP);";
         statement.execute(sql);
     }
 
-    private void insertAction(String tableName, boolean onState, LocalDateTime timestamp) throws SQLException {
-        final String sql = "INSERT INTO " + tableName + " (on_state, event_time) VALUES (?, ?)";
+    private void insertAction(String tableName, SystemPart systemPart, OutputState state, LocalDateTime timestamp) throws SQLException {
+        final String sql = "INSERT INTO " + tableName + " (on_state, event_time) VALUES (?, ?, ?)";
         final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setObject(1, onState);
-        preparedStatement.setObject(2, timestamp);
+        preparedStatement.setString(1, systemPart.name());
+        preparedStatement.setObject(2, state.name());
+        preparedStatement.setObject(3, timestamp);
         preparedStatement.executeUpdate();
     }
 }

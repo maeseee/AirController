@@ -58,7 +58,7 @@ public class RuleApplier implements Runnable {
 
     private void updateAirFlow(OutputState nextAirFlowState) {
         if (airFlowState != nextAirFlowState) {
-            ventilationSystem.forEach(system -> system.setAirFlowOn(nextAirFlowState.isOn()));
+            ventilationSystem.forEach(system -> system.setAirFlowOn(nextAirFlowState));
             airFlowState = nextAirFlowState;
             final String ruleValues = freshAirRules.stream()
                     .map(rule -> String.format("%s: %.2f, ", rule.name(), rule.turnOnConfidence().getWeightedConfidenceValue()))
@@ -69,7 +69,7 @@ public class RuleApplier implements Runnable {
 
     private void updateHumidityExchanger(OutputState nextHumidityExchangerState) {
         if (humidityExchangerState != nextHumidityExchangerState) {
-            ventilationSystem.forEach(system -> system.setHumidityExchangerOn(nextHumidityExchangerState.isOn()));
+            ventilationSystem.forEach(system -> system.setHumidityExchangerOn(nextHumidityExchangerState));
             humidityExchangerState = nextHumidityExchangerState;
         }
     }

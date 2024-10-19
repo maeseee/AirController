@@ -13,7 +13,7 @@ class ControlledVentilationSystemTest {
         final GpioPin humidityExchanger = mock(GpioPin.class);
         final ControlledVentilationSystem testee = new ControlledVentilationSystem(airFlow, humidityExchanger);
 
-        testee.setAirFlowOn(true);
+        testee.setAirFlowOn(OutputState.ON);
 
         verify(airFlow).setGpioState(true);
         verifyNoMoreInteractions(airFlow);
@@ -25,7 +25,7 @@ class ControlledVentilationSystemTest {
         final GpioPin humidityExchanger = mock(GpioPin.class);
         final ControlledVentilationSystem testee = new ControlledVentilationSystem(airFlow, humidityExchanger);
 
-        testee.setHumidityExchangerOn(true);
+        testee.setHumidityExchangerOn(OutputState.ON);
 
         verify(humidityExchanger).setGpioState(true);
         verifyNoMoreInteractions(airFlow);

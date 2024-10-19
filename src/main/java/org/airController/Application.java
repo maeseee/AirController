@@ -3,19 +3,20 @@ package org.airController;
 import org.airController.gpio.GpioFunction;
 import org.airController.gpio.GpioPin;
 import org.airController.gpio.RaspberryGpioPin;
-import org.airController.sensorDataPersistence.SensorDataCollection;
-import org.airController.sensorDataPersistence.SensorDataCsv;
-import org.airController.sensorDataPersistence.SensorDataDb;
-import org.airController.sensorDataPersistence.SensorDataPersistence;
 import org.airController.rules.*;
 import org.airController.sensor.Sensor;
 import org.airController.sensor.dht22.OneWireSensor;
 import org.airController.sensor.openWeatherApi.OpenWeatherApiSensor;
 import org.airController.sensor.qingPing.QingPingSensor;
+import org.airController.sensorDataPersistence.SensorDataCollection;
+import org.airController.sensorDataPersistence.SensorDataCsv;
+import org.airController.sensorDataPersistence.SensorDataDb;
+import org.airController.sensorDataPersistence.SensorDataPersistence;
 import org.airController.sensorValues.CurrentSensorData;
 import org.airController.system.ControlledVentilationSystem;
 import org.airController.system.VentilationSystem;
 import org.airController.system.VentilationSystemTimeKeeper;
+import org.airController.systemPersitence.SystemActions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,7 +48,7 @@ public class Application {
     // Used for MainMock
     Application(GpioPin airFlow, GpioPin humidityExchanger) throws URISyntaxException {
         this(new ControlledVentilationSystem(airFlow, humidityExchanger), createOutdoorSensor(), createIndoorSensor(),
-                new VentilationSystemTimeKeeper());
+                new VentilationSystemTimeKeeper(new SystemActions()));
     }
 
     private Application(VentilationSystem ventilationSystem, Sensor outdoorSensor, Sensor indoorSensor,

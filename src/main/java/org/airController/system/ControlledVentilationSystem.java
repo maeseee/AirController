@@ -13,12 +13,12 @@ public class ControlledVentilationSystem implements VentilationSystem {
     }
 
     @Override
-    public void setAirFlowOn(boolean on) {
-        airFlow.setGpioState(on);
+    public void setAirFlowOn(OutputState state) {
+        airFlow.setGpioState(state.isOn());
     }
 
     @Override
-    public void setHumidityExchangerOn(boolean on) {
-        humidityExchanger.setGpioState(on);
+    public void setHumidityExchangerOn(OutputState state) {
+        humidityExchanger.setGpioState(state.isOn());
     }
 }
