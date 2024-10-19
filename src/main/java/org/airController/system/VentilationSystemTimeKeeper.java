@@ -1,6 +1,5 @@
 package org.airController.system;
 
-import com.google.common.annotations.VisibleForTesting;
 import org.airController.rules.TimeKeeper;
 import org.airController.systemPersitence.SystemAction;
 import org.airController.systemPersitence.SystemActions;
@@ -18,9 +17,7 @@ import java.util.List;
 public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeeper {
     private static final Logger logger = LogManager.getLogger(VentilationSystemTimeKeeper.class);
 
-    private final List<TimePeriod> timePeriods = new ArrayList<>();
     private final SystemActions systemActions;
-    private LocalDateTime onTime;
 
     public VentilationSystemTimeKeeper(SystemActions systemActions) {
         this.systemActions = systemActions;
@@ -28,18 +25,6 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
 
     @Override
     public void setAirFlowOn(OutputState state) {
-        { // TODO delete after refactoring
-            final LocalDateTime now = LocalDateTime.now();
-            if (state.isOn() && onTime == null) {
-                onTime = now;
-            }
-            if (!state.isOn() && onTime != null) {
-                final TimePeriod timePeriod = new TimePeriod(onTime, now);
-                timePeriods.add(timePeriod);
-                onTime = null;
-            }
-        }
-
         systemActions.setAirFlowOn(state);
     }
 
@@ -72,16 +57,9 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
             final Duration totalAirFlowYesterday = getTotalAirFlowFromDay(yesterday);
             logger.info("The daily switch-on time  of {} was {} minutes ({} %)", yesterday, totalAirFlowYesterday.toMinutes(),
                     getOnPercentage(totalAirFlowYesterday));
-
-            removeTimePeriods(yesterday);
         } catch (Exception e) {
             logger.error("Exception occurred while running VentilationSystemTimeKeeper! ", e);
         }
-    }
-
-    @VisibleForTesting
-    void removeTimePeriods(LocalDate lastDayToKeep) {
-        timePeriods.removeIf(timePeriod -> timePeriod.off().toLocalDate().isBefore(lastDayToKeep));
     }
 
     private Duration getDuration(List<SystemAction> actionsFromLastHour, LocalDateTime startTime, LocalDateTime endTime) {
@@ -108,16 +86,6 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
             actionsWithStartAndEnd.add(new SystemAction(endTime, firstSystemAction.systemPart(), OutputState.OFF));
         }
         return actionsWithStartAndEnd;
-    }
-
-    private boolean isBetween(LocalDateTime startTime, LocalDateTime endTime, TimePeriod timePeriod) {
-        return timePeriod.off().isAfter(startTime) && timePeriod.on().isBefore(endTime);
-    }
-
-    private Duration getDurationInTimePeriod(TimePeriod timePeriod, LocalDateTime startTime, LocalDateTime endTime) {
-        final LocalDateTime durationStart = timePeriod.on().isAfter(startTime) ? timePeriod.on() : startTime;
-        final LocalDateTime durationEnd = timePeriod.off().isBefore(endTime) ? timePeriod.off() : endTime;
-        return Duration.between(durationStart, durationEnd);
     }
 
     private double getOnPercentage(Duration onTime) {
