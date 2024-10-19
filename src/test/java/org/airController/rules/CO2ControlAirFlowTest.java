@@ -23,9 +23,9 @@ class CO2ControlAirFlowTest {
     @ParameterizedTest(name = "{index} => co2 ppm={0}, expectedConfidence={1}")
     @CsvSource({
             "500, -1.0",
-            "1100, 1.0",
+            "900, 1.0",
             "1400, 1.0",
-            "800, 0.0"
+            "700, 0.0"
     })
     void shouldCalculateCo2Confidence(double co2, double expectedConfidence) throws InvalidArgumentException {
         final Optional<CarbonDioxide> carbonDioxide = Optional.of(CarbonDioxide.createFromPpm(co2));
