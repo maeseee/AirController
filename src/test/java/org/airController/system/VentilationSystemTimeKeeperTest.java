@@ -1,6 +1,8 @@
 package org.airController.system;
 
+import org.airController.systemPersitence.SystemAction;
 import org.airController.systemPersitence.SystemActions;
+import org.airController.systemPersitence.SystemPart;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,9 +15,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class VentilationSystemTimeKeeperTest {
@@ -23,69 +30,52 @@ class VentilationSystemTimeKeeperTest {
     @Mock
     private SystemActions systemActions;
 
-    @ParameterizedTest(name = "{index} => onMinutesBeforeNow={0}, offMinutesBeforeNow={1}, expectedResult={2}")
-    @CsvSource({
-            "60, 0, 60",
-            "70, -10, 60",
-            "70, 20, 40",
-            "40, 0, 40",
-    })
-    void shouldReturnOnDurationInTheLastHour(int onMinutesBeforeNow, int offMinutesBeforeNow, long expectedResult) {
-        final LocalDateTime now = LocalDateTime.now();
-        final LocalDateTime onTime = now.minusMinutes(onMinutesBeforeNow);
-        final LocalDateTime offTime = now.minusMinutes(offMinutesBeforeNow);
+    @Test
+    void shouldReturnZero_whenNoEventInTheLastHour() {
+        when(systemActions.getActionsFromTimeToNow(any(), eq(SystemPart.AIR_FLOW))).thenReturn(emptyList());
         final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(systemActions);
-        try (MockedStatic<LocalDateTime> mocked = mockStatic(LocalDateTime.class)) {
-            mocked.when(LocalDateTime::now)
-                    .thenReturn(onTime)
-                    .thenReturn(offTime)
-                    .thenReturn(now);
-            testee.setAirFlowOn(OutputState.ON);
-            testee.setAirFlowOn(OutputState.OFF);
-        }
 
         final Duration result = testee.getAirFlowOnDurationInLastHour();
 
-        assertThat(result.toMinutes()).isCloseTo(expectedResult, Offset.offset(1L));
+        assertThat(result).isEqualTo(Duration.ZERO);
     }
 
     @Test
-    void shouldReturnDurationInLastHourWithOnGoingOnTime() {
-        final LocalDateTime now = LocalDateTime.now();
-        final LocalDateTime onTime = now.minusMinutes(30);
+    void shouldReturnDurationToOff_whenNoMore() {
+        final LocalDateTime endTime = LocalDateTime.now();
+        final LocalDateTime startTime = endTime.minusHours(1);
+        final SystemAction offAction = new SystemAction(startTime.plusMinutes(20), SystemPart.AIR_FLOW, OutputState.OFF);
+        when(systemActions.getActionsFromTimeToNow(any(), eq(SystemPart.AIR_FLOW))).thenReturn(List.of(offAction));
         final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(systemActions);
-        try (MockedStatic<LocalDateTime> mocked = mockStatic(LocalDateTime.class)) {
-            mocked.when(LocalDateTime::now)
-                    .thenReturn(onTime)
-                    .thenReturn(now);
-            testee.setAirFlowOn(OutputState.ON);
-        }
 
         final Duration result = testee.getAirFlowOnDurationInLastHour();
 
-        assertThat(result.toMinutes()).isCloseTo(30, Offset.offset(1L));
+        assertThat(result.toMinutes()).isCloseTo(20, Offset.offset(1L));
     }
 
     @Test
-    void shouldCountTwoTimePeriods() {
-        final LocalDateTime now = LocalDateTime.now();
-        final LocalDateTime onTime1 = now.minusMinutes(50);
-        final LocalDateTime offTime1 = now.minusMinutes(40);
-        final LocalDateTime onTime2 = now.minusMinutes(20);
-        final LocalDateTime offTime2 = now.minusMinutes(10);
+    void shouldReturnDurationFromOn_whenNoMore() {
+        final LocalDateTime endTime = LocalDateTime.now();
+        final LocalDateTime startTime = endTime.minusHours(1);
+        final SystemAction onAction = new SystemAction(startTime.plusMinutes(20), SystemPart.AIR_FLOW, OutputState.ON);
+        when(systemActions.getActionsFromTimeToNow(any(), eq(SystemPart.AIR_FLOW))).thenReturn(List.of(onAction));
         final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(systemActions);
-        try (MockedStatic<LocalDateTime> mocked = mockStatic(LocalDateTime.class)) {
-            mocked.when(LocalDateTime::now)
-                    .thenReturn(onTime1)
-                    .thenReturn(offTime1)
-                    .thenReturn(onTime2)
-                    .thenReturn(offTime2)
-                    .thenReturn(now);
-            testee.setAirFlowOn(OutputState.ON);
-            testee.setAirFlowOn(OutputState.OFF);
-            testee.setAirFlowOn(OutputState.ON);
-            testee.setAirFlowOn(OutputState.OFF);
-        }
+
+        final Duration result = testee.getAirFlowOnDurationInLastHour();
+
+        assertThat(result.toMinutes()).isCloseTo(40, Offset.offset(1L));
+    }
+
+    @Test
+    void shouldCountSeveralOnOffActions() {
+        final LocalDateTime endTime = LocalDateTime.now();
+        final LocalDateTime startTime = endTime.minusHours(1);
+        final SystemAction onAction1 = new SystemAction(startTime.plusMinutes(10), SystemPart.AIR_FLOW, OutputState.ON);
+        final SystemAction offAction1 = new SystemAction(startTime.plusMinutes(20), SystemPart.AIR_FLOW, OutputState.OFF);
+        final SystemAction onAction2 = new SystemAction(startTime.plusMinutes(40), SystemPart.AIR_FLOW, OutputState.ON);
+        final SystemAction offAction2 = new SystemAction(startTime.plusMinutes(50), SystemPart.AIR_FLOW, OutputState.OFF);
+        when(systemActions.getActionsFromTimeToNow(any(), eq(SystemPart.AIR_FLOW))).thenReturn(List.of(onAction1, offAction1, onAction2, offAction2));
+        final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(systemActions);
 
         final Duration result = testee.getAirFlowOnDurationInLastHour();
 

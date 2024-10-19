@@ -3,6 +3,7 @@ package org.airController.systemPersitence;
 import org.airController.system.OutputState;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,23 +11,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SystemActionsTest {
     @Test
     void shouldReturnActionsFromLastHour() {
+        final LocalDateTime startTime = LocalDateTime.now().minusMinutes(1);
         final SystemActions testee = new SystemActions();
 
         testee.setAirFlowOn(OutputState.ON);
 
-        final List<SystemAction> actionsFromLastHour = testee.getActionsFromLastHour(SystemPart.AIR_FLOW);
+        final List<SystemAction> actionsFromLastHour = testee.getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
         assertThat(actionsFromLastHour).size().isGreaterThanOrEqualTo(1);
     }
 
     @Test
     void shouldReturnActionsFromLastHourInAscOrder() throws InterruptedException {
+        final LocalDateTime startTime = LocalDateTime.now().minusMinutes(1);
         final SystemActions testee = new SystemActions();
 
         testee.setAirFlowOn(OutputState.ON);
         Thread.sleep(1); // Force a difference
         testee.setAirFlowOn(OutputState.OFF);
 
-        final List<SystemAction> actionsFromLastHour = testee.getActionsFromLastHour(SystemPart.AIR_FLOW);
+        final List<SystemAction> actionsFromLastHour = testee.getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
         assertThat(actionsFromLastHour).size().isGreaterThanOrEqualTo(1);
         final SystemAction lastAction = actionsFromLastHour.get(actionsFromLastHour.size() - 1);
         assertThat(lastAction.systemPart()).isEqualTo(SystemPart.AIR_FLOW);

@@ -51,7 +51,7 @@ public class SystemActions implements VentilationSystem {
         }
     }
 
-    public List<SystemAction> getActionsFromLastHour(SystemPart part) {
+    public List<SystemAction> getActionsFromTimeToNow(LocalDateTime startDateTime, SystemPart part) {
         final List<SystemAction> entries = new ArrayList<>();
         try {
             final String sql =
@@ -60,7 +60,7 @@ public class SystemActions implements VentilationSystem {
                             "AND i.system_part = ? " +
                             "ORDER BY i.action_time ASC;";
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now().minusHours(1)));
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(startDateTime));
             preparedStatement.setString(2, part.name());
             final ResultSet resultSet = preparedStatement.executeQuery();
 

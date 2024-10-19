@@ -2,7 +2,9 @@ package org.airController.system;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.airController.rules.TimeKeeper;
+import org.airController.systemPersitence.SystemAction;
 import org.airController.systemPersitence.SystemActions;
+import org.airController.systemPersitence.SystemPart;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,8 +19,8 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     private static final Logger logger = LogManager.getLogger(VentilationSystemTimeKeeper.class);
 
     private final List<TimePeriod> timePeriods = new ArrayList<>();
+    private final SystemActions systemActions;
     private LocalDateTime onTime;
-    private SystemActions systemActions;
 
     public VentilationSystemTimeKeeper(SystemActions systemActions) {
         this.systemActions = systemActions;
@@ -50,8 +52,8 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     public Duration getAirFlowOnDurationInLastHour() {
         final LocalDateTime endTime = LocalDateTime.now();
         final LocalDateTime startTime = endTime.minusHours(1);
-        return getDuration(startTime, endTime);
-        // final List<SystemAction> actionsFromLastHour = systemActions.getActionsFromLastHour(SystemPart.AIR_FLOW);
+        final List<SystemAction> actionsFromLastHour = systemActions.getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
+        return getDuration(actionsFromLastHour, startTime, endTime);
     }
 
     @Override
@@ -90,6 +92,32 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
                 .filter(timePeriod -> isBetween(startTime, endTime, timePeriod))
                 .map(timePeriod -> getDurationInTimePeriod(timePeriod, startTime, endTime))
                 .reduce(Duration.ZERO, Duration::plus);
+    }
+
+    private Duration getDuration(List<SystemAction> actionsFromLastHour, LocalDateTime startTime, LocalDateTime endTime) {
+        if (actionsFromLastHour.isEmpty()) {
+            return Duration.ZERO;
+        }
+        final List<SystemAction> actionsWithStartAndEnd = addStartAndEndActions(actionsFromLastHour, startTime, endTime);
+        return actionsWithStartAndEnd.stream()
+                .map(systemAction -> systemAction.outputState().isOn() ?
+                        Duration.between(systemAction.actionTime(), startTime) :
+                        Duration.between(startTime, systemAction.actionTime()))
+                .reduce(Duration.ZERO, Duration::plus);
+
+    }
+
+    private List<SystemAction> addStartAndEndActions(List<SystemAction> actionsFromLastHour, LocalDateTime startTime, LocalDateTime endTime) {
+        final SystemAction firstSystemAction = actionsFromLastHour.get(0);
+        final List<SystemAction> actionsWithStartAndEnd = new ArrayList<>(actionsFromLastHour);
+        if (firstSystemAction.outputState() == OutputState.OFF) {
+            actionsWithStartAndEnd.add(0, new SystemAction(startTime, firstSystemAction.systemPart(), OutputState.ON));
+        }
+        final SystemAction lastSystemAction = actionsFromLastHour.get(actionsFromLastHour.size() - 1);
+        if (lastSystemAction.outputState() == OutputState.ON) {
+            actionsWithStartAndEnd.add(new SystemAction(endTime, firstSystemAction.systemPart(), OutputState.OFF));
+        }
+        return actionsWithStartAndEnd;
     }
 
     private boolean isBetween(LocalDateTime startTime, LocalDateTime endTime, TimePeriod timePeriod) {
