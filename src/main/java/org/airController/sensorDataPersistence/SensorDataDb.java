@@ -1,6 +1,6 @@
 package org.airController.sensorDataPersistence;
 
-import org.airController.secrets.Secret;
+import org.airController.persistence.Persistence;
 import org.airController.sensorValues.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,20 +14,14 @@ import java.util.Optional;
 
 public class SensorDataDb implements SensorDataPersistence {
     private static final Logger logger = LogManager.getLogger(SensorDataDb.class);
-    private static final String SCHEMA_NAME = "AirControllerSystem";
-    private static final String JDBC_URL = "jdbc:h2:./" + SCHEMA_NAME;
-    private static final String USER = "SensorData";
-    private static final String ENVIRONMENT_VARIBLE_DB = "dbPassword";
-    private static final String ENCRYPTED_DB_SECRET = "mMwIpBLqf8oVg+ahrUTiKRRjx/hdEffKEw6klDCNY3c=";
 
     private final String sensorDataTableName;
     private final Connection connection;
 
     public SensorDataDb(String sensorDataTableName) {
         this.sensorDataTableName = sensorDataTableName;
-        final String password = Secret.getSecret(ENVIRONMENT_VARIBLE_DB, ENCRYPTED_DB_SECRET);
         try {
-            connection = DriverManager.getConnection(JDBC_URL, USER, password);
+            connection = Persistence.createConnection();
             createTableIfNotExists();
         } catch (SQLException e) {
             logger.error("SQL Exception on creating connection! {}", e.getMessage());
@@ -74,10 +68,11 @@ public class SensorDataDb implements SensorDataPersistence {
     @Override
     public Optional<SensorData> getMostCurrentSensorData(LocalDateTime lastValidTimestamp) {
         try {
-            final String sql = "SELECT * FROM " + sensorDataTableName + " i " +
-                    "WHERE i.EVENT_TIME > ? " +
-                    "ORDER BY i.EVENT_TIME DESC " +
-                    "LIMIT 1;";
+            final String sql =
+                    "SELECT * FROM " + sensorDataTableName + " i " +
+                            "WHERE i.EVENT_TIME > ? " +
+                            "ORDER BY i.EVENT_TIME DESC " +
+                            "LIMIT 1;";
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setTimestamp(1, Timestamp.valueOf(lastValidTimestamp));
             final ResultSet resultSet = preparedStatement.executeQuery();
@@ -106,12 +101,13 @@ public class SensorDataDb implements SensorDataPersistence {
 
     private void createTableIfNotExists() throws SQLException {
         final Statement statement = connection.createStatement();
-        final String sql = "CREATE TABLE IF NOT EXISTS public." + sensorDataTableName + " (\n" +
-                "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
-                "temperature DOUBLE,\n" +
-                "humidity DOUBLE,\n" +
-                "co2 DOUBLE,\n" +
-                "event_time TIMESTAMP);";
+        final String sql =
+                "CREATE TABLE IF NOT EXISTS public." + sensorDataTableName + " (\n" +
+                        "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
+                        "temperature DOUBLE,\n" +
+                        "humidity DOUBLE,\n" +
+                        "co2 DOUBLE,\n" +
+                        "event_time TIMESTAMP);";
         statement.execute(sql);
     }
 

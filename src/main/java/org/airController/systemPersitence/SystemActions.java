@@ -1,0 +1,93 @@
+package org.airController.systemPersitence;
+
+import org.airController.persistence.Persistence;
+import org.airController.sensorValues.SensorData;
+import org.airController.system.VentilationSystem;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class SystemActions implements VentilationSystem {
+    private static final Logger logger = LogManager.getLogger(SystemActions.class);
+    private static final String AIR_FLOW_ACTION_TABLE_NAME = "airFlowActions";
+    private static final String HUMIDITY_ACTION_TABLE_NAME = "humidityActions";
+
+    private final Connection connection;
+
+    public SystemActions() {
+        try {
+            connection = Persistence.createConnection();
+            createTableIfNotExists(AIR_FLOW_ACTION_TABLE_NAME);
+            createTableIfNotExists(HUMIDITY_ACTION_TABLE_NAME);
+        } catch (SQLException e) {
+            logger.error("SQL Exception on creating connection! {}", e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void setAirFlowOn(boolean on) {
+        try {
+            insertAction(AIR_FLOW_ACTION_TABLE_NAME, on, LocalDateTime.now());
+        } catch (SQLException e) {
+            logger.error("SQL Exception! {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("Unknown error! {}", e.getMessage());
+        }
+    }
+
+    @Override
+    public void setHumidityExchangerOn(boolean on) {
+        try {
+            insertAction(HUMIDITY_ACTION_TABLE_NAME, on, LocalDateTime.now());
+        } catch (SQLException e) {
+            logger.error("SQL Exception! {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("Unknown error! {}", e.getMessage());
+        }
+    }
+
+    public List<SensorData> readAirFlowActions() {
+        final List<SensorData> entries = new ArrayList<>();
+        try {
+            final Statement statement = connection.createStatement();
+            final String sql = "SELECT * FROM " + AIR_FLOW_ACTION_TABLE_NAME + ";";
+            final ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()) {
+//                try {
+//                    entries.add(createSensorData(resultSet));
+//                } catch (InvalidArgumentException e) {
+//                    logger.error("Next entry could not be loaded! {}", e.getMessage());
+//                }
+            }
+            return entries;
+        } catch (SQLException e) {
+            logger.error("SQL Exception on read ! {}", e.getMessage());
+        }
+        return Collections.emptyList();
+    }
+
+    private void createTableIfNotExists(String tableName) throws SQLException {
+        final Statement statement = connection.createStatement();
+        final String sql =
+                "CREATE TABLE IF NOT EXISTS public." + tableName + " (\n" +
+                        "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
+                        "on_state BOOLEAN,\n" +
+                        "event_time TIMESTAMP);";
+        statement.execute(sql);
+    }
+
+    private void insertAction(String tableName, boolean onState, LocalDateTime timestamp) throws SQLException {
+        final String sql = "INSERT INTO " + tableName + " (on_state, event_time) VALUES (?, ?)";
+        final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setObject(1, onState);
+        preparedStatement.setObject(2, timestamp);
+        preparedStatement.executeUpdate();
+    }
+}
