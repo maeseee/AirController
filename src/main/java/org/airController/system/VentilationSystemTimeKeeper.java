@@ -51,7 +51,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
         final LocalDateTime endTime = LocalDateTime.now();
         final LocalDateTime startTime = endTime.minusHours(1);
         return getDuration(startTime, endTime);
-//        systemActions.getActionsFromLastHour();
+        // final List<SystemAction> actionsFromLastHour = systemActions.getActionsFromLastHour(SystemPart.AIR_FLOW);
     }
 
     @Override

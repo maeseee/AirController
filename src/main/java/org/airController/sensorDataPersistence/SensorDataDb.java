@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,11 +57,10 @@ public class SensorDataDb implements SensorDataPersistence {
                     logger.error("Next entry could not be loaded! {}", e.getMessage());
                 }
             }
-            return entries;
         } catch (SQLException e) {
             logger.error("SQL Exception on read ! {}", e.getMessage());
         }
-        return Collections.emptyList();
+        return entries;
     }
 
     @Override
@@ -80,7 +78,7 @@ public class SensorDataDb implements SensorDataPersistence {
             if (resultSet.next()) {
                 try {
                     return Optional.of(createSensorData(resultSet));
-                } catch (InvalidArgumentException e) {
+                } catch (InvalidArgumentException | SQLException e) {
                     logger.error("Next entry could not be loaded! {}", e.getMessage());
                 }
             }

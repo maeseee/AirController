@@ -74,8 +74,30 @@ public class SystemActions implements VentilationSystem {
         return Collections.emptyList();
     }
 
-    public List<SystemAction> getActionsFromLastHour() {
-        return null;
+    public List<SystemAction> getActionsFromLastHour(SystemPart part) {
+        final List<SystemAction> entries = new ArrayList<>();
+        try {
+            final String sql =
+                    "SELECT * FROM " + AIR_FLOW_ACTION_TABLE_NAME + " i " +
+                            "WHERE i.action_time > ? " +
+                            "AND i.system_part = ? " +
+                            "ORDER BY i.action_time DESC;";
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now().minusHours(1)));
+            preparedStatement.setString(2, part.name());
+            final ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                try {
+                    entries.add(createSystemAction(resultSet));
+                } catch (SQLException e) {
+                    logger.error("Next entry could not be loaded! {}", e.getMessage());
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("SQL Exception on read ! {}", e.getMessage());
+        }
+        return entries;
     }
 
     private void createTableIfNotExists(String tableName) throws SQLException {
@@ -96,5 +118,14 @@ public class SystemActions implements VentilationSystem {
         preparedStatement.setObject(2, state.name());
         preparedStatement.setObject(3, timestamp);
         preparedStatement.executeUpdate();
+    }
+
+    private SystemAction createSystemAction(ResultSet resultSet) throws SQLException {
+        final String systemPartString = resultSet.getString("system_part");
+        final SystemPart systemPart = SystemPart.valueOf(systemPartString);
+        final String statusString = resultSet.getString("status");
+        final OutputState outputState = OutputState.valueOf(statusString);
+        final LocalDateTime actionTime = resultSet.getObject("action_time", LocalDateTime.class);
+        return new SystemAction(actionTime, systemPart, outputState);
     }
 }
