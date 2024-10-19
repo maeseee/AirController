@@ -1,4 +1,4 @@
-package org.airController.persistence;
+package org.airController.sensorDataPersistence;
 
 public class CsvToDb {
 

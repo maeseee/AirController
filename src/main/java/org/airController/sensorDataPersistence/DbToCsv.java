@@ -1,4 +1,4 @@
-package org.airController.persistence;
+package org.airController.sensorDataPersistence;
 
 public class DbToCsv {
     static final String INDOOR_SENSOR_CSV_PATH = "log/indoorSensorDataFromDb.csv";

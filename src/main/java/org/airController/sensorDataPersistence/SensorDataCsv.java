@@ -1,4 +1,4 @@
-package org.airController.persistence;
+package org.airController.sensorDataPersistence;
 
 import org.airController.sensorValues.*;
 import org.apache.logging.log4j.LogManager;

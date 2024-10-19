@@ -1,4 +1,4 @@
-package org.airController.persistence;
+package org.airController.sensorDataPersistence;
 
 import org.airController.secrets.Secret;
 import org.airController.sensorValues.*;

@@ -1,8 +1,8 @@
 package org.airController.sensor.dht22;
 
 import lombok.Getter;
-import org.airController.persistence.SensorDataPersistence;
-import org.airController.persistence.SensorDataPrinter;
+import org.airController.sensorDataPersistence.SensorDataPersistence;
+import org.airController.sensorDataPersistence.SensorDataPrinter;
 import org.airController.sensor.Sensor;
 import org.airController.sensorValues.SensorData;
 import org.apache.logging.log4j.LogManager;

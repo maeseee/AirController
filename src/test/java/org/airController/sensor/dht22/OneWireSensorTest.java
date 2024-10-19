@@ -1,6 +1,6 @@
 package org.airController.sensor.dht22;
 
-import org.airController.persistence.SensorDataPersistence;
+import org.airController.sensorDataPersistence.SensorDataPersistence;
 import org.airController.sensorValues.Humidity;
 import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.SensorData;

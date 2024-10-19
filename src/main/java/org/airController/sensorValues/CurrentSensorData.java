@@ -1,6 +1,6 @@
 package org.airController.sensorValues;
 
-import org.airController.persistence.SensorDataPersistence;
+import org.airController.sensorDataPersistence.SensorDataPersistence;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

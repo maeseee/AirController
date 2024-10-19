@@ -1,6 +1,6 @@
 package org.airController.sensorValues;
 
-import org.airController.persistence.SensorDataPersistence;
+import org.airController.sensorDataPersistence.SensorDataPersistence;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

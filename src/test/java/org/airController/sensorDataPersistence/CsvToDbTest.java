@@ -1,4 +1,4 @@
-package org.airController.persistence;
+package org.airController.sensorDataPersistence;
 
 import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.SensorData;
@@ -13,20 +13,20 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
-class DbToCsvTest {
-    private final String sensorDataTableName = "DbToCsvTable";
+class CsvToDbTest {
+    private final String sensorDataCsvPath = "log/sensorDataFromDbTest.csv";
 
     @Test
     void shouldWriteAllDataFromDbToCsvFile() throws InvalidArgumentException {
         final LocalDateTime now = LocalDateTime.now();
-        persistDataToDb(now);
-        final String sensorCsvPath = "log/sensorDataFromDbTest.csv";
-        final DbToCsv testee = new DbToCsv();
+        persistDataToCsv(now);
+        final String sensorTableName = "DbToCsvTable";
+        final CsvToDb testee = new CsvToDb();
 
-        testee.persistToCsvFromDb(sensorDataTableName, sensorCsvPath);
+        testee.persistToDbFromCsv(sensorDataCsvPath, sensorTableName);
 
-        final SensorDataCsv sensorDataCsv = new SensorDataCsv(sensorCsvPath);
-        final List<SensorData> sensorDataList = sensorDataCsv.read();
+        final SensorDataDb sensorDataDb = new SensorDataDb(sensorTableName);
+        final List<SensorData> sensorDataList = sensorDataDb.read();
         final SensorData lastSensorData = sensorDataList.get(sensorDataList.size() - 1);
         assertThat(lastSensorData.getTemperature()).isPresent().hasValueSatisfying(
                 temperature -> assertThat(temperature.getCelsius()).isCloseTo(21.0, Offset.offset(0.001)));
@@ -37,9 +37,9 @@ class DbToCsvTest {
         assertThat(lastSensorData.getTimeStamp()).isCloseTo(now, within(1, ChronoUnit.SECONDS));
     }
 
-    private void persistDataToDb(LocalDateTime now) throws InvalidArgumentException {
+    private void persistDataToCsv(LocalDateTime now) throws InvalidArgumentException {
         final SensorData sensorData = new SensorDataImpl(21.0, 10.0, 500.0, now);
-        final SensorDataDb sensorDataDb = new SensorDataDb(sensorDataTableName);
-        sensorDataDb.persist(sensorData);
+        final SensorDataCsv sensorDataCsv = new SensorDataCsv(sensorDataCsvPath);
+        sensorDataCsv.persist(sensorData);
     }
 }

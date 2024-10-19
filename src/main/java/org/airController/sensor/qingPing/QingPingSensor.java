@@ -2,7 +2,7 @@ package org.airController.sensor.qingPing;
 
 import com.google.inject.internal.Nullable;
 import lombok.Getter;
-import org.airController.persistence.SensorDataPersistence;
+import org.airController.sensorDataPersistence.SensorDataPersistence;
 import org.airController.sensor.Sensor;
 import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.SensorData;

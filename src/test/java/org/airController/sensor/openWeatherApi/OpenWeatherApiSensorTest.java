@@ -1,6 +1,6 @@
 package org.airController.sensor.openWeatherApi;
 
-import org.airController.persistence.SensorDataPersistence;
+import org.airController.sensorDataPersistence.SensorDataPersistence;
 import org.airController.sensorValues.Humidity;
 import org.airController.sensorValues.Temperature;
 import org.junit.jupiter.api.Test;
