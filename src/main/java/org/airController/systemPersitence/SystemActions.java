@@ -1,7 +1,6 @@
 package org.airController.systemPersitence;
 
 import org.airController.persistence.Persistence;
-import org.airController.sensorValues.SensorData;
 import org.airController.system.OutputState;
 import org.airController.system.VentilationSystem;
 import org.apache.logging.log4j.LogManager;
@@ -10,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class SystemActions implements VentilationSystem {
@@ -53,27 +51,6 @@ public class SystemActions implements VentilationSystem {
         }
     }
 
-    public List<SensorData> readAirFlowActions() {
-        final List<SensorData> entries = new ArrayList<>();
-        try {
-            final Statement statement = connection.createStatement();
-            final String sql = "SELECT * FROM " + AIR_FLOW_ACTION_TABLE_NAME + ";";
-            final ResultSet resultSet = statement.executeQuery(sql);
-
-            while (resultSet.next()) {
-//                try {
-//                    entries.add(createSensorData(resultSet));
-//                } catch (InvalidArgumentException e) {
-//                    logger.error("Next entry could not be loaded! {}", e.getMessage());
-//                }
-            }
-            return entries;
-        } catch (SQLException e) {
-            logger.error("SQL Exception on read ! {}", e.getMessage());
-        }
-        return Collections.emptyList();
-    }
-
     public List<SystemAction> getActionsFromLastHour(SystemPart part) {
         final List<SystemAction> entries = new ArrayList<>();
         try {
@@ -81,7 +58,7 @@ public class SystemActions implements VentilationSystem {
                     "SELECT * FROM " + AIR_FLOW_ACTION_TABLE_NAME + " i " +
                             "WHERE i.action_time > ? " +
                             "AND i.system_part = ? " +
-                            "ORDER BY i.action_time DESC;";
+                            "ORDER BY i.action_time ASC;";
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now().minusHours(1)));
             preparedStatement.setString(2, part.name());
@@ -112,7 +89,7 @@ public class SystemActions implements VentilationSystem {
     }
 
     private void insertAction(String tableName, SystemPart systemPart, OutputState state, LocalDateTime timestamp) throws SQLException {
-        final String sql = "INSERT INTO " + tableName + " (on_state, event_time) VALUES (?, ?, ?)";
+        final String sql = "INSERT INTO " + tableName + " (system_part, status, action_time) VALUES (?, ?, ?)";
         final PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, systemPart.name());
         preparedStatement.setObject(2, state.name());

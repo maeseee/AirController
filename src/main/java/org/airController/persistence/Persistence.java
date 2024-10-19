@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class Persistence {
     private static final String SCHEMA_NAME = "AirControllerSystem";
     private static final String JDBC_URL = "jdbc:h2:./" + SCHEMA_NAME;
-    private static final String USER = "SensorData";
+    private static final String USER = "SensorData"; // TODO update username
     private static final String ENVIRONMENT_VARIBLE_DB = "dbPassword";
     private static final String ENCRYPTED_DB_SECRET = "mMwIpBLqf8oVg+ahrUTiKRRjx/hdEffKEw6klDCNY3c=";
 
