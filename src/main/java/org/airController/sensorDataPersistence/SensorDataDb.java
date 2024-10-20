@@ -45,11 +45,10 @@ public class SensorDataDb implements SensorDataPersistence {
     @Override
     public List<SensorData> read() {
         final List<SensorData> entries = new ArrayList<>();
+        final String sql = "SELECT * FROM " + sensorDataTableName + ";";
         try {
             final Statement statement = connection.createStatement();
-            final String sql = "SELECT * FROM " + sensorDataTableName + ";";
             final ResultSet resultSet = statement.executeQuery(sql);
-
             while (resultSet.next()) {
                 try {
                     entries.add(createSensorData(resultSet));
@@ -65,24 +64,19 @@ public class SensorDataDb implements SensorDataPersistence {
 
     @Override
     public Optional<SensorData> getMostCurrentSensorData(LocalDateTime lastValidTimestamp) {
+        final String sql =
+                "SELECT * FROM " + sensorDataTableName + " i " +
+                        "WHERE i.EVENT_TIME > ? " +
+                        "ORDER BY i.EVENT_TIME DESC " +
+                        "LIMIT 1;";
         try {
-            final String sql =
-                    "SELECT * FROM " + sensorDataTableName + " i " +
-                            "WHERE i.EVENT_TIME > ? " +
-                            "ORDER BY i.EVENT_TIME DESC " +
-                            "LIMIT 1;";
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setTimestamp(1, Timestamp.valueOf(lastValidTimestamp));
             final ResultSet resultSet = preparedStatement.executeQuery();
-
             if (resultSet.next()) {
-                try {
-                    return Optional.of(createSensorData(resultSet));
-                } catch (InvalidArgumentException | SQLException e) {
-                    logger.error("Next entry could not be loaded! {}", e.getMessage());
-                }
+                return Optional.of(createSensorData(resultSet));
             }
-        } catch (SQLException e) {
+        } catch (InvalidArgumentException | SQLException e) {
             logger.error("SQL Exception on read ! {}", e.getMessage());
         }
         return Optional.empty();
