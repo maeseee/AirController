@@ -14,6 +14,7 @@ class SystemActionsTest {
         final LocalDateTime startTime = LocalDateTime.now().minusMinutes(1);
         final SystemActions testee = new SystemActions();
 
+        testee.setAirFlowOn(OutputState.OFF); // Ensure a state change
         testee.setAirFlowOn(OutputState.ON);
 
         final List<SystemAction> actionsFromLastHour = testee.getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
@@ -25,6 +26,7 @@ class SystemActionsTest {
         final LocalDateTime startTime = LocalDateTime.now().minusMinutes(1);
         final SystemActions testee = new SystemActions();
 
+        testee.setAirFlowOn(OutputState.OFF); // Ensure a state change
         testee.setAirFlowOn(OutputState.ON);
         Thread.sleep(1); // Force a difference
         testee.setAirFlowOn(OutputState.OFF);
@@ -38,5 +40,19 @@ class SystemActionsTest {
         assertThat(secondLastAction.systemPart()).isEqualTo(SystemPart.AIR_FLOW);
         assertThat(secondLastAction.outputState()).isEqualTo(OutputState.ON);
         assertThat(lastAction.actionTime()).isAfter(secondLastAction.actionTime());
+    }
+
+    @Test
+    void shouldIgnoreSettingTheSameStateTwice() {
+        final LocalDateTime startTime = LocalDateTime.now().minusMinutes(1);
+        final SystemActions testee = new SystemActions();
+        final int numberOfActionsFromLastHour = testee.getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW).size();
+
+        testee.setAirFlowOn(OutputState.OFF); // Ensure a state change
+        testee.setAirFlowOn(OutputState.ON);
+        testee.setAirFlowOn(OutputState.ON);
+
+        final List<SystemAction> actionsFromLastHour = testee.getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
+        assertThat(actionsFromLastHour).size().isGreaterThanOrEqualTo(numberOfActionsFromLastHour + 1);
     }
 }

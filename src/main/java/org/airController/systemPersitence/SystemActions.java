@@ -31,6 +31,10 @@ public class SystemActions implements VentilationSystem {
 
     @Override
     public void setAirFlowOn(OutputState state) {
+        final SystemAction currentAction = getMostCurrentAirFlowState();
+        if (currentAction.outputState() == state) {
+            return;
+        }
         try {
             insertAction(AIR_FLOW_ACTION_TABLE_NAME, SystemPart.AIR_FLOW, state, LocalDateTime.now());
         } catch (SQLException e) {
@@ -53,12 +57,12 @@ public class SystemActions implements VentilationSystem {
 
     public List<SystemAction> getActionsFromTimeToNow(LocalDateTime startDateTime, SystemPart part) {
         final List<SystemAction> entries = new ArrayList<>();
+        final String sql =
+                "SELECT * FROM " + AIR_FLOW_ACTION_TABLE_NAME + " i " +
+                        "WHERE i.action_time > ? " +
+                        "AND i.system_part = ? " +
+                        "ORDER BY i.action_time ASC;";
         try {
-            final String sql =
-                    "SELECT * FROM " + AIR_FLOW_ACTION_TABLE_NAME + " i " +
-                            "WHERE i.action_time > ? " +
-                            "AND i.system_part = ? " +
-                            "ORDER BY i.action_time ASC;";
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setTimestamp(1, Timestamp.valueOf(startDateTime));
             preparedStatement.setString(2, part.name());
@@ -77,14 +81,31 @@ public class SystemActions implements VentilationSystem {
         return entries;
     }
 
+    public SystemAction getMostCurrentAirFlowState() {
+        final String sql =
+                "SELECT * FROM " + AIR_FLOW_ACTION_TABLE_NAME + " i " +
+                        "ORDER BY i.action_time DESC " +
+                        "LIMIT 1;";
+        try {
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return createSystemAction(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.error("SQL Exception on read ! {}", e.getMessage());
+        }
+        return null;
+    }
+
     private void createTableIfNotExists(String tableName) throws SQLException {
-        final Statement statement = connection.createStatement();
         final String sql =
                 "CREATE TABLE IF NOT EXISTS public." + tableName + " (\n" +
                         "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
                         "system_part VARCHAR(20),\n" +
                         "status VARCHAR(20),\n" +
                         "action_time TIMESTAMP);";
+        final Statement statement = connection.createStatement();
         statement.execute(sql);
     }
 
