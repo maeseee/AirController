@@ -37,6 +37,17 @@ class VentilationSystemTimeKeeperTest {
     }
 
     @Test
+    void shouldReturnAnHour_whenNoEventInTheLastHourButLastEventWasOn() {
+        when(systemActions.getActionsFromTimeToNow(any(), eq(SystemPart.AIR_FLOW))).thenReturn(emptyList());
+        final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(systemActions);
+
+        testee.setAirFlowOn(OutputState.ON);
+        final Duration result = testee.getAirFlowOnDurationInLastHour();
+
+        assertThat(result).isEqualTo(Duration.ofHours(1));
+    }
+
+    @Test
     void shouldReturnDurationToOff_whenNoMore() {
         final LocalDateTime endTime = LocalDateTime.now();
         final LocalDateTime startTime = endTime.minusHours(1);

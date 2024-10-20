@@ -18,6 +18,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     private static final Logger logger = LogManager.getLogger(VentilationSystemTimeKeeper.class);
 
     private final SystemActions systemActions;
+    private OutputState currentAirFlowState;
 
     public VentilationSystemTimeKeeper(SystemActions systemActions) {
         this.systemActions = systemActions;
@@ -25,6 +26,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
 
     @Override
     public void setAirFlowOn(OutputState state) {
+        currentAirFlowState = state;
         systemActions.setAirFlowOn(state);
     }
 
@@ -64,7 +66,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
 
     private Duration getDuration(List<SystemAction> actionsFromLastHour, LocalDateTime startTime, LocalDateTime endTime) {
         if (actionsFromLastHour.isEmpty()) {
-            return Duration.ZERO;
+            return currentAirFlowState == OutputState.ON ? Duration.between(startTime, endTime) : Duration.ZERO;
         }
         final List<SystemAction> actionsWithStartAndEnd = addStartAndEndActions(actionsFromLastHour, startTime, endTime);
         return actionsWithStartAndEnd.stream()
