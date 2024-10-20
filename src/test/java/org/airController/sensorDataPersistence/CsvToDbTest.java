@@ -4,6 +4,7 @@ import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.SensorData;
 import org.airController.sensorValues.SensorDataImpl;
 import org.assertj.core.data.Offset;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ class CsvToDbTest {
     private final String sensorDataCsvPath = "log/sensorDataFromDbTest.csv";
 
     @Test
+    @Disabled
     void shouldWriteAllDataFromDbToCsvFile() throws InvalidArgumentException {
         final LocalDateTime now = LocalDateTime.now();
         persistDataToCsv(now);

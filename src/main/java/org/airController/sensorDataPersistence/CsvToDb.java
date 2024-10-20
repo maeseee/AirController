@@ -1,11 +1,16 @@
 package org.airController.sensorDataPersistence;
 
+import org.airController.sensorValues.SensorData;
+
+import java.util.List;
+
 public class CsvToDb {
 
     public void persistToDbFromCsv(String csvFilePath, String tableName) {
-        final SensorDataCsv sensorDataCsv = new SensorDataCsv(csvFilePath);
-        final SensorDataDb sensorDataDb = new SensorDataDb(tableName);
-        PersistenceConverter.convert(sensorDataCsv, sensorDataDb);
+        final SensorDataPersistence sensorDataCsv = new SensorDataCsv(csvFilePath);
+        final SensorDataPersistence sensorDataDb = new SensorDataDb(tableName);
+        final List<SensorData> sensorData = sensorDataCsv.read();
+        sensorData.forEach(sensorDataDb::persist);
     }
 
     public static void main(String[] args) {
