@@ -5,14 +5,15 @@ import org.airController.sensorValues.Humidity;
 import org.airController.sensorValues.SensorData;
 import org.airController.sensorValues.Temperature;
 
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 public class Dht22SensorData implements SensorData {
 
     private final Temperature temperature;
     private final Humidity humidity;
-    private final LocalDateTime timestamp = LocalDateTime.now();
+    private final ZonedDateTime timestamp = ZonedDateTime.now(ZoneId.of("UTC"));
 
     public Dht22SensorData(Temperature temperature, Humidity humidity) {
         this.temperature = temperature;
@@ -35,11 +36,12 @@ public class Dht22SensorData implements SensorData {
     }
 
     @Override
-    public LocalDateTime getTimeStamp() {
+    public ZonedDateTime getTimeStamp() {
         return timestamp;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Dht22SensorData{" +
                 "temperature=" + temperature +
                 ", humidity=" + humidity +

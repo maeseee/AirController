@@ -7,6 +7,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +30,7 @@ class SensorDataTest {
         final double celsiusTemperature = random.nextDouble() * 100;
         final double relativeHumidity = random.nextDouble() * 100;
         final double co2Ppm = random.nextDouble() * 100000;
-        final LocalDateTime time = LocalDateTime.of(2024, 9, 27, 20, 51, 12);
+        final ZonedDateTime time = ZonedDateTime.of(LocalDateTime.of(2024, 9, 27, 20, 51, 12), ZoneId.of("UTC"));
         final SensorData inputSensorData = createSensorData(celsiusTemperature, relativeHumidity, co2Ppm, time);
         final int initialSize = testee.read().size();
 
@@ -45,7 +47,7 @@ class SensorDataTest {
         final double celsiusTemperature = random.nextDouble() * 100;
         final double relativeHumidity = random.nextDouble() * 100;
         final double co2Ppm = random.nextDouble() * 100000;
-        final LocalDateTime time = LocalDateTime.now();
+        final ZonedDateTime time = ZonedDateTime.now(ZoneId.of("UTC"));
         final SensorData inputSensorData = createSensorData(celsiusTemperature, relativeHumidity, co2Ppm, time);
 
         testee.persist(inputSensorData);
@@ -70,7 +72,7 @@ class SensorDataTest {
         );
     }
 
-    private SensorData createSensorData(double celsiusTemperatur, double relativeHumidity, double co2Ppm, LocalDateTime time)
+    private SensorData createSensorData(double celsiusTemperatur, double relativeHumidity, double co2Ppm, ZonedDateTime time)
             throws InvalidArgumentException {
         final Temperature temperature = Temperature.createFromCelsius(celsiusTemperatur);
         final Humidity humidity = Humidity.createFromRelative(relativeHumidity, temperature);

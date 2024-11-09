@@ -7,6 +7,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +65,7 @@ public class SensorDataDb implements SensorDataPersistence {
     }
 
     @Override
-    public Optional<SensorData> getMostCurrentSensorData(LocalDateTime lastValidTimestamp) {
+    public Optional<SensorData> getMostCurrentSensorData(ZonedDateTime lastValidTimestamp) {
         final String sql =
                 "SELECT * FROM " + sensorDataTableName + " i " +
                         "WHERE i.EVENT_TIME > ? " +
@@ -71,7 +73,7 @@ public class SensorDataDb implements SensorDataPersistence {
                         "LIMIT 1;";
         try {
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setTimestamp(1, Timestamp.valueOf(lastValidTimestamp));
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(lastValidTimestamp.toLocalDateTime()));
             final ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return Optional.of(createSensorData(resultSet));
@@ -87,7 +89,7 @@ public class SensorDataDb implements SensorDataPersistence {
         final Double temp = resultSet.getObject("temperature", Double.class);
         final Double hum = resultSet.getObject("humidity", Double.class);
         final Double carbonDioxide = resultSet.getObject("co2", Double.class);
-        final LocalDateTime timestamp = resultSet.getObject("event_time", LocalDateTime.class);
+        final ZonedDateTime timestamp = ZonedDateTime.of(resultSet.getObject("event_time", LocalDateTime.class), ZoneId.of("UTC"));
         return new SensorDataImpl(temp, hum, carbonDioxide, timestamp);
     }
 
@@ -103,13 +105,13 @@ public class SensorDataDb implements SensorDataPersistence {
         statement.execute(sql);
     }
 
-    private void insertSensorData(Double temperature, Double humidity, Double co2, LocalDateTime timestamp) throws SQLException {
+    private void insertSensorData(Double temperature, Double humidity, Double co2, ZonedDateTime timestamp) throws SQLException {
         final String sql = "INSERT INTO " + sensorDataTableName + " (temperature, humidity, co2, event_time) VALUES (?, ?, ?, ?)";
         final PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setObject(1, temperature);
         preparedStatement.setObject(2, humidity);
         preparedStatement.setObject(3, co2);
-        preparedStatement.setTimestamp(4, Timestamp.valueOf(timestamp));
+        preparedStatement.setTimestamp(4, Timestamp.valueOf(timestamp.toLocalDateTime()));
         preparedStatement.executeUpdate();
     }
 }

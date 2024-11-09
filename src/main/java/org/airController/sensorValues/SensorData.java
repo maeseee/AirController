@@ -1,6 +1,6 @@
 package org.airController.sensorValues;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 public interface SensorData {
@@ -10,5 +10,5 @@ public interface SensorData {
 
     Optional<CarbonDioxide> getCo2();
 
-    LocalDateTime getTimeStamp();
+    ZonedDateTime getTimeStamp();
 }

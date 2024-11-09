@@ -2,7 +2,7 @@ package org.airController.sensorDataPersistence;
 
 import org.airController.sensorValues.SensorData;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +20,7 @@ public class SensorDataPrinter implements SensorDataPersistence {
     }
 
     @Override
-    public Optional<SensorData> getMostCurrentSensorData(LocalDateTime lastValidTimestamp) {
+    public Optional<SensorData> getMostCurrentSensorData(ZonedDateTime lastValidTimestamp) {
         return Optional.empty();
     }
 }

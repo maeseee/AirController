@@ -7,7 +7,8 @@ import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -20,7 +21,7 @@ class DbToCsvTest {
     @Test
     @Disabled
     void shouldWriteAllDataFromDbToCsvFile() throws InvalidArgumentException {
-        final LocalDateTime now = LocalDateTime.now();
+        final ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
         persistDataToDb(now);
         final String sensorCsvPath = "log/sensorDataFromDbTest.csv";
         final DbToCsv testee = new DbToCsv();
@@ -39,7 +40,7 @@ class DbToCsvTest {
         assertThat(lastSensorData.getTimeStamp()).isCloseTo(now, within(1, ChronoUnit.SECONDS));
     }
 
-    private void persistDataToDb(LocalDateTime now) throws InvalidArgumentException {
+    private void persistDataToDb(ZonedDateTime now) throws InvalidArgumentException {
         final SensorData sensorData = new SensorDataImpl(21.0, 10.0, 500.0, now);
         final SensorDataDb sensorDataDb = new SensorDataDb(sensorDataTableName);
         sensorDataDb.persist(sensorData);

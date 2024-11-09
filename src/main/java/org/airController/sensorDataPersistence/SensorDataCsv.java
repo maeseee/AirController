@@ -6,6 +6,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +65,7 @@ public class SensorDataCsv implements SensorDataPersistence {
     }
 
     @Override
-    public Optional<SensorData> getMostCurrentSensorData(LocalDateTime lastValidTimestamp) {
+    public Optional<SensorData> getMostCurrentSensorData(ZonedDateTime lastValidTimestamp) {
         final List<SensorData> data = read();
         return data.isEmpty() ? Optional.empty() : Optional.of(data.get(data.size() - 1));
     }
@@ -71,7 +73,7 @@ public class SensorDataCsv implements SensorDataPersistence {
     private SensorData createSensorData(String csvLine) throws InvalidArgumentException {
         final String[] csv = csvLine.split(",");
         assert (csv.length > 2);
-        final LocalDateTime timestamp = LocalDateTime.parse(csv[0], FORMATTER);
+        final ZonedDateTime timestamp = ZonedDateTime.of(LocalDateTime.parse(csv[0], FORMATTER), ZoneId.of("UTC"));
         final double tempCelsius = Double.parseDouble(csv[1]);
         final Temperature temperature = Temperature.createFromCelsius(tempCelsius);
         final double humRelative = Double.parseDouble(csv[2]);

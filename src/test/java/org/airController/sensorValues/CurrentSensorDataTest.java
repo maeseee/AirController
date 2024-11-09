@@ -6,7 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +31,7 @@ class CurrentSensorDataTest {
 
     @Test
     void shouldReturnValues() throws InvalidArgumentException {
-        final SensorDataImpl sensorData = new SensorDataImpl(20.0, 10.0, 500.0, LocalDateTime.now());
+        final SensorDataImpl sensorData = new SensorDataImpl(20.0, 10.0, 500.0, ZonedDateTime.now(ZoneId.of("UTC")));
         when(persistence.getMostCurrentSensorData(any())).thenReturn(Optional.of(sensorData));
         final CurrentSensorData testee = new CurrentSensorData(persistence);
 

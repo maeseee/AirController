@@ -6,7 +6,6 @@ import org.airController.sensorValues.InvalidArgumentException;
 import org.airController.sensorValues.Temperature;
 import org.junit.jupiter.api.Test;
 
-import java.time.ZoneId;
 import java.util.Optional;
 
 import static org.airController.sensor.qingPing.QingPingDevices.MAC_AIR_PRESSURE_DEVICE;
@@ -128,7 +127,7 @@ class QingPingListDevicesJsonParserTest {
             assertThat(sensorData.getHumidity()).isPresent().hasValueSatisfying(humidity ->
                     assertThat(humidity).isEqualTo(expectedHumidity));
             assertThat(sensorData.getCo2()).isEmpty();
-            assertThat(sensorData.getTimeStamp().atZone(ZoneId.systemDefault()).toEpochSecond()).isEqualTo(1704516210);
+            assertThat(sensorData.getTimeStamp().toEpochSecond()).isEqualTo(1704516210);
         });
     }
 
@@ -148,7 +147,7 @@ class QingPingListDevicesJsonParserTest {
                     assertThat(humidity).isEqualTo(expectedHumidity));
             assertThat(sensorData.getCo2()).isPresent().hasValueSatisfying(co2 ->
                     assertThat(co2).isEqualTo(expectedCo2));
-            assertThat(sensorData.getTimeStamp().atZone(ZoneId.systemDefault()).toEpochSecond()).isEqualTo(1704516210);
+            assertThat(sensorData.getTimeStamp().toEpochSecond()).isEqualTo(1704516210);
         });
     }
 

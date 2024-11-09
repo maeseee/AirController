@@ -5,14 +5,15 @@ import org.airController.sensorValues.Humidity;
 import org.airController.sensorValues.SensorData;
 import org.airController.sensorValues.Temperature;
 
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 class OpenWeatherApiSensorData implements SensorData {
 
     private final Temperature temperature;
     private final Humidity humidity;
-    private final LocalDateTime timestamp = LocalDateTime.now();
+    private final ZonedDateTime timestamp = ZonedDateTime.now(ZoneId.of("UTC"));
 
     public OpenWeatherApiSensorData(Temperature temperature, Humidity humidity) {
         this.temperature = temperature;
@@ -35,11 +36,12 @@ class OpenWeatherApiSensorData implements SensorData {
     }
 
     @Override
-    public LocalDateTime getTimeStamp() {
+    public ZonedDateTime getTimeStamp() {
         return timestamp;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "OpenWeatherApiSensorData{" +
                 "temperature=" + temperature +
                 ", humidity=" + humidity +

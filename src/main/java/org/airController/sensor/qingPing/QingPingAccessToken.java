@@ -5,7 +5,8 @@ import org.airController.secrets.Secret;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -18,7 +19,7 @@ class QingPingAccessToken {
     private final QingPingAccessTokenJsonParser parser = new QingPingAccessTokenJsonParser();
 
     private String token;
-    private LocalDateTime accessTokenValidUntil;
+    private ZonedDateTime accessTokenValidUntil;
 
     public QingPingAccessToken() throws URISyntaxException {
         this(createAccessTokenRequest());
@@ -29,7 +30,7 @@ class QingPingAccessToken {
     }
 
     public String readToken() throws CommunicationException {
-        if (accessTokenValidUntil == null || accessTokenValidUntil.isBefore(LocalDateTime.now())) {
+        if (accessTokenValidUntil == null || accessTokenValidUntil.isBefore(ZonedDateTime.now(ZoneId.of("UTC")))) {
             updateAccessToken();
         }
         return token;
@@ -45,7 +46,7 @@ class QingPingAccessToken {
         if (accessTokenOptional.isPresent()) {
             final QingPingAccessTokenData accessTokenData = accessTokenOptional.get();
             token = accessTokenData.accessToken();
-            accessTokenValidUntil = LocalDateTime.now().plusSeconds(accessTokenData.expiresIn() - 60);
+            accessTokenValidUntil = ZonedDateTime.now(ZoneId.of("UTC")).plusSeconds(accessTokenData.expiresIn() - 60);
         }
     }
 

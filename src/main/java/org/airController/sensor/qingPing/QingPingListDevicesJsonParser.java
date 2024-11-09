@@ -12,8 +12,8 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalDouble;
@@ -64,9 +64,9 @@ class QingPingListDevicesJsonParser {
         final CarbonDioxide co2 = co2Optional.isPresent() ? CarbonDioxide.createFromPpm(co2Optional.getAsDouble()) : null;
         final long timeFromEpoch = getLongValue("timestamp", deviceData)
                 .orElseThrow(() -> new InvalidArgumentException("Not Possible"));
-        final LocalDateTime time = LocalDateTime.ofInstant(
+        final ZonedDateTime time = ZonedDateTime.ofInstant(
                 Instant.ofEpochSecond(timeFromEpoch),
-                ZoneId.systemDefault());
+                ZoneId.of("UTC"));
         return new QingPingSensorData(temperature, humidity, co2, time);
     }
 

@@ -3,7 +3,8 @@ package org.airController.sensor.qingPing;
 import org.airController.sensorValues.*;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.OptionalDouble;
 
@@ -12,7 +13,7 @@ class QingPingSensorReducer {
 
     public SensorData reduce(List<QingPingSensorData> sensorDataList) throws CalculationException, InvalidArgumentException {
         final List<QingPingSensorData> currentSensorDataList = sensorDataList.stream()
-                .filter(sensorData -> sensorData.getTimeStamp().isAfter(LocalDateTime.now().minus(SENSOR_INVALIDATION_TIME)))
+                .filter(sensorData -> sensorData.getTimeStamp().isAfter(ZonedDateTime.now(ZoneId.of("UTC")).minus(SENSOR_INVALIDATION_TIME)))
                 .toList();
         if (currentSensorDataList.isEmpty()) {
             throw new CalculationException("No current indoor data at the moment");
@@ -20,7 +21,7 @@ class QingPingSensorReducer {
         final Temperature temperature = getAverageTemperature(currentSensorDataList);
         final Humidity humidity = getAverageHumidity(currentSensorDataList);
         final CarbonDioxide co2 = getAverageCo2(currentSensorDataList);
-        final LocalDateTime time = getNewestTimestamp(currentSensorDataList);
+        final ZonedDateTime time = getNewestTimestamp(currentSensorDataList);
         return new QingPingSensorData(temperature, humidity, co2, time);
     }
 
@@ -48,9 +49,9 @@ class QingPingSensorReducer {
         return averageCo2.isPresent() ? CarbonDioxide.createFromPpm(averageCo2.getAsDouble()) : null;
     }
 
-    private LocalDateTime getNewestTimestamp(List<QingPingSensorData> currentSensorDataList) {
+    private ZonedDateTime getNewestTimestamp(List<QingPingSensorData> currentSensorDataList) {
         return currentSensorDataList.stream()
                 .map(QingPingSensorData::getTimeStamp)
-                .max(LocalDateTime::compareTo).orElse(LocalDateTime.now());
+                .max(ZonedDateTime::compareTo).orElse(ZonedDateTime.now(ZoneId.of("UTC")));
     }
 }
