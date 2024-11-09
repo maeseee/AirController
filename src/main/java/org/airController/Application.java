@@ -95,7 +95,7 @@ public class Application {
         try {
             oneWireSensor = new OneWireSensor(persistence);
         } catch (IOException | IllegalArgumentException | UnsatisfiedLinkError e) {
-            logger.error("Could not load backup sensor!" + e.getMessage());
+            logger.error("Could not load backup sensor!{}", e.getMessage());
         }
         try {
             return new QingPingSensor(persistence, oneWireSensor);

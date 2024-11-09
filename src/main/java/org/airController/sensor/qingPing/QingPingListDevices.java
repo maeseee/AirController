@@ -1,8 +1,5 @@
 package org.airController.sensor.qingPing;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -10,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 class QingPingListDevices {
-    private static final Logger logger = LogManager.getLogger(QingPingListDevices.class);
-
     private final QingPingListDevicesRequest listDevicesRequest;
     private final QingPingListDevicesJsonParser parser;
 

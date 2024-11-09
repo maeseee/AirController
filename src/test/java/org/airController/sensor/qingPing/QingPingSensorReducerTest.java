@@ -40,7 +40,7 @@ class QingPingSensorReducerTest {
         assertThat(result.getTimeStamp()).isEqualTo(expectedSensorData.getTimeStamp());
     }
 
-    private static QingPingSensorData createSensorData(double temperature, double humidity, double co2, int minutesYounger, ZonedDateTime now)
+    private QingPingSensorData createSensorData(double temperature, double humidity, double co2, int minutesYounger, ZonedDateTime now)
             throws InvalidArgumentException {
         final Temperature temp = Temperature.createFromCelsius(temperature);
         final Humidity hum = Humidity.createFromAbsolute(humidity);

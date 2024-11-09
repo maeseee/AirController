@@ -1,8 +1,5 @@
 package org.airController.sensor.qingPing;
 
-import org.airController.sensorValues.Humidity;
-import org.airController.sensorValues.InvalidArgumentException;
-import org.airController.sensorValues.Temperature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -10,7 +7,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,11 +56,5 @@ class QingPingListDevicesTest {
         verify(parser).parseDeviceListResponse(response, MAC_AIR_PRESSURE_DEVICE);
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_1);
         assertThat(sensorDataList).hasSize(0);
-    }
-
-    private QingPingSensorData createSensorData(double absoluteHumidity, ZonedDateTime timestamp) throws InvalidArgumentException {
-        final Temperature temperature = Temperature.createFromCelsius(22.0);
-        final Humidity humidity = Humidity.createFromAbsolute(absoluteHumidity);
-        return new QingPingSensorData(temperature, humidity, null, timestamp);
     }
 }
