@@ -49,9 +49,8 @@ class VentilationSystemTimeKeeperTest {
 
     @Test
     void shouldReturnDurationToOff_whenNoMore() {
-        final LocalDateTime endTime = LocalDateTime.now();
-        final LocalDateTime startTime = endTime.minusHours(1);
-        final SystemAction offAction = new SystemAction(startTime.plusMinutes(20), SystemPart.AIR_FLOW, OutputState.OFF);
+        final LocalDateTime offTime = LocalDateTime.now().minusHours(1).plusMinutes(20);
+        final SystemAction offAction = new SystemAction(offTime, SystemPart.AIR_FLOW, OutputState.OFF);
         when(systemActions.getActionsFromTimeToNow(any(), eq(SystemPart.AIR_FLOW))).thenReturn(List.of(offAction));
         final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(systemActions);
 
@@ -62,9 +61,8 @@ class VentilationSystemTimeKeeperTest {
 
     @Test
     void shouldReturnDurationFromOn_whenNoMore() {
-        final LocalDateTime endTime = LocalDateTime.now();
-        final LocalDateTime startTime = endTime.minusHours(1);
-        final SystemAction onAction = new SystemAction(startTime.plusMinutes(20), SystemPart.AIR_FLOW, OutputState.ON);
+        final LocalDateTime onTime = LocalDateTime.now().minusHours(1).plusMinutes(20);
+        final SystemAction onAction = new SystemAction(onTime, SystemPart.AIR_FLOW, OutputState.ON);
         when(systemActions.getActionsFromTimeToNow(any(), eq(SystemPart.AIR_FLOW))).thenReturn(List.of(onAction));
         final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(systemActions);
 

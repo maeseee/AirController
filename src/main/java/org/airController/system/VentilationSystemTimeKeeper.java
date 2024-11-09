@@ -13,6 +13,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.toList;
 
 public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeeper {
     private static final Logger logger = LogManager.getLogger(VentilationSystemTimeKeeper.class);
@@ -57,24 +60,20 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
             final LocalDateTime now = LocalDateTime.now();
             final LocalDate yesterday = now.toLocalDate().minusDays(1);
             final Duration totalAirFlowYesterday = getTotalAirFlowFromDay(yesterday);
-            logger.info("The daily switch-on time  of {} was {} minutes ({} %)", yesterday, totalAirFlowYesterday.toMinutes(),
+            logger.info("The daily switch-on time of {} was {} minutes ({} %)", yesterday, totalAirFlowYesterday.toMinutes(),
                     getOnPercentage(totalAirFlowYesterday));
         } catch (Exception e) {
             logger.error("Exception occurred while running VentilationSystemTimeKeeper! ", e);
         }
     }
 
-    private Duration getDuration(List<SystemAction> actionsFromLastHour, LocalDateTime startTime, LocalDateTime endTime) {
-        if (actionsFromLastHour.isEmpty()) {
+    private Duration getDuration(List<SystemAction> systemActions, LocalDateTime startTime, LocalDateTime endTime) {
+        if (systemActions.isEmpty()) {
             return currentAirFlowState == OutputState.ON ? Duration.between(startTime, endTime) : Duration.ZERO;
         }
-        final List<SystemAction> actionsWithStartAndEnd = addStartAndEndActions(actionsFromLastHour, startTime, endTime);
-        return actionsWithStartAndEnd.stream()
-                .map(systemAction -> systemAction.outputState().isOn() ?
-                        Duration.between(systemAction.actionTime(), startTime) :
-                        Duration.between(startTime, systemAction.actionTime()))
-                .reduce(Duration.ZERO, Duration::plus);
-
+        final List<SystemAction> actionsWithStartAndEnd = addStartAndEndActions(systemActions, startTime, endTime);
+        final List<Duration> onDurations = convertToOnDurationList(actionsWithStartAndEnd);
+        return onDurations.stream().reduce(Duration.ZERO, Duration::plus);
     }
 
     private List<SystemAction> addStartAndEndActions(List<SystemAction> actionsFromLastHour, LocalDateTime startTime, LocalDateTime endTime) {
@@ -93,5 +92,19 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     private double getOnPercentage(Duration onTime) {
         final long SECONDS_PER_DAY = 60 * 60 * 24;
         return Math.round((double) onTime.toSeconds() / (double) SECONDS_PER_DAY * 1000.0) / 10.0;
+    }
+
+    private List<Duration> convertToOnDurationList(List<SystemAction> systemActions) {
+        assert (systemActions.size() > 1);
+        return IntStream.range(1, systemActions.size())
+                .mapToObj(i -> getDurationBetweenSystemAction(systemActions.get(i - 1), systemActions.get(i)))
+                .collect(toList());
+    }
+
+    private Duration getDurationBetweenSystemAction(SystemAction systemAction1, SystemAction systemAction2) {
+        if (systemAction1.outputState().isOn() && !systemAction2.outputState().isOn()) {
+            return Duration.between(systemAction1.actionTime(), systemAction2.actionTime());
+        }
+        return Duration.ZERO;
     }
 }
