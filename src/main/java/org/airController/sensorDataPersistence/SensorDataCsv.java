@@ -42,7 +42,8 @@ public class SensorDataCsv implements SensorDataPersistence {
         }
     }
 
-    @Override public List<SensorData> read() {
+    @Override
+    public List<SensorData> read() {
         final List<SensorData> entries = new ArrayList<>();
         try {
             final BufferedReader reader = new BufferedReader(new FileReader(filePath));
