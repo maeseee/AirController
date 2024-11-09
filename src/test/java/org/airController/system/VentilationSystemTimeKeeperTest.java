@@ -139,4 +139,34 @@ class VentilationSystemTimeKeeperTest {
 
         assertThat(result.toMinutes()).isCloseTo(20, Offset.offset(1L));
     }
+
+    @Test
+    void shouldReturnDuration_whenMultipleRepeatingOffEventsYesterday() {
+        final LocalDate yesterday = LocalDateTime.now().minusDays(1).toLocalDate();
+        final LocalDateTime startTime = yesterday.atStartOfDay().plusHours(10);
+        final SystemAction onAction1 = new SystemAction(startTime, SystemPart.AIR_FLOW, OutputState.ON);
+        final SystemAction offAction1 = new SystemAction(startTime.plusMinutes(10), SystemPart.AIR_FLOW, OutputState.OFF);
+        final SystemAction offAction2 = new SystemAction(startTime.plusMinutes(30), SystemPart.AIR_FLOW, OutputState.OFF);
+        when(systemActions.getActionsFromTimeToNow(any(), eq(SystemPart.AIR_FLOW))).thenReturn(List.of(onAction1, offAction1, offAction2));
+        final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(systemActions);
+
+        final Duration result = testee.getTotalAirFlowFromDay(yesterday);
+
+        assertThat(result.toMinutes()).isCloseTo(10, Offset.offset(1L));
+    }
+
+    @Test
+    void shouldReturnDuration_whenMultipleRepeatingOnEventsYesterday() {
+        final LocalDate yesterday = LocalDateTime.now().minusDays(1).toLocalDate();
+        final LocalDateTime startTime = yesterday.atStartOfDay().plusHours(10);
+        final SystemAction onAction1 = new SystemAction(startTime, SystemPart.AIR_FLOW, OutputState.ON);
+        final SystemAction onAction2 = new SystemAction(startTime.plusMinutes(10), SystemPart.AIR_FLOW, OutputState.ON);
+        final SystemAction offAction2 = new SystemAction(startTime.plusMinutes(30), SystemPart.AIR_FLOW, OutputState.OFF);
+        when(systemActions.getActionsFromTimeToNow(any(), eq(SystemPart.AIR_FLOW))).thenReturn(List.of(onAction1, onAction2, offAction2));
+        final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(systemActions);
+
+        final Duration result = testee.getTotalAirFlowFromDay(yesterday);
+
+        assertThat(result.toMinutes()).isCloseTo(30, Offset.offset(1L));
+    }
 }

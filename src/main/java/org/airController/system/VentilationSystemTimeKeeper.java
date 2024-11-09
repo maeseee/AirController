@@ -102,7 +102,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     }
 
     private Duration getDurationBetweenSystemAction(SystemAction systemAction1, SystemAction systemAction2) {
-        if (systemAction1.outputState().isOn() && !systemAction2.outputState().isOn()) {
+        if (systemAction1.outputState().isOn()) {
             return Duration.between(systemAction1.actionTime(), systemAction2.actionTime());
         }
         return Duration.ZERO;
