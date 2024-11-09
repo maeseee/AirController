@@ -7,8 +7,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 class QingPingListDevicesRequest {
     private final URI uri;
@@ -28,7 +28,7 @@ class QingPingListDevicesRequest {
     }
 
     private HttpURLConnection getConnection(String accessToken) throws IOException, URISyntaxException {
-        final URI uriWithParameter = new URI(uri.toString() + "?timestamp=" + LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+        final URI uriWithParameter = new URI(uri.toString() + "?timestamp=" + ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond());
         final HttpURLConnection connection = (HttpURLConnection) uriWithParameter.toURL().openConnection();
         connection.setRequestMethod("GET");
         connection.setDoOutput(true);

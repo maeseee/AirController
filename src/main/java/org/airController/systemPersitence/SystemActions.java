@@ -8,6 +8,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +38,7 @@ public class SystemActions implements VentilationSystem {
             return;
         }
         try {
-            insertAction(AIR_FLOW_ACTION_TABLE_NAME, SystemPart.AIR_FLOW, state, LocalDateTime.now());
+            insertAction(AIR_FLOW_ACTION_TABLE_NAME, SystemPart.AIR_FLOW, state, ZonedDateTime.now(ZoneOffset.UTC));
         } catch (SQLException e) {
             logger.error("SQL Exception! {}", e.getMessage());
         } catch (Exception e) {
@@ -47,7 +49,7 @@ public class SystemActions implements VentilationSystem {
     @Override
     public void setHumidityExchangerOn(OutputState state) {
         try {
-            insertAction(HUMIDITY_ACTION_TABLE_NAME, SystemPart.HUMIDITY, state, LocalDateTime.now());
+            insertAction(HUMIDITY_ACTION_TABLE_NAME, SystemPart.HUMIDITY, state, ZonedDateTime.now(ZoneOffset.UTC));
         } catch (SQLException e) {
             logger.error("SQL Exception! {}", e.getMessage());
         } catch (Exception e) {
@@ -55,16 +57,16 @@ public class SystemActions implements VentilationSystem {
         }
     }
 
-    public List<SystemAction> getActionsFromTimeToNow(LocalDateTime startDateTime, SystemPart part) {
+    public List<SystemAction> getActionsFromTimeToNow(ZonedDateTime startDateTime, SystemPart part) {
         final List<SystemAction> entries = new ArrayList<>();
         final String sql =
                 "SELECT * FROM " + AIR_FLOW_ACTION_TABLE_NAME + " i " +
                         "WHERE i.action_time > ? " +
                         "AND i.system_part = ? " +
-                        "ORDER BY i.action_time ASC;";
+                        "ORDER BY i.action_time;";
         try {
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setTimestamp(1, Timestamp.valueOf(startDateTime));
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(startDateTime.toLocalDateTime()));
             preparedStatement.setString(2, part.name());
             final ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -109,12 +111,12 @@ public class SystemActions implements VentilationSystem {
         statement.execute(sql);
     }
 
-    private void insertAction(String tableName, SystemPart systemPart, OutputState state, LocalDateTime timestamp) throws SQLException {
+    private void insertAction(String tableName, SystemPart systemPart, OutputState state, ZonedDateTime timestamp) throws SQLException {
         final String sql = "INSERT INTO " + tableName + " (system_part, status, action_time) VALUES (?, ?, ?)";
         final PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, systemPart.name());
         preparedStatement.setObject(2, state.name());
-        preparedStatement.setObject(3, timestamp);
+        preparedStatement.setObject(3, timestamp.toLocalDateTime());
         preparedStatement.executeUpdate();
     }
 
@@ -123,7 +125,7 @@ public class SystemActions implements VentilationSystem {
         final SystemPart systemPart = SystemPart.valueOf(systemPartString);
         final String statusString = resultSet.getString("status");
         final OutputState outputState = OutputState.valueOf(statusString);
-        final LocalDateTime actionTime = resultSet.getObject("action_time", LocalDateTime.class);
+        final ZonedDateTime actionTime = ZonedDateTime.of(resultSet.getObject("action_time", LocalDateTime.class), ZoneOffset.UTC);
         return new SystemAction(actionTime, systemPart, outputState);
     }
 }

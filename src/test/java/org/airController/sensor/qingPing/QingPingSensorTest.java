@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ class QingPingSensorTest {
         final QingPingListDevices listDevices = mock(QingPingListDevices.class);
         final Temperature temperature = Temperature.createFromCelsius(21.5);
         final Humidity humidity = Humidity.createFromAbsolute(10.0);
-        final ZonedDateTime time1 = ZonedDateTime.now(ZoneId.of("UTC"));
+        final ZonedDateTime time1 = ZonedDateTime.now(ZoneOffset.UTC);
         final QingPingSensorData sensorData = new QingPingSensorData(temperature, humidity, null, time1);
         when(listDevices.readSensorDataList(any())).thenReturn(List.of(sensorData));
         final QingPingSensor testee = new QingPingSensor(persistence, null, accessToken, listDevices);

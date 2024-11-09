@@ -3,14 +3,14 @@ package org.airController.sensorValues;
 import org.airController.sensorDataPersistence.SensorDataPersistence;
 
 import java.time.Duration;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
 public class CurrentSensorData implements SensorData {
     private static final Duration SENSOR_INVALIDATION = Duration.ofHours(4);
 
-    private final ZonedDateTime initializationTimestamp = ZonedDateTime.now(ZoneId.of("UTC"));
+    private final ZonedDateTime initializationTimestamp = ZonedDateTime.now(ZoneOffset.UTC);
     private final SensorDataPersistence persistence;
 
     public CurrentSensorData(SensorDataPersistence persistence) {
@@ -42,7 +42,7 @@ public class CurrentSensorData implements SensorData {
     }
 
     private ZonedDateTime getLastValidTimestamp() {
-        return ZonedDateTime.now(ZoneId.of("UTC")).minus(SENSOR_INVALIDATION);
+        return ZonedDateTime.now(ZoneOffset.UTC).minus(SENSOR_INVALIDATION);
     }
 }
 

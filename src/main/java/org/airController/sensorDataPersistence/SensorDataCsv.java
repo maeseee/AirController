@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class SensorDataCsv implements SensorDataPersistence {
     private SensorData createSensorData(String csvLine) throws InvalidArgumentException {
         final String[] csv = csvLine.split(",");
         assert (csv.length > 2);
-        final ZonedDateTime timestamp = ZonedDateTime.of(LocalDateTime.parse(csv[0], FORMATTER), ZoneId.of("UTC"));
+        final ZonedDateTime timestamp = ZonedDateTime.of(LocalDateTime.parse(csv[0], FORMATTER), ZoneOffset.UTC);
         final double tempCelsius = Double.parseDouble(csv[1]);
         final Temperature temperature = Temperature.createFromCelsius(tempCelsius);
         final double humRelative = Double.parseDouble(csv[2]);

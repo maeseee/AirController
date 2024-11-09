@@ -3,7 +3,8 @@ package org.airController.systemPersitence;
 import org.airController.system.OutputState;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SystemActionsTest {
     @Test
     void shouldReturnActionsFromLastHour() {
-        final LocalDateTime startTime = LocalDateTime.now().minusMinutes(1);
+        final ZonedDateTime startTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(1);
         final SystemActions testee = new SystemActions();
 
         testee.setAirFlowOn(OutputState.OFF); // Ensure a state change
@@ -23,7 +24,7 @@ class SystemActionsTest {
 
     @Test
     void shouldReturnActionsFromLastHourInAscOrder() throws InterruptedException {
-        final LocalDateTime startTime = LocalDateTime.now().minusMinutes(1);
+        final ZonedDateTime startTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(1);
         final SystemActions testee = new SystemActions();
 
         testee.setAirFlowOn(OutputState.OFF); // Ensure a state change
@@ -44,7 +45,7 @@ class SystemActionsTest {
 
     @Test
     void shouldIgnoreSettingTheSameStateTwice() {
-        final LocalDateTime startTime = LocalDateTime.now().minusMinutes(1);
+        final ZonedDateTime startTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(1);
         final SystemActions testee = new SystemActions();
         final int numberOfActionsFromLastHour = testee.getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW).size();
 

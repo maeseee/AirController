@@ -12,7 +12,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.time.Instant;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.Optional;
@@ -66,7 +66,7 @@ class QingPingListDevicesJsonParser {
                 .orElseThrow(() -> new InvalidArgumentException("Not Possible"));
         final ZonedDateTime time = ZonedDateTime.ofInstant(
                 Instant.ofEpochSecond(timeFromEpoch),
-                ZoneId.of("UTC"));
+                ZoneOffset.UTC);
         return new QingPingSensorData(temperature, humidity, co2, time);
     }
 

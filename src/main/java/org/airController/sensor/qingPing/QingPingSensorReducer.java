@@ -3,7 +3,7 @@ package org.airController.sensor.qingPing;
 import org.airController.sensorValues.*;
 
 import java.time.Duration;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.OptionalDouble;
@@ -13,7 +13,7 @@ class QingPingSensorReducer {
 
     public SensorData reduce(List<QingPingSensorData> sensorDataList) throws CalculationException, InvalidArgumentException {
         final List<QingPingSensorData> currentSensorDataList = sensorDataList.stream()
-                .filter(sensorData -> sensorData.getTimeStamp().isAfter(ZonedDateTime.now(ZoneId.of("UTC")).minus(SENSOR_INVALIDATION_TIME)))
+                .filter(sensorData -> sensorData.getTimeStamp().isAfter(ZonedDateTime.now(ZoneOffset.UTC).minus(SENSOR_INVALIDATION_TIME)))
                 .toList();
         if (currentSensorDataList.isEmpty()) {
             throw new CalculationException("No current indoor data at the moment");
@@ -52,6 +52,6 @@ class QingPingSensorReducer {
     private ZonedDateTime getNewestTimestamp(List<QingPingSensorData> currentSensorDataList) {
         return currentSensorDataList.stream()
                 .map(QingPingSensorData::getTimeStamp)
-                .max(ZonedDateTime::compareTo).orElse(ZonedDateTime.now(ZoneId.of("UTC")));
+                .max(ZonedDateTime::compareTo).orElse(ZonedDateTime.now(ZoneOffset.UTC));
     }
 }

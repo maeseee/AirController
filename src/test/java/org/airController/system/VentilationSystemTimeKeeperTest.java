@@ -9,9 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -49,7 +47,7 @@ class VentilationSystemTimeKeeperTest {
 
     @Test
     void shouldReturnDurationToOff_whenNoMore() {
-        final LocalDateTime offTime = LocalDateTime.now().minusHours(1).plusMinutes(20);
+        final ZonedDateTime offTime = ZonedDateTime.now(ZoneOffset.UTC).minusHours(1).plusMinutes(20);
         final SystemAction offAction = new SystemAction(offTime, SystemPart.AIR_FLOW, OutputState.OFF);
         when(systemActions.getActionsFromTimeToNow(any(), eq(SystemPart.AIR_FLOW))).thenReturn(List.of(offAction));
         final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(systemActions);
@@ -61,7 +59,7 @@ class VentilationSystemTimeKeeperTest {
 
     @Test
     void shouldReturnDurationFromOn_whenNoMore() {
-        final LocalDateTime onTime = LocalDateTime.now().minusHours(1).plusMinutes(20);
+        final ZonedDateTime onTime = ZonedDateTime.now(ZoneOffset.UTC).minusHours(1).plusMinutes(20);
         final SystemAction onAction = new SystemAction(onTime, SystemPart.AIR_FLOW, OutputState.ON);
         when(systemActions.getActionsFromTimeToNow(any(), eq(SystemPart.AIR_FLOW))).thenReturn(List.of(onAction));
         final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(systemActions);
@@ -73,8 +71,8 @@ class VentilationSystemTimeKeeperTest {
 
     @Test
     void shouldCountSeveralOnOffActions() {
-        final LocalDateTime endTime = LocalDateTime.now();
-        final LocalDateTime startTime = endTime.minusHours(1);
+        final ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
+        final ZonedDateTime startTime = endTime.minusHours(1);
         final SystemAction onAction1 = new SystemAction(startTime.plusMinutes(10), SystemPart.AIR_FLOW, OutputState.ON);
         final SystemAction offAction1 = new SystemAction(startTime.plusMinutes(20), SystemPart.AIR_FLOW, OutputState.OFF);
         final SystemAction onAction2 = new SystemAction(startTime.plusMinutes(40), SystemPart.AIR_FLOW, OutputState.ON);
@@ -101,7 +99,7 @@ class VentilationSystemTimeKeeperTest {
     @Test
     void shouldReturnDurationToOff_whenOnlyThisYesterday() {
         final LocalDate yesterday = LocalDateTime.now().minusDays(1).toLocalDate();
-        final LocalDateTime startTime = yesterday.atStartOfDay().plusHours(10);
+        final ZonedDateTime startTime = ZonedDateTime.of(yesterday.atStartOfDay(), ZoneOffset.UTC).plusHours(10);
         final SystemAction offAction = new SystemAction(startTime.plusMinutes(20), SystemPart.AIR_FLOW, OutputState.OFF);
         when(systemActions.getActionsFromTimeToNow(any(), eq(SystemPart.AIR_FLOW))).thenReturn(List.of(offAction));
         final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(systemActions);
@@ -114,7 +112,7 @@ class VentilationSystemTimeKeeperTest {
     @Test
     void shouldReturnDurationFromOn_whenOnlyThisYesterday() {
         final LocalDate yesterday = LocalDateTime.now().minusDays(1).toLocalDate();
-        final LocalDateTime startTime = yesterday.atStartOfDay().plusHours(10);
+        final ZonedDateTime startTime = ZonedDateTime.of(yesterday.atStartOfDay(), ZoneOffset.UTC).plusHours(10);
         final SystemAction offAction = new SystemAction(startTime.plusMinutes(20), SystemPart.AIR_FLOW, OutputState.ON);
         when(systemActions.getActionsFromTimeToNow(any(), eq(SystemPart.AIR_FLOW))).thenReturn(List.of(offAction));
         final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(systemActions);
@@ -127,7 +125,7 @@ class VentilationSystemTimeKeeperTest {
     @Test
     void shouldReturnDuration_whenMultipleActionsYesterday() {
         final LocalDate yesterday = LocalDateTime.now().minusDays(1).toLocalDate();
-        final LocalDateTime startTime = yesterday.atStartOfDay().plusHours(10);
+        final ZonedDateTime startTime = ZonedDateTime.of(yesterday.atStartOfDay(), ZoneOffset.UTC).plusHours(10);
         final SystemAction onAction1 = new SystemAction(startTime.plusMinutes(10), SystemPart.AIR_FLOW, OutputState.ON);
         final SystemAction offAction1 = new SystemAction(startTime.plusMinutes(20), SystemPart.AIR_FLOW, OutputState.OFF);
         final SystemAction onAction2 = new SystemAction(startTime.plusMinutes(40), SystemPart.AIR_FLOW, OutputState.ON);
@@ -143,7 +141,7 @@ class VentilationSystemTimeKeeperTest {
     @Test
     void shouldReturnDuration_whenMultipleRepeatingOffEventsYesterday() {
         final LocalDate yesterday = LocalDateTime.now().minusDays(1).toLocalDate();
-        final LocalDateTime startTime = yesterday.atStartOfDay().plusHours(10);
+        final ZonedDateTime startTime = ZonedDateTime.of(yesterday.atStartOfDay(), ZoneOffset.UTC).plusHours(10);
         final SystemAction onAction1 = new SystemAction(startTime, SystemPart.AIR_FLOW, OutputState.ON);
         final SystemAction offAction1 = new SystemAction(startTime.plusMinutes(10), SystemPart.AIR_FLOW, OutputState.OFF);
         final SystemAction offAction2 = new SystemAction(startTime.plusMinutes(30), SystemPart.AIR_FLOW, OutputState.OFF);
@@ -158,7 +156,7 @@ class VentilationSystemTimeKeeperTest {
     @Test
     void shouldReturnDuration_whenMultipleRepeatingOnEventsYesterday() {
         final LocalDate yesterday = LocalDateTime.now().minusDays(1).toLocalDate();
-        final LocalDateTime startTime = yesterday.atStartOfDay().plusHours(10);
+        final ZonedDateTime startTime = ZonedDateTime.of(yesterday.atStartOfDay(), ZoneOffset.UTC).plusHours(10);
         final SystemAction onAction1 = new SystemAction(startTime, SystemPart.AIR_FLOW, OutputState.ON);
         final SystemAction onAction2 = new SystemAction(startTime.plusMinutes(10), SystemPart.AIR_FLOW, OutputState.ON);
         final SystemAction offAction2 = new SystemAction(startTime.plusMinutes(30), SystemPart.AIR_FLOW, OutputState.OFF);

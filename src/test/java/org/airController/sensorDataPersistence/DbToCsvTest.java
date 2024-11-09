@@ -7,7 +7,7 @@ import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -21,7 +21,7 @@ class DbToCsvTest {
     @Test
     @Disabled
     void shouldWriteAllDataFromDbToCsvFile() throws InvalidArgumentException {
-        final ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         persistDataToDb(now);
         final String sensorCsvPath = "log/sensorDataFromDbTest.csv";
         final DbToCsv testee = new DbToCsv();

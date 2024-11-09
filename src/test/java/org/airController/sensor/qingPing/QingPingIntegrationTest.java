@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Optional;
@@ -29,8 +29,8 @@ class QingPingIntegrationTest {
         final String listDevicesResponse = runListDevicesRequest(accessTokenData);
         final QingPingSensorData sensorData = runParseListDevices(listDevicesResponse);
         assertNotNull(sensorData);
-        assertTrue(ZonedDateTime.now(ZoneId.of("UTC")).minusMinutes(15).isBefore(sensorData.getTimeStamp()));
-        assertTrue(ZonedDateTime.now(ZoneId.of("UTC")).plusMinutes(5).isAfter(sensorData.getTimeStamp()));
+        assertTrue(ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(15).isBefore(sensorData.getTimeStamp()));
+        assertTrue(ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(5).isAfter(sensorData.getTimeStamp()));
     }
 
     private String runAccessTokenRequest() throws URISyntaxException {

@@ -9,7 +9,7 @@ public class DailyAirFlow implements Rule {
 
     private static final MonthDay SUMMER_TIME_START = MonthDay.of(5, 10);
     private static final MonthDay SUMMER_TIME_END = MonthDay.of(9, 10);
-    private static final LocalTime SUMMER_ON_TIME = LocalTime.of(4, 0, 0);
+    private static final LocalTime SUMMER_ON_TIME = LocalTime.of(4, 0, 0); // Local time zone
 
     @Override
     public String name() {

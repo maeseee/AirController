@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -30,7 +30,7 @@ class SensorDataTest {
         final double celsiusTemperature = random.nextDouble() * 100;
         final double relativeHumidity = random.nextDouble() * 100;
         final double co2Ppm = random.nextDouble() * 100000;
-        final ZonedDateTime time = ZonedDateTime.of(LocalDateTime.of(2024, 9, 27, 20, 51, 12), ZoneId.of("UTC"));
+        final ZonedDateTime time = ZonedDateTime.of(LocalDateTime.of(2024, 9, 27, 20, 51, 12), ZoneOffset.UTC);
         final SensorData inputSensorData = createSensorData(celsiusTemperature, relativeHumidity, co2Ppm, time);
         final int initialSize = testee.read().size();
 
@@ -47,7 +47,7 @@ class SensorDataTest {
         final double celsiusTemperature = random.nextDouble() * 100;
         final double relativeHumidity = random.nextDouble() * 100;
         final double co2Ppm = random.nextDouble() * 100000;
-        final ZonedDateTime time = ZonedDateTime.now(ZoneId.of("UTC"));
+        final ZonedDateTime time = ZonedDateTime.now(ZoneOffset.UTC);
         final SensorData inputSensorData = createSensorData(celsiusTemperature, relativeHumidity, co2Ppm, time);
 
         testee.persist(inputSensorData);

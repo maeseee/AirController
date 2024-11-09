@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +89,7 @@ public class SensorDataDb implements SensorDataPersistence {
         final Double temp = resultSet.getObject("temperature", Double.class);
         final Double hum = resultSet.getObject("humidity", Double.class);
         final Double carbonDioxide = resultSet.getObject("co2", Double.class);
-        final ZonedDateTime timestamp = ZonedDateTime.of(resultSet.getObject("event_time", LocalDateTime.class), ZoneId.of("UTC"));
+        final ZonedDateTime timestamp = ZonedDateTime.of(resultSet.getObject("event_time", LocalDateTime.class), ZoneOffset.UTC);
         return new SensorDataImpl(temp, hum, carbonDioxide, timestamp);
     }
 

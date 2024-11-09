@@ -7,10 +7,7 @@ import org.airController.systemPersitence.SystemPart;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -40,16 +37,16 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
 
     @Override
     public Duration getAirFlowOnDurationInLastHour() {
-        final LocalDateTime endTime = LocalDateTime.now();
-        final LocalDateTime startTime = endTime.minusHours(1);
+        final ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
+        final ZonedDateTime startTime = endTime.minusHours(1);
         final List<SystemAction> actionsFromLastHour = systemActions.getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
         return getDuration(actionsFromLastHour, startTime, endTime);
     }
 
     @Override
     public Duration getTotalAirFlowFromDay(LocalDate day) {
-        final LocalDateTime startTime = day.atStartOfDay();
-        final LocalDateTime endTime = day.atTime(LocalTime.MAX);
+        final ZonedDateTime startTime = day.atStartOfDay(ZoneOffset.UTC);
+        final ZonedDateTime endTime = ZonedDateTime.of(day.atTime(LocalTime.MAX), ZoneOffset.UTC);
         final List<SystemAction> actionsFromLastDay = systemActions.getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
         return getDuration(actionsFromLastDay, startTime, endTime);
     }
@@ -57,7 +54,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     @Override
     public void run() {
         try {
-            final LocalDateTime now = LocalDateTime.now();
+            final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
             final LocalDate yesterday = now.toLocalDate().minusDays(1);
             final Duration totalAirFlowYesterday = getTotalAirFlowFromDay(yesterday);
             logger.info("The daily switch-on time of {} was {} minutes ({} %)", yesterday, totalAirFlowYesterday.toMinutes(),
@@ -67,7 +64,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
         }
     }
 
-    private Duration getDuration(List<SystemAction> systemActions, LocalDateTime startTime, LocalDateTime endTime) {
+    private Duration getDuration(List<SystemAction> systemActions, ZonedDateTime startTime, ZonedDateTime endTime) {
         if (systemActions.isEmpty()) {
             return currentAirFlowState == OutputState.ON ? Duration.between(startTime, endTime) : Duration.ZERO;
         }
@@ -76,7 +73,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
         return onDurations.stream().reduce(Duration.ZERO, Duration::plus);
     }
 
-    private List<SystemAction> addStartAndEndActions(List<SystemAction> actionsFromLastHour, LocalDateTime startTime, LocalDateTime endTime) {
+    private List<SystemAction> addStartAndEndActions(List<SystemAction> actionsFromLastHour, ZonedDateTime startTime, ZonedDateTime endTime) {
         final SystemAction firstSystemAction = actionsFromLastHour.get(0);
         final List<SystemAction> actionsWithStartAndEnd = new ArrayList<>(actionsFromLastHour);
         if (firstSystemAction.outputState() == OutputState.OFF) {

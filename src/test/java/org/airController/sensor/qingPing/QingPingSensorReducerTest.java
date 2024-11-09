@@ -4,7 +4,7 @@ import org.airController.sensorValues.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -25,7 +25,7 @@ class QingPingSensorReducerTest {
     })
     void shouldTakeAverageOfSensorValues_whenMultipleSensors(double temperature1, double humidity1, double co2_1, int minutesYounger,
             double expectedTemperature, double expectedHumidity, double expectedCo2) throws InvalidArgumentException, CalculationException {
-        final ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final QingPingSensorData sensorData1 = createSensorData(temperature1, humidity1, co2_1, minutesYounger, now);
         final QingPingSensorData sensorData2 = createSensorData(40.0, 15.0, Double.NaN, 0, now);
         final List<QingPingSensorData> sensorData = List.of(sensorData1, sensorData2);

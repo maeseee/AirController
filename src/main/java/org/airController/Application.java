@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Duration;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -72,8 +72,8 @@ public class Application {
         executor.scheduleAtFixedRate(indoorSensor, 0, INDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
         executor.scheduleAtFixedRate(ruleApplier, 0, RULE_APPLIER_PERIOD_MINUTES, TimeUnit.MINUTES);
 
-        final ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
-        final ZonedDateTime midnight = ZonedDateTime.of(now.toLocalDate().atStartOfDay().plusDays(1), ZoneId.of("UTC"));
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        final ZonedDateTime midnight = ZonedDateTime.of(now.toLocalDate().atStartOfDay().plusDays(1), ZoneOffset.UTC);
         final long initialDelay = Duration.between(now, midnight).plusSeconds(1).toSeconds();
         executor.scheduleAtFixedRate(timeKeeper, initialDelay, TimeUnit.DAYS.toSeconds(1), TimeUnit.SECONDS);
 
