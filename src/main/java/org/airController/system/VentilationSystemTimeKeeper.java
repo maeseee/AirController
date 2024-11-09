@@ -1,5 +1,6 @@
 package org.airController.system;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.airController.rules.TimeKeeper;
 import org.airController.systemPersitence.SystemAction;
 import org.airController.systemPersitence.SystemActions;
@@ -44,14 +45,6 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     }
 
     @Override
-    public Duration getTotalAirFlowFromDay(LocalDate day) {
-        final ZonedDateTime startTime = day.atStartOfDay(ZoneOffset.UTC);
-        final ZonedDateTime endTime = ZonedDateTime.of(day.atTime(LocalTime.MAX), ZoneOffset.UTC);
-        final List<SystemAction> actionsFromLastDay = systemActions.getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
-        return getDuration(actionsFromLastDay, startTime, endTime);
-    }
-
-    @Override
     public void run() {
         try {
             final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
@@ -62,6 +55,14 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
         } catch (Exception e) {
             logger.error("Exception occurred while running VentilationSystemTimeKeeper! ", e);
         }
+    }
+
+    @VisibleForTesting
+    Duration getTotalAirFlowFromDay(LocalDate day) {
+        final ZonedDateTime startTime = day.atStartOfDay(ZoneOffset.UTC);
+        final ZonedDateTime endTime = ZonedDateTime.of(day.atTime(LocalTime.MAX), ZoneOffset.UTC);
+        final List<SystemAction> actionsFromLastDay = systemActions.getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
+        return getDuration(actionsFromLastDay, startTime, endTime);
     }
 
     private Duration getDuration(List<SystemAction> systemActions, ZonedDateTime startTime, ZonedDateTime endTime) {
