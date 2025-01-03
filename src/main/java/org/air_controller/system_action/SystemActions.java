@@ -26,8 +26,7 @@ public class SystemActions implements VentilationSystem {
             createTableIfNotExists(AIR_FLOW_ACTION_TABLE_NAME);
             createTableIfNotExists(HUMIDITY_ACTION_TABLE_NAME);
         } catch (SQLException e) {
-            logger.error("SQL Exception on creating connection! {}", e.getMessage());
-            throw new RuntimeException(e);
+            throw new ActionException("SQL Exception on creating connection! " + e.getMessage(), e.getCause());
         }
     }
 
@@ -71,11 +70,7 @@ public class SystemActions implements VentilationSystem {
             final ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                try {
-                    entries.add(createSystemAction(resultSet));
-                } catch (SQLException e) {
-                    logger.error("Next entry could not be loaded! {}", e.getMessage());
-                }
+                addResultIfAvailable(entries, resultSet);
             }
         } catch (SQLException e) {
             logger.error("SQL Exception on read ! {}", e.getMessage());
@@ -107,8 +102,9 @@ public class SystemActions implements VentilationSystem {
                         "system_part VARCHAR(20),\n" +
                         "status VARCHAR(20),\n" +
                         "action_time TIMESTAMP);";
-        final Statement statement = connection.createStatement();
-        statement.execute(sql);
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
     }
 
     private void insertAction(String tableName, SystemPart systemPart, OutputState state, ZonedDateTime timestamp) throws SQLException {
@@ -127,5 +123,13 @@ public class SystemActions implements VentilationSystem {
         final OutputState outputState = OutputState.valueOf(statusString);
         final ZonedDateTime actionTime = ZonedDateTime.of(resultSet.getObject("action_time", LocalDateTime.class), ZoneOffset.UTC);
         return new SystemAction(actionTime, systemPart, outputState);
+    }
+
+    private void addResultIfAvailable(List<SystemAction> entries, ResultSet resultSet) {
+        try {
+            entries.add(createSystemAction(resultSet));
+        } catch (SQLException e) {
+            logger.error("Next entry could not be loaded! {}", e.getMessage());
+        }
     }
 }

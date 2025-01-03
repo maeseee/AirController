@@ -53,7 +53,7 @@ public class SensorDataCsv implements SensorDataPersistence {
                 addDataIfAvailable(entries, currentLine);
             }
         } catch (IOException e) {
-            throw new ParseException("CSV could not be read! " + e.getMessage());
+            throw new ParseException("CSV could not be read! " + e.getMessage(), e.getCause());
         }
         return entries;
     }
