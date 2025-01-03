@@ -1,7 +1,6 @@
 package org.air_controller.sensor_data_persistence;
 
 import org.air_controller.sensor_values.*;
-import org.assertj.core.data.Offset;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -55,12 +54,12 @@ class SensorDataTest {
 
         assertThat(lastSensorData).hasValueSatisfying(sensorData -> {
             assertThat(sensorData.getTemperature()).isPresent().hasValueSatisfying(
-                    temperature -> assertThat(temperature.getCelsius()).isCloseTo(temperature.getCelsius(), Offset.offset(0.01)));
+                    temperature -> assertThat(temperature.getCelsius()).isCloseTo(temperature.getCelsius(), within(0.01)));
             assertThat(sensorData.getHumidity()).isPresent().hasValueSatisfying(
                     humidity -> assertThat(humidity.getRelativeHumidity(sensorData.getTemperature().get())).isCloseTo(relativeHumidity,
-                            Offset.offset(0.01)));
+                            within(0.01)));
             assertThat(sensorData.getCo2()).isPresent().hasValueSatisfying(
-                    co2 -> assertThat(co2.getPpm()).isCloseTo(co2Ppm, Offset.offset(1.0)));
+                    co2 -> assertThat(co2.getPpm()).isCloseTo(co2Ppm, within(1.0)));
             assertThat(sensorData.getTimeStamp()).isCloseTo(time, within(1, ChronoUnit.SECONDS));
         });
     }

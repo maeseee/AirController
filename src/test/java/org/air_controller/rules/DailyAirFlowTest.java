@@ -1,6 +1,5 @@
 package org.air_controller.rules;
 
-import org.assertj.core.data.Offset;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.MockedStatic;
@@ -9,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.within;
 import static org.mockito.Mockito.mockStatic;
 
 class DailyAirFlowTest {
@@ -38,7 +38,7 @@ class DailyAirFlowTest {
 
             final Confidence result = testee.turnOnConfidence();
 
-            assertThat(result.getWeightedConfidenceValue()).isCloseTo(expectedResult, Offset.offset(0.01));
+            assertThat(result.getWeightedConfidenceValue()).isCloseTo(expectedResult, within(0.01));
         }
     }
 }

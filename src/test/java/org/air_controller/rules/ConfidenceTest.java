@@ -1,10 +1,10 @@
 package org.air_controller.rules;
 
-import org.assertj.core.data.Offset;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.within;
 
 class ConfidenceTest {
 
@@ -33,6 +33,6 @@ class ConfidenceTest {
     void shouldWeightConfidence(double confidenceValue, double weight, double expectedWeightedValue) {
         final Confidence result = new Confidence(confidenceValue, weight);
 
-        assertThat(result.getWeightedConfidenceValue()).isCloseTo(expectedWeightedValue, Offset.offset(0.001));
+        assertThat(result.getWeightedConfidenceValue()).isCloseTo(expectedWeightedValue, within(0.001));
     }
 }

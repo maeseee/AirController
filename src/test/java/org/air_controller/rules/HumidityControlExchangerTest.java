@@ -4,7 +4,6 @@ import org.air_controller.sensor_values.CurrentSensorData;
 import org.air_controller.sensor_values.Humidity;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.Temperature;
-import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -14,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.within;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,6 +46,6 @@ class HumidityControlExchangerTest {
 
         final Confidence result = testee.turnOnConfidence();
 
-        assertThat(result.getWeightedConfidenceValue()).isCloseTo(expectedResult, Offset.offset(0.01));
+        assertThat(result.getWeightedConfidenceValue()).isCloseTo(expectedResult, within(0.01));
     }
 }

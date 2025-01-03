@@ -3,7 +3,6 @@ package org.air_controller.sensor_data_persistence;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.SensorData;
 import org.air_controller.sensor_values.SensorDataImpl;
-import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZoneOffset;
@@ -30,11 +29,11 @@ class DbToCsvTest {
         final List<SensorData> sensorDataList = sensorDataCsv.read();
         final SensorData lastSensorData = sensorDataList.get(sensorDataList.size() - 1);
         assertThat(lastSensorData.getTemperature()).isPresent().hasValueSatisfying(
-                temperature -> assertThat(temperature.getCelsius()).isCloseTo(21.0, Offset.offset(0.001)));
+                temperature -> assertThat(temperature.getCelsius()).isCloseTo(21.0, within(0.001)));
         assertThat(lastSensorData.getHumidity()).isPresent().hasValueSatisfying(
-                humidity -> assertThat(humidity.getAbsoluteHumidity()).isCloseTo(10.0, Offset.offset(0.001)));
+                humidity -> assertThat(humidity.getAbsoluteHumidity()).isCloseTo(10.0, within(0.001)));
         assertThat(lastSensorData.getCo2()).isPresent().hasValueSatisfying(
-                co2 -> assertThat(co2.getPpm()).isCloseTo(500.0, Offset.offset(0.001)));
+                co2 -> assertThat(co2.getPpm()).isCloseTo(500.0, within(0.001)));
         assertThat(lastSensorData.getTimeStamp()).isCloseTo(now, within(1, ChronoUnit.SECONDS));
     }
 

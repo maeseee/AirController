@@ -3,7 +3,6 @@ package org.air_controller.system;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActions;
 import org.air_controller.system_action.SystemPart;
-import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -14,6 +13,7 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.within;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -54,7 +54,7 @@ class VentilationSystemTimeKeeperTest {
 
         final Duration result = testee.getAirFlowOnDurationInLastHour();
 
-        assertThat(result.toMinutes()).isCloseTo(20, Offset.offset(1L));
+        assertThat(result.toMinutes()).isCloseTo(20, within(1L));
     }
 
     @Test
@@ -66,7 +66,7 @@ class VentilationSystemTimeKeeperTest {
 
         final Duration result = testee.getAirFlowOnDurationInLastHour();
 
-        assertThat(result.toMinutes()).isCloseTo(40, Offset.offset(1L));
+        assertThat(result.toMinutes()).isCloseTo(40, within(1L));
     }
 
     @Test
@@ -82,7 +82,7 @@ class VentilationSystemTimeKeeperTest {
 
         final Duration result = testee.getAirFlowOnDurationInLastHour();
 
-        assertThat(result.toMinutes()).isCloseTo(20, Offset.offset(1L));
+        assertThat(result.toMinutes()).isCloseTo(20, within(1L));
     }
 
     @Test
@@ -106,7 +106,7 @@ class VentilationSystemTimeKeeperTest {
 
         final Duration result = testee.getTotalAirFlowFromDay(yesterday);
 
-        assertThat(result.toHours()).isCloseTo(10, Offset.offset(1L));
+        assertThat(result.toHours()).isCloseTo(10, within(1L));
     }
 
     @Test
@@ -119,7 +119,7 @@ class VentilationSystemTimeKeeperTest {
 
         final Duration result = testee.getTotalAirFlowFromDay(yesterday);
 
-        assertThat(result.toHours()).isCloseTo(14, Offset.offset(1L));
+        assertThat(result.toHours()).isCloseTo(14, within(1L));
     }
 
     @Test
@@ -135,7 +135,7 @@ class VentilationSystemTimeKeeperTest {
 
         final Duration result = testee.getTotalAirFlowFromDay(yesterday);
 
-        assertThat(result.toMinutes()).isCloseTo(20, Offset.offset(1L));
+        assertThat(result.toMinutes()).isCloseTo(20, within(1L));
     }
 
     @Test
@@ -150,7 +150,7 @@ class VentilationSystemTimeKeeperTest {
 
         final Duration result = testee.getTotalAirFlowFromDay(yesterday);
 
-        assertThat(result.toMinutes()).isCloseTo(10, Offset.offset(1L));
+        assertThat(result.toMinutes()).isCloseTo(10, within(1L));
     }
 
     @Test
@@ -165,6 +165,6 @@ class VentilationSystemTimeKeeperTest {
 
         final Duration result = testee.getTotalAirFlowFromDay(yesterday);
 
-        assertThat(result.toMinutes()).isCloseTo(30, Offset.offset(1L));
+        assertThat(result.toMinutes()).isCloseTo(30, within(1L));
     }
 }

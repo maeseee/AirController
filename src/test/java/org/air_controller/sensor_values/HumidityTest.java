@@ -1,11 +1,11 @@
 package org.air_controller.sensor_values;
 
-import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class HumidityTest {
@@ -23,7 +23,7 @@ class HumidityTest {
 
         final double result = testee.getRelativeHumidity(temperature);
 
-        assertThat(result).isCloseTo(relativeHumidity, Offset.offset(0.001));
+        assertThat(result).isCloseTo(relativeHumidity, within(0.001));
     }
 
     @ParameterizedTest
@@ -65,7 +65,7 @@ class HumidityTest {
 
         final double expectedMaxDeltaInPercent = 1.0;
         final double expectedMaxDelta = expectedMaxDeltaInPercent * weightFor100Percent / 100.0;
-        assertThat(absoluteHumidity).isCloseTo(weightFor100Percent, Offset.offset(expectedMaxDelta));
+        assertThat(absoluteHumidity).isCloseTo(weightFor100Percent, within(expectedMaxDelta));
     }
 
     @ParameterizedTest
@@ -93,7 +93,7 @@ class HumidityTest {
 
         final double expectedMaxDeltaInPercent = 1.0;
         final double expectedMaxDelta = expectedMaxDeltaInPercent * weightFor100Percent / 100.0;
-        assertThat(absoluteHumidity).isCloseTo(weightFor100Percent / 2.0, Offset.offset(expectedMaxDelta));
+        assertThat(absoluteHumidity).isCloseTo(weightFor100Percent / 2.0, within(expectedMaxDelta));
     }
 
     @Test
@@ -103,5 +103,7 @@ class HumidityTest {
         final Humidity testee = Humidity.createFromRelative(relativeHumidity, temperature);
 
         System.out.println(testee);
+
+        assertThat(testee.getAbsoluteHumidity()).isCloseTo(5.73, within(0.1));
     }
 }
