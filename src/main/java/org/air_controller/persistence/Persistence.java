@@ -1,11 +1,13 @@
 package org.air_controller.persistence;
 
+import lombok.NoArgsConstructor;
 import org.air_controller.secrets.Secret;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class Persistence {
     private static final String SCHEMA_NAME = "AirControllerSystem";
     private static final String JDBC_URL = "jdbc:h2:./" + SCHEMA_NAME;

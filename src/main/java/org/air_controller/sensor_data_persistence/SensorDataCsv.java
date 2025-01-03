@@ -47,19 +47,13 @@ public class SensorDataCsv implements SensorDataPersistence {
     @Override
     public List<SensorData> read() {
         final List<SensorData> entries = new ArrayList<>();
-        try {
-            final BufferedReader reader = new BufferedReader(new FileReader(filePath));
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String currentLine;
             while ((currentLine = reader.readLine()) != null) {
-                try {
-                    entries.add(createSensorData(currentLine));
-                } catch (InvalidArgumentException e) {
-                    logger.error(e.getMessage());
-                }
+                addDataIfAvailable(entries, currentLine);
             }
         } catch (IOException e) {
-            logger.error("CSV could not be read! {}", e.getMessage());
-            throw new RuntimeException(e);
+            throw new ParseException("CSV could not be read! " + e.getMessage());
         }
         return entries;
     }
@@ -80,5 +74,18 @@ public class SensorDataCsv implements SensorDataPersistence {
         final Humidity humidity = Humidity.createFromRelative(humRelative, temperature);
         final CarbonDioxide co2 = csv.length > 3 ? CarbonDioxide.createFromPpm(Double.parseDouble(csv[3])) : null;
         return new SensorDataImpl(temperature, humidity, co2, timestamp);
+    }
+
+    private void addDataIfAvailable(List<SensorData> entries, String currentLine) {
+        try {
+            final SensorData sensorData = getSensorData(currentLine);
+            entries.add(sensorData);
+        } catch (InvalidArgumentException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    private SensorData getSensorData(String currentLine) throws InvalidArgumentException {
+        return createSensorData(currentLine);
     }
 }

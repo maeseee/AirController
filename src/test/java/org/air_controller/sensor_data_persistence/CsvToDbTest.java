@@ -4,7 +4,6 @@ import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.SensorData;
 import org.air_controller.sensor_values.SensorDataImpl;
 import org.assertj.core.data.Offset;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZoneOffset;
@@ -19,7 +18,6 @@ class CsvToDbTest {
     private final String sensorDataCsvPath = "log/sensorDataFromDbTest.csv";
 
     @Test
-    @Disabled
     void shouldWriteAllDataFromDbToCsvFile() throws InvalidArgumentException {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         persistDataToCsv(now);
