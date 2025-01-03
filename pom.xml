@@ -14,7 +14,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <start-class>org.airController.application</start-class>
+        <start-class>org.air_controller.application</start-class>
     </properties>
 
     <dependencies>
@@ -114,7 +114,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>org.airController.Main</mainClass>
+                            <mainClass>org.air_controller.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -130,7 +130,7 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>org.airController.Main</mainClass>
+                            <mainClass>org.air_controller.Main</mainClass>
                         </configuration>
                     </execution>
                     <execution>
@@ -139,7 +139,7 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>org.airController.gpio.RaspberryPiPin</mainClass>
+                            <mainClass>org.air_controller.gpio.RaspberryPiPin</mainClass>
                         </configuration>
                     </execution>
                     <execution>
@@ -148,7 +148,7 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>org.airController.sensor.Sensor</mainClass>
+                            <mainClass>org.air_controller.sensor.Sensor</mainClass>
                         </configuration>
                     </execution>
                 </executions>
