@@ -19,7 +19,7 @@ class SystemActionsTest {
         testee.setAirFlowOn(OutputState.ON);
 
         final List<SystemAction> actionsFromLastHour = testee.getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
-        assertThat(actionsFromLastHour).size().isGreaterThanOrEqualTo(1);
+        assertThat(actionsFromLastHour).size().isPositive();
     }
 
     @Test
@@ -33,7 +33,7 @@ class SystemActionsTest {
         testee.setAirFlowOn(OutputState.OFF);
 
         final List<SystemAction> actionsFromLastHour = testee.getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
-        assertThat(actionsFromLastHour).size().isGreaterThanOrEqualTo(1);
+        assertThat(actionsFromLastHour).size().isPositive();
         final SystemAction lastAction = actionsFromLastHour.get(actionsFromLastHour.size() - 1);
         assertThat(lastAction.systemPart()).isEqualTo(SystemPart.AIR_FLOW);
         assertThat(lastAction.outputState()).isEqualTo(OutputState.OFF);

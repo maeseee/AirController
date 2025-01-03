@@ -43,7 +43,7 @@ class Dht22Impl implements Dht22 {
         try {
             TimeUnit.SECONDS.sleep(sleepDurraction);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            throw new SensorException(e.getMessage(), e.getCause());
         }
     }
 
@@ -60,14 +60,14 @@ class Dht22Impl implements Dht22 {
 
     private Humidity getHumidityFromData(long sensorData, Temperature temperature) throws InvalidArgumentException {
         final long humidityData = (sensorData >> 24) & 0xFFFF;
-        final double humidity = (double) humidityData / 10.0;
+        final double humidity = humidityData / 10.0;
         return Humidity.createFromRelative(humidity, temperature);
     }
 
     private Temperature getTemperatureFromData(long sensorData) throws InvalidArgumentException {
         final long temperatureData = (sensorData >> 8) & 0xFFFF;
         final double sign = (temperatureData & 0x8000) == 0 ? 1 : -1;
-        final double temperature = (double) (temperatureData & 0x7FFF) / 10.0 * sign;
+        final double temperature = 1.0 * (temperatureData & 0x7FFF) / 10.0 * sign;
         return Temperature.createFromCelsius(temperature);
     }
 

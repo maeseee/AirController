@@ -10,9 +10,4 @@ public class CommunicationException extends Exception {
         super(message);
         logger.error(message);
     }
-
-    public CommunicationException(String message, Throwable cause) {
-        super(message, cause);
-        logger.error(message);
-    }
 }
