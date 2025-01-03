@@ -13,7 +13,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class QingPingSensorReducerTest {
 
     @ParameterizedTest(
-            name = "{index} => temperature1 ={0}, humidity1={1}, co2_1={2}, minutesYounger={3}, expectedTemperature={4}, expectedHumidity={5}, " +
+            name = "{index} => temperature1 ={0}, humidity1={1}, carbonDioxide1={2}, minutesYounger={3}, expectedTemperature={4}, " +
+                    "expectedHumidity={5}, " +
                     "expectedCo2={6}")
     @CsvSource({
             "20, 10, NaN, 0, 30, 12.5, NaN",
@@ -23,10 +24,10 @@ class QingPingSensorReducerTest {
             "20, 10, NaN, 59, 30, 12.5, NaN",
             "20, 10, NaN, 60, 40, 15.0, NaN", // Invalid after SENSOR_INVALIDATION_TIME
     })
-    void shouldTakeAverageOfSensorValues_whenMultipleSensors(double temperature1, double humidity1, double co2_1, int minutesYounger,
+    void shouldTakeAverageOfSensorValues_whenMultipleSensors(double temperature1, double humidity1, double carbonDioxide1, int minutesYounger,
             double expectedTemperature, double expectedHumidity, double expectedCo2) throws InvalidArgumentException, CalculationException {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        final QingPingSensorData sensorData1 = createSensorData(temperature1, humidity1, co2_1, minutesYounger, now);
+        final QingPingSensorData sensorData1 = createSensorData(temperature1, humidity1, carbonDioxide1, minutesYounger, now);
         final QingPingSensorData sensorData2 = createSensorData(40.0, 15.0, Double.NaN, 0, now);
         final List<QingPingSensorData> sensorData = List.of(sensorData1, sensorData2);
         final QingPingSensorReducer testee = new QingPingSensorReducer();

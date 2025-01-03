@@ -55,6 +55,6 @@ class QingPingListDevicesTest {
 
         verify(parser).parseDeviceListResponse(response, MAC_AIR_PRESSURE_DEVICE);
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_1);
-        assertThat(sensorDataList).hasSize(0);
+        assertThat(sensorDataList).isEmpty();
     }
 }

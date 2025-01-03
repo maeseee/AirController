@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 class SecretsEncryptionTest {
 
-    private final String MASTER_TEST_PASSWORD = "TEST";
+    private static final String MASTER_TEST_PASSWORD = "TEST";
 
     @ParameterizedTest(name = "{index} => secret={0}")
     @ArgumentsSource(SecretsEncryptionArgumentProvider.class)

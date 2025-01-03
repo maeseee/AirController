@@ -63,8 +63,7 @@ public class SystemActions implements VentilationSystem {
                         "WHERE i.action_time > ? " +
                         "AND i.system_part = ? " +
                         "ORDER BY i.action_time;";
-        try {
-            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setTimestamp(1, Timestamp.valueOf(startDateTime.toLocalDateTime()));
             preparedStatement.setString(2, part.name());
             final ResultSet resultSet = preparedStatement.executeQuery();
@@ -83,8 +82,7 @@ public class SystemActions implements VentilationSystem {
                 "SELECT * FROM " + AIR_FLOW_ACTION_TABLE_NAME + " i " +
                         "ORDER BY i.action_time DESC " +
                         "LIMIT 1;";
-        try {
-            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             final ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return createSystemAction(resultSet);
@@ -109,11 +107,12 @@ public class SystemActions implements VentilationSystem {
 
     private void insertAction(String tableName, SystemPart systemPart, OutputState state, ZonedDateTime timestamp) throws SQLException {
         final String sql = "INSERT INTO " + tableName + " (system_part, status, action_time) VALUES (?, ?, ?)";
-        final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, systemPart.name());
-        preparedStatement.setObject(2, state.name());
-        preparedStatement.setObject(3, timestamp.toLocalDateTime());
-        preparedStatement.executeUpdate();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, systemPart.name());
+            preparedStatement.setObject(2, state.name());
+            preparedStatement.setObject(3, timestamp.toLocalDateTime());
+            preparedStatement.executeUpdate();
+        }
     }
 
     private SystemAction createSystemAction(ResultSet resultSet) throws SQLException {

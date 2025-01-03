@@ -1,7 +1,10 @@
 package org.air_controller.sensor.qing_ping;
 
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 class QingPingDevices {
     static final String MAC_AIR_PRESSURE_DEVICE = "582D3480A7F4"; // Entrance
     static final String MAC_CO2_DEVICE_1 = "582D34831850"; // Living

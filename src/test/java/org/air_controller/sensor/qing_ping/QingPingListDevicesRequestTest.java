@@ -26,8 +26,9 @@ class QingPingListDevicesRequestTest {
 
         final String response = testee.sendRequest(token);
 
-        assertThat(response).contains("data");
-        assertThat(response).contains("product");
+        assertThat(response)
+                .contains("data")
+                .contains("product");
         QingPingDevices.getDeviceList().forEach(device -> assertThat(response).contains(device));
         assertThatNoException().isThrownBy(() -> testee.sendRequest(token));
     }

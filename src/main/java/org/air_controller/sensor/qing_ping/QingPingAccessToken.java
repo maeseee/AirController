@@ -46,7 +46,7 @@ class QingPingAccessToken {
         if (accessTokenOptional.isPresent()) {
             final QingPingAccessTokenData accessTokenData = accessTokenOptional.get();
             token = accessTokenData.accessToken();
-            accessTokenValidUntil = ZonedDateTime.now(ZoneOffset.UTC).plusSeconds(accessTokenData.expiresIn() - 60);
+            accessTokenValidUntil = ZonedDateTime.now(ZoneOffset.UTC).plusSeconds(accessTokenData.expiresIn() - 60L);
         }
     }
 

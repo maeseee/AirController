@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class QingPingListDevicesJsonParserTest {
 
-    private final String SAMPLE_DEVICE_LIST_RESPONSE = """
+    private static final String SAMPLE_DEVICE_LIST_RESPONSE = """
             {
               "total": 2,
               "devices": [

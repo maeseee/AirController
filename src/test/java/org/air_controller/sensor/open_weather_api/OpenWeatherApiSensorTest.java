@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class OpenWeatherApiSensorTest {
 
-    private final static String SAMPLE_HTTP_RESPONSE = """
+    private static final String SAMPLE_HTTP_RESPONSE = """
             {
             "coord":{"lon":8.246,"lat":47.1281},
             "weather":[{"id":500,"main":"Rain","description":"light rain","icon":"10n"}],

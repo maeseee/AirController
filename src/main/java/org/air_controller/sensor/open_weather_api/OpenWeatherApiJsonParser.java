@@ -1,5 +1,6 @@
 package org.air_controller.sensor.open_weather_api;
 
+import lombok.NoArgsConstructor;
 import org.air_controller.sensor_values.Humidity;
 import org.air_controller.sensor_values.Temperature;
 import org.json.JSONObject;
@@ -7,6 +8,7 @@ import org.json.JSONTokener;
 
 import java.util.Optional;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 class OpenWeatherApiJsonParser {
 
     public static Optional<OpenWeatherApiSensorData> parse(String jsonString) {

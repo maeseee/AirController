@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static java.util.stream.Collectors.toList;
-
 public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeeper {
     private static final Logger logger = LogManager.getLogger(VentilationSystemTimeKeeper.class);
 
@@ -88,7 +86,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     }
 
     private double getOnPercentage(Duration onTime) {
-        final long SECONDS_PER_DAY = 60 * 60 * 24;
+        final long SECONDS_PER_DAY = 60L * 60L * 24L;
         return Math.round((double) onTime.toSeconds() / (double) SECONDS_PER_DAY * 1000.0) / 10.0;
     }
 
@@ -96,7 +94,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
         assert (systemActions.size() > 1);
         return IntStream.range(1, systemActions.size())
                 .mapToObj(i -> getDurationBetweenSystemAction(systemActions.get(i - 1), systemActions.get(i)))
-                .collect(toList());
+                .toList();
     }
 
     private Duration getDurationBetweenSystemAction(SystemAction systemAction1, SystemAction systemAction2) {

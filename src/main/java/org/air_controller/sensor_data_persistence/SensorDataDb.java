@@ -51,11 +51,7 @@ public class SensorDataDb implements SensorDataPersistence {
             final Statement statement = connection.createStatement();
             final ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
-                try {
-                    entries.add(createSensorData(resultSet));
-                } catch (InvalidArgumentException e) {
-                    logger.error("Next entry could not be loaded! {}", e.getMessage());
-                }
+                addResultIfAvailable(entries, resultSet);
             }
         } catch (SQLException e) {
             logger.error("SQL Exception on read ! {}", e.getMessage());
@@ -112,5 +108,13 @@ public class SensorDataDb implements SensorDataPersistence {
         preparedStatement.setObject(3, co2);
         preparedStatement.setTimestamp(4, Timestamp.valueOf(timestamp.toLocalDateTime()));
         preparedStatement.executeUpdate();
+    }
+
+    private void addResultIfAvailable(List<SensorData> entries, ResultSet resultSet) throws SQLException {
+        try {
+            entries.add(createSensorData(resultSet));
+        } catch (InvalidArgumentException e) {
+            logger.error("Next entry could not be loaded! {}", e.getMessage());
+        }
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.OptionalDouble;
 
 class QingPingSensorReducer {
-    private final static Duration SENSOR_INVALIDATION_TIME = Duration.ofHours(1);
+    private static final Duration SENSOR_INVALIDATION_TIME = Duration.ofHours(1);
 
     public SensorData reduce(List<QingPingSensorData> sensorDataList) throws CalculationException, InvalidArgumentException {
         final List<QingPingSensorData> currentSensorDataList = sensorDataList.stream()
