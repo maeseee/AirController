@@ -6,7 +6,7 @@ import org.air_controller.gpio.RaspberryGpioPin;
 import org.air_controller.rules.*;
 import org.air_controller.sensor.Sensor;
 import org.air_controller.sensor.dht22.OneWireSensor;
-import org.air_controller.sensor.openWeatherApi.OpenWeatherApiSensor;
+import org.air_controller.sensor.open_weather_api.OpenWeatherApiSensor;
 import org.air_controller.sensor.qing_ping.QingPingSensor;
 import org.air_controller.sensorDataPersistence.SensorDataCollection;
 import org.air_controller.sensorDataPersistence.SensorDataCsv;

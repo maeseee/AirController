@@ -1,4 +1,4 @@
-package org.air_controller.sensor.openWeatherApi;
+package org.air_controller.sensor.open_weather_api;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

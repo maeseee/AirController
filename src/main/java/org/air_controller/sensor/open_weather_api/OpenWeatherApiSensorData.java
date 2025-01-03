@@ -1,4 +1,4 @@
-package org.air_controller.sensor.openWeatherApi;
+package org.air_controller.sensor.open_weather_api;
 
 import org.air_controller.sensorValues.CarbonDioxide;
 import org.air_controller.sensorValues.Humidity;
