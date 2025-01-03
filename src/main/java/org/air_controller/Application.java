@@ -5,6 +5,7 @@ import org.air_controller.gpio.GpioPin;
 import org.air_controller.gpio.RaspberryGpioPin;
 import org.air_controller.rules.*;
 import org.air_controller.sensor.Sensor;
+import org.air_controller.sensor.SensorException;
 import org.air_controller.sensor.dht22.OneWireSensor;
 import org.air_controller.sensor.open_weather_api.OpenWeatherApiSensor;
 import org.air_controller.sensor.qing_ping.QingPingSensor;
@@ -100,7 +101,7 @@ public class Application {
         try {
             return new QingPingSensor(persistence, oneWireSensor);
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            throw new SensorException("Indoor sensor could not be created", e.getCause());
         }
     }
 

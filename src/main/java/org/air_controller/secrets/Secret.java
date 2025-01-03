@@ -1,10 +1,14 @@
 package org.air_controller.secrets;
 
+import lombok.NoArgsConstructor;
+import org.air_controller.sensor_data_persistence.ParseException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Optional;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class Secret {
 
     public static String getSecret(String environmentVariableName, String encryptedSecret) {
@@ -19,7 +23,7 @@ public class Secret {
         try {
             masterPassword = reader.readLine();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ParseException("Line could not be read", e.getCause());
         }
         final SecretsEncryption secretsEncryption = new SecretsEncryption(masterPassword);
         final String decryptedSecret = secretsEncryption.decrypt(encryptedSecret);

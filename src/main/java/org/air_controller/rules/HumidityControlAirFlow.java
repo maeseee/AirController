@@ -1,5 +1,6 @@
 package org.air_controller.rules;
 
+import org.air_controller.sensor.SensorException;
 import org.air_controller.sensor_values.CurrentSensorData;
 import org.air_controller.sensor_values.Humidity;
 import org.air_controller.sensor_values.InvalidArgumentException;
@@ -19,7 +20,7 @@ public class HumidityControlAirFlow implements Rule {
             UPPER_HUMIDITY = Humidity.createFromRelative(65.0, REFERENCE_TEMPERATURE);
             IDEAL_HUMIDITY = Humidity.createFromRelative(52.5, REFERENCE_TEMPERATURE);
         } catch (InvalidArgumentException e) {
-            throw new RuntimeException(e);
+            throw new SensorException("Invalid sensor values", e.getCause());
         }
     }
 

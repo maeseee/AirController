@@ -62,7 +62,7 @@ class QingPingListDevicesJsonParser {
         final Humidity humidity = Humidity.createFromRelative(humidityRelative, temperature);
         final OptionalDouble co2Optional = getDoubleValue("co2", deviceData);
         final CarbonDioxide co2 = co2Optional.isPresent() ? CarbonDioxide.createFromPpm(co2Optional.getAsDouble()) : null;
-        final long timeFromEpoch = getLongValue("timestamp", deviceData)
+        final long timeFromEpoch = getTimestamp(deviceData)
                 .orElseThrow(() -> new InvalidArgumentException("Not Possible"));
         final ZonedDateTime time = ZonedDateTime.ofInstant(
                 Instant.ofEpochSecond(timeFromEpoch),
@@ -80,9 +80,9 @@ class QingPingListDevicesJsonParser {
         return OptionalDouble.empty();
     }
 
-    private OptionalLong getLongValue(String attribute, JSONObject deviceData) {
+    private OptionalLong getTimestamp(JSONObject deviceData) {
         try {
-            final JSONObject data = deviceData.getJSONObject(attribute);
+            final JSONObject data = deviceData.getJSONObject("timestamp");
             return OptionalLong.of(data.getLong("value"));
         } catch (JSONException exception) {
             // Intentionally left empty

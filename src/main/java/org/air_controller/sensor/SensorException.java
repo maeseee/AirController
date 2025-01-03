@@ -1,4 +1,4 @@
-package org.air_controller.sensor.dht22;
+package org.air_controller.sensor;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -1,6 +1,7 @@
 package org.air_controller.sensor.dht22;
 
 import org.air_controller.gpio.GpioFunction;
+import org.air_controller.sensor.SensorException;
 import org.air_controller.sensor_values.Humidity;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.SensorData;
