@@ -1,8 +1,8 @@
 package org.air_controller.system;
 
-import org.air_controller.system_persistence.SystemAction;
-import org.air_controller.system_persistence.SystemActions;
-import org.air_controller.system_persistence.SystemPart;
+import org.air_controller.system_action.SystemAction;
+import org.air_controller.system_action.SystemActions;
+import org.air_controller.system_action.SystemPart;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
