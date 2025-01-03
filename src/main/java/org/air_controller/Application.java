@@ -16,7 +16,7 @@ import org.air_controller.sensor_values.CurrentSensorData;
 import org.air_controller.system.ControlledVentilationSystem;
 import org.air_controller.system.VentilationSystem;
 import org.air_controller.system.VentilationSystemTimeKeeper;
-import org.air_controller.systemPersitence.SystemActions;
+import org.air_controller.system_persistence.SystemActions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

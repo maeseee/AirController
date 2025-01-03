@@ -2,9 +2,9 @@ package org.air_controller.system;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.air_controller.rules.TimeKeeper;
-import org.air_controller.systemPersitence.SystemAction;
-import org.air_controller.systemPersitence.SystemActions;
-import org.air_controller.systemPersitence.SystemPart;
+import org.air_controller.system_persistence.SystemAction;
+import org.air_controller.system_persistence.SystemActions;
+import org.air_controller.system_persistence.SystemPart;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
