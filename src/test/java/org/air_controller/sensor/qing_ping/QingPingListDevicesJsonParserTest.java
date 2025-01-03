@@ -1,4 +1,4 @@
-package org.air_controller.sensor.qingPing;
+package org.air_controller.sensor.qing_ping;
 
 import org.air_controller.sensorValues.CarbonDioxide;
 import org.air_controller.sensorValues.Humidity;
@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static org.air_controller.sensor.qingPing.QingPingDevices.MAC_AIR_PRESSURE_DEVICE;
-import static org.air_controller.sensor.qingPing.QingPingDevices.MAC_CO2_DEVICE_1;
+import static org.air_controller.sensor.qing_ping.QingPingDevices.MAC_AIR_PRESSURE_DEVICE;
+import static org.air_controller.sensor.qing_ping.QingPingDevices.MAC_CO2_DEVICE_1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class QingPingListDevicesJsonParserTest {

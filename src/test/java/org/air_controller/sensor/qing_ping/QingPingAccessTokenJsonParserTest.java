@@ -1,4 +1,4 @@
-package org.air_controller.sensor.qingPing;
+package org.air_controller.sensor.qing_ping;
 
 import org.junit.jupiter.api.Test;
 

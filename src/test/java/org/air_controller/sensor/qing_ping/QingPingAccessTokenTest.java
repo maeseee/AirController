@@ -1,4 +1,4 @@
-package org.air_controller.sensor.qingPing;
+package org.air_controller.sensor.qing_ping;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,12 +10,14 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class) class QingPingAccessTokenTest {
+@ExtendWith(MockitoExtension.class)
+class QingPingAccessTokenTest {
 
     @Mock
     private QingPingAccessTokenRequest request;
 
-    @Test void shouldThrow_whenRequestFails() {
+    @Test
+    void shouldThrow_whenRequestFails() {
         when(request.sendRequest()).thenReturn(Optional.empty());
         final QingPingAccessToken testee = new QingPingAccessToken(request);
 

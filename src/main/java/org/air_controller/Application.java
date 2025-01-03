@@ -7,7 +7,7 @@ import org.air_controller.rules.*;
 import org.air_controller.sensor.Sensor;
 import org.air_controller.sensor.dht22.OneWireSensor;
 import org.air_controller.sensor.openWeatherApi.OpenWeatherApiSensor;
-import org.air_controller.sensor.qingPing.QingPingSensor;
+import org.air_controller.sensor.qing_ping.QingPingSensor;
 import org.air_controller.sensorDataPersistence.SensorDataCollection;
 import org.air_controller.sensorDataPersistence.SensorDataCsv;
 import org.air_controller.sensorDataPersistence.SensorDataDb;

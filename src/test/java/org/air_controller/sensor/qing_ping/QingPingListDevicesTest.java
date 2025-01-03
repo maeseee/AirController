@@ -1,4 +1,4 @@
-package org.air_controller.sensor.qingPing;
+package org.air_controller.sensor.qing_ping;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +10,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.air_controller.sensor.qingPing.QingPingDevices.*;
+import static org.air_controller.sensor.qing_ping.QingPingDevices.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;

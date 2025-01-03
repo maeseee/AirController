@@ -1,4 +1,4 @@
-package org.air_controller.sensor.qingPing;
+package org.air_controller.sensor.qing_ping;
 
 import org.air_controller.secrets.Secret;
 import org.junit.jupiter.api.Test;
@@ -14,8 +14,8 @@ import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Optional;
 
-import static org.air_controller.sensor.qingPing.QingPingAccessToken.*;
-import static org.air_controller.sensor.qingPing.QingPingDevices.MAC_AIR_PRESSURE_DEVICE;
+import static org.air_controller.sensor.qing_ping.QingPingAccessToken.*;
+import static org.air_controller.sensor.qing_ping.QingPingDevices.MAC_AIR_PRESSURE_DEVICE;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

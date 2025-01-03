@@ -1,9 +1,9 @@
-package org.air_controller.sensor.qingPing;
+package org.air_controller.sensor.qing_ping;
 
 import com.google.inject.internal.Nullable;
 import lombok.Getter;
-import org.air_controller.sensorDataPersistence.SensorDataPersistence;
 import org.air_controller.sensor.Sensor;
+import org.air_controller.sensorDataPersistence.SensorDataPersistence;
 import org.air_controller.sensorValues.InvalidArgumentException;
 import org.air_controller.sensorValues.SensorData;
 import org.apache.logging.log4j.LogManager;
