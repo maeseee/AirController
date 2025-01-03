@@ -1,6 +1,6 @@
 package org.air_controller.sensor_data_persistence;
 
-import org.air_controller.sensorValues.SensorData;
+import org.air_controller.sensor_values.SensorData;
 
 import java.util.List;
 

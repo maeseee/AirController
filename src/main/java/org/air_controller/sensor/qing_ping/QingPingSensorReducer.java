@@ -1,6 +1,6 @@
 package org.air_controller.sensor.qing_ping;
 
-import org.air_controller.sensorValues.*;
+import org.air_controller.sensor_values.*;
 
 import java.time.Duration;
 import java.time.ZoneOffset;

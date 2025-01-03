@@ -1,6 +1,6 @@
 package org.air_controller.sensor.dht22;
 
-import org.air_controller.sensorValues.SensorData;
+import org.air_controller.sensor_values.SensorData;
 
 import java.util.Optional;
 

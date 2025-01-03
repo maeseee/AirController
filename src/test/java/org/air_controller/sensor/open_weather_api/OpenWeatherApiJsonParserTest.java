@@ -1,6 +1,6 @@
 package org.air_controller.sensor.open_weather_api;
 
-import org.air_controller.sensorValues.Temperature;
+import org.air_controller.sensor_values.Temperature;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;

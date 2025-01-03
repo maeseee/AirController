@@ -1,7 +1,7 @@
 package org.air_controller.rules;
 
-import org.air_controller.sensorValues.CarbonDioxide;
-import org.air_controller.sensorValues.CurrentSensorData;
+import org.air_controller.sensor_values.CarbonDioxide;
+import org.air_controller.sensor_values.CurrentSensorData;
 
 import java.util.Optional;
 

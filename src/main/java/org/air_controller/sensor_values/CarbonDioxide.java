@@ -1,4 +1,4 @@
-package org.air_controller.sensorValues;
+package org.air_controller.sensor_values;
 
 import lombok.Getter;
 

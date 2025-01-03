@@ -1,8 +1,8 @@
 package org.air_controller.sensor_data_persistence;
 
-import org.air_controller.sensorValues.InvalidArgumentException;
-import org.air_controller.sensorValues.SensorData;
-import org.air_controller.sensorValues.SensorDataImpl;
+import org.air_controller.sensor_values.InvalidArgumentException;
+import org.air_controller.sensor_values.SensorData;
+import org.air_controller.sensor_values.SensorDataImpl;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

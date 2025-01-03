@@ -1,4 +1,4 @@
-package org.air_controller.sensorValues;
+package org.air_controller.sensor_values;
 
 import org.air_controller.sensor_data_persistence.SensorDataPersistence;
 import org.junit.jupiter.api.Test;

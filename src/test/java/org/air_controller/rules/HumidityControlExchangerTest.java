@@ -1,9 +1,9 @@
 package org.air_controller.rules;
 
-import org.air_controller.sensorValues.CurrentSensorData;
-import org.air_controller.sensorValues.Humidity;
-import org.air_controller.sensorValues.InvalidArgumentException;
-import org.air_controller.sensorValues.Temperature;
+import org.air_controller.sensor_values.CurrentSensorData;
+import org.air_controller.sensor_values.Humidity;
+import org.air_controller.sensor_values.InvalidArgumentException;
+import org.air_controller.sensor_values.Temperature;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;

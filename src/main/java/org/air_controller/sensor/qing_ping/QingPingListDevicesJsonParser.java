@@ -1,9 +1,9 @@
 package org.air_controller.sensor.qing_ping;
 
-import org.air_controller.sensorValues.CarbonDioxide;
-import org.air_controller.sensorValues.Humidity;
-import org.air_controller.sensorValues.InvalidArgumentException;
-import org.air_controller.sensorValues.Temperature;
+import org.air_controller.sensor_values.CarbonDioxide;
+import org.air_controller.sensor_values.Humidity;
+import org.air_controller.sensor_values.InvalidArgumentException;
+import org.air_controller.sensor_values.Temperature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
