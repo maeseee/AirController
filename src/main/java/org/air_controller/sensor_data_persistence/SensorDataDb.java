@@ -47,8 +47,7 @@ public class SensorDataDb implements SensorDataPersistence {
     public List<SensorData> read() {
         final List<SensorData> entries = new ArrayList<>();
         final String sql = "SELECT * FROM " + sensorDataTableName + ";";
-        try {
-            final Statement statement = connection.createStatement();
+        try (Statement statement = connection.createStatement()) {
             final ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 addResultIfAvailable(entries, resultSet);
@@ -66,8 +65,7 @@ public class SensorDataDb implements SensorDataPersistence {
                         "WHERE i.EVENT_TIME > ? " +
                         "ORDER BY i.EVENT_TIME DESC " +
                         "LIMIT 1;";
-        try {
-            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setTimestamp(1, Timestamp.valueOf(lastValidTimestamp.toLocalDateTime()));
             final ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -89,25 +87,27 @@ public class SensorDataDb implements SensorDataPersistence {
     }
 
     private void createTableIfNotExists() throws SQLException {
-        final Statement statement = connection.createStatement();
-        final String sql =
-                "CREATE TABLE IF NOT EXISTS public." + sensorDataTableName + " (\n" +
-                        "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
-                        "temperature DOUBLE,\n" +
-                        "humidity DOUBLE,\n" +
-                        "co2 DOUBLE,\n" +
-                        "event_time TIMESTAMP);";
-        statement.execute(sql);
+        try (Statement statement = connection.createStatement()) {
+            final String sql =
+                    "CREATE TABLE IF NOT EXISTS public." + sensorDataTableName + " (\n" +
+                            "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
+                            "temperature DOUBLE,\n" +
+                            "humidity DOUBLE,\n" +
+                            "co2 DOUBLE,\n" +
+                            "event_time TIMESTAMP);";
+            statement.execute(sql);
+        }
     }
 
     private void insertSensorData(Double temperature, Double humidity, Double co2, ZonedDateTime timestamp) throws SQLException {
         final String sql = "INSERT INTO " + sensorDataTableName + " (temperature, humidity, co2, event_time) VALUES (?, ?, ?, ?)";
-        final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setObject(1, temperature);
-        preparedStatement.setObject(2, humidity);
-        preparedStatement.setObject(3, co2);
-        preparedStatement.setTimestamp(4, Timestamp.valueOf(timestamp.toLocalDateTime()));
-        preparedStatement.executeUpdate();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setObject(1, temperature);
+            preparedStatement.setObject(2, humidity);
+            preparedStatement.setObject(3, co2);
+            preparedStatement.setTimestamp(4, Timestamp.valueOf(timestamp.toLocalDateTime()));
+            preparedStatement.executeUpdate();
+        }
     }
 
     private void addResultIfAvailable(List<SensorData> entries, ResultSet resultSet) throws SQLException {
