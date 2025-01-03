@@ -25,8 +25,7 @@ public class SensorDataDb implements SensorDataPersistence {
             connection = Persistence.createConnection();
             createTableIfNotExists();
         } catch (SQLException e) {
-            logger.error("SQL Exception on creating connection! {}", e.getMessage());
-            throw new RuntimeException(e);
+            throw new ParseException("SQL Exception on creating connection! " + e.getMessage(), e.getCause());
         }
     }
 
