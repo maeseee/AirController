@@ -1,10 +1,10 @@
 package org.air_controller.sensor.dht22;
 
-import org.air_controller.sensorDataPersistence.SensorDataPersistence;
 import org.air_controller.sensorValues.Humidity;
 import org.air_controller.sensorValues.InvalidArgumentException;
 import org.air_controller.sensorValues.SensorData;
 import org.air_controller.sensorValues.Temperature;
+import org.air_controller.sensor_data_persistence.SensorDataPersistence;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

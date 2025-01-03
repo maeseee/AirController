@@ -1,6 +1,6 @@
 package org.air_controller.sensorValues;
 
-import org.air_controller.sensorDataPersistence.SensorDataPersistence;
+import org.air_controller.sensor_data_persistence.SensorDataPersistence;
 
 import java.time.Duration;
 import java.time.ZoneOffset;

@@ -3,7 +3,7 @@ package org.air_controller.sensor.open_weather_api;
 import lombok.Getter;
 import org.air_controller.secrets.Secret;
 import org.air_controller.sensor.Sensor;
-import org.air_controller.sensorDataPersistence.SensorDataPersistence;
+import org.air_controller.sensor_data_persistence.SensorDataPersistence;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -1,4 +1,4 @@
-package org.air_controller.sensorDataPersistence;
+package org.air_controller.sensor_data_persistence;
 
 import org.air_controller.persistence.Persistence;
 import org.air_controller.sensorValues.*;
