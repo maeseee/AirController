@@ -1,6 +1,5 @@
 package org.air_controller.sensor.qing_ping;
 
-import com.google.inject.internal.Nullable;
 import lombok.Getter;
 import org.air_controller.sensor.Sensor;
 import org.air_controller.sensor_data_persistence.SensorDataPersistence;
@@ -9,6 +8,7 @@ import org.air_controller.sensor_values.SensorData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -30,7 +30,8 @@ public class QingPingSensor implements Sensor {
         this(persistence, backupSensor, new QingPingAccessToken(), new QingPingListDevices());
     }
 
-    QingPingSensor(SensorDataPersistence persistence, Sensor backupSensor, QingPingAccessToken accessToken, QingPingListDevices listDevices) {
+    QingPingSensor(SensorDataPersistence persistence, @Nullable Sensor backupSensor, QingPingAccessToken accessToken,
+            QingPingListDevices listDevices) {
         this.persistence = persistence;
         this.backupSensor = backupSensor;
         this.accessToken = accessToken;

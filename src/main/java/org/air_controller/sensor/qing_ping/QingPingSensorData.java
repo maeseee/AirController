@@ -1,11 +1,11 @@
 package org.air_controller.sensor.qing_ping;
 
-import com.google.inject.internal.Nullable;
 import org.air_controller.sensor_values.CarbonDioxide;
 import org.air_controller.sensor_values.Humidity;
 import org.air_controller.sensor_values.SensorData;
 import org.air_controller.sensor_values.Temperature;
 
+import javax.annotation.Nullable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.Optional;
@@ -18,7 +18,7 @@ class QingPingSensorData implements SensorData {
     private final CarbonDioxide co2;
     private final ZonedDateTime timestamp;
 
-    public QingPingSensorData(Temperature temperature, Humidity humidity, CarbonDioxide co2, ZonedDateTime timestamp) {
+    public QingPingSensorData(Temperature temperature, Humidity humidity, @Nullable CarbonDioxide co2, ZonedDateTime timestamp) {
         this.temperature = temperature;
         this.humidity = humidity;
         this.co2 = co2;
