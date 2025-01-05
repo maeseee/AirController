@@ -1,6 +1,6 @@
 #!/bin/bash
 cd /home/pi/AirController || exit
-mvn exec:java -Dexec.mainClass="org.airController.Main"
+mvn exec:java -Dexec.mainClass="org.air_controller.Main"
 
 # Run application on raspberry pi
 # mvn exec:java@run-main
