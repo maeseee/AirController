@@ -1,5 +1,6 @@
 package org.air_controller.sensor_data_persistence;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.air_controller.persistence.Persistence;
 import org.air_controller.sensor_values.*;
 import org.apache.logging.log4j.LogManager;
@@ -75,6 +76,16 @@ public class SensorDataDb implements SensorDataPersistence {
             logger.error("SQL Exception on read ! {}", e.getMessage());
         }
         return Optional.empty();
+    }
+
+    @VisibleForTesting
+    void resetDB() {
+        final String sql = "DELETE FROM " + sensorDataTableName + ";";
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+        } catch (SQLException e) {
+            logger.error("SQL Exception on resetting DB! {}", e.getMessage());
+        }
     }
 
     private SensorData createSensorData(ResultSet resultSet) throws SQLException, InvalidArgumentException {

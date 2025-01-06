@@ -19,7 +19,7 @@ class DbToCsvTest {
     @Test
     void shouldWriteAllDataFromDbToCsvFile() throws InvalidArgumentException {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        persistDataToDb(now);
+        prepareDB(now);
         final String sensorCsvPath = "log/sensorDataFromDbTest.csv";
         final DbToCsv testee = new DbToCsv();
 
@@ -37,9 +37,10 @@ class DbToCsvTest {
         assertThat(lastSensorData.getTimeStamp()).isCloseTo(now, within(1, ChronoUnit.SECONDS));
     }
 
-    private void persistDataToDb(ZonedDateTime now) throws InvalidArgumentException {
-        final SensorData sensorData = new SensorDataImpl(21.0, 10.0, 500.0, now);
+    private void prepareDB(ZonedDateTime now) throws InvalidArgumentException {
         final SensorDataDb sensorDataDb = new SensorDataDb(sensorDataTableName);
+        sensorDataDb.resetDB();
+        final SensorData sensorData = new SensorDataImpl(21.0, 10.0, 500.0, now);
         sensorDataDb.persist(sensorData);
     }
 }
