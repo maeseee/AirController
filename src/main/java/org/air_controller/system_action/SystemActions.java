@@ -12,6 +12,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SystemActions implements VentilationSystem {
     private static final Logger logger = LogManager.getLogger(SystemActions.class);
@@ -32,8 +33,8 @@ public class SystemActions implements VentilationSystem {
 
     @Override
     public void setAirFlowOn(OutputState state) {
-        final SystemAction currentAction = getMostCurrentAirFlowState();
-        if (currentAction.outputState() == state) {
+        final Optional<SystemAction> currentAction = getMostCurrentAirFlowState();
+        if (currentAction.isPresent() && currentAction.get().outputState() == state) {
             return;
         }
         try {
@@ -77,7 +78,7 @@ public class SystemActions implements VentilationSystem {
         return entries;
     }
 
-    public SystemAction getMostCurrentAirFlowState() {
+    private Optional<SystemAction> getMostCurrentAirFlowState() {
         final String sql =
                 "SELECT * FROM " + AIR_FLOW_ACTION_TABLE_NAME + " i " +
                         "ORDER BY i.action_time DESC " +
@@ -85,12 +86,12 @@ public class SystemActions implements VentilationSystem {
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             final ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return createSystemAction(resultSet);
+                return Optional.of(createSystemAction(resultSet));
             }
         } catch (SQLException e) {
             logger.error("SQL Exception on read ! {}", e.getMessage());
         }
-        return null;
+        return Optional.empty();
     }
 
     private void createTableIfNotExists(String tableName) throws SQLException {
