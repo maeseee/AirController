@@ -6,9 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class HttpsGetRequestTest {
 
@@ -20,8 +18,8 @@ class HttpsGetRequestTest {
 
         final Optional<String> result = testee.sendRequest();
 
-        assertThat(result.isPresent(), is(true));
-        assertFalse(result.get().isEmpty());
+        assertThat(result).isPresent();
+        assertThat(result.get()).isNotEmpty();
     }
 
     @Test
@@ -33,9 +31,9 @@ class HttpsGetRequestTest {
         final Optional<String> result = testee.sendRequest();
         final Optional<String> result2 = testee.sendRequest();
 
-        assertThat(result.isPresent(), is(true));
-        assertThat(result2.isPresent(), is(true));
-        assertFalse(result.get().isEmpty());
-        assertFalse(result2.get().isEmpty());
+        assertThat(result).isPresent();
+        assertThat(result2).isPresent();
+        assertThat(result.get()).isNotEmpty();
+        assertThat(result2.get()).isNotEmpty();
     }
 }
