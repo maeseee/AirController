@@ -3,16 +3,12 @@ package org.air_controller.sensor.dht22;
 import lombok.Getter;
 import org.air_controller.sensor.Sensor;
 import org.air_controller.sensor_data_persistence.SensorDataPersistence;
-import org.air_controller.sensor_data_persistence.SensorDataPrinter;
 import org.air_controller.sensor_values.SensorData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class OneWireSensor implements Sensor {
     private static final Logger logger = LogManager.getLogger(OneWireSensor.class);
@@ -47,11 +43,5 @@ public class OneWireSensor implements Sensor {
         persistence.persist(indoorSensorData);
     }
 
-    public static void main(String[] args) throws IOException {
-        final Dht22Impl dht22 = new Dht22Impl();
-        final SensorDataPersistence persistence = new SensorDataPrinter();
-        final OneWireSensor indoorSensor = new OneWireSensor(persistence, dht22);
-        final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(indoorSensor, 0, 10, TimeUnit.SECONDS);
-    }
+
 }
