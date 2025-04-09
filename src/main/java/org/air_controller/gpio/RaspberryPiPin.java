@@ -4,9 +4,6 @@ import com.pi4j.wiringpi.Gpio;
 import com.pi4j.wiringpi.GpioUtil;
 
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class RaspberryPiPin {
 
@@ -37,11 +34,5 @@ public class RaspberryPiPin {
         if (wiringPiStatus == -1) {
             throw new IOException("GPIO SETUP FAILED");
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        final GpioPin gpioPin = new RaspberryGpioPin(GpioFunction.AIR_FLOW, true);
-        final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(() -> gpioPin.setGpioState(!gpioPin.getGpioState()), 0, 2, TimeUnit.SECONDS);
     }
 }
