@@ -3,7 +3,7 @@ package org.air_controller.gpio.raspberry;
 import lombok.Getter;
 
 @Getter
-public enum GpioFunction {
+public enum RaspberryGpioFunction {
     DHT22_SENSOR(7, 4),        // PIN 7
     AIR_FLOW(21, 5),           // PIN 29
     HUMIDITY_EXCHANGER(22, 6), // PIN 31
@@ -13,7 +13,7 @@ public enum GpioFunction {
     private final int gpio;
     private final int bcm;
 
-    GpioFunction(int gpio, int bcm) {
+    RaspberryGpioFunction(int gpio, int bcm) {
         this.gpio = gpio;
         this.bcm = bcm;
     }

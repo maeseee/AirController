@@ -7,9 +7,9 @@ import java.io.IOException;
 
 class GpioHwPin {
 
-    private final GpioFunction gpioFunction;
+    private final RaspberryGpioFunction gpioFunction;
 
-    public GpioHwPin(GpioFunction gpioFunction) throws IOException {
+    public RaspberryPin(GpioFunction gpioFunction) throws IOException {
         this.gpioFunction = gpioFunction;
         setupWiringPi();
     }

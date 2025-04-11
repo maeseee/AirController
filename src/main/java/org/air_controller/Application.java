@@ -1,7 +1,7 @@
 package org.air_controller;
 
 import org.air_controller.gpio.GpioPin;
-import org.air_controller.gpio.raspberry.GpioFunction;
+import org.air_controller.gpio.raspberry.RaspberryGpioFunction;
 import org.air_controller.gpio.raspberry.RaspberryGpioPin;
 import org.air_controller.rules.*;
 import org.air_controller.sensor.Sensor;
@@ -44,7 +44,7 @@ public class Application {
     private final ScheduledExecutorService executor;
 
     public Application() throws IOException {
-        this(new RaspberryGpioPin(GpioFunction.AIR_FLOW, true), new RaspberryGpioPin(GpioFunction.HUMIDITY_EXCHANGER, false));
+        this(new RaspberryGpioPin(RaspberryGpioFunction.AIR_FLOW, true), new RaspberryGpioPin(RaspberryGpioFunction.HUMIDITY_EXCHANGER, false));
     }
 
     // Used for MainMock

@@ -22,7 +22,7 @@ class RaspberryGpioPinTest {
     @ParameterizedTest
     @CsvSource({"true", "false"})
     void testInitialGpioState(boolean initialHigh) {
-        final RaspberryGpioPin testee = new RaspberryGpioPin(GpioFunction.AIR_FLOW.name(), raspberryPiPin, initialHigh);
+        final RaspberryGpioPin testee = new RaspberryGpioPin(RaspberryGpioFunction.AIR_FLOW.name(), raspberryPiPin, initialHigh);
 
         testee.getGpioState();
 
@@ -33,7 +33,7 @@ class RaspberryGpioPinTest {
     void testGpioStateOffWhenSetOff() {
         final boolean initialState = true;
         when(raspberryPiPin.read()).thenReturn(initialState);
-        final RaspberryGpioPin testee = new RaspberryGpioPin(GpioFunction.AIR_FLOW.name(), raspberryPiPin, initialState);
+        final RaspberryGpioPin testee = new RaspberryGpioPin(RaspberryGpioFunction.AIR_FLOW.name(), raspberryPiPin, initialState);
 
         testee.setGpioState(false);
 
@@ -49,7 +49,7 @@ class RaspberryGpioPinTest {
     void testKeepStateOnWhenSetOn() {
         final boolean initialState = true;
         when(raspberryPiPin.read()).thenReturn(initialState);
-        final RaspberryGpioPin testee = new RaspberryGpioPin(GpioFunction.AIR_FLOW.name(), raspberryPiPin, initialState);
+        final RaspberryGpioPin testee = new RaspberryGpioPin(RaspberryGpioFunction.AIR_FLOW.name(), raspberryPiPin, initialState);
 
         testee.setGpioState(true);
 

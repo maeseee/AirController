@@ -1,6 +1,6 @@
 package org.air_controller.sensor.dht22;
 
-import org.air_controller.gpio.raspberry.GpioFunction;
+import org.air_controller.gpio.raspberry.RaspberryGpioFunction;
 import org.air_controller.sensor.SensorException;
 import org.air_controller.sensor_values.Humidity;
 import org.air_controller.sensor_values.InvalidArgumentException;
@@ -19,7 +19,7 @@ class Dht22Impl implements Dht22 {
     private final int retryBaseTime;
 
     public Dht22Impl() throws IOException {
-        this(new OneWireCommunication(GpioFunction.DHT22_SENSOR), 5);
+        this(new OneWireCommunication(RaspberryGpioFunction.DHT22_SENSOR), 5);
     }
 
     Dht22Impl(OneWireCommunication communication, int retryBaseTime) {

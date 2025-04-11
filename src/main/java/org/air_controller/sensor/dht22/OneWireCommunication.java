@@ -1,7 +1,7 @@
 package org.air_controller.sensor.dht22;
 
 import com.pi4j.wiringpi.Gpio;
-import org.air_controller.gpio.raspberry.GpioFunction;
+import org.air_controller.gpio.raspberry.RaspberryGpioFunction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,9 +14,9 @@ class OneWireCommunication {
     private static final int NR_OF_BITS = 40;
     private static final int MIN_HIGH_DURATION = 16;
 
-    private final GpioFunction gpioFunction;
+    private final RaspberryGpioFunction gpioFunction;
 
-    public OneWireCommunication(GpioFunction gpioFunction) throws IOException {
+    public OneWireCommunication(RaspberryGpioFunction gpioFunction) throws IOException {
         this.gpioFunction = gpioFunction;
         setupWiringPi();
     }

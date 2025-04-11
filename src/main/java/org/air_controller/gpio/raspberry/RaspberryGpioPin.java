@@ -12,7 +12,7 @@ public class RaspberryGpioPin implements GpioPin {
     private final String name;
     private final GpioHwPin gpioHwPin;
 
-    public RaspberryGpioPin(GpioFunction pinFunction, boolean initialHigh) throws IOException {
+    public RaspberryGpioPin(RaspberryGpioFunction pinFunction, boolean initialHigh) throws IOException {
         this(pinFunction.name(), new GpioHwPin(pinFunction), initialHigh);
     }
 
