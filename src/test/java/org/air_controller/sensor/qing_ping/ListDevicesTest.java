@@ -10,7 +10,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.air_controller.sensor.qing_ping.QingPingDevices.*;
+import static org.air_controller.sensor.qing_ping.Devices.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -18,13 +18,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class QingPingListDevicesTest {
+class ListDevicesTest {
     @Mock
-    private QingPingListDevicesRequest listDevicesRequest;
+    private ListDevicesRequest listDevicesRequest;
     @Mock
-    private QingPingListDevicesJsonParser parser;
+    private ListDevicesJsonParser parser;
     @Mock
-    private QingPingSensorData sensorData;
+    private HwSensorData sensorData;
 
     @Test
     void shouldParseSensorList() throws CommunicationException, IOException, URISyntaxException {
@@ -32,9 +32,9 @@ class QingPingListDevicesTest {
         final String response = "response";
         when(listDevicesRequest.sendRequest(token)).thenReturn(response);
         when(parser.parseDeviceListResponse(eq(response), any())).thenReturn(Optional.of(sensorData));
-        final QingPingListDevices testee = new QingPingListDevices(listDevicesRequest, parser);
+        final ListDevices testee = new ListDevices(listDevicesRequest, parser);
 
-        final List<QingPingSensorData> sensorDataList = testee.readSensorDataList(token);
+        final List<HwSensorData> sensorDataList = testee.readSensorDataList(token);
 
         verify(parser).parseDeviceListResponse(response, MAC_AIR_PRESSURE_DEVICE);
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_1);
@@ -49,9 +49,9 @@ class QingPingListDevicesTest {
         final String response = "response";
         when(listDevicesRequest.sendRequest(token)).thenReturn(response);
         when(parser.parseDeviceListResponse(eq(response), any())).thenReturn(Optional.empty());
-        final QingPingListDevices testee = new QingPingListDevices(listDevicesRequest, parser);
+        final ListDevices testee = new ListDevices(listDevicesRequest, parser);
 
-        final List<QingPingSensorData> sensorDataList = testee.readSensorDataList(token);
+        final List<HwSensorData> sensorDataList = testee.readSensorDataList(token);
 
         verify(parser).parseDeviceListResponse(response, MAC_AIR_PRESSURE_DEVICE);
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_1);

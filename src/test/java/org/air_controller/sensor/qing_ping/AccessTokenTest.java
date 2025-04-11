@@ -11,15 +11,15 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class QingPingAccessTokenTest {
+class AccessTokenTest {
 
     @Mock
-    private QingPingAccessTokenRequest request;
+    private AccessTokenRequest request;
 
     @Test
     void shouldThrow_whenRequestFails() {
         when(request.sendRequest()).thenReturn(Optional.empty());
-        final QingPingAccessToken testee = new QingPingAccessToken(request);
+        final AccessToken testee = new AccessToken(request);
 
         assertThatExceptionOfType(CommunicationException.class).isThrownBy(testee::readToken);
     }

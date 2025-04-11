@@ -15,7 +15,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-class QingPingAccessTokenRequestTest {
+class AccessTokenRequestTest {
 
     @Test
     void shouldHaveRequestInResponse_whenSendingPostRequest() throws URISyntaxException {
@@ -23,7 +23,7 @@ class QingPingAccessTokenRequestTest {
         final String base64Credentials = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
         final String url = "https://httpbin.org/anything";
         final URI uri = new URI(url);
-        final QingPingAccessTokenRequest testee = new QingPingAccessTokenRequest(uri, base64Credentials);
+        final AccessTokenRequest testee = new AccessTokenRequest(uri, base64Credentials);
 
         final Optional<String> result = testee.sendRequest();
 

@@ -22,16 +22,16 @@ public class QingPingSensor implements Sensor {
     private final SensorDataPersistence persistence;
     @Nullable
     private final Sensor backupSensor;
-    private final QingPingAccessToken accessToken;
-    private final QingPingListDevices listDevices;
-    private final QingPingSensorReducer sensorReducer = new QingPingSensorReducer();
+    private final AccessToken accessToken;
+    private final ListDevices listDevices;
+    private final SensorReducer sensorReducer = new SensorReducer();
 
     public QingPingSensor(SensorDataPersistence persistence, Sensor backupSensor) throws URISyntaxException {
-        this(persistence, backupSensor, new QingPingAccessToken(), new QingPingListDevices());
+        this(persistence, backupSensor, new AccessToken(), new ListDevices());
     }
 
-    QingPingSensor(SensorDataPersistence persistence, @Nullable Sensor backupSensor, QingPingAccessToken accessToken,
-            QingPingListDevices listDevices) {
+    QingPingSensor(SensorDataPersistence persistence, @Nullable Sensor backupSensor, AccessToken accessToken,
+            ListDevices listDevices) {
         this.persistence = persistence;
         this.backupSensor = backupSensor;
         this.accessToken = accessToken;
@@ -52,7 +52,7 @@ public class QingPingSensor implements Sensor {
 
     private void doRun() throws CommunicationException, IOException, URISyntaxException, InvalidArgumentException, CalculationException {
         final String token = accessToken.readToken();
-        final List<QingPingSensorData> sensorDataList = listDevices.readSensorDataList(token);
+        final List<HwSensorData> sensorDataList = listDevices.readSensorDataList(token);
         final SensorData sensorData = sensorReducer.reduce(sensorDataList);
         notifyObservers(sensorData);
     }

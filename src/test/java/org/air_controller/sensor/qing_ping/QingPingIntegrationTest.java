@@ -14,8 +14,8 @@ import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Optional;
 
-import static org.air_controller.sensor.qing_ping.QingPingAccessToken.*;
-import static org.air_controller.sensor.qing_ping.QingPingDevices.MAC_AIR_PRESSURE_DEVICE;
+import static org.air_controller.sensor.qing_ping.AccessToken.*;
+import static org.air_controller.sensor.qing_ping.Devices.MAC_AIR_PRESSURE_DEVICE;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -25,9 +25,9 @@ class QingPingIntegrationTest {
     @Test
     void shouldTestQingPingDevice() throws URISyntaxException, CommunicationException, IOException {
         final String accessTokenResponse = runAccessTokenRequest();
-        final QingPingAccessTokenData accessTokenData = runParseAccessToken(accessTokenResponse);
+        final AccessTokenData accessTokenData = runParseAccessToken(accessTokenResponse);
         final String listDevicesResponse = runListDevicesRequest(accessTokenData);
-        final QingPingSensorData sensorData = runParseListDevices(listDevicesResponse);
+        final HwSensorData sensorData = runParseListDevices(listDevicesResponse);
         assertNotNull(sensorData);
         assertTrue(ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(15).isBefore(sensorData.getTimeStamp()));
         assertTrue(ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(5).isAfter(sensorData.getTimeStamp()));
@@ -39,7 +39,7 @@ class QingPingIntegrationTest {
         final String base64Credentials = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
         final String url = "https://oauth.cleargrass.com/oauth2/token";
         final URI uri = new URI(url);
-        final QingPingAccessTokenRequest accessTokenRequest = new QingPingAccessTokenRequest(uri, base64Credentials);
+        final AccessTokenRequest accessTokenRequest = new AccessTokenRequest(uri, base64Credentials);
 
         final Optional<String> accessTokenResponse = accessTokenRequest.sendRequest();
 
@@ -47,25 +47,25 @@ class QingPingIntegrationTest {
         return accessTokenResponse.get();
     }
 
-    private QingPingAccessTokenData runParseAccessToken(String qingPingAccessTokenResponse) {
-        final QingPingAccessTokenJsonParser parser = new QingPingAccessTokenJsonParser();
-        final Optional<QingPingAccessTokenData> qingPingAccessToken = parser.parse(qingPingAccessTokenResponse);
+    private AccessTokenData runParseAccessToken(String qingPingAccessTokenResponse) {
+        final AccessTokenJsonParser parser = new AccessTokenJsonParser();
+        final Optional<AccessTokenData> qingPingAccessToken = parser.parse(qingPingAccessTokenResponse);
 
         assertTrue(qingPingAccessToken.isPresent());
         return qingPingAccessToken.get();
     }
 
-    private String runListDevicesRequest(QingPingAccessTokenData accessTokenData) throws URISyntaxException, CommunicationException, IOException {
+    private String runListDevicesRequest(AccessTokenData accessTokenData) throws URISyntaxException, CommunicationException, IOException {
         final String url = "https://apis.cleargrass.com/v1/apis/devices";
         final URI uri = new URI(url);
-        final QingPingListDevicesRequest listDevicesRequest = new QingPingListDevicesRequest(uri);
+        final ListDevicesRequest listDevicesRequest = new ListDevicesRequest(uri);
 
         return listDevicesRequest.sendRequest(accessTokenData.accessToken());
     }
 
-    private QingPingSensorData runParseListDevices(String listDevicesResponse) {
-        final QingPingListDevicesJsonParser parser = new QingPingListDevicesJsonParser();
-        final Optional<QingPingSensorData> sensorData = parser.parseDeviceListResponse(listDevicesResponse, MAC_AIR_PRESSURE_DEVICE);
+    private HwSensorData runParseListDevices(String listDevicesResponse) {
+        final ListDevicesJsonParser parser = new ListDevicesJsonParser();
+        final Optional<HwSensorData> sensorData = parser.parseDeviceListResponse(listDevicesResponse, MAC_AIR_PRESSURE_DEVICE);
 
         assertTrue(sensorData.isPresent());
         return sensorData.get();

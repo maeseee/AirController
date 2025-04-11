@@ -14,22 +14,22 @@ import java.net.UnknownHostException;
 import static org.assertj.core.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class QingPingListDevicesRequestTest {
+class ListDevicesRequestTest {
 
     @Test
     void shouldResponseToToken_whenSensingToQingPing() throws URISyntaxException, CommunicationException, IOException {
         final String url = "https://apis.cleargrass.com/v1/apis/devices";
         final URI uri = new URI(url);
-        final QingPingAccessToken accessToken = new QingPingAccessToken();
+        final AccessToken accessToken = new AccessToken();
         final String token = accessToken.readToken();
-        final QingPingListDevicesRequest testee = new QingPingListDevicesRequest(uri);
+        final ListDevicesRequest testee = new ListDevicesRequest(uri);
 
         final String response = testee.sendRequest(token);
 
         assertThat(response)
                 .contains("data")
                 .contains("product");
-        QingPingDevices.getDeviceList().forEach(device -> assertThat(response).contains(device));
+        Devices.getDeviceList().forEach(device -> assertThat(response).contains(device));
         assertThatNoException().isThrownBy(() -> testee.sendRequest(token));
     }
 
@@ -38,7 +38,7 @@ class QingPingListDevicesRequestTest {
         final String url = "https://httpbin.org/anything";
         final URI uri = new URI(url);
         final String accessToken = "accessToken";
-        final QingPingListDevicesRequest testee = new QingPingListDevicesRequest(uri);
+        final ListDevicesRequest testee = new ListDevicesRequest(uri);
 
         final String response = testee.sendRequest(accessToken);
 
@@ -58,7 +58,7 @@ class QingPingListDevicesRequestTest {
         final String url = "https://httpbinInvalid.org/anything";
         final URI uri = new URI(url);
         final String accessToken = "accessToken";
-        final QingPingListDevicesRequest testee = new QingPingListDevicesRequest(uri);
+        final ListDevicesRequest testee = new ListDevicesRequest(uri);
 
         assertThatExceptionOfType(UnknownHostException.class).isThrownBy(() -> testee.sendRequest(accessToken));
     }

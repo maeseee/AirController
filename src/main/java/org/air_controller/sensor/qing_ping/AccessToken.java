@@ -10,22 +10,22 @@ import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Optional;
 
-class QingPingAccessToken {
+class AccessToken {
     static final String APP_KEY = "me8h7AKSR";
     static final String ENVIRONMENT_VARIABLE_APP_SECRET = "qingping_app_secret";
     static final String ENCRYPTED_APP_SECRET = "P2Yg64Btliolc1DDvQFQKYZAb2ufYF10khTLrGfrb9d2kM1tA8ciYhZ2bbQeHdOLlIGmSfM4JQcG6EcnYtvm8w==";
 
-    private final QingPingAccessTokenRequest accessTokenRequest;
-    private final QingPingAccessTokenJsonParser parser = new QingPingAccessTokenJsonParser();
+    private final AccessTokenRequest accessTokenRequest;
+    private final AccessTokenJsonParser parser = new AccessTokenJsonParser();
 
     private String token;
     private ZonedDateTime accessTokenValidUntil;
 
-    public QingPingAccessToken() throws URISyntaxException {
+    public AccessToken() throws URISyntaxException {
         this(createAccessTokenRequest());
     }
 
-    QingPingAccessToken(QingPingAccessTokenRequest accessTokenRequest) {
+    AccessToken(AccessTokenRequest accessTokenRequest) {
         this.accessTokenRequest = accessTokenRequest;
     }
 
@@ -42,19 +42,19 @@ class QingPingAccessToken {
             throw new CommunicationException("QingPing access token could not be updated");
         }
 
-        final Optional<QingPingAccessTokenData> accessTokenOptional = parser.parse(request.get());
+        final Optional<AccessTokenData> accessTokenOptional = parser.parse(request.get());
         if (accessTokenOptional.isPresent()) {
-            final QingPingAccessTokenData accessTokenData = accessTokenOptional.get();
+            final AccessTokenData accessTokenData = accessTokenOptional.get();
             token = accessTokenData.accessToken();
             accessTokenValidUntil = ZonedDateTime.now(ZoneOffset.UTC).plusSeconds(accessTokenData.expiresIn() - 60L);
         }
     }
 
-    private static QingPingAccessTokenRequest createAccessTokenRequest() throws URISyntaxException {
+    private static AccessTokenRequest createAccessTokenRequest() throws URISyntaxException {
         final String credentials = getCredentialsForPostRequest();
         final String urlString = "https://oauth.cleargrass.com/oauth2/token";
         final URI uri = new URI(urlString);
-        return new QingPingAccessTokenRequest(uri, credentials);
+        return new AccessTokenRequest(uri, credentials);
     }
 
     private static String getCredentialsForPostRequest() {

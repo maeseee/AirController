@@ -10,10 +10,10 @@ import java.net.URISyntaxException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-class QingPingListDevicesRequest {
+class ListDevicesRequest {
     private final URI uri;
 
-    public QingPingListDevicesRequest(URI uri) {
+    public ListDevicesRequest(URI uri) {
         this.uri = uri;
     }
 

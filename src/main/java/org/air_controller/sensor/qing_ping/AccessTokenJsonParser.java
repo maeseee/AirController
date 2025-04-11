@@ -5,15 +5,15 @@ import org.json.JSONTokener;
 
 import java.util.Optional;
 
-class QingPingAccessTokenJsonParser {
-    public Optional<QingPingAccessTokenData> parse(String jsonString) {
+class AccessTokenJsonParser {
+    public Optional<AccessTokenData> parse(String jsonString) {
         // https://developer.qingping.co/main/oauthApi
         try {
             final JSONTokener tokener = new JSONTokener(jsonString);
             final JSONObject jsonObject = new JSONObject(tokener);
             final String accessToken = jsonObject.getString("access_token");
             final int expiresIn = jsonObject.getInt("expires_in");
-            return Optional.of(new QingPingAccessTokenData(accessToken, expiresIn));
+            return Optional.of(new AccessTokenData(accessToken, expiresIn));
         } catch (Exception e) {
             return Optional.empty();
         }

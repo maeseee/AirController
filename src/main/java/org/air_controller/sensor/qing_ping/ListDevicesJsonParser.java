@@ -19,10 +19,10 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalLong;
 
-class QingPingListDevicesJsonParser {
-    private static final Logger logger = LogManager.getLogger(QingPingListDevicesJsonParser.class);
+class ListDevicesJsonParser {
+    private static final Logger logger = LogManager.getLogger(ListDevicesJsonParser.class);
 
-    public Optional<QingPingSensorData> parseDeviceListResponse(String jsonString, String macAddress) {
+    public Optional<HwSensorData> parseDeviceListResponse(String jsonString, String macAddress) {
         // https://developer.qingping.co/main/openApi
         try {
             final JSONTokener tokener = new JSONTokener(jsonString);
@@ -33,7 +33,7 @@ class QingPingListDevicesJsonParser {
                 logger.info("No device MAC-Address {} found!", macAddress);
                 return Optional.empty();
             }
-            final QingPingSensorData sensorData = getSensorData(deviceData.get());
+            final HwSensorData sensorData = getSensorData(deviceData.get());
             return Optional.of(sensorData);
         } catch (Exception e) {
             return Optional.empty();
@@ -53,21 +53,21 @@ class QingPingListDevicesJsonParser {
         return Optional.empty();
     }
 
-    private QingPingSensorData getSensorData(JSONObject deviceData) throws InvalidArgumentException {
+    private HwSensorData getSensorData(JSONObject deviceData) throws InvalidArgumentException {
         final double temperatureCelsius = getDoubleValue("temperature", deviceData)
-                .orElseThrow(() -> new InvalidArgumentException("Not Possible"));
+                .orElseThrow(() -> new InvalidArgumentException("Invalid temperature"));
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
         final double humidityRelative = getDoubleValue("humidity", deviceData)
-                .orElseThrow(() -> new InvalidArgumentException("Not Possible"));
+                .orElseThrow(() -> new InvalidArgumentException("Invalid humidity"));
         final Humidity humidity = Humidity.createFromRelative(humidityRelative, temperature);
         final OptionalDouble co2Optional = getDoubleValue("co2", deviceData);
         final CarbonDioxide co2 = co2Optional.isPresent() ? CarbonDioxide.createFromPpm(co2Optional.getAsDouble()) : null;
         final long timeFromEpoch = getTimestamp(deviceData)
-                .orElseThrow(() -> new InvalidArgumentException("Not Possible"));
+                .orElseThrow(() -> new InvalidArgumentException("Invalid timestamp"));
         final ZonedDateTime time = ZonedDateTime.ofInstant(
                 Instant.ofEpochSecond(timeFromEpoch),
                 ZoneOffset.UTC);
-        return new QingPingSensorData(temperature, humidity, co2, time);
+        return new HwSensorData(temperature, humidity, co2, time);
     }
 
     private OptionalDouble getDoubleValue(String attribute, JSONObject deviceData) {

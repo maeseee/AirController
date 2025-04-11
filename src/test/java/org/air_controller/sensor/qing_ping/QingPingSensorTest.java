@@ -33,13 +33,13 @@ class QingPingSensorTest {
 
     @Test
     void shouldNotifyObservers_whenRun() throws InvalidArgumentException, CommunicationException, IOException, URISyntaxException {
-        final QingPingAccessToken accessToken = mock(QingPingAccessToken.class);
+        final AccessToken accessToken = mock(AccessToken.class);
         when(accessToken.readToken()).thenReturn("token");
-        final QingPingListDevices listDevices = mock(QingPingListDevices.class);
+        final ListDevices listDevices = mock(ListDevices.class);
         final Temperature temperature = Temperature.createFromCelsius(21.5);
         final Humidity humidity = Humidity.createFromAbsolute(10.0);
         final ZonedDateTime time1 = ZonedDateTime.now(ZoneOffset.UTC);
-        final QingPingSensorData sensorData = new QingPingSensorData(temperature, humidity, null, time1);
+        final HwSensorData sensorData = new HwSensorData(temperature, humidity, null, time1);
         when(listDevices.readSensorDataList(any())).thenReturn(List.of(sensorData));
         final QingPingSensor testee = new QingPingSensor(persistence, null, accessToken, listDevices);
 
@@ -53,9 +53,9 @@ class QingPingSensorTest {
 
     @Test
     void shouldNotNotifyObservers_whenInvalidSensorData() throws CommunicationException, IOException, URISyntaxException {
-        final QingPingAccessToken accessToken = mock(QingPingAccessToken.class);
+        final AccessToken accessToken = mock(AccessToken.class);
         when(accessToken.readToken()).thenReturn("token");
-        final QingPingListDevices listDevices = mock(QingPingListDevices.class);
+        final ListDevices listDevices = mock(ListDevices.class);
         when(listDevices.readSensorDataList(any())).thenReturn(new ArrayList<>());
         final QingPingSensor testee = new QingPingSensor(persistence, null, accessToken, listDevices);
 

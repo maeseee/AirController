@@ -10,13 +10,13 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-class QingPingAccessTokenRequest {
-    private static final Logger logger = LogManager.getLogger(QingPingAccessTokenRequest.class);
+class AccessTokenRequest {
+    private static final Logger logger = LogManager.getLogger(AccessTokenRequest.class);
 
     private final URI uri;
     private final String credentials;
 
-    public QingPingAccessTokenRequest(URI uri, String credentials) {
+    public AccessTokenRequest(URI uri, String credentials) {
         this.uri = uri;
         this.credentials = credentials;
     }

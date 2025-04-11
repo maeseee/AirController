@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static org.air_controller.sensor.qing_ping.QingPingDevices.MAC_AIR_PRESSURE_DEVICE;
-import static org.air_controller.sensor.qing_ping.QingPingDevices.MAC_CO2_DEVICE_1;
+import static org.air_controller.sensor.qing_ping.Devices.MAC_AIR_PRESSURE_DEVICE;
+import static org.air_controller.sensor.qing_ping.Devices.MAC_CO2_DEVICE_1;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class QingPingListDevicesJsonParserTest {
+class ListDevicesJsonParserTest {
 
     private static final String SAMPLE_DEVICE_LIST_RESPONSE = """
             {
@@ -114,9 +114,9 @@ class QingPingListDevicesJsonParserTest {
 
     @Test
     void shouldParseSensorDataOfAirPressureDevice() throws InvalidArgumentException {
-        final QingPingListDevicesJsonParser testee = new QingPingListDevicesJsonParser();
+        final ListDevicesJsonParser testee = new ListDevicesJsonParser();
 
-        final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, MAC_AIR_PRESSURE_DEVICE);
+        final Optional<HwSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, MAC_AIR_PRESSURE_DEVICE);
 
         final Temperature expectedTemperature = Temperature.createFromCelsius(21.5);
         final Humidity expectedHumidity = Humidity.createFromRelative(54.2, expectedTemperature);
@@ -133,9 +133,9 @@ class QingPingListDevicesJsonParserTest {
 
     @Test
     void shouldParseSensorDataOfCo2Device() throws InvalidArgumentException {
-        final QingPingListDevicesJsonParser testee = new QingPingListDevicesJsonParser();
+        final ListDevicesJsonParser testee = new ListDevicesJsonParser();
 
-        final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, MAC_CO2_DEVICE_1);
+        final Optional<HwSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, MAC_CO2_DEVICE_1);
 
         final Temperature expectedTemperature = Temperature.createFromCelsius(22.3);
         final Humidity expectedHumidity = Humidity.createFromRelative(47.1, expectedTemperature);
@@ -153,9 +153,9 @@ class QingPingListDevicesJsonParserTest {
 
     @Test
     void shouldReturnOptionalEmpty_whenInvalidMacAddress() {
-        final QingPingListDevicesJsonParser testee = new QingPingListDevicesJsonParser();
+        final ListDevicesJsonParser testee = new ListDevicesJsonParser();
 
-        final Optional<QingPingSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, "mac");
+        final Optional<HwSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, "mac");
 
         assertThat(result).isEmpty();
     }

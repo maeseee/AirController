@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class QingPingSensorReducerTest {
+class SensorReducerTest {
 
     @ParameterizedTest(
             name = "{index} => temperature1 ={0}, humidity1={1}, carbonDioxide1={2}, minutesYounger={3}, expectedTemperature={4}, " +
@@ -27,10 +27,10 @@ class QingPingSensorReducerTest {
     void shouldTakeAverageOfSensorValues_whenMultipleSensors(double temperature1, double humidity1, double carbonDioxide1, int minutesYounger,
             double expectedTemperature, double expectedHumidity, double expectedCo2) throws InvalidArgumentException, CalculationException {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        final QingPingSensorData sensorData1 = createSensorData(temperature1, humidity1, carbonDioxide1, minutesYounger, now);
-        final QingPingSensorData sensorData2 = createSensorData(40.0, 15.0, Double.NaN, 0, now);
-        final List<QingPingSensorData> sensorData = List.of(sensorData1, sensorData2);
-        final QingPingSensorReducer testee = new QingPingSensorReducer();
+        final HwSensorData sensorData1 = createSensorData(temperature1, humidity1, carbonDioxide1, minutesYounger, now);
+        final HwSensorData sensorData2 = createSensorData(40.0, 15.0, Double.NaN, 0, now);
+        final List<HwSensorData> sensorData = List.of(sensorData1, sensorData2);
+        final SensorReducer testee = new SensorReducer();
 
         final SensorData result = testee.reduce(sensorData);
 
@@ -41,12 +41,12 @@ class QingPingSensorReducerTest {
         assertThat(result.getTimeStamp()).isEqualTo(expectedSensorData.getTimeStamp());
     }
 
-    private QingPingSensorData createSensorData(double temperature, double humidity, double co2, int minutesYounger, ZonedDateTime now)
+    private HwSensorData createSensorData(double temperature, double humidity, double co2, int minutesYounger, ZonedDateTime now)
             throws InvalidArgumentException {
         final Temperature temp = Temperature.createFromCelsius(temperature);
         final Humidity hum = Humidity.createFromAbsolute(humidity);
         final CarbonDioxide carbonDioxide = Double.isNaN(co2) ? null : CarbonDioxide.createFromPpm(co2);
         final ZonedDateTime timestamp = now.minusMinutes(minutesYounger);
-        return new QingPingSensorData(temp, hum, carbonDioxide, timestamp);
+        return new HwSensorData(temp, hum, carbonDioxide, timestamp);
     }
 }

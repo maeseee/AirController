@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-class QingPingAccessTokenJsonParserTest {
+class AccessTokenJsonParserTest {
 
     @Test
     void shouldParsAccessToken() {
@@ -18,9 +18,9 @@ class QingPingAccessTokenJsonParserTest {
                 "token_type": "bearer"
                 }
                 """;
-        final QingPingAccessTokenJsonParser testee = new QingPingAccessTokenJsonParser();
+        final AccessTokenJsonParser testee = new AccessTokenJsonParser();
 
-        final Optional<QingPingAccessTokenData> result = testee.parse(sampleAccessTokenResponse);
+        final Optional<AccessTokenData> result = testee.parse(sampleAccessTokenResponse);
 
         assertThat(result).isPresent().hasValueSatisfying(accessTokenData -> {
             assertThat(accessTokenData.accessToken()).isEqualTo(
@@ -35,9 +35,9 @@ class QingPingAccessTokenJsonParserTest {
                 {
                 }
                 """;
-        final QingPingAccessTokenJsonParser testee = new QingPingAccessTokenJsonParser();
+        final AccessTokenJsonParser testee = new AccessTokenJsonParser();
 
-        final Optional<QingPingAccessTokenData> result = testee.parse(sampleAccessTokenResponse);
+        final Optional<AccessTokenData> result = testee.parse(sampleAccessTokenResponse);
 
         assertThat(result).isEmpty();
     }
