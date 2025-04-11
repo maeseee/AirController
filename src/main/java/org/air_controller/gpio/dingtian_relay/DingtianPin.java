@@ -4,7 +4,6 @@ import org.air_controller.gpio.GpioPin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.util.List;
 
 public class DingtianPin implements GpioPin {
@@ -14,7 +13,7 @@ public class DingtianPin implements GpioPin {
     private final DingtianRelay relay;
     private final RelayCommunication communication;
 
-    public DingtianPin(DingtianRelay relay, boolean initialHigh) throws IOException {
+    public DingtianPin(DingtianRelay relay, boolean initialHigh) {
         this(relay, initialHigh, new RelayCommunication());
     }
 
@@ -23,7 +22,7 @@ public class DingtianPin implements GpioPin {
         this.relay = relay;
         this.communication = communication;
         logger.info("{} set initial to {}", name, initialHigh ? "on" : "off");
-        communication.setRelayState(relay.getRelayIndex(), initialHigh);
+        setGpioState(initialHigh);
     }
 
     @Override
