@@ -8,8 +8,6 @@ import org.air_controller.sensor_data_persistence.SensorDataPersistence;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Optional;
 
 
@@ -24,8 +22,8 @@ public class OpenWeatherApiSensor implements Sensor {
     private final SensorDataPersistence persistence;
     private final HttpsGetRequest httpsGetRequest;
 
-    public OpenWeatherApiSensor(SensorDataPersistence persistence) throws URISyntaxException {
-        this(persistence, createHttpsGetRequest(getApiKeyForHttpRequest()));
+    public OpenWeatherApiSensor(SensorDataPersistence persistence) {
+        this(persistence, new HttpsGetRequest());
     }
 
     OpenWeatherApiSensor(SensorDataPersistence persistence, HttpsGetRequest httpsGetRequest) {
@@ -43,7 +41,7 @@ public class OpenWeatherApiSensor implements Sensor {
     }
 
     private void doRun() {
-        final Optional<String> request = httpsGetRequest.sendRequest();
+        final Optional<String> request = httpsGetRequest.sendRequest(createHttpsGetUrl());
         if (request.isEmpty()) {
             logger.error("Outdoor sensor request failed");
             return;
@@ -55,14 +53,13 @@ public class OpenWeatherApiSensor implements Sensor {
                 () -> logger.error("Outdoor sensor out of order"));
     }
 
-    private static String getApiKeyForHttpRequest() {
-        return Secret.getSecret(ENVIRONMENT_VARIABLE_API_KEY, ENCRYPTED_API_KEY);
+    private String createHttpsGetUrl() {
+        final String apiKeyForHttpRequest = getDecryptedApiKeyForHttpRequest();
+        return "https://api.openweathermap.org/data/2.5/weather?lat=" + LAT + "&lon=" + LON + "&appid=" + apiKeyForHttpRequest;
     }
 
-    private static HttpsGetRequest createHttpsGetRequest(String decryptedApiKey) throws URISyntaxException {
-        final String urlString = "https://api.openweathermap.org/data/2.5/weather?lat=" + LAT + "&lon=" + LON + "&appid=" + decryptedApiKey;
-        final URI uri = new URI(urlString);
-        return new HttpsGetRequest(uri);
+    private static String getDecryptedApiKeyForHttpRequest() {
+        return Secret.getSecret(ENVIRONMENT_VARIABLE_API_KEY, ENCRYPTED_API_KEY);
     }
 
     private void persistData(OpenWeatherApiSensorData outdoorSensorData) {

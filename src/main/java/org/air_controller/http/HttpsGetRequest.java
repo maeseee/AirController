@@ -14,15 +14,10 @@ import java.util.Optional;
 public class HttpsGetRequest {
     private static final Logger logger = LogManager.getLogger(HttpsGetRequest.class);
 
-    private final URI uri;
-
-    public HttpsGetRequest(URI uri) {
-        this.uri = uri;
-    }
-
-    public Optional<String> sendRequest() {
+    public Optional<String> sendRequest(String url) {
         String responseFromUrl = null;
         try {
+            final URI uri = new URI(url);
             final HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
             connection.setRequestMethod("GET");
 

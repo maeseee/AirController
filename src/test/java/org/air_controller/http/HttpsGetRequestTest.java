@@ -2,8 +2,6 @@ package org.air_controller.http;
 
 import org.junit.jupiter.api.Test;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,25 +9,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 class HttpsGetRequestTest {
 
     @Test
-    void testWhenUrlCalledThenReturnContent() throws URISyntaxException {
+    void testWhenUrlCalledThenReturnContent() {
         final String url = "https://example.com";
-        final URI uri = new URI(url);
-        final HttpsGetRequest testee = new HttpsGetRequest(uri);
+        final HttpsGetRequest testee = new HttpsGetRequest();
 
-        final Optional<String> result = testee.sendRequest();
+        final Optional<String> result = testee.sendRequest(url);
 
         assertThat(result).isPresent();
         assertThat(result.get()).isNotEmpty();
     }
 
     @Test
-    void testWhenUrlCalledTwiceThenReturnContentTwice() throws URISyntaxException {
+    void testWhenUrlCalledTwiceThenReturnContentTwice() {
         final String url = "https://example.com";
-        final URI uri = new URI(url);
-        final HttpsGetRequest testee = new HttpsGetRequest(uri);
+        final HttpsGetRequest testee = new HttpsGetRequest();
 
-        final Optional<String> result = testee.sendRequest();
-        final Optional<String> result2 = testee.sendRequest();
+        final Optional<String> result = testee.sendRequest(url);
+        final Optional<String> result2 = testee.sendRequest(url);
 
         assertThat(result).isPresent();
         assertThat(result2).isPresent();

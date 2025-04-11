@@ -47,7 +47,7 @@ class OpenWeatherApiSensorTest {
     @Test
     void testWhenMeasureValuesThenPersistData() {
         final HttpsGetRequest httpsGetRequest = mock(HttpsGetRequest.class);
-        when(httpsGetRequest.sendRequest()).thenReturn(Optional.of(SAMPLE_HTTP_RESPONSE));
+        when(httpsGetRequest.sendRequest(any())).thenReturn(Optional.of(SAMPLE_HTTP_RESPONSE));
         final OpenWeatherApiSensor testee = new OpenWeatherApiSensor(persistence, httpsGetRequest);
 
         testee.run();
@@ -65,7 +65,7 @@ class OpenWeatherApiSensorTest {
     @Test
     void testWhenMeasureValuesEmptyThenDontPersistData() {
         final HttpsGetRequest httpsGetRequest = mock(HttpsGetRequest.class);
-        when(httpsGetRequest.sendRequest()).thenReturn(Optional.empty());
+        when(httpsGetRequest.sendRequest(any())).thenReturn(Optional.empty());
         final OpenWeatherApiSensor testee = new OpenWeatherApiSensor(persistence, httpsGetRequest);
 
         testee.run();

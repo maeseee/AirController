@@ -2,8 +2,6 @@ package org.air_controller.gpio.dingtian_relay;
 
 import org.air_controller.http.HttpsGetRequest;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,8 +14,8 @@ public class DingtianRelay {
     private final HttpsGetRequest httpsGetRequest;
     private final DingtianResponseInterpreter interpreter;
 
-    public DingtianRelay() throws URISyntaxException {
-        this(new HttpsGetRequest(new URI(GET_RELAY_STATE_URL)), new DingtianResponseInterpreter());
+    public DingtianRelay() {
+        this(new HttpsGetRequest(), new DingtianResponseInterpreter());
     }
 
     DingtianRelay(HttpsGetRequest httpsGetRequest, DingtianResponseInterpreter interpreter) {
@@ -26,7 +24,7 @@ public class DingtianRelay {
     }
 
     public List<Boolean> readStates() {
-        final Optional<String> response = httpsGetRequest.sendRequest();
+        final Optional<String> response = httpsGetRequest.sendRequest(GET_RELAY_STATE_URL);
         if (response.isEmpty()) {
             return emptyList();
         }
