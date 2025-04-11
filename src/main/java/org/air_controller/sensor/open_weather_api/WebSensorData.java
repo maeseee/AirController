@@ -9,13 +9,13 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
-class OpenWeatherApiSensorData implements SensorData {
+class WebSensorData implements SensorData {
 
     private final Temperature temperature;
     private final Humidity humidity;
     private final ZonedDateTime timestamp = ZonedDateTime.now(ZoneOffset.UTC);
 
-    public OpenWeatherApiSensorData(Temperature temperature, Humidity humidity) {
+    public WebSensorData(Temperature temperature, Humidity humidity) {
         this.temperature = temperature;
         this.humidity = humidity;
     }

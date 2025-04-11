@@ -47,7 +47,7 @@ public class OpenWeatherApiSensor implements Sensor {
             return;
         }
 
-        final Optional<OpenWeatherApiSensorData> sensorData = OpenWeatherApiJsonParser.parse(request.get());
+        final Optional<WebSensorData> sensorData = JsonParser.parse(request.get());
         sensorData.ifPresentOrElse(
                 this::persistData,
                 () -> logger.error("Outdoor sensor out of order"));
@@ -62,7 +62,7 @@ public class OpenWeatherApiSensor implements Sensor {
         return Secret.getSecret(ENVIRONMENT_VARIABLE_API_KEY, ENCRYPTED_API_KEY);
     }
 
-    private void persistData(OpenWeatherApiSensorData outdoorSensorData) {
+    private void persistData(WebSensorData outdoorSensorData) {
         logger.info("New outdoor sensor data: {}", outdoorSensorData);
         persistence.persist(outdoorSensorData);
     }

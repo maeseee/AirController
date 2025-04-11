@@ -9,9 +9,9 @@ import org.json.JSONTokener;
 import java.util.Optional;
 
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-class OpenWeatherApiJsonParser {
+class JsonParser {
 
-    public static Optional<OpenWeatherApiSensorData> parse(String jsonString) {
+    public static Optional<WebSensorData> parse(String jsonString) {
         try {
             final JSONTokener tokener = new JSONTokener(jsonString);
             final JSONObject jsonObject = new JSONObject(tokener);
@@ -20,7 +20,7 @@ class OpenWeatherApiJsonParser {
             final Temperature temperature = Temperature.createFromKelvin(temperatureKelvin);
             final double humidityRelative = main.getDouble("humidity");
             final Humidity humidity = Humidity.createFromRelative(humidityRelative, temperature);
-            final OpenWeatherApiSensorData sensorData = new OpenWeatherApiSensorData(temperature, humidity);
+            final WebSensorData sensorData = new WebSensorData(temperature, humidity);
             return Optional.of(sensorData);
         } catch (Exception e) {
             return Optional.empty();
