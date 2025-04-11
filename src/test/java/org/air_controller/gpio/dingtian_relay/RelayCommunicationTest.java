@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class DingtianRelayTest {
+class RelayCommunicationTest {
     @Mock
     private HttpsGetRequest getRequest;
     @Mock
@@ -21,7 +21,7 @@ class DingtianRelayTest {
 
     @Test
     void shouldReadRelayStates() {
-        final DingtianRelay testee = new DingtianRelay();
+        final RelayCommunication testee = new RelayCommunication();
 
         final List<Boolean> relayStates = testee.readStates();
 
@@ -31,7 +31,7 @@ class DingtianRelayTest {
     @Test
     void shouldReturnEmptyList_whenResponseEmpty() {
         when(getRequest.sendRequest(any())).thenReturn(Optional.empty());
-        final DingtianRelay testee = new DingtianRelay(getRequest, interpreter);
+        final RelayCommunication testee = new RelayCommunication(getRequest, interpreter);
 
         final List<Boolean> relayStates = testee.readStates();
 
@@ -43,7 +43,7 @@ class DingtianRelayTest {
     @Test
     void shouldInterpretResponse_whenValid() {
         when(getRequest.sendRequest(any())).thenReturn(Optional.of("RESPONSE"));
-        final DingtianRelay testee = new DingtianRelay(getRequest, interpreter);
+        final RelayCommunication testee = new RelayCommunication(getRequest, interpreter);
 
         final List<Boolean> relayStates = testee.readStates();
 
@@ -55,7 +55,7 @@ class DingtianRelayTest {
     @Test
     void shouldSetRelayState() {
         when(getRequest.sendRequest(any())).thenReturn(Optional.of("RESPONSE"));
-        final DingtianRelay testee = new DingtianRelay(getRequest, interpreter);
+        final RelayCommunication testee = new RelayCommunication(getRequest, interpreter);
 
         testee.setRelayState(0, true);
 
