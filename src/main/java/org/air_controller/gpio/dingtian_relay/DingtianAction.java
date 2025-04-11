@@ -2,11 +2,11 @@ package org.air_controller.gpio.dingtian_relay;
 
 import lombok.Getter;
 
-public enum DingtianAction {
+@Getter
+enum DingtianAction {
     OFF(0),
     ON(1);
 
-    @Getter
     private final int index;
 
     DingtianAction(int index) {

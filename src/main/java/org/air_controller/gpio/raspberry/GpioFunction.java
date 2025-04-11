@@ -1,4 +1,4 @@
-package org.air_controller.gpio;
+package org.air_controller.gpio.raspberry;
 
 import lombok.Getter;
 

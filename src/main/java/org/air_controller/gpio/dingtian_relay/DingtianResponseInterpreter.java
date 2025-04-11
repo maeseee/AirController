@@ -6,7 +6,7 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 
-public class DingtianResponseInterpreter {
+class DingtianResponseInterpreter {
     private static final String OK_RESULT = "0";
     private static final String OFF_VALUE = "0";
     public static final int PROTOCOL_OVERHEAD = 3;

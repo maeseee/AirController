@@ -1,6 +1,6 @@
 package org.air_controller.gpio.dingtian_relay;
 
-public class DingtianUrlCreator {
+class DingtianUrlCreator {
     private static final String RELAY_URL = "http://192.168.50.22/";
 
     public String createGetRelayStatesURL() {

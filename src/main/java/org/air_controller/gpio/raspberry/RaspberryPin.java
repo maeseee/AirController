@@ -1,15 +1,15 @@
-package org.air_controller.gpio;
+package org.air_controller.gpio.raspberry;
 
 import com.pi4j.wiringpi.Gpio;
 import com.pi4j.wiringpi.GpioUtil;
 
 import java.io.IOException;
 
-public class RaspberryPiPin {
+public class RaspberryPin {
 
     private final GpioFunction gpioFunction;
 
-    public RaspberryPiPin(GpioFunction gpioFunction) throws IOException {
+    public RaspberryPin(GpioFunction gpioFunction) throws IOException {
         this.gpioFunction = gpioFunction;
         setupWiringPi();
     }

@@ -1,8 +1,8 @@
 package org.air_controller;
 
-import org.air_controller.gpio.GpioFunction;
 import org.air_controller.gpio.GpioPin;
-import org.air_controller.gpio.RaspberryGpioPin;
+import org.air_controller.gpio.raspberry.GpioFunction;
+import org.air_controller.gpio.raspberry.RaspberryGpioPin;
 import org.air_controller.rules.*;
 import org.air_controller.sensor.Sensor;
 import org.air_controller.sensor.SensorException;
@@ -48,7 +48,7 @@ public class Application {
     }
 
     // Used for MainMock
-    Application(GpioPin airFlow, GpioPin humidityExchanger) throws URISyntaxException {
+    Application(GpioPin airFlow, GpioPin humidityExchanger) {
         this(new ControlledVentilationSystem(airFlow, humidityExchanger), createOutdoorSensor(), createIndoorSensor(),
                 new VentilationSystemTimeKeeper(new SystemActions()));
     }
@@ -81,7 +81,7 @@ public class Application {
         logger.info("All setup and running...");
     }
 
-    private static Sensor createOutdoorSensor() throws URISyntaxException {
+    private static Sensor createOutdoorSensor() {
         final SensorDataPersistence persistence = new SensorDataCollection(List.of(
                 new SensorDataDb(SensorDataPersistence.OUTDOOR_TABLE_NAME),
                 new SensorDataCsv(SensorDataPersistence.OUTDOOR_SENSOR_CSV_PATH)));

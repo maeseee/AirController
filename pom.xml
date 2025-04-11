@@ -130,7 +130,7 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>org.air_controller.gpio.RaspberryPiPin</mainClass>
+                            <mainClass>org.air_controller.gpio.raspberry.RaspberryPin</mainClass>
                         </configuration>
                     </execution>
                     <execution>
