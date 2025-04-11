@@ -1,8 +1,8 @@
 package org.air_controller;
 
 import org.air_controller.gpio.GpioPin;
-import org.air_controller.gpio.raspberry.RaspberryGpioFunction;
-import org.air_controller.gpio.raspberry.RaspberryGpioPin;
+import org.air_controller.gpio.dingtian_relay.DingtianPin;
+import org.air_controller.gpio.dingtian_relay.DingtianRelay;
 import org.air_controller.rules.*;
 import org.air_controller.sensor.Sensor;
 import org.air_controller.sensor.SensorException;
@@ -43,8 +43,8 @@ public class Application {
     private final TimeKeeper timeKeeper;
     private final ScheduledExecutorService executor;
 
-    public Application() throws IOException {
-        this(new RaspberryGpioPin(RaspberryGpioFunction.AIR_FLOW, true), new RaspberryGpioPin(RaspberryGpioFunction.HUMIDITY_EXCHANGER, false));
+    public Application() {
+        this(new DingtianPin(DingtianRelay.AIR_FLOW, true), new DingtianPin(DingtianRelay.HUMIDITY_EXCHANGER, false));
     }
 
     // Used for MainMock
