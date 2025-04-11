@@ -1,5 +1,6 @@
 package org.air_controller.sensor.open_weather_api;
 
+import org.air_controller.http.HttpsGetRequest;
 import org.air_controller.sensor_data_persistence.SensorDataPersistence;
 import org.air_controller.sensor_values.Humidity;
 import org.air_controller.sensor_values.Temperature;

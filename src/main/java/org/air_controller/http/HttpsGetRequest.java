@@ -1,4 +1,4 @@
-package org.air_controller.sensor.open_weather_api;
+package org.air_controller.http;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,7 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.Optional;
 
-class HttpsGetRequest {
+public class HttpsGetRequest {
     private static final Logger logger = LogManager.getLogger(HttpsGetRequest.class);
 
     private final URI uri;

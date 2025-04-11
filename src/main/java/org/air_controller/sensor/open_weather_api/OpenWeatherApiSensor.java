@@ -1,6 +1,7 @@
 package org.air_controller.sensor.open_weather_api;
 
 import lombok.Getter;
+import org.air_controller.http.HttpsGetRequest;
 import org.air_controller.secrets.Secret;
 import org.air_controller.sensor.Sensor;
 import org.air_controller.sensor_data_persistence.SensorDataPersistence;
