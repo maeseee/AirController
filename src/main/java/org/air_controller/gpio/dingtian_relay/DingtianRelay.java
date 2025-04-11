@@ -8,9 +8,7 @@ import java.util.Optional;
 import static java.util.Collections.emptyList;
 
 public class DingtianRelay {
-    private static final String RELAY_URL = "http://192.168.50.22";
-    private static final String GET_RELAY_STATE_URL = RELAY_URL + "/relay_cgi_load.cgi";
-
+    private final DingtianUrlCreator urlCreator = new DingtianUrlCreator();
     private final HttpsGetRequest httpsGetRequest;
     private final DingtianResponseInterpreter interpreter;
 
@@ -24,10 +22,15 @@ public class DingtianRelay {
     }
 
     public List<Boolean> readStates() {
-        final Optional<String> response = httpsGetRequest.sendRequest(GET_RELAY_STATE_URL);
+        final Optional<String> response = httpsGetRequest.sendRequest(urlCreator.createGetRelayStatesURL());
         if (response.isEmpty()) {
             return emptyList();
         }
         return interpreter.interpretRelayState(response.get());
+    }
+
+    public void setRelayState(int relay, boolean setOn) {
+        final String url = urlCreator.createSetRelayStateURL(relay, DingtianAction.from(setOn));
+        httpsGetRequest.sendRequest(url);
     }
 }

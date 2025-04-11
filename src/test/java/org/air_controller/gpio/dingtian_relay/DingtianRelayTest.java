@@ -51,4 +51,14 @@ class DingtianRelayTest {
         verify(getRequest).sendRequest("http://192.168.50.22/relay_cgi_load.cgi");
         verify(interpreter).interpretRelayState("RESPONSE");
     }
+
+    @Test
+    void shouldSetRelayState() {
+        when(getRequest.sendRequest(any())).thenReturn(Optional.of("RESPONSE"));
+        final DingtianRelay testee = new DingtianRelay(getRequest, interpreter);
+
+        testee.setRelayState(0, true);
+
+        verify(getRequest).sendRequest("http://192.168.50.22/relay_cgi.cgi?type=0&relay=0&on=1&time=0&pwd=0&");
+    }
 }
