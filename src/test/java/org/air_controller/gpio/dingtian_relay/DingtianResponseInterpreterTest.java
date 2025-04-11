@@ -21,7 +21,7 @@ class DingtianResponseInterpreterTest {
     })
     void shouldInterpretRelayState(String response, boolean expectedRelay1State, boolean expectedRelay2State, boolean expectedRelay3State,
             boolean expectedRelay4State) {
-        final DingtianResponseInterpreter testee = new DingtianResponseInterpreter();
+        final ResponseInterpreter testee = new ResponseInterpreter();
 
         final List<Boolean> relayStates = testee.interpretRelayState(response);
 
@@ -34,7 +34,7 @@ class DingtianResponseInterpreterTest {
 
     @Test
     void shouldFail_whenResultInvalid() {
-        final DingtianResponseInterpreter testee = new DingtianResponseInterpreter();
+        final ResponseInterpreter testee = new ResponseInterpreter();
 
         final List<Boolean> relayStates = testee.interpretRelayState("&1&4&0&0&0&0&");
 
@@ -43,7 +43,7 @@ class DingtianResponseInterpreterTest {
 
     @Test
     void shouldRead5Relays_whenHavingThem() {
-        final DingtianResponseInterpreter testee = new DingtianResponseInterpreter();
+        final ResponseInterpreter testee = new ResponseInterpreter();
 
         final List<Boolean> relayStates = testee.interpretRelayState("&0&5&0&0&0&0&0&");
 
@@ -52,7 +52,7 @@ class DingtianResponseInterpreterTest {
 
     @Test
     void shouldFail_whenNumberOfRelaysDoNotMatchNumberOfParameters() {
-        final DingtianResponseInterpreter testee = new DingtianResponseInterpreter();
+        final ResponseInterpreter testee = new ResponseInterpreter();
 
         final List<Boolean> relayStates = testee.interpretRelayState("&0&5&0&0&0&0&");
 

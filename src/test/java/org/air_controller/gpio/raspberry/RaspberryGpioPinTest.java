@@ -1,8 +1,5 @@
-package org.air_controller.gpio.dingtian_relay.raspberry;
+package org.air_controller.gpio.raspberry;
 
-import org.air_controller.gpio.raspberry.GpioFunction;
-import org.air_controller.gpio.raspberry.RaspberryGpioPin;
-import org.air_controller.gpio.raspberry.RaspberryPin;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,7 +17,7 @@ import static org.mockito.Mockito.*;
 class RaspberryGpioPinTest {
 
     @Mock
-    private RaspberryPin raspberryPiPin;
+    private GpioHwPin raspberryPiPin;
 
     @ParameterizedTest
     @CsvSource({"true", "false"})

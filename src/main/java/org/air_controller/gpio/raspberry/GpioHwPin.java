@@ -5,11 +5,11 @@ import com.pi4j.wiringpi.GpioUtil;
 
 import java.io.IOException;
 
-public class RaspberryPin {
+class GpioHwPin {
 
     private final GpioFunction gpioFunction;
 
-    public RaspberryPin(GpioFunction gpioFunction) throws IOException {
+    public GpioHwPin(GpioFunction gpioFunction) throws IOException {
         this.gpioFunction = gpioFunction;
         setupWiringPi();
     }

@@ -1,8 +1,6 @@
-package org.air_controller.gpio.dingtian_relay.raspberry;
+package org.air_controller.gpio.raspberry;
 
 import org.air_controller.gpio.GpioPin;
-import org.air_controller.gpio.raspberry.GpioFunction;
-import org.air_controller.gpio.raspberry.RaspberryGpioPin;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;

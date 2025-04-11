@@ -43,7 +43,7 @@ public class Application {
     private final TimeKeeper timeKeeper;
     private final ScheduledExecutorService executor;
 
-    public Application() throws IOException, URISyntaxException {
+    public Application() throws IOException {
         this(new RaspberryGpioPin(GpioFunction.AIR_FLOW, true), new RaspberryGpioPin(GpioFunction.HUMIDITY_EXCHANGER, false));
     }
 

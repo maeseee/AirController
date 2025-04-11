@@ -8,15 +8,15 @@ import java.util.Optional;
 import static java.util.Collections.emptyList;
 
 public class DingtianRelay {
-    private final DingtianUrlCreator urlCreator = new DingtianUrlCreator();
+    private final UrlCreator urlCreator = new UrlCreator();
     private final HttpsGetRequest httpsGetRequest;
-    private final DingtianResponseInterpreter interpreter;
+    private final ResponseInterpreter interpreter;
 
     public DingtianRelay() {
-        this(new HttpsGetRequest(), new DingtianResponseInterpreter());
+        this(new HttpsGetRequest(), new ResponseInterpreter());
     }
 
-    DingtianRelay(HttpsGetRequest httpsGetRequest, DingtianResponseInterpreter interpreter) {
+    DingtianRelay(HttpsGetRequest httpsGetRequest, ResponseInterpreter interpreter) {
         this.httpsGetRequest = httpsGetRequest;
         this.interpreter = interpreter;
     }
@@ -30,7 +30,7 @@ public class DingtianRelay {
     }
 
     public void setRelayState(int relay, boolean setOn) {
-        final String url = urlCreator.createSetRelayStateURL(relay, DingtianAction.from(setOn));
+        final String url = urlCreator.createSetRelayStateURL(relay, Action.from(setOn));
         httpsGetRequest.sendRequest(url);
     }
 }

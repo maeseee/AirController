@@ -3,7 +3,7 @@ package org.air_controller.gpio.dingtian_relay;
 import lombok.Getter;
 
 @Getter
-enum DingtianActionType {
+enum ActionType {
     ON_OFF(0),
     JOGGING(1),
     DELAY(2),
@@ -12,7 +12,7 @@ enum DingtianActionType {
 
     private final int index;
 
-    DingtianActionType(int index) {
+    ActionType(int index) {
         this.index = index;
     }
 }

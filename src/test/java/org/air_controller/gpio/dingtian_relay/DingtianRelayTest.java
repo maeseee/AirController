@@ -17,7 +17,7 @@ class DingtianRelayTest {
     @Mock
     private HttpsGetRequest getRequest;
     @Mock
-    private DingtianResponseInterpreter interpreter;
+    private ResponseInterpreter interpreter;
 
     @Test
     void shouldReadRelayStates() {
