@@ -1,30 +1,44 @@
 package org.air_controller.gpio.dingtian_relay;
 
-import java.util.Optional;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Collections.emptyList;
 
 public class DingtianResponseInterpreter {
     private static final String OK_RESULT = "0";
     private static final String OFF_VALUE = "0";
-    private static final int NUMBER_OF_RELAYS = 4;
     public static final int PROTOCOL_OVERHEAD = 3;
 
-    public Optional<DingtianRelayState> interpretRelayState(String response) {
-        final String[] split = response.split("&");
-        if (!isResponseValid(split)) {
-            return Optional.empty();
+    public List<Boolean> interpretRelayState(String response) {
+        final String[] data = response.split("&");
+        final int numberOfRelays;
+        try {
+            validateResultState(data);
+            numberOfRelays = readNumberOfRelays(data);
+        } catch (IOException e) {
+            return emptyList();
         }
-        final boolean isOnRelay1 = onStringToBoolean(split[3]);
-        final boolean isOnRelay2 = onStringToBoolean(split[4]);
-        final boolean isOnRelay3 = onStringToBoolean(split[5]);
-        final boolean isOnRelay4 = onStringToBoolean(split[6]);
-        final DingtianRelayState relayState = new DingtianRelayState(isOnRelay1, isOnRelay2, isOnRelay3, isOnRelay4);
-        return Optional.of(relayState);
+        final List<Boolean> relayStates = new ArrayList<>(numberOfRelays);
+        for (int relay = 0; relay < numberOfRelays; relay++) {
+            relayStates.add(onStringToBoolean(data[relay + PROTOCOL_OVERHEAD]));
+        }
+        return relayStates;
     }
 
-    private boolean isResponseValid(String[] split) {
-        return split.length == NUMBER_OF_RELAYS + PROTOCOL_OVERHEAD &&
-                split[1].equals(OK_RESULT) &&
-                split[2].equals(String.valueOf(NUMBER_OF_RELAYS));
+    private void validateResultState(String[] data) throws IOException {
+        if (data.length <= PROTOCOL_OVERHEAD || !data[1].equals(OK_RESULT)) {
+            throw new IOException("Result state is invalid");
+        }
+    }
+
+    private int readNumberOfRelays(String[] data) throws IOException {
+        final int numberOfRelays = Integer.parseInt(data[2]);
+        if (data.length != PROTOCOL_OVERHEAD + numberOfRelays) {
+            throw new IOException("The result has an invalid number of data values");
+        }
+        return numberOfRelays;
     }
 
     private boolean onStringToBoolean(String isOn) {

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.Optional;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,34 +23,39 @@ class DingtianResponseInterpreterTest {
             boolean expectedRelay4State) {
         final DingtianResponseInterpreter testee = new DingtianResponseInterpreter();
 
-        final Optional<DingtianRelayState> relayStateOptional
-                = testee.interpretRelayState(response);
+        final List<Boolean> relayStates = testee.interpretRelayState(response);
 
-        assertThat(relayStateOptional).isPresent();
-        final DingtianRelayState relayState = relayStateOptional.get();
-        assertThat(relayState.relay1On()).isEqualTo(expectedRelay1State);
-        assertThat(relayState.relay2On()).isEqualTo(expectedRelay2State);
-        assertThat(relayState.relay3On()).isEqualTo(expectedRelay3State);
-        assertThat(relayState.relay4On()).isEqualTo(expectedRelay4State);
+        assertThat(relayStates).hasSize(4);
+        assertThat(relayStates.get(0)).isEqualTo(expectedRelay1State);
+        assertThat(relayStates.get(1)).isEqualTo(expectedRelay2State);
+        assertThat(relayStates.get(2)).isEqualTo(expectedRelay3State);
+        assertThat(relayStates.get(3)).isEqualTo(expectedRelay4State);
     }
 
     @Test
     void shouldFail_whenResultInvalid() {
         final DingtianResponseInterpreter testee = new DingtianResponseInterpreter();
 
-        final Optional<DingtianRelayState> relayStateOptional
-                = testee.interpretRelayState("&1&4&0&0&0&0&");
+        final List<Boolean> relayStates = testee.interpretRelayState("&1&4&0&0&0&0&");
 
-        assertThat(relayStateOptional).isEmpty();
+        assertThat(relayStates).isEmpty();
     }
 
     @Test
-    void shouldFail_whenHavingMoreThan4Relays() {
+    void shouldRead5Relays_whenHavingThem() {
         final DingtianResponseInterpreter testee = new DingtianResponseInterpreter();
 
-        final Optional<DingtianRelayState> relayStateOptional
-                = testee.interpretRelayState("&0&5&0&0&0&0&0&");
+        final List<Boolean> relayStates = testee.interpretRelayState("&0&5&0&0&0&0&0&");
 
-        assertThat(relayStateOptional).isEmpty();
+        assertThat(relayStates).hasSize(5);
+    }
+
+    @Test
+    void shouldFail_whenNumberOfRelaysDoNotMatchNumberOfParameters() {
+        final DingtianResponseInterpreter testee = new DingtianResponseInterpreter();
+
+        final List<Boolean> relayStates = testee.interpretRelayState("&0&5&0&0&0&0&");
+
+        assertThat(relayStates).isEmpty();
     }
 }
