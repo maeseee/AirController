@@ -1,7 +1,7 @@
 package org.air_controller.secrets;
 
-import com.pi4j.util.StringUtil;
 import lombok.NoArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 
 import java.util.Optional;
 
@@ -10,6 +10,6 @@ class EnvironmentVariable {
 
     public static Optional<String> readEnvironmentVariable(String variableName) {
         final String variableContent = System.getenv(variableName);
-        return StringUtil.isNotNullOrEmpty(variableContent) ? Optional.of(variableContent) : Optional.empty();
+        return Strings.isNotEmpty(variableContent) ? Optional.of(variableContent) : Optional.empty();
     }
 }
