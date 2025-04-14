@@ -8,11 +8,9 @@ import org.air_controller.sensor_values.SensorData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
-
 
 public class QingPingSensor implements Sensor {
 
@@ -20,20 +18,17 @@ public class QingPingSensor implements Sensor {
 
     @Getter
     private final SensorDataPersistence persistence;
-    @Nullable
-    private final Sensor backupSensor;
     private final AccessToken accessToken;
     private final ListDevices listDevices;
     private final SensorReducer sensorReducer = new SensorReducer();
 
-    public QingPingSensor(SensorDataPersistence persistence, Sensor backupSensor) throws URISyntaxException {
-        this(persistence, backupSensor, new AccessToken(), new ListDevices());
+    public QingPingSensor(SensorDataPersistence persistence) throws URISyntaxException {
+        this(persistence, new AccessToken(), new ListDevices());
     }
 
-    QingPingSensor(SensorDataPersistence persistence, @Nullable Sensor backupSensor, AccessToken accessToken,
+    QingPingSensor(SensorDataPersistence persistence, AccessToken accessToken,
             ListDevices listDevices) {
         this.persistence = persistence;
-        this.backupSensor = backupSensor;
         this.accessToken = accessToken;
         this.listDevices = listDevices;
     }
@@ -44,9 +39,6 @@ public class QingPingSensor implements Sensor {
             doRun();
         } catch (Exception exception) {
             logger.error("Exception in QingPing sensor loop:", exception);
-            if (backupSensor != null) {
-                backupSensor.run();
-            }
         }
     }
 

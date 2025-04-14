@@ -41,7 +41,7 @@ class QingPingSensorTest {
         final ZonedDateTime time1 = ZonedDateTime.now(ZoneOffset.UTC);
         final HwSensorData sensorData = new HwSensorData(temperature, humidity, null, time1);
         when(listDevices.readSensorDataList(any())).thenReturn(List.of(sensorData));
-        final QingPingSensor testee = new QingPingSensor(persistence, null, accessToken, listDevices);
+        final QingPingSensor testee = new QingPingSensor(persistence, accessToken, listDevices);
 
         testee.run();
 
@@ -57,7 +57,7 @@ class QingPingSensorTest {
         when(accessToken.readToken()).thenReturn("token");
         final ListDevices listDevices = mock(ListDevices.class);
         when(listDevices.readSensorDataList(any())).thenReturn(new ArrayList<>());
-        final QingPingSensor testee = new QingPingSensor(persistence, null, accessToken, listDevices);
+        final QingPingSensor testee = new QingPingSensor(persistence, accessToken, listDevices);
 
         testee.run();
 

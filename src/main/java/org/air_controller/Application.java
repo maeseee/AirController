@@ -6,7 +6,6 @@ import org.air_controller.gpio.dingtian_relay.DingtianRelay;
 import org.air_controller.rules.*;
 import org.air_controller.sensor.Sensor;
 import org.air_controller.sensor.SensorException;
-import org.air_controller.sensor.dht22.OneWireSensor;
 import org.air_controller.sensor.open_weather_api.OpenWeatherApiSensor;
 import org.air_controller.sensor.qing_ping.QingPingSensor;
 import org.air_controller.sensor_data_persistence.SensorDataCollection;
@@ -21,7 +20,6 @@ import org.air_controller.system_action.SystemActions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.ZoneOffset;
@@ -92,14 +90,8 @@ public class Application {
         final SensorDataPersistence persistence = new SensorDataCollection(List.of(
                 new SensorDataDb(SensorDataPersistence.INDOOR_TABLE_NAME),
                 new SensorDataCsv(SensorDataPersistence.INDOOR_SENSOR_CSV_PATH)));
-        Sensor oneWireSensor = null;
         try {
-            oneWireSensor = new OneWireSensor(persistence);
-        } catch (IOException | IllegalArgumentException | UnsatisfiedLinkError e) {
-            logger.error("Could not load backup sensor!{}", e.getMessage());
-        }
-        try {
-            return new QingPingSensor(persistence, oneWireSensor);
+            return new QingPingSensor(persistence);
         } catch (URISyntaxException e) {
             throw new SensorException("Indoor sensor could not be created", e.getCause());
         }
