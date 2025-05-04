@@ -21,8 +21,8 @@ public class PeriodicallyAirFlow implements Rule {
 
     @Override
     public Confidence turnOnConfidence() {
-        Duration airFlowOnDurationInLastHour = timeKeeper.getAirFlowOnDurationInLastHour();
-        double impact = M * airFlowOnDurationInLastHour.toMinutes() + B;
+        final Duration airFlowOnDurationInLastHour = timeKeeper.getAirFlowOnDurationInLastHour();
+        final double impact = M * airFlowOnDurationInLastHour.toMinutes() + B;
         return new Confidence(impact);
     }
 }

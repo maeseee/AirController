@@ -31,8 +31,5 @@ journalctl -fu airController.service -n 10
 #setx weather_api_key "<api_key>"
 #setx qingping_app_secret "<app_secret>"
 
-# See GPIO config
-gpio readall
-
 # Check dependencies
 mvn dependency:analyze
