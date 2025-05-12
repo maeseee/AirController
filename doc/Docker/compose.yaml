@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  air_controller-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: air_controller-app
+    volumes:
+      - /volume1/docker/air_controller/logs:/AirController/log
+    restart: unless-stopped
