@@ -7,7 +7,7 @@ WORKDIR /app
 RUN git clone https://github.com/maeseee/AirController.git .
 
 RUN mvn dependency:go-offline -batch-mode
-RUN mvn package -DskipTests -batch-mode
+RUN mvn clean package -DskipTests -batch-mode
 
 # Stage 2: Runner
 FROM eclipse-temurin:21-jdk
@@ -21,4 +21,4 @@ COPY --from=build /app/target/AirController-1.0-SNAPSHOT-jar-with-dependencies.j
 
 USER nobody
 
-CMD ["java", "-jar", "AirController-1.0-SNAPSHOT.jar"]
+CMD ["java", "-jar", "AirController-1.0-SNAPSHOT-jar-with-dependencies.jar"]
