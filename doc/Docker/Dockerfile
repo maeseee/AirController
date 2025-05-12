@@ -1,7 +1,6 @@
 # Stage 1: Builder
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 RUN apt-get update && apt-get install -y git --no-install-recommends && rm -rf /var/lib/apt/lists/*
-RUN apt-get install -y liblog4j2-java
 
 WORKDIR /app
 
