@@ -17,13 +17,8 @@ WORKDIR /app
 # Logs-Verzeichnis vorbereiten
 RUN mkdir -p /app/logs
 
-COPY --from=build /app/target/AirController-1.0-SNAPSHOT.jar .
+COPY --from=build /app/target/AirController-1.0-SNAPSHOT-jar-with-dependencies.jar .
 
 USER nobody
 
 CMD ["java", "-jar", "AirController-1.0-SNAPSHOT.jar"]
-# ENTRYPOINT ["java", "-jar", "AirController-1.0-SNAPSHOT.jar"]
-
-# Starte das Java-Programm (JAR-Dateinamen ggf. anpassen)
-# CMD ["mvn", "exec:java", "-Dexec.mainClass="org.air_controller.Main"]
-# CMD mvn exec:java -Dexec.mainClass="org.air_controller.Main > log/terminal.log 2>&1
