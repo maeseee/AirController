@@ -15,7 +15,7 @@ FROM eclipse-temurin:21-jdk
 WORKDIR /app
 
 # Logs-Verzeichnis vorbereiten
-RUN mkdir -p /app/logs
+RUN mkdir -p /app/log
 
 COPY --from=build /app/target/AirController-1.0-SNAPSHOT-jar-with-dependencies.jar .
 

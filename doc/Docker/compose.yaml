@@ -1,11 +1,30 @@
 version: '3.8'
 
 services:
-  air_controller-app:
+  db:
+    image: postgres:latest
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: air_controller
+      POSTGRES_USER: post_gres
+      POSTGRES_PASSWORD: ${dbPassword}
+    volumes:
+      - /volume1/docker/air_controller/db:/var/lib/postgresql/data
+    ports:
+      - "15432:5432"
+
+  app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: air_controller-app
+    container_name: air_controller
     volumes:
-      - /volume1/docker/air_controller/logs:/AirController/log
+      - /volume1/docker/air_controller/app:/app
+    environment:
+      - weather_api_key=${weather_api_key}
+      - qingping_app_secret=${qingping_app_secret}
+      - dbPassword=${dbPassword}
+    networks:
+      - default
     restart: unless-stopped
