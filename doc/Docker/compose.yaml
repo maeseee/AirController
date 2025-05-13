@@ -20,7 +20,7 @@ services:
       dockerfile: Dockerfile
     container_name: air_controller
     volumes:
-      - /volume1/docker/air_controller/app:/app
+      - /volume1/docker/air_controller/log:/app/log
     environment:
       - weather_api_key=${weather_api_key}
       - qingping_app_secret=${qingping_app_secret}
