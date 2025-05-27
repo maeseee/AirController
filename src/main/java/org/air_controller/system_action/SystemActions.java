@@ -96,7 +96,7 @@ public class SystemActions implements VentilationSystem {
 
     private void createTableIfNotExists(String tableName) throws SQLException {
         final String sql =
-                "CREATE TABLE IF NOT EXISTS public." + tableName + " (\n" +
+                "CREATE TABLE IF NOT EXISTS " + tableName + " (\n" +
                         "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
                         "system_part VARCHAR(20),\n" +
                         "status VARCHAR(20),\n" +

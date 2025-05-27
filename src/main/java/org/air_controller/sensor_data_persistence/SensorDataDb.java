@@ -100,7 +100,7 @@ public class SensorDataDb implements SensorDataPersistence {
     private void createTableIfNotExists() throws SQLException {
         try (Statement statement = connection.createStatement()) {
             final String sql =
-                    "CREATE TABLE IF NOT EXISTS public." + sensorDataTableName + " (\n" +
+                    "CREATE TABLE IF NOT EXISTS " + sensorDataTableName + " (\n" +
                             "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
                             "temperature DOUBLE,\n" +
                             "humidity DOUBLE,\n" +
