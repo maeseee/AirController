@@ -1,3 +1,7 @@
 mysql -u root -p
 CREATE DATABASE AirControllerSystem;
 GRANT ALL PRIVILEGES ON AirControllerSystem.* TO 'mariaDb'@'%' IDENTIFIED BY '<pw>'; FLUSH PRIVILEGES;
+
+-- help
+SHOW DATABASES;
+SHOW TABLES;
