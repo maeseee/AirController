@@ -74,7 +74,7 @@ class SecretsEncryptionTest {
         final String masterPassword = reader.readLine();
         final SecretsEncryption secretsEncryption = new SecretsEncryption(masterPassword);
         final String encryptedSecret = secretsEncryption.encrypt(secret);
-        System.out.println("The encrpyted secret is: " + encryptedSecret);
+        System.out.println("The encrypted secret is: " + encryptedSecret);
 
         final SecretsEncryption secretsDecryption = new SecretsEncryption(masterPassword);
         final String decryptedSecret = secretsDecryption.decrypt(encryptedSecret);

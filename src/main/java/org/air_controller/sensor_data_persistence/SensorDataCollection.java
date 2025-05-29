@@ -7,24 +7,24 @@ import java.util.List;
 import java.util.Optional;
 
 public class SensorDataCollection implements SensorDataPersistence {
-    private final List<SensorDataPersistence> persistences;
+    private final List<SensorDataPersistence> persistenceList;
 
-    public SensorDataCollection(List<SensorDataPersistence> persistences) {
-        this.persistences = persistences;
+    public SensorDataCollection(List<SensorDataPersistence> persistenceList) {
+        this.persistenceList = persistenceList;
     }
 
     @Override
     public void persist(SensorData sensorData) {
-        persistences.forEach(persistence -> persistence.persist(sensorData));
+        persistenceList.forEach(persistence -> persistence.persist(sensorData));
     }
 
     @Override
     public List<SensorData> read() {
-        return persistences.get(0).read();
+        return persistenceList.getFirst().read();
     }
 
     @Override
     public Optional<SensorData> getMostCurrentSensorData(ZonedDateTime lastValidTimestamp) {
-        return persistences.get(0).getMostCurrentSensorData(lastValidTimestamp);
+        return persistenceList.getFirst().getMostCurrentSensorData(lastValidTimestamp);
     }
 }

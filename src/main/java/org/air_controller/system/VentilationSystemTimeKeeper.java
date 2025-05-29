@@ -73,12 +73,12 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     }
 
     private List<SystemAction> addStartAndEndActions(List<SystemAction> actionsFromLastHour, ZonedDateTime startTime, ZonedDateTime endTime) {
-        final SystemAction firstSystemAction = actionsFromLastHour.get(0);
+        final SystemAction firstSystemAction = actionsFromLastHour.getFirst();
         final List<SystemAction> actionsWithStartAndEnd = new ArrayList<>(actionsFromLastHour);
         if (firstSystemAction.outputState() == OutputState.OFF) {
-            actionsWithStartAndEnd.add(0, new SystemAction(startTime, firstSystemAction.systemPart(), OutputState.ON));
+            actionsWithStartAndEnd.addFirst(new SystemAction(startTime, firstSystemAction.systemPart(), OutputState.ON));
         }
-        final SystemAction lastSystemAction = actionsFromLastHour.get(actionsFromLastHour.size() - 1);
+        final SystemAction lastSystemAction = actionsFromLastHour.getLast();
         if (lastSystemAction.outputState() == OutputState.ON) {
             actionsWithStartAndEnd.add(new SystemAction(endTime, firstSystemAction.systemPart(), OutputState.OFF));
         }

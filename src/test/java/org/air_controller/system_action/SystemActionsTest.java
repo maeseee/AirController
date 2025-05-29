@@ -34,7 +34,7 @@ class SystemActionsTest {
 
         final List<SystemAction> actionsFromLastHour = testee.getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
         assertThat(actionsFromLastHour).size().isPositive();
-        final SystemAction lastAction = actionsFromLastHour.get(actionsFromLastHour.size() - 1);
+        final SystemAction lastAction = actionsFromLastHour.getLast();
         assertThat(lastAction.systemPart()).isEqualTo(SystemPart.AIR_FLOW);
         assertThat(lastAction.outputState()).isEqualTo(OutputState.OFF);
         final SystemAction secondLastAction = actionsFromLastHour.get(actionsFromLastHour.size() - 2);

@@ -61,7 +61,7 @@ public class SensorDataCsv implements SensorDataPersistence {
     @Override
     public Optional<SensorData> getMostCurrentSensorData(ZonedDateTime lastValidTimestamp) {
         final List<SensorData> data = read();
-        return data.isEmpty() ? Optional.empty() : Optional.of(data.get(data.size() - 1));
+        return data.isEmpty() ? Optional.empty() : Optional.of(data.getLast());
     }
 
     private SensorData createSensorData(String csvLine) throws InvalidArgumentException {
