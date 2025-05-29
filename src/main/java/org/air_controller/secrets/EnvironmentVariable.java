@@ -6,7 +6,7 @@ import org.apache.logging.log4j.util.Strings;
 import java.util.Optional;
 
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-class EnvironmentVariable {
+public class EnvironmentVariable {
 
     public static Optional<String> readEnvironmentVariable(String variableName) {
         final String variableContent = System.getenv(variableName);

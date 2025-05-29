@@ -9,9 +9,10 @@ services:
       - qingping_app_secret=${qingping_app_secret}
       - dbPassword=${dbPassword}
       - mariaDdPassword=${mariaDdPassword}
+      - dbHostNameVariable=${dbHostNameVariable}
     volumes:
       - ./AirController-1.0-SNAPSHOT-jar-with-dependencies.jar:/app/AirController.jar
       - ./log:/app/log
     networks:
-      - default 
+      - default
     restart: unless-stopped  # Automatically restart the container unless manually stopped
