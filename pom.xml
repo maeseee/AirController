@@ -88,6 +88,13 @@
             <artifactId>mariadb-java-client</artifactId>
             <version>3.5.3</version>
         </dependency>
+        <!-- H2 DB -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.3.232</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

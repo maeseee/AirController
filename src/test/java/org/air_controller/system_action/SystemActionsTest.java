@@ -18,6 +18,7 @@ class SystemActionsTest {
 
     @Mock
     private SystemActionDbAccessor airFlowDbAccessor;
+    @Mock
     private SystemActionDbAccessor humidityExchangerDbAccessor;
 
     @Test
