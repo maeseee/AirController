@@ -29,7 +29,7 @@ class SystemActionsTest {
 
         testee.setAirFlowOn(OutputState.OFF); // Ensure a state change
         testee.setAirFlowOn(OutputState.ON);
-        Thread.sleep(1); // Force a difference
+        Thread.sleep(100); // Force a difference
         testee.setAirFlowOn(OutputState.OFF);
 
         final List<SystemAction> actionsFromLastHour = testee.getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);

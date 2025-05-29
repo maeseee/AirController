@@ -12,13 +12,12 @@ import java.util.Optional;
 class JsonParser {
 
     public static Optional<WebSensorData> parse(String jsonString) {
-
-        final JSONTokener tokener = new JSONTokener(jsonString);
-        final JSONObject jsonObject = new JSONObject(tokener);
-        final JSONObject main = jsonObject.getJSONObject("main");
-        final double temperatureKelvin = main.getDouble("temp");
-        final double humidityRelative = main.getDouble("humidity");
         try {
+            final JSONTokener tokener = new JSONTokener(jsonString);
+            final JSONObject jsonObject = new JSONObject(tokener);
+            final JSONObject main = jsonObject.getJSONObject("main");
+            final double temperatureKelvin = main.getDouble("temp");
+            final double humidityRelative = main.getDouble("humidity");
             final Temperature temperature = Temperature.createFromKelvin(temperatureKelvin);
             final Humidity humidity = Humidity.createFromRelative(humidityRelative, temperature);
             final WebSensorData sensorData = new WebSensorData(temperature, humidity);
