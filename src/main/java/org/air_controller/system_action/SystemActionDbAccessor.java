@@ -64,7 +64,9 @@ public class SystemActionDbAccessor {
     }
 
     public void insertAction(OutputState state, ZonedDateTime timestamp) {
-        final String sql = "INSERT INTO " + actionTableName + " (system_part, status, action_time) VALUES (?, ?, ?)";
+        final String sql =
+                "INSERT INTO " + actionTableName + " (system_part, status, action_time) " +
+                        "VALUES (?, ?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, systemPart.name());
             preparedStatement.setObject(2, state.name());
