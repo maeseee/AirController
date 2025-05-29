@@ -3,6 +3,7 @@ package org.air_controller;
 import org.air_controller.gpio.GpioPin;
 import org.air_controller.gpio.dingtian_relay.DingtianPin;
 import org.air_controller.gpio.dingtian_relay.DingtianRelay;
+import org.air_controller.persistence.Persistence;
 import org.air_controller.rules.*;
 import org.air_controller.sensor.Sensor;
 import org.air_controller.sensor.SensorException;
@@ -16,11 +17,14 @@ import org.air_controller.sensor_values.CurrentSensorData;
 import org.air_controller.system.ControlledVentilationSystem;
 import org.air_controller.system.VentilationSystem;
 import org.air_controller.system.VentilationSystemTimeKeeper;
+import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemActions;
+import org.air_controller.system_action.SystemPart;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.time.Duration;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -35,20 +39,23 @@ public class Application {
     private static final int INDOOR_SENSOR_READ_PERIOD_MINUTES = 10;
     private static final int RULE_APPLIER_PERIOD_MINUTES = 1;
 
+    private static final String AIR_FLOW_ACTION_TABLE_NAME = "airFlowActions"; // TODO Move to State
+    private static final String HUMIDITY_ACTION_TABLE_NAME = "humidityActions";
+
     private final Sensor outdoorSensor;
     private final Sensor indoorSensor;
     private final RuleApplier ruleApplier;
     private final TimeKeeper timeKeeper;
     private final ScheduledExecutorService executor;
 
-    public Application() {
+    public Application() throws SQLException {
         this(new DingtianPin(DingtianRelay.AIR_FLOW, true), new DingtianPin(DingtianRelay.HUMIDITY_EXCHANGER, false));
     }
 
     // Used for MainMock
-    Application(GpioPin airFlow, GpioPin humidityExchanger) {
+    Application(GpioPin airFlow, GpioPin humidityExchanger) throws SQLException {
         this(new ControlledVentilationSystem(airFlow, humidityExchanger), createOutdoorSensor(), createIndoorSensor(),
-                new VentilationSystemTimeKeeper(new SystemActions()));
+                createVentilationSystemTimeKeeper());
     }
 
     private Application(VentilationSystem ventilationSystem, Sensor outdoorSensor, Sensor indoorSensor,
@@ -95,6 +102,17 @@ public class Application {
         } catch (URISyntaxException e) {
             throw new SensorException("Indoor sensor could not be created", e.getCause());
         }
+    }
+
+    private static VentilationSystemTimeKeeper createVentilationSystemTimeKeeper() throws SQLException {
+        return new VentilationSystemTimeKeeper(
+                new SystemActions(
+                        createDbAccessor(AIR_FLOW_ACTION_TABLE_NAME, SystemPart.AIR_FLOW),
+                        createDbAccessor(HUMIDITY_ACTION_TABLE_NAME, SystemPart.HUMIDITY)));
+    }
+
+    private static SystemActionDbAccessor createDbAccessor(String actionTableName, SystemPart systemPart) throws SQLException {
+        return new SystemActionDbAccessor(Persistence.createConnection(), actionTableName, systemPart);
     }
 
     private static RuleApplier createFreshAirController(VentilationSystem ventilationSystem, Sensor outdoorSensor, Sensor indoorSensor,

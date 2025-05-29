@@ -38,7 +38,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     public Duration getAirFlowOnDurationInLastHour() {
         final ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
         final ZonedDateTime startTime = endTime.minusHours(1);
-        final List<SystemAction> actionsFromLastHour = systemActions.getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
+        final List<SystemAction> actionsFromLastHour = systemActions.getAirFlowActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
         return getDuration(actionsFromLastHour, startTime, endTime);
     }
 
@@ -59,7 +59,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     Duration getTotalAirFlowFromDay(LocalDate day) {
         final ZonedDateTime startTime = day.atStartOfDay(ZoneOffset.UTC);
         final ZonedDateTime endTime = ZonedDateTime.of(day.atTime(LocalTime.MAX), ZoneOffset.UTC);
-        final List<SystemAction> actionsFromLastDay = systemActions.getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
+        final List<SystemAction> actionsFromLastDay = systemActions.getAirFlowActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
         return getDuration(actionsFromLastDay, startTime, endTime);
     }
 
