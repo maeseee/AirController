@@ -27,6 +27,7 @@ public class SystemActions implements VentilationSystem {
             createTableIfNotExists(AIR_FLOW_ACTION_TABLE_NAME);
             createTableIfNotExists(HUMIDITY_ACTION_TABLE_NAME);
         } catch (SQLException e) {
+            logger.error(e);
             throw new ActionException("SQL Exception on creating connection! " + e.getMessage(), e.getCause());
         }
     }
