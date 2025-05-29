@@ -1,30 +1,17 @@
 version: '3.8'
 
 services:
-  db:
-    image: postgres:latest
-    container_name: postgres_db
-    restart: always
-    environment:
-      POSTGRES_DB: air_controller
-      POSTGRES_USER: post_gres
-      POSTGRES_PASSWORD: ${dbPassword}
-    volumes:
-      - /volume1/docker/air_controller/db:/var/lib/postgresql/data
-    ports:
-      - "15432:5432"
-
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: air_controller
-    volumes:
-      - /volume1/docker/air_controller/log:/app/log
+  air-controller-app:
+    build: .
+    container_name: air-controller
     environment:
       - weather_api_key=${weather_api_key}
       - qingping_app_secret=${qingping_app_secret}
       - dbPassword=${dbPassword}
+      - mariaDdPassword=${mariaDdPassword}
+    volumes:
+      - ./AirController-1.0-SNAPSHOT-jar-with-dependencies.jar:/app/AirController.jar
+      - ./log:/app/log
     networks:
-      - default
-    restart: unless-stopped
+      - default 
+    restart: unless-stopped  # Automatically restart the container unless manually stopped
