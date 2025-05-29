@@ -1,5 +1,8 @@
 package org.air_controller.system;
 
+import lombok.Getter;
+
+@Getter
 public enum OutputState {
     ON(true),
     OFF(false),
@@ -11,7 +14,4 @@ public enum OutputState {
         this.isOn = isOn;
     }
 
-    public boolean isOn() {
-        return isOn;
-    }
 }
