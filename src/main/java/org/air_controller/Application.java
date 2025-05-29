@@ -39,9 +39,6 @@ public class Application {
     private static final int INDOOR_SENSOR_READ_PERIOD_MINUTES = 10;
     private static final int RULE_APPLIER_PERIOD_MINUTES = 1;
 
-    private static final String AIR_FLOW_ACTION_TABLE_NAME = "airFlowActions"; // TODO Move to State
-    private static final String HUMIDITY_ACTION_TABLE_NAME = "humidityActions";
-
     private final Sensor outdoorSensor;
     private final Sensor indoorSensor;
     private final RuleApplier ruleApplier;
@@ -107,12 +104,12 @@ public class Application {
     private static VentilationSystemTimeKeeper createVentilationSystemTimeKeeper() throws SQLException {
         return new VentilationSystemTimeKeeper(
                 new SystemActions(
-                        createDbAccessor(AIR_FLOW_ACTION_TABLE_NAME, SystemPart.AIR_FLOW),
-                        createDbAccessor(HUMIDITY_ACTION_TABLE_NAME, SystemPart.HUMIDITY)));
+                        createDbAccessor(SystemPart.AIR_FLOW),
+                        createDbAccessor(SystemPart.HUMIDITY)));
     }
 
-    private static SystemActionDbAccessor createDbAccessor(String actionTableName, SystemPart systemPart) throws SQLException {
-        return new SystemActionDbAccessor(Persistence.createConnection(), actionTableName, systemPart);
+    private static SystemActionDbAccessor createDbAccessor(SystemPart systemPart) throws SQLException {
+        return new SystemActionDbAccessor(Persistence.createConnection(), systemPart);
     }
 
     private static RuleApplier createFreshAirController(VentilationSystem ventilationSystem, Sensor outdoorSensor, Sensor indoorSensor,

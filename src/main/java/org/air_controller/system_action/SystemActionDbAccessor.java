@@ -16,20 +16,18 @@ public class SystemActionDbAccessor {
     private static final Logger logger = LogManager.getLogger(SystemActionDbAccessor.class);
 
     private final Connection connection;
-    private final String actionTableName;
     private final SystemPart systemPart;
 
-    public SystemActionDbAccessor(Connection connection, String actionTableName, SystemPart systemPart) throws SQLException {
+    public SystemActionDbAccessor(Connection connection, SystemPart systemPart) throws SQLException {
         this.connection = connection;
-        this.actionTableName = actionTableName;
         this.systemPart = systemPart;
-        createTableIfNotExists(actionTableName);
+        createTableIfNotExists();
     }
 
     public List<SystemAction> getActionsFromTimeToNow(ZonedDateTime startDateTime, SystemPart part) {
         final List<SystemAction> entries = new ArrayList<>();
         final String sql =
-                "SELECT * FROM " + actionTableName + " i " +
+                "SELECT * FROM " + systemPart.getTableName() + " i " +
                         "WHERE i.action_time > ? " +
                         "AND i.system_part = ? " +
                         "ORDER BY i.action_time;";
@@ -49,7 +47,7 @@ public class SystemActionDbAccessor {
 
     public Optional<SystemAction> getMostCurrentState() {
         final String sql =
-                "SELECT * FROM " + actionTableName + " i " +
+                "SELECT * FROM " + systemPart.getTableName() + " i " +
                         "ORDER BY i.action_time DESC " +
                         "LIMIT 1;";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -65,7 +63,7 @@ public class SystemActionDbAccessor {
 
     public void insertAction(OutputState state, ZonedDateTime timestamp) {
         final String sql =
-                "INSERT INTO " + actionTableName + " (system_part, status, action_time) " +
+                "INSERT INTO " + systemPart.getTableName() + " (system_part, status, action_time) " +
                         "VALUES (?, ?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, systemPart.name());
@@ -78,9 +76,9 @@ public class SystemActionDbAccessor {
         }
     }
 
-    private void createTableIfNotExists(String tableName) throws SQLException {
+    private void createTableIfNotExists() throws SQLException {
         final String sql =
-                "CREATE TABLE IF NOT EXISTS " + tableName + " (\n" +
+                "CREATE TABLE IF NOT EXISTS " + systemPart.getTableName() + " (\n" +
                         "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
                         "system_part VARCHAR(20),\n" +
                         "status VARCHAR(20),\n" +
