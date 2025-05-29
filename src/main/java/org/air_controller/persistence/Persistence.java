@@ -11,7 +11,6 @@ import java.sql.SQLException;
 public class Persistence {
     private static final String SCHEMA_NAME = "AirControllerSystem";
     private static final String JDBC_URL = "jdbc:mariadb://192.168.50.12:3306/" + SCHEMA_NAME;
-    ;
     private static final String USER = "mariaDb";
     private static final String ENVIRONMENT_VARIABLE_DB = "mariaDdPassword";
     private static final String ENCRYPTED_DB_SECRET = "cfKfHZKIpDP3vLkTZcwxcMYUFW5DFnXSrkjCrlqmM9U=";
