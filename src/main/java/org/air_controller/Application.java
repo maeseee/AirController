@@ -1,6 +1,6 @@
 package org.air_controller;
 
-import org.air_controller.gpio.GpioPin;
+import org.air_controller.gpio.GpioPins;
 import org.air_controller.gpio.dingtian_relay.DingtianPin;
 import org.air_controller.gpio.dingtian_relay.DingtianRelay;
 import org.air_controller.persistence.Persistence;
@@ -46,14 +46,17 @@ public class Application {
     private final ScheduledExecutorService executor;
 
     public Application() throws SQLException {
-        this(new DingtianPin(DingtianRelay.AIR_FLOW, true), new DingtianPin(DingtianRelay.HUMIDITY_EXCHANGER, false),
-                createDbAccessor(SystemPart.AIR_FLOW), createDbAccessor(SystemPart.HUMIDITY));
+        this(createDingtianPins(), createDbAccessor(SystemPart.AIR_FLOW), createDbAccessor(SystemPart.HUMIDITY));
+    }
+
+    private static GpioPins createDingtianPins() {
+        return new GpioPins(new DingtianPin(DingtianRelay.AIR_FLOW, true), new DingtianPin(DingtianRelay.HUMIDITY_EXCHANGER, false));
     }
 
     // Used for MainMock
-    Application(GpioPin airFlow, GpioPin humidityExchanger, SystemActionDbAccessor airFlowDbAccessor,
+    Application(GpioPins gpioPins, SystemActionDbAccessor airFlowDbAccessor,
             SystemActionDbAccessor humidityExchangerDbAccessor) throws SQLException {
-        this(new ControlledVentilationSystem(airFlow, humidityExchanger), createOutdoorSensor(), createIndoorSensor(),
+        this(new ControlledVentilationSystem(gpioPins), createOutdoorSensor(), createIndoorSensor(),
                 createVentilationSystemTimeKeeper(airFlowDbAccessor), new SystemActionPersistence(airFlowDbAccessor, humidityExchangerDbAccessor));
     }
 
