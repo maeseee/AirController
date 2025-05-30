@@ -26,9 +26,9 @@ class SystemActionsTest {
         final ZonedDateTime startTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(1);
         final SystemActions testee = new SystemActions(airFlowDbAccessor, humidityExchangerDbAccessor);
 
-        testee.getAirFlowActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
+        testee.getAirFlowActionsFromTimeToNow(startTime);
 
-        verify(airFlowDbAccessor).getActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
+        verify(airFlowDbAccessor).getActionsFromTimeToNow(startTime);
     }
 
     @Test

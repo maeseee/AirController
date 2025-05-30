@@ -24,7 +24,7 @@ public class SystemActionDbAccessor {
         createTableIfNotExists();
     }
 
-    public List<SystemAction> getActionsFromTimeToNow(ZonedDateTime startDateTime, SystemPart part) {
+    public List<SystemAction> getActionsFromTimeToNow(ZonedDateTime startDateTime) {
         final List<SystemAction> entries = new ArrayList<>();
         final String sql =
                 "SELECT * FROM " + systemPart.getTableName() + " i " +
@@ -33,7 +33,7 @@ public class SystemActionDbAccessor {
                         "ORDER BY i.action_time;";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setTimestamp(1, Timestamp.valueOf(startDateTime.toLocalDateTime()));
-            preparedStatement.setString(2, part.name());
+            preparedStatement.setString(2, systemPart.name());
             final ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {

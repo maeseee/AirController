@@ -4,7 +4,6 @@ import com.google.common.annotations.VisibleForTesting;
 import org.air_controller.rules.TimeKeeper;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActions;
-import org.air_controller.system_action.SystemPart;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,7 +37,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     public Duration getAirFlowOnDurationInLastHour() {
         final ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
         final ZonedDateTime startTime = endTime.minusHours(1);
-        final List<SystemAction> actionsFromLastHour = systemActions.getAirFlowActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
+        final List<SystemAction> actionsFromLastHour = systemActions.getAirFlowActionsFromTimeToNow(startTime);
         return getDuration(actionsFromLastHour, startTime, endTime);
     }
 
@@ -59,7 +58,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     Duration getTotalAirFlowFromDay(LocalDate day) {
         final ZonedDateTime startTime = day.atStartOfDay(ZoneOffset.UTC);
         final ZonedDateTime endTime = ZonedDateTime.of(day.atTime(LocalTime.MAX), ZoneOffset.UTC);
-        final List<SystemAction> actionsFromLastDay = systemActions.getAirFlowActionsFromTimeToNow(startTime, SystemPart.AIR_FLOW);
+        final List<SystemAction> actionsFromLastDay = systemActions.getAirFlowActionsFromTimeToNow(startTime);
         return getDuration(actionsFromLastDay, startTime, endTime);
     }
 

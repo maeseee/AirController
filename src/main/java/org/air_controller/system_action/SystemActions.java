@@ -32,7 +32,7 @@ public class SystemActions implements VentilationSystem {
         humidityExchangerDbAccessor.insertAction(state, ZonedDateTime.now(ZoneOffset.UTC));
     }
 
-    public List<SystemAction> getAirFlowActionsFromTimeToNow(ZonedDateTime startTime, SystemPart systemPart) {
-        return airFlowDbAccessor.getActionsFromTimeToNow(startTime, systemPart);
+    public List<SystemAction> getAirFlowActionsFromTimeToNow(ZonedDateTime startTime) {
+        return airFlowDbAccessor.getActionsFromTimeToNow(startTime);
     }
 }

@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,6 +52,20 @@ class SystemActionDbAccessorTest {
         assertThat(result.get().systemPart()).isEqualTo(SystemPart.AIR_FLOW);
         assertThat(result.get().outputState()).isEqualTo(OutputState.OFF);
         assertThat(result.get().actionTime()).isCloseTo(now, within(1, ChronoUnit.SECONDS));
+    }
+
+    @Test
+    void shouldReturnActionsInTimeRange() throws Exception {
+        final SystemActionDbAccessor testee = new SystemActionDbAccessor(connection, SYSTEM_PART);
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        insertStateIntoTable(now.minusHours(1), OutputState.ON);
+        insertStateIntoTable(now.minusMinutes(1), OutputState.OFF);
+        insertStateIntoTable(now.minusHours(4), OutputState.ON);
+        insertStateIntoTable(now.minusHours(2), OutputState.ON);
+
+        final List<SystemAction> actionsFromTimeToNow = testee.getActionsFromTimeToNow(now.minusHours(3));
+
+        assertThat(actionsFromTimeToNow).hasSize(3);
     }
 
     private void insertStateIntoTable(ZonedDateTime timestamp, OutputState state) throws SQLException {
