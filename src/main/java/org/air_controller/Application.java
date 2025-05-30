@@ -46,18 +46,21 @@ public class Application {
     private final ScheduledExecutorService executor;
 
     public Application() throws SQLException {
-        this(new DingtianPin(DingtianRelay.AIR_FLOW, true), new DingtianPin(DingtianRelay.HUMIDITY_EXCHANGER, false));
+        this(new DingtianPin(DingtianRelay.AIR_FLOW, true), new DingtianPin(DingtianRelay.HUMIDITY_EXCHANGER, false),
+                createDbAccessor(SystemPart.AIR_FLOW), createDbAccessor(SystemPart.HUMIDITY));
     }
 
     // Used for MainMock
-    Application(GpioPin airFlow, GpioPin humidityExchanger) throws SQLException {
+    Application(GpioPin airFlow, GpioPin humidityExchanger, SystemActionDbAccessor airFlowDbAccessor,
+            SystemActionDbAccessor humidityExchangerDbAccessor) throws SQLException {
         this(new ControlledVentilationSystem(airFlow, humidityExchanger), createOutdoorSensor(), createIndoorSensor(),
-                createVentilationSystemTimeKeeper());
+                createVentilationSystemTimeKeeper(airFlowDbAccessor), new SystemActionPersistence(airFlowDbAccessor, humidityExchangerDbAccessor));
     }
 
     private Application(VentilationSystem ventilationSystem, Sensor outdoorSensor, Sensor indoorSensor,
-            VentilationSystemTimeKeeper timeKeeper) {
-        this(outdoorSensor, indoorSensor, createFreshAirController(ventilationSystem, outdoorSensor, indoorSensor, timeKeeper), timeKeeper,
+            VentilationSystemTimeKeeper timeKeeper, SystemActionPersistence systemActionPersistence) {
+        this(outdoorSensor, indoorSensor,
+                createFreshAirController(ventilationSystem, outdoorSensor, indoorSensor, timeKeeper, systemActionPersistence), timeKeeper,
                 Executors.newScheduledThreadPool(1));
     }
 
@@ -101,9 +104,8 @@ public class Application {
         }
     }
 
-    private static VentilationSystemTimeKeeper createVentilationSystemTimeKeeper() throws SQLException {
-        return new VentilationSystemTimeKeeper(
-                new SystemActionPersistence(createDbAccessor(SystemPart.AIR_FLOW), createDbAccessor(SystemPart.HUMIDITY)));
+    private static VentilationSystemTimeKeeper createVentilationSystemTimeKeeper(SystemActionDbAccessor airFlowDbAccessor) throws SQLException {
+        return new VentilationSystemTimeKeeper(airFlowDbAccessor);
     }
 
     private static SystemActionDbAccessor createDbAccessor(SystemPart systemPart) throws SQLException {
@@ -111,10 +113,10 @@ public class Application {
     }
 
     private static RuleApplier createFreshAirController(VentilationSystem ventilationSystem, Sensor outdoorSensor, Sensor indoorSensor,
-            VentilationSystemTimeKeeper timeKeeper) {
+            VentilationSystemTimeKeeper timeKeeper, SystemActionPersistence systemActionPersistence) {
         final CurrentSensorData currentOutdoorSensorData = new CurrentSensorData(outdoorSensor.getPersistence());
         final CurrentSensorData currentIndoorSensorData = new CurrentSensorData(indoorSensor.getPersistence());
-        final List<VentilationSystem> ventilationSystems = List.of(ventilationSystem, timeKeeper);
+        final List<VentilationSystem> ventilationSystems = List.of(ventilationSystem, timeKeeper, systemActionPersistence);
         final CO2ControlAirFlow co2ControlAirFlow = new CO2ControlAirFlow(currentIndoorSensorData);
         final DailyAirFlow dailyAirFlow = new DailyAirFlow();
         final HumidityControlAirFlow humidityControlAirFlow = new HumidityControlAirFlow(currentIndoorSensorData, currentOutdoorSensorData);

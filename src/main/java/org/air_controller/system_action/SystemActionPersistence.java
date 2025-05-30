@@ -6,7 +6,6 @@ import org.air_controller.system.VentilationSystem;
 import java.sql.SQLException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Optional;
 
 public class SystemActionPersistence implements VentilationSystem {
@@ -30,9 +29,5 @@ public class SystemActionPersistence implements VentilationSystem {
     @Override
     public void setHumidityExchangerOn(OutputState state) {
         humidityExchangerDbAccessor.insertAction(state, ZonedDateTime.now(ZoneOffset.UTC));
-    }
-
-    public List<SystemAction> getAirFlowActionsFromTimeToNow(ZonedDateTime startTime) {
-        return airFlowDbAccessor.getActionsFromTimeToNow(startTime);
     }
 }

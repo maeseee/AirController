@@ -22,16 +22,6 @@ class SystemActionPersistenceTest {
     private SystemActionDbAccessor humidityExchangerDbAccessor;
 
     @Test
-    void shouldReturnActionsFromLastHour() throws SQLException {
-        final ZonedDateTime startTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(1);
-        final SystemActionPersistence testee = new SystemActionPersistence(airFlowDbAccessor, humidityExchangerDbAccessor);
-
-        testee.getAirFlowActionsFromTimeToNow(startTime);
-
-        verify(airFlowDbAccessor).getActionsFromTimeToNow(startTime);
-    }
-
-    @Test
     void shouldSetTheState() throws SQLException {
         final ZonedDateTime startTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(1);
         final SystemAction mostCurrentAction = new SystemAction(startTime, SystemPart.AIR_FLOW, OutputState.OFF);
