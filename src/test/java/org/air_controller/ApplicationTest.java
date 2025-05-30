@@ -3,6 +3,8 @@ package org.air_controller;
 import org.air_controller.rules.RuleApplier;
 import org.air_controller.rules.TimeKeeper;
 import org.air_controller.sensor.Sensor;
+import org.air_controller.sensor.Sensors;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -18,10 +20,12 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class ApplicationTest {
 
+    private Sensors sensors;
+
     @Mock
     private Sensor outdoorSensor;
     @Mock
-    private Sensor sensor;
+    private Sensor indoorSensor;
     @Mock
     private RuleApplier ruleApplier;
     @Mock
@@ -29,14 +33,19 @@ class ApplicationTest {
     @Mock
     private ScheduledExecutorService executor;
 
+    @BeforeEach
+    void setUp() {
+        sensors = new Sensors(indoorSensor, outdoorSensor);
+    }
+
     @Test
     void testWhenCreateApplicationThenScheduleExecutor() {
-        final Application testee = new Application(outdoorSensor, sensor, ruleApplier, timeKeeper, executor);
+        final Application testee = new Application(sensors, ruleApplier, timeKeeper, executor);
 
         testee.run();
 
         verify(executor).scheduleAtFixedRate(outdoorSensor, 0, 10, TimeUnit.MINUTES);
-        verify(executor).scheduleAtFixedRate(sensor, 0, 10, TimeUnit.MINUTES);
+        verify(executor).scheduleAtFixedRate(indoorSensor, 0, 10, TimeUnit.MINUTES);
         verify(executor).scheduleAtFixedRate(ruleApplier, 0, 1, TimeUnit.MINUTES);
         verify(executor).scheduleAtFixedRate(eq(timeKeeper), anyLong(), eq(86400L), eq(TimeUnit.SECONDS));
     }

@@ -7,6 +7,7 @@ import org.air_controller.persistence.Persistence;
 import org.air_controller.rules.*;
 import org.air_controller.sensor.Sensor;
 import org.air_controller.sensor.SensorException;
+import org.air_controller.sensor.Sensors;
 import org.air_controller.sensor.open_weather_api.OpenWeatherApiSensor;
 import org.air_controller.sensor.qing_ping.QingPingSensor;
 import org.air_controller.sensor_data_persistence.SensorDataCollection;
@@ -40,8 +41,7 @@ public class Application {
     private static final int INDOOR_SENSOR_READ_PERIOD_MINUTES = 10;
     private static final int RULE_APPLIER_PERIOD_MINUTES = 1;
 
-    private final Sensor outdoorSensor;
-    private final Sensor indoorSensor;
+    private final Sensors sensors;
     private final RuleApplier ruleApplier;
     private final TimeKeeper timeKeeper;
     private final ScheduledExecutorService executor;
@@ -63,38 +63,15 @@ public class Application {
     }
 
     // Used for MainMock
-    Application(GpioPins gpioPins, SystemActionDbAccessors systemActionDbAccessors) throws SQLException {
-        this(new ControlledVentilationSystem(gpioPins), createOutdoorSensor(), createIndoorSensor(),
-                createVentilationSystemTimeKeeper(systemActionDbAccessors.airFlow()), new SystemActionPersistence(systemActionDbAccessors));
+    Application(GpioPins gpioPins, SystemActionDbAccessors systemActionDbAccessors) {
+        this(new ControlledVentilationSystem(gpioPins),
+                createSensors(),
+                createVentilationSystemTimeKeeper(systemActionDbAccessors.airFlow()),
+                new SystemActionPersistence(systemActionDbAccessors));
     }
 
-    private Application(VentilationSystem ventilationSystem, Sensor outdoorSensor, Sensor indoorSensor,
-            VentilationSystemTimeKeeper timeKeeper, SystemActionPersistence systemActionPersistence) {
-        this(outdoorSensor, indoorSensor,
-                createFreshAirController(ventilationSystem, outdoorSensor, indoorSensor, timeKeeper, systemActionPersistence), timeKeeper,
-                Executors.newScheduledThreadPool(1));
-    }
-
-    // Used for tests
-    Application(Sensor outdoorSensor, Sensor indoorSensor, RuleApplier ruleApplier, TimeKeeper timeKeeper, ScheduledExecutorService executor) {
-        this.outdoorSensor = outdoorSensor;
-        this.indoorSensor = indoorSensor;
-        this.ruleApplier = ruleApplier;
-        this.timeKeeper = timeKeeper;
-        this.executor = executor;
-    }
-
-    public void run() {
-        executor.scheduleAtFixedRate(outdoorSensor, 0, OUTDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
-        executor.scheduleAtFixedRate(indoorSensor, 0, INDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
-        executor.scheduleAtFixedRate(ruleApplier, 0, RULE_APPLIER_PERIOD_MINUTES, TimeUnit.MINUTES);
-
-        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        final ZonedDateTime midnight = ZonedDateTime.of(now.toLocalDate().atStartOfDay().plusDays(1), ZoneOffset.UTC);
-        final long initialDelay = Duration.between(now, midnight).plusSeconds(1).toSeconds();
-        executor.scheduleAtFixedRate(timeKeeper, initialDelay, TimeUnit.DAYS.toSeconds(1), TimeUnit.SECONDS);
-
-        logger.info("All setup and running...");
+    private static Sensors createSensors() {
+        return new Sensors(createOutdoorSensor(), createIndoorSensor());
     }
 
     private static Sensor createOutdoorSensor() {
@@ -115,14 +92,43 @@ public class Application {
         }
     }
 
-    private static VentilationSystemTimeKeeper createVentilationSystemTimeKeeper(SystemActionDbAccessor airFlowDbAccessor) throws SQLException {
+    private Application(VentilationSystem ventilationSystem, Sensors sensors,
+            VentilationSystemTimeKeeper timeKeeper, SystemActionPersistence systemActionPersistence) {
+        this(sensors,
+                createFreshAirController(ventilationSystem, sensors, timeKeeper, systemActionPersistence),
+                timeKeeper,
+                Executors.newScheduledThreadPool(1));
+    }
+
+    // Used for tests
+    Application(Sensors sensors, RuleApplier ruleApplier, TimeKeeper timeKeeper, ScheduledExecutorService executor) {
+        this.sensors = sensors;
+        this.ruleApplier = ruleApplier;
+        this.timeKeeper = timeKeeper;
+        this.executor = executor;
+    }
+
+    public void run() {
+        executor.scheduleAtFixedRate(sensors.outdoor(), 0, OUTDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(sensors.indoor(), 0, INDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(ruleApplier, 0, RULE_APPLIER_PERIOD_MINUTES, TimeUnit.MINUTES);
+
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        final ZonedDateTime midnight = ZonedDateTime.of(now.toLocalDate().atStartOfDay().plusDays(1), ZoneOffset.UTC);
+        final long initialDelay = Duration.between(now, midnight).plusSeconds(1).toSeconds();
+        executor.scheduleAtFixedRate(timeKeeper, initialDelay, TimeUnit.DAYS.toSeconds(1), TimeUnit.SECONDS);
+
+        logger.info("All setup and running...");
+    }
+
+    private static VentilationSystemTimeKeeper createVentilationSystemTimeKeeper(SystemActionDbAccessor airFlowDbAccessor) {
         return new VentilationSystemTimeKeeper(airFlowDbAccessor);
     }
 
-    private static RuleApplier createFreshAirController(VentilationSystem ventilationSystem, Sensor outdoorSensor, Sensor indoorSensor,
-            VentilationSystemTimeKeeper timeKeeper, SystemActionPersistence systemActionPersistence) {
-        final CurrentSensorData currentOutdoorSensorData = new CurrentSensorData(outdoorSensor.getPersistence());
-        final CurrentSensorData currentIndoorSensorData = new CurrentSensorData(indoorSensor.getPersistence());
+    private static RuleApplier createFreshAirController(VentilationSystem ventilationSystem, Sensors sensors, VentilationSystemTimeKeeper timeKeeper,
+            SystemActionPersistence systemActionPersistence) {
+        final CurrentSensorData currentOutdoorSensorData = new CurrentSensorData(sensors.outdoor().getPersistence());
+        final CurrentSensorData currentIndoorSensorData = new CurrentSensorData(sensors.indoor().getPersistence());
         final List<VentilationSystem> ventilationSystems = List.of(ventilationSystem, timeKeeper, systemActionPersistence);
         final CO2ControlAirFlow co2ControlAirFlow = new CO2ControlAirFlow(currentIndoorSensorData);
         final DailyAirFlow dailyAirFlow = new DailyAirFlow();
