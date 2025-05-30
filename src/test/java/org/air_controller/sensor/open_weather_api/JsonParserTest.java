@@ -1,12 +1,13 @@
 package org.air_controller.sensor.open_weather_api;
 
+import org.air_controller.sensor_values.Humidity;
 import org.air_controller.sensor_values.Temperature;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 
 class JsonParserTest {
 
@@ -33,12 +34,13 @@ class JsonParserTest {
 
         final Optional<WebSensorData> result = JsonParser.parse(sampleHttpResponse);
 
-        assertTrue(result.isPresent());
-        assertTrue(result.get().getTemperature().isPresent());
-        assertTrue(result.get().getHumidity().isPresent());
+        assertThat(result).isPresent();
+        assertThat(result.get().getTemperature()).isPresent();
+        assertThat(result.get().getHumidity()).isPresent();
         final Temperature temperature = result.get().getTemperature().get();
-        assertEquals(10.53, temperature.getCelsius(), 0.1);
-        assertEquals(87.0, result.get().getHumidity().get().getRelativeHumidity(temperature), 0.1);
+        assertThat(temperature.getCelsius()).isCloseTo(10.53, within(0.1));
+        final Humidity humidity = result.get().getHumidity().get();
+        assertThat(humidity.getRelativeHumidity(temperature)).isCloseTo(87.0, within(0.1));
     }
 
     @Test
@@ -63,7 +65,7 @@ class JsonParserTest {
 
         final Optional<WebSensorData> result = JsonParser.parse(sampleHttpResponse);
 
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -89,6 +91,6 @@ class JsonParserTest {
 
         final Optional<WebSensorData> result = JsonParser.parse(sampleHttpResponse);
 
-        assertTrue(result.isEmpty());
+        assertThat(result).isEmpty();
     }
 }
