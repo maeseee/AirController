@@ -7,8 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -42,9 +40,9 @@ class SystemActionDbAccessorTest {
     void shouldReturnTheMostCurrentState() throws Exception {
         final SystemActionDbAccessor testee = new SystemActionDbAccessor(connection, SYSTEM_PART);
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        insertStateIntoTable(now.minusHours(1), OutputState.ON);
-        insertStateIntoTable(now, OutputState.OFF);
-        insertStateIntoTable(now.minusHours(2), OutputState.ON);
+        testee.insertAction(OutputState.ON, now.minusHours(1));
+        testee.insertAction(OutputState.OFF, now);
+        testee.insertAction(OutputState.ON, now.minusHours(2));
 
         final Optional<SystemAction> result = testee.getMostCurrentState();
 
@@ -58,25 +56,13 @@ class SystemActionDbAccessorTest {
     void shouldReturnActionsInTimeRange() throws Exception {
         final SystemActionDbAccessor testee = new SystemActionDbAccessor(connection, SYSTEM_PART);
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        insertStateIntoTable(now.minusHours(1), OutputState.ON);
-        insertStateIntoTable(now.minusMinutes(1), OutputState.OFF);
-        insertStateIntoTable(now.minusHours(4), OutputState.ON);
-        insertStateIntoTable(now.minusHours(2), OutputState.ON);
+        testee.insertAction(OutputState.ON, now.minusHours(1));
+        testee.insertAction(OutputState.OFF, now.minusMinutes(1));
+        testee.insertAction(OutputState.ON, now.minusHours(4));
+        testee.insertAction(OutputState.OFF, now.minusHours(2));
 
         final List<SystemAction> actionsFromTimeToNow = testee.getActionsFromTimeToNow(now.minusHours(3));
 
         assertThat(actionsFromTimeToNow).hasSize(3);
-    }
-
-    private void insertStateIntoTable(ZonedDateTime timestamp, OutputState state) throws SQLException {
-        final String sql =
-                "INSERT INTO " + SYSTEM_PART.getTableName() + " (system_part, status, action_time) " +
-                        "VALUES (?, ?, ?)";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, SYSTEM_PART.name());
-            preparedStatement.setObject(2, state.name());
-            preparedStatement.setObject(3, timestamp.toLocalDateTime());
-            preparedStatement.executeUpdate();
-        }
     }
 }
