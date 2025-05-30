@@ -18,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
 class SystemActionDbAccessorTest {
+    private static final SystemPart SYSTEM_PART = SystemPart.AIR_FLOW;
 
     private Connection connection;
 
@@ -38,11 +39,11 @@ class SystemActionDbAccessorTest {
 
     @Test
     void shouldReturnTheMostCurrentState() throws Exception {
-        final SystemActionDbAccessor testee = new SystemActionDbAccessor(connection, SystemPart.AIR_FLOW);
+        final SystemActionDbAccessor testee = new SystemActionDbAccessor(connection, SYSTEM_PART);
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        insertStateIntoTable(now.minusHours(1), SystemPart.AIR_FLOW, OutputState.ON);
-        insertStateIntoTable(now, SystemPart.AIR_FLOW, OutputState.OFF);
-        insertStateIntoTable(now.minusHours(2), SystemPart.AIR_FLOW, OutputState.ON);
+        insertStateIntoTable(now.minusHours(1), OutputState.ON);
+        insertStateIntoTable(now, OutputState.OFF);
+        insertStateIntoTable(now.minusHours(2), OutputState.ON);
 
         final Optional<SystemAction> result = testee.getMostCurrentState();
 
@@ -52,12 +53,12 @@ class SystemActionDbAccessorTest {
         assertThat(result.get().actionTime()).isCloseTo(now, within(1, ChronoUnit.SECONDS));
     }
 
-    private void insertStateIntoTable(ZonedDateTime timestamp, SystemPart systemPart, OutputState state) throws SQLException {
+    private void insertStateIntoTable(ZonedDateTime timestamp, OutputState state) throws SQLException {
         final String sql =
-                "INSERT INTO " + systemPart.getTableName() + " (system_part, status, action_time) " +
+                "INSERT INTO " + SYSTEM_PART.getTableName() + " (system_part, status, action_time) " +
                         "VALUES (?, ?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, systemPart.name());
+            preparedStatement.setString(1, SYSTEM_PART.name());
             preparedStatement.setObject(2, state.name());
             preparedStatement.setObject(3, timestamp.toLocalDateTime());
             preparedStatement.executeUpdate();
