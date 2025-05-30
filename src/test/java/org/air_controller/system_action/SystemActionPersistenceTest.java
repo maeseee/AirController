@@ -14,7 +14,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class SystemActionsTest {
+class SystemActionPersistenceTest {
 
     @Mock
     private SystemActionDbAccessor airFlowDbAccessor;
@@ -24,7 +24,7 @@ class SystemActionsTest {
     @Test
     void shouldReturnActionsFromLastHour() throws SQLException {
         final ZonedDateTime startTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(1);
-        final SystemActions testee = new SystemActions(airFlowDbAccessor, humidityExchangerDbAccessor);
+        final SystemActionPersistence testee = new SystemActionPersistence(airFlowDbAccessor, humidityExchangerDbAccessor);
 
         testee.getAirFlowActionsFromTimeToNow(startTime);
 
@@ -36,7 +36,7 @@ class SystemActionsTest {
         final ZonedDateTime startTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(1);
         final SystemAction mostCurrentAction = new SystemAction(startTime, SystemPart.AIR_FLOW, OutputState.OFF);
         when(airFlowDbAccessor.getMostCurrentState()).thenReturn(Optional.of(mostCurrentAction));
-        final SystemActions testee = new SystemActions(airFlowDbAccessor, humidityExchangerDbAccessor);
+        final SystemActionPersistence testee = new SystemActionPersistence(airFlowDbAccessor, humidityExchangerDbAccessor);
 
         testee.setAirFlowOn(OutputState.ON);
 
@@ -50,7 +50,7 @@ class SystemActionsTest {
         final ZonedDateTime startTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(1);
         final SystemAction mostCurrentAction = new SystemAction(startTime, SystemPart.AIR_FLOW, OutputState.ON);
         when(airFlowDbAccessor.getMostCurrentState()).thenReturn(Optional.of(mostCurrentAction));
-        final SystemActions testee = new SystemActions(airFlowDbAccessor, humidityExchangerDbAccessor);
+        final SystemActionPersistence testee = new SystemActionPersistence(airFlowDbAccessor, humidityExchangerDbAccessor);
 
         testee.setAirFlowOn(OutputState.ON);
 

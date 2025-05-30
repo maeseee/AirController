@@ -3,7 +3,7 @@ package org.air_controller.system;
 import com.google.common.annotations.VisibleForTesting;
 import org.air_controller.rules.TimeKeeper;
 import org.air_controller.system_action.SystemAction;
-import org.air_controller.system_action.SystemActions;
+import org.air_controller.system_action.SystemActionPersistence;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,29 +15,29 @@ import java.util.stream.IntStream;
 public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeeper {
     private static final Logger logger = LogManager.getLogger(VentilationSystemTimeKeeper.class);
 
-    private final SystemActions systemActions;
+    private final SystemActionPersistence persistence;
     private OutputState currentAirFlowState;
 
-    public VentilationSystemTimeKeeper(SystemActions systemActions) {
-        this.systemActions = systemActions;
+    public VentilationSystemTimeKeeper(SystemActionPersistence persistence) {
+        this.persistence = persistence;
     }
 
     @Override
     public void setAirFlowOn(OutputState state) {
         currentAirFlowState = state;
-        systemActions.setAirFlowOn(state);
+        persistence.setAirFlowOn(state);
     }
 
     @Override
     public void setHumidityExchangerOn(OutputState state) {
-        systemActions.setHumidityExchangerOn(state);
+        persistence.setHumidityExchangerOn(state);
     }
 
     @Override
     public Duration getAirFlowOnDurationInLastHour() {
         final ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
         final ZonedDateTime startTime = endTime.minusHours(1);
-        final List<SystemAction> actionsFromLastHour = systemActions.getAirFlowActionsFromTimeToNow(startTime);
+        final List<SystemAction> actionsFromLastHour = persistence.getAirFlowActionsFromTimeToNow(startTime);
         return getDuration(actionsFromLastHour, startTime, endTime);
     }
 
@@ -58,7 +58,7 @@ public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeepe
     Duration getTotalAirFlowFromDay(LocalDate day) {
         final ZonedDateTime startTime = day.atStartOfDay(ZoneOffset.UTC);
         final ZonedDateTime endTime = ZonedDateTime.of(day.atTime(LocalTime.MAX), ZoneOffset.UTC);
-        final List<SystemAction> actionsFromLastDay = systemActions.getAirFlowActionsFromTimeToNow(startTime);
+        final List<SystemAction> actionsFromLastDay = persistence.getAirFlowActionsFromTimeToNow(startTime);
         return getDuration(actionsFromLastDay, startTime, endTime);
     }
 

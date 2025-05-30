@@ -18,7 +18,7 @@ import org.air_controller.system.ControlledVentilationSystem;
 import org.air_controller.system.VentilationSystem;
 import org.air_controller.system.VentilationSystemTimeKeeper;
 import org.air_controller.system_action.SystemActionDbAccessor;
-import org.air_controller.system_action.SystemActions;
+import org.air_controller.system_action.SystemActionPersistence;
 import org.air_controller.system_action.SystemPart;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -103,9 +103,7 @@ public class Application {
 
     private static VentilationSystemTimeKeeper createVentilationSystemTimeKeeper() throws SQLException {
         return new VentilationSystemTimeKeeper(
-                new SystemActions(
-                        createDbAccessor(SystemPart.AIR_FLOW),
-                        createDbAccessor(SystemPart.HUMIDITY)));
+                new SystemActionPersistence(createDbAccessor(SystemPart.AIR_FLOW), createDbAccessor(SystemPart.HUMIDITY)));
     }
 
     private static SystemActionDbAccessor createDbAccessor(SystemPart systemPart) throws SQLException {

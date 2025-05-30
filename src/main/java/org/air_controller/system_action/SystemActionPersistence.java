@@ -9,11 +9,11 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public class SystemActions implements VentilationSystem {
+public class SystemActionPersistence implements VentilationSystem {
     private final SystemActionDbAccessor airFlowDbAccessor;
     private final SystemActionDbAccessor humidityExchangerDbAccessor;
 
-    public SystemActions(SystemActionDbAccessor airFlowDbAccessor, SystemActionDbAccessor humidityExchangerDbAccessor) throws SQLException {
+    public SystemActionPersistence(SystemActionDbAccessor airFlowDbAccessor, SystemActionDbAccessor humidityExchangerDbAccessor) throws SQLException {
         this.airFlowDbAccessor = airFlowDbAccessor;
         this.humidityExchangerDbAccessor = humidityExchangerDbAccessor;
     }
