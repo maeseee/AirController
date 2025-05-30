@@ -4,6 +4,7 @@ import org.air_controller.gpio.GpioPin;
 import org.air_controller.gpio.GpioPins;
 import org.air_controller.gpio.MockGpioPin;
 import org.air_controller.system_action.SystemActionDbAccessor;
+import org.air_controller.system_action.SystemActionDbAccessors;
 import org.air_controller.system_action.SystemPart;
 import org.h2.jdbcx.JdbcDataSource;
 
@@ -16,12 +17,15 @@ class MainMock {
         final GpioPin airFlow = new MockGpioPin("AIR_FLOW", true);
         final GpioPin humidityExchanger = new MockGpioPin("HUMIDITY_EXCHANGER", true);
         final GpioPins gpioPins = new GpioPins(airFlow, humidityExchanger);
-        final Application application = new Application(
-                gpioPins,
-                createSystemActionDbAccessorWithLocalDb(SystemPart.AIR_FLOW),
-                createSystemActionDbAccessorWithLocalDb(SystemPart.HUMIDITY));
+        final Application application = new Application(gpioPins, createSystemActionDbAccessors());
         application.run();
         Thread.currentThread().join();
+    }
+
+    private static SystemActionDbAccessors createSystemActionDbAccessors() throws SQLException {
+        return new SystemActionDbAccessors(
+                createSystemActionDbAccessorWithLocalDb(SystemPart.AIR_FLOW),
+                createSystemActionDbAccessorWithLocalDb(SystemPart.HUMIDITY));
     }
 
     private static SystemActionDbAccessor createSystemActionDbAccessorWithLocalDb(SystemPart systemPart) throws SQLException {

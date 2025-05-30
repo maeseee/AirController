@@ -18,6 +18,7 @@ import org.air_controller.system.ControlledVentilationSystem;
 import org.air_controller.system.VentilationSystem;
 import org.air_controller.system.VentilationSystemTimeKeeper;
 import org.air_controller.system_action.SystemActionDbAccessor;
+import org.air_controller.system_action.SystemActionDbAccessors;
 import org.air_controller.system_action.SystemActionPersistence;
 import org.air_controller.system_action.SystemPart;
 import org.apache.logging.log4j.LogManager;
@@ -46,18 +47,25 @@ public class Application {
     private final ScheduledExecutorService executor;
 
     public Application() throws SQLException {
-        this(createDingtianPins(), createDbAccessor(SystemPart.AIR_FLOW), createDbAccessor(SystemPart.HUMIDITY));
+        this(createDingtianPins(), createSystemActionDbAccessors());
     }
 
     private static GpioPins createDingtianPins() {
         return new GpioPins(new DingtianPin(DingtianRelay.AIR_FLOW, true), new DingtianPin(DingtianRelay.HUMIDITY_EXCHANGER, false));
     }
 
+    private static SystemActionDbAccessors createSystemActionDbAccessors() throws SQLException {
+        return new SystemActionDbAccessors(createDbAccessor(SystemPart.AIR_FLOW), createDbAccessor(SystemPart.HUMIDITY));
+    }
+
+    private static SystemActionDbAccessor createDbAccessor(SystemPart systemPart) throws SQLException {
+        return new SystemActionDbAccessor(Persistence.createConnection(), systemPart);
+    }
+
     // Used for MainMock
-    Application(GpioPins gpioPins, SystemActionDbAccessor airFlowDbAccessor,
-            SystemActionDbAccessor humidityExchangerDbAccessor) throws SQLException {
+    Application(GpioPins gpioPins, SystemActionDbAccessors systemActionDbAccessors) throws SQLException {
         this(new ControlledVentilationSystem(gpioPins), createOutdoorSensor(), createIndoorSensor(),
-                createVentilationSystemTimeKeeper(airFlowDbAccessor), new SystemActionPersistence(airFlowDbAccessor, humidityExchangerDbAccessor));
+                createVentilationSystemTimeKeeper(systemActionDbAccessors.airFlow()), new SystemActionPersistence(systemActionDbAccessors));
     }
 
     private Application(VentilationSystem ventilationSystem, Sensor outdoorSensor, Sensor indoorSensor,
@@ -109,10 +117,6 @@ public class Application {
 
     private static VentilationSystemTimeKeeper createVentilationSystemTimeKeeper(SystemActionDbAccessor airFlowDbAccessor) throws SQLException {
         return new VentilationSystemTimeKeeper(airFlowDbAccessor);
-    }
-
-    private static SystemActionDbAccessor createDbAccessor(SystemPart systemPart) throws SQLException {
-        return new SystemActionDbAccessor(Persistence.createConnection(), systemPart);
     }
 
     private static RuleApplier createFreshAirController(VentilationSystem ventilationSystem, Sensor outdoorSensor, Sensor indoorSensor,
