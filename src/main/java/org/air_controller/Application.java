@@ -95,7 +95,7 @@ public class Application {
     private Application(VentilationSystem ventilationSystem, Sensors sensors,
             VentilationSystemTimeKeeper timeKeeper, SystemActionPersistence systemActionPersistence) {
         this(sensors,
-                createFreshAirController(ventilationSystem, sensors, timeKeeper, systemActionPersistence),
+                createRuleApplier(ventilationSystem, sensors, timeKeeper, systemActionPersistence),
                 timeKeeper,
                 Executors.newScheduledThreadPool(1));
     }
@@ -125,7 +125,7 @@ public class Application {
         return new VentilationSystemTimeKeeper(airFlowDbAccessor);
     }
 
-    private static RuleApplier createFreshAirController(VentilationSystem ventilationSystem, Sensors sensors, VentilationSystemTimeKeeper timeKeeper,
+    private static RuleApplier createRuleApplier(VentilationSystem ventilationSystem, Sensors sensors, VentilationSystemTimeKeeper timeKeeper,
             SystemActionPersistence systemActionPersistence) {
         final CurrentSensorData currentOutdoorSensorData = new CurrentSensorData(sensors.outdoor().getPersistence());
         final CurrentSensorData currentIndoorSensorData = new CurrentSensorData(sensors.indoor().getPersistence());
