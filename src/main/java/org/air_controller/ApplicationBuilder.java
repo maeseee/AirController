@@ -25,11 +25,12 @@ import java.util.concurrent.ScheduledExecutorService;
 public class ApplicationBuilder {
 
     private Sensors sensors;
-    private RuleApplier ruleApplier;
     private VentilationSystemTimeKeeper timeKeeper;
     private ScheduledExecutorService executor;
+    private RuleApplier ruleApplier;
 
     private SystemActionDbAccessors systemActionDbAccessors;
+    private GpioPins gpioPins;
 
     public Application build() throws SQLException {
         createNotMockedObjects();
@@ -46,8 +47,10 @@ public class ApplicationBuilder {
         if (timeKeeper == null) {
             timeKeeper = new VentilationSystemTimeKeeper(systemActionDbAccessors.airFlow());
         }
+        if (gpioPins == null) {
+            gpioPins = createDingtianPins();
+        }
         if (ruleApplier == null) {
-            final GpioPins gpioPins = createDingtianPins();
             final VentilationSystem ventilationSystem = createVEntilationSystem(gpioPins);
             ruleApplier =
                     new RuleApplierBuilder().build(ventilationSystem, sensors, timeKeeper, new SystemActionPersistence(systemActionDbAccessors));
