@@ -1,9 +1,6 @@
 package org.air_controller;
 
 import org.air_controller.gpio.GpioPins;
-import org.air_controller.gpio.dingtian_relay.DingtianPin;
-import org.air_controller.gpio.dingtian_relay.DingtianRelay;
-import org.air_controller.persistence.Persistence;
 import org.air_controller.rules.*;
 import org.air_controller.sensor.Sensor;
 import org.air_controller.sensor.SensorException;
@@ -21,12 +18,10 @@ import org.air_controller.system.VentilationSystemTimeKeeper;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemActionDbAccessors;
 import org.air_controller.system_action.SystemActionPersistence;
-import org.air_controller.system_action.SystemPart;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.time.Duration;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -45,22 +40,6 @@ public class Application {
     private final RuleApplier ruleApplier;
     private final TimeKeeper timeKeeper;
     private final ScheduledExecutorService executor;
-
-    public Application() throws SQLException {
-        this(createDingtianPins(), createSystemActionDbAccessors());
-    }
-
-    private static GpioPins createDingtianPins() {
-        return new GpioPins(new DingtianPin(DingtianRelay.AIR_FLOW, true), new DingtianPin(DingtianRelay.HUMIDITY_EXCHANGER, false));
-    }
-
-    private static SystemActionDbAccessors createSystemActionDbAccessors() throws SQLException {
-        return new SystemActionDbAccessors(createDbAccessor(SystemPart.AIR_FLOW), createDbAccessor(SystemPart.HUMIDITY));
-    }
-
-    private static SystemActionDbAccessor createDbAccessor(SystemPart systemPart) throws SQLException {
-        return new SystemActionDbAccessor(Persistence.createConnection(), systemPart);
-    }
 
     // Used for MainMock
     Application(GpioPins gpioPins, SystemActionDbAccessors systemActionDbAccessors) {
