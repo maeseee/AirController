@@ -9,6 +9,8 @@ import org.air_controller.rules.RuleApplier;
 import org.air_controller.rules.RuleApplierBuilder;
 import org.air_controller.sensor.Sensors;
 import org.air_controller.sensor.SensorsBuilder;
+import org.air_controller.sensor_values.CurrentSensorData;
+import org.air_controller.sensor_values.CurrentSensors;
 import org.air_controller.system.ControlledVentilationSystem;
 import org.air_controller.system.VentilationSystem;
 import org.air_controller.system.VentilationSystemTimeKeeper;
@@ -52,11 +54,7 @@ public class ApplicationBuilder {
             gpioPins = createDingtianPins();
         }
         if (ruleApplier == null) {
-            final VentilationSystem ventilationSystem = createVEntilationSystem(gpioPins);
-            final SystemActionPersistence systemActionPersistence = new SystemActionPersistence(systemActionDbAccessors);
-            final List<VentilationSystem> ventilationSystems = List.of(ventilationSystem, timeKeeper, systemActionPersistence);
-            ruleApplier =
-                    new RuleApplierBuilder().build(ventilationSystems, sensors, timeKeeper);
+            ruleApplier = new RuleApplierBuilder().build(createVentilationSystems(), createCurrentSensors(sensors), timeKeeper);
         }
         if (executor == null) {
             executor = Executors.newScheduledThreadPool(1);
@@ -67,15 +65,23 @@ public class ApplicationBuilder {
         return new GpioPins(new DingtianPin(DingtianRelay.AIR_FLOW, true), new DingtianPin(DingtianRelay.HUMIDITY_EXCHANGER, false));
     }
 
-    private static SystemActionDbAccessors createSystemActionDbAccessors() throws SQLException {
+    private SystemActionDbAccessors createSystemActionDbAccessors() throws SQLException {
         return new SystemActionDbAccessors(createDbAccessor(SystemPart.AIR_FLOW), createDbAccessor(SystemPart.HUMIDITY));
     }
 
-    private static SystemActionDbAccessor createDbAccessor(SystemPart systemPart) throws SQLException {
+    private SystemActionDbAccessor createDbAccessor(SystemPart systemPart) throws SQLException {
         return new SystemActionDbAccessor(Persistence.createConnection(), systemPart);
     }
 
-    private VentilationSystem createVEntilationSystem(GpioPins gpioPins) {
-        return new ControlledVentilationSystem(gpioPins);
+    private List<VentilationSystem> createVentilationSystems() {
+        final VentilationSystem ventilationSystem = new ControlledVentilationSystem(gpioPins);
+        final SystemActionPersistence systemActionPersistence = new SystemActionPersistence(systemActionDbAccessors);
+        return List.of(ventilationSystem, timeKeeper, systemActionPersistence);
+    }
+
+    private CurrentSensors createCurrentSensors(Sensors sensors) {
+        final CurrentSensorData currentIndoorSensorData = new CurrentSensorData(sensors.indoor().getPersistence());
+        final CurrentSensorData currentOutdoorSensorData = new CurrentSensorData(sensors.outdoor().getPersistence());
+        return new CurrentSensors(currentIndoorSensorData, currentOutdoorSensorData);
     }
 }
