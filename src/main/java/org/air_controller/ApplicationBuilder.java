@@ -28,9 +28,9 @@ import java.util.concurrent.ScheduledExecutorService;
 public class ApplicationBuilder {
 
     private Sensors sensors;
+    private RuleApplier ruleApplier;
     private VentilationSystemTimeKeeper timeKeeper;
     private ScheduledExecutorService executor;
-    private RuleApplier ruleApplier;
 
     private SystemActionDbAccessors systemActionDbAccessors;
     private GpioPins gpioPins;
@@ -41,21 +41,45 @@ public class ApplicationBuilder {
     }
 
     private void createNotMockedObjects() throws SQLException {
+        createSensorsIfNotAvailable();
+        createSystemActionDbAccessorsIfNotAvailable();
+        createTimeKeeperIfNotAvailable();
+        createGpioPinsIfNotAvailable();
+        createRuleApplierIfNotAvailable();
+        createExecutorIfNotAvailable();
+    }
+
+    private void createSensorsIfNotAvailable() {
         if (sensors == null) {
             sensors = new SensorsBuilder().build();
         }
+    }
+
+    private void createSystemActionDbAccessorsIfNotAvailable() throws SQLException {
         if (systemActionDbAccessors == null) {
             systemActionDbAccessors = createSystemActionDbAccessors();
         }
+    }
+
+    private void createTimeKeeperIfNotAvailable() {
         if (timeKeeper == null) {
             timeKeeper = new VentilationSystemTimeKeeper(systemActionDbAccessors.airFlow());
         }
+    }
+
+    private void createGpioPinsIfNotAvailable() {
         if (gpioPins == null) {
             gpioPins = createDingtianPins();
         }
+    }
+
+    private void createRuleApplierIfNotAvailable() {
         if (ruleApplier == null) {
-            ruleApplier = new RuleApplierBuilder().build(createVentilationSystems(), createCurrentSensors(sensors), timeKeeper);
+            ruleApplier = new RuleApplierBuilder().build(createVentilationSystems(), createCurrentSensors(), timeKeeper);
         }
+    }
+
+    private void createExecutorIfNotAvailable() {
         if (executor == null) {
             executor = Executors.newScheduledThreadPool(1);
         }
@@ -79,7 +103,7 @@ public class ApplicationBuilder {
         return List.of(ventilationSystem, timeKeeper, systemActionPersistence);
     }
 
-    private CurrentSensors createCurrentSensors(Sensors sensors) {
+    private CurrentSensors createCurrentSensors() {
         final CurrentSensorData currentIndoorSensorData = new CurrentSensorData(sensors.indoor().getPersistence());
         final CurrentSensorData currentOutdoorSensorData = new CurrentSensorData(sensors.outdoor().getPersistence());
         return new CurrentSensors(currentIndoorSensorData, currentOutdoorSensorData);
