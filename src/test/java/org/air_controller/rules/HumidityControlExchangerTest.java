@@ -41,8 +41,7 @@ class HumidityControlExchangerTest {
         final Humidity outdoorHumidity = Humidity.createFromRelative(outdoorHumidityValue, temperature);
         when(currentIndoorSensorData.getHumidity()).thenReturn(Optional.of(indoorHumidity));
         when(currentOutdoorSensorData.getHumidity()).thenReturn(Optional.of(outdoorHumidity));
-        final HumidityControlAirFlow humidityControlAirFlow = new HumidityControlAirFlow(currentIndoorSensorData, currentOutdoorSensorData);
-        final HumidityControlExchanger testee = new HumidityControlExchanger(humidityControlAirFlow);
+        final HumidityControlExchanger testee = new HumidityControlExchanger(currentIndoorSensorData, currentOutdoorSensorData);
 
         final Confidence result = testee.turnOnConfidence();
 
