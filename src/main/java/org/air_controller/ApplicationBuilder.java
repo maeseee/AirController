@@ -18,6 +18,7 @@ import org.air_controller.system_action.SystemActionPersistence;
 import org.air_controller.system_action.SystemPart;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -52,8 +53,10 @@ public class ApplicationBuilder {
         }
         if (ruleApplier == null) {
             final VentilationSystem ventilationSystem = createVEntilationSystem(gpioPins);
+            final SystemActionPersistence systemActionPersistence = new SystemActionPersistence(systemActionDbAccessors);
+            final List<VentilationSystem> ventilationSystems = List.of(ventilationSystem, timeKeeper, systemActionPersistence);
             ruleApplier =
-                    new RuleApplierBuilder().build(ventilationSystem, sensors, timeKeeper, new SystemActionPersistence(systemActionDbAccessors));
+                    new RuleApplierBuilder().build(ventilationSystems, sensors, timeKeeper);
         }
         if (executor == null) {
             executor = Executors.newScheduledThreadPool(1);
