@@ -12,8 +12,8 @@ import org.air_controller.sensor.SensorsBuilder;
 import org.air_controller.sensor_values.CurrentSensorData;
 import org.air_controller.sensor_values.CurrentSensors;
 import org.air_controller.system.ControlledVentilationSystem;
+import org.air_controller.system.SystemStatistics;
 import org.air_controller.system.VentilationSystem;
-import org.air_controller.system.VentilationSystemAirFlowStatistics;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemActionDbAccessors;
 import org.air_controller.system_action.SystemActionPersistence;
@@ -29,7 +29,7 @@ public class ApplicationBuilder {
 
     private Sensors sensors;
     private RuleApplier ruleApplier;
-    private VentilationSystemAirFlowStatistics statistics;
+    private SystemStatistics statistics;
     private ScheduledExecutorService executor;
 
     private SystemActionDbAccessors systemActionDbAccessors;
@@ -63,7 +63,7 @@ public class ApplicationBuilder {
 
     private void createTimeKeeperIfNotAvailable() {
         if (statistics == null) {
-            statistics = new VentilationSystemAirFlowStatistics(systemActionDbAccessors.airFlow());
+            statistics = new SystemStatistics(systemActionDbAccessors.airFlow());
         }
     }
 
@@ -100,7 +100,7 @@ public class ApplicationBuilder {
     private List<VentilationSystem> createVentilationSystems() {
         final VentilationSystem ventilationSystem = new ControlledVentilationSystem(gpioPins);
         final SystemActionPersistence systemActionPersistence = new SystemActionPersistence(systemActionDbAccessors);
-        return List.of(ventilationSystem, statistics, systemActionPersistence);
+        return List.of(ventilationSystem, systemActionPersistence);
     }
 
     private CurrentSensors createCurrentSensors() {

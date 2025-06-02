@@ -1,7 +1,7 @@
 package org.air_controller.system;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.air_controller.rules.AirFlowStatistics;
+import lombok.RequiredArgsConstructor;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.apache.logging.log4j.LogManager;
@@ -12,30 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class VentilationSystemAirFlowStatistics implements VentilationSystem, AirFlowStatistics {
-    private static final Logger logger = LogManager.getLogger(VentilationSystemAirFlowStatistics.class);
+@RequiredArgsConstructor
+public class SystemStatistics implements Runnable {
+    private static final Logger logger = LogManager.getLogger(SystemStatistics.class);
 
-    private final SystemActionDbAccessor airFlowDbAccessor;
-    private OutputState currentAirFlowState;
+    private final SystemActionDbAccessor dbAccessor;
 
-    public VentilationSystemAirFlowStatistics(SystemActionDbAccessor airFlowDbAccessor) {
-        this.airFlowDbAccessor = airFlowDbAccessor;
-    }
-
-    @Override
-    public void setAirFlowOn(OutputState state) {
-        currentAirFlowState = state;
-    }
-
-    @Override
-    public void setHumidityExchangerOn(OutputState state) {
-    }
-
-    @Override
-    public Duration getAirFlowOnDurationInLastHour() {
+    public Duration getOnDurationInLastHour() {
         final ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
         final ZonedDateTime startTime = endTime.minusHours(1);
-        final List<SystemAction> actionsFromLastHour = airFlowDbAccessor.getActionsFromTimeToNow(startTime);
+        final List<SystemAction> actionsFromLastHour = dbAccessor.getActionsFromTimeToNow(startTime);
         return getDuration(actionsFromLastHour, startTime, endTime);
     }
 
@@ -44,7 +30,7 @@ public class VentilationSystemAirFlowStatistics implements VentilationSystem, Ai
         try {
             final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
             final LocalDate yesterday = now.toLocalDate().minusDays(1);
-            final Duration totalAirFlowYesterday = getTotalAirFlowFromDay(yesterday);
+            final Duration totalAirFlowYesterday = getTotalFromDay(yesterday);
             logger.info("The daily switch-on time of {} was {} minutes ({} %)", yesterday, totalAirFlowYesterday.toMinutes(),
                     getOnPercentage(totalAirFlowYesterday));
         } catch (Exception e) {
@@ -53,16 +39,16 @@ public class VentilationSystemAirFlowStatistics implements VentilationSystem, Ai
     }
 
     @VisibleForTesting
-    Duration getTotalAirFlowFromDay(LocalDate day) {
+    Duration getTotalFromDay(LocalDate day) {
         final ZonedDateTime startTime = day.atStartOfDay(ZoneOffset.UTC);
         final ZonedDateTime endTime = ZonedDateTime.of(day.atTime(LocalTime.MAX), ZoneOffset.UTC);
-        final List<SystemAction> actionsFromLastDay = airFlowDbAccessor.getActionsFromTimeToNow(startTime);
+        final List<SystemAction> actionsFromLastDay = dbAccessor.getActionsFromTimeToNow(startTime);
         return getDuration(actionsFromLastDay, startTime, endTime);
     }
 
     private Duration getDuration(List<SystemAction> systemActions, ZonedDateTime startTime, ZonedDateTime endTime) {
         if (systemActions.isEmpty()) {
-            return currentAirFlowState == OutputState.ON ? Duration.between(startTime, endTime) : Duration.ZERO;
+            return durationFromMostCurrentState();
         }
         final List<SystemAction> actionsWithStartAndEnd = addStartAndEndActions(systemActions, startTime, endTime);
         final List<Duration> onDurations = convertToOnDurationList(actionsWithStartAndEnd);
@@ -99,5 +85,12 @@ public class VentilationSystemAirFlowStatistics implements VentilationSystem, Ai
             return Duration.between(systemAction1.actionTime(), systemAction2.actionTime());
         }
         return Duration.ZERO;
+    }
+
+    private Duration durationFromMostCurrentState() {
+        final OutputState state = dbAccessor.getMostCurrentState()
+                .map(SystemAction::outputState)
+                .orElse(OutputState.OFF);
+        return state == OutputState.ON ? Duration.ofHours(1) : Duration.ZERO;
     }
 }

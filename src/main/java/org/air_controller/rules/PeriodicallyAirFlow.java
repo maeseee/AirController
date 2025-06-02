@@ -1,5 +1,7 @@
 package org.air_controller.rules;
 
+import org.air_controller.system.SystemStatistics;
+
 import java.time.Duration;
 
 public class PeriodicallyAirFlow implements Rule {
@@ -8,9 +10,9 @@ public class PeriodicallyAirFlow implements Rule {
     private static final double B = 1; // y = xm + b
     private static final double M = -B / HOURLY_FRESH_AIR.toMinutes(); // y = xm + b
 
-    private final AirFlowStatistics statistics;
+    private final SystemStatistics statistics;
 
-    public PeriodicallyAirFlow(AirFlowStatistics statistics) {
+    public PeriodicallyAirFlow(SystemStatistics statistics) {
         this.statistics = statistics;
     }
 
@@ -21,7 +23,7 @@ public class PeriodicallyAirFlow implements Rule {
 
     @Override
     public Confidence turnOnConfidence() {
-        final Duration airFlowOnDurationInLastHour = statistics.getAirFlowOnDurationInLastHour();
+        final Duration airFlowOnDurationInLastHour = statistics.getOnDurationInLastHour();
         final double impact = M * airFlowOnDurationInLastHour.toMinutes() + B;
         return new Confidence(impact);
     }

@@ -1,8 +1,8 @@
 package org.air_controller;
 
-import org.air_controller.rules.AirFlowStatistics;
 import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor.Sensors;
+import org.air_controller.system.SystemStatistics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,10 +20,10 @@ public class Application {
 
     private final Sensors sensors;
     private final RuleApplier ruleApplier;
-    private final AirFlowStatistics statistics;
+    private final SystemStatistics statistics;
     private final ScheduledExecutorService executor;
 
-    Application(Sensors sensors, RuleApplier ruleApplier, AirFlowStatistics statistics, ScheduledExecutorService executor) {
+    Application(Sensors sensors, RuleApplier ruleApplier, SystemStatistics statistics, ScheduledExecutorService executor) {
         this.sensors = sensors;
         this.ruleApplier = ruleApplier;
         this.statistics = statistics;

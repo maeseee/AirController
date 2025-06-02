@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.*;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -18,7 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class VentilationSystemAirFlowStatisticsTest {
+class SystemStatisticsTest {
 
     @Mock
     private SystemActionDbAccessor airFlowDbAccessor;
@@ -26,9 +27,9 @@ class VentilationSystemAirFlowStatisticsTest {
     @Test
     void shouldReturnZero_whenNoEventInTheLastHour() {
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(emptyList());
-        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
+        final SystemStatistics testee = new SystemStatistics(airFlowDbAccessor);
 
-        final Duration result = testee.getAirFlowOnDurationInLastHour();
+        final Duration result = testee.getOnDurationInLastHour();
 
         assertThat(result).isEqualTo(Duration.ZERO);
     }
@@ -36,10 +37,11 @@ class VentilationSystemAirFlowStatisticsTest {
     @Test
     void shouldReturnAnHour_whenNoEventInTheLastHourButLastEventWasOn() {
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(emptyList());
-        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
+        final SystemAction systemAction = new SystemAction(ZonedDateTime.now(), SystemPart.AIR_FLOW, OutputState.ON);
+        when(airFlowDbAccessor.getMostCurrentState()).thenReturn(Optional.of(systemAction));
+        final SystemStatistics testee = new SystemStatistics(airFlowDbAccessor);
 
-        testee.setAirFlowOn(OutputState.ON);
-        final Duration result = testee.getAirFlowOnDurationInLastHour();
+        final Duration result = testee.getOnDurationInLastHour();
 
         assertThat(result).isEqualTo(Duration.ofHours(1));
     }
@@ -49,9 +51,9 @@ class VentilationSystemAirFlowStatisticsTest {
         final ZonedDateTime offTime = ZonedDateTime.now(ZoneOffset.UTC).minusHours(1).plusMinutes(20);
         final SystemAction offAction = new SystemAction(offTime, SystemPart.AIR_FLOW, OutputState.OFF);
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(List.of(offAction));
-        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
+        final SystemStatistics testee = new SystemStatistics(airFlowDbAccessor);
 
-        final Duration result = testee.getAirFlowOnDurationInLastHour();
+        final Duration result = testee.getOnDurationInLastHour();
 
         assertThat(result.toMinutes()).isCloseTo(20, within(1L));
     }
@@ -61,9 +63,9 @@ class VentilationSystemAirFlowStatisticsTest {
         final ZonedDateTime onTime = ZonedDateTime.now(ZoneOffset.UTC).minusHours(1).plusMinutes(20);
         final SystemAction onAction = new SystemAction(onTime, SystemPart.AIR_FLOW, OutputState.ON);
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(List.of(onAction));
-        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
+        final SystemStatistics testee = new SystemStatistics(airFlowDbAccessor);
 
-        final Duration result = testee.getAirFlowOnDurationInLastHour();
+        final Duration result = testee.getOnDurationInLastHour();
 
         assertThat(result.toMinutes()).isCloseTo(40, within(1L));
     }
@@ -78,9 +80,9 @@ class VentilationSystemAirFlowStatisticsTest {
         final SystemAction offAction2 = new SystemAction(startTime.plusMinutes(50), SystemPart.AIR_FLOW, OutputState.OFF);
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(
                 List.of(onAction1, offAction1, onAction2, offAction2));
-        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
+        final SystemStatistics testee = new SystemStatistics(airFlowDbAccessor);
 
-        final Duration result = testee.getAirFlowOnDurationInLastHour();
+        final Duration result = testee.getOnDurationInLastHour();
 
         assertThat(result.toMinutes()).isCloseTo(20, within(1L));
     }
@@ -89,9 +91,9 @@ class VentilationSystemAirFlowStatisticsTest {
     void shouldReturnZero_whenNoEventYesterday() {
         final LocalDate yesterday = LocalDateTime.now().minusDays(1).toLocalDate();
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(emptyList());
-        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
+        final SystemStatistics testee = new SystemStatistics(airFlowDbAccessor);
 
-        final Duration result = testee.getTotalAirFlowFromDay(yesterday);
+        final Duration result = testee.getTotalFromDay(yesterday);
 
         assertThat(result).isEqualTo(Duration.ZERO);
     }
@@ -102,9 +104,9 @@ class VentilationSystemAirFlowStatisticsTest {
         final ZonedDateTime startTime = ZonedDateTime.of(yesterday.atStartOfDay(), ZoneOffset.UTC).plusHours(10);
         final SystemAction offAction = new SystemAction(startTime.plusMinutes(20), SystemPart.AIR_FLOW, OutputState.OFF);
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(List.of(offAction));
-        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
+        final SystemStatistics testee = new SystemStatistics(airFlowDbAccessor);
 
-        final Duration result = testee.getTotalAirFlowFromDay(yesterday);
+        final Duration result = testee.getTotalFromDay(yesterday);
 
         assertThat(result.toHours()).isCloseTo(10, within(1L));
     }
@@ -115,9 +117,9 @@ class VentilationSystemAirFlowStatisticsTest {
         final ZonedDateTime startTime = ZonedDateTime.of(yesterday.atStartOfDay(), ZoneOffset.UTC).plusHours(10);
         final SystemAction offAction = new SystemAction(startTime.plusMinutes(20), SystemPart.AIR_FLOW, OutputState.ON);
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(List.of(offAction));
-        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
+        final SystemStatistics testee = new SystemStatistics(airFlowDbAccessor);
 
-        final Duration result = testee.getTotalAirFlowFromDay(yesterday);
+        final Duration result = testee.getTotalFromDay(yesterday);
 
         assertThat(result.toHours()).isCloseTo(14, within(1L));
     }
@@ -132,9 +134,9 @@ class VentilationSystemAirFlowStatisticsTest {
         final SystemAction offAction2 = new SystemAction(startTime.plusMinutes(50), SystemPart.AIR_FLOW, OutputState.OFF);
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(
                 List.of(onAction1, offAction1, onAction2, offAction2));
-        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
+        final SystemStatistics testee = new SystemStatistics(airFlowDbAccessor);
 
-        final Duration result = testee.getTotalAirFlowFromDay(yesterday);
+        final Duration result = testee.getTotalFromDay(yesterday);
 
         assertThat(result.toMinutes()).isCloseTo(20, within(1L));
     }
@@ -147,9 +149,9 @@ class VentilationSystemAirFlowStatisticsTest {
         final SystemAction offAction1 = new SystemAction(startTime.plusMinutes(10), SystemPart.AIR_FLOW, OutputState.OFF);
         final SystemAction offAction2 = new SystemAction(startTime.plusMinutes(30), SystemPart.AIR_FLOW, OutputState.OFF);
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(List.of(onAction1, offAction1, offAction2));
-        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
+        final SystemStatistics testee = new SystemStatistics(airFlowDbAccessor);
 
-        final Duration result = testee.getTotalAirFlowFromDay(yesterday);
+        final Duration result = testee.getTotalFromDay(yesterday);
 
         assertThat(result.toMinutes()).isCloseTo(10, within(1L));
     }
@@ -162,9 +164,9 @@ class VentilationSystemAirFlowStatisticsTest {
         final SystemAction onAction2 = new SystemAction(startTime.plusMinutes(10), SystemPart.AIR_FLOW, OutputState.ON);
         final SystemAction offAction2 = new SystemAction(startTime.plusMinutes(30), SystemPart.AIR_FLOW, OutputState.OFF);
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(List.of(onAction1, onAction2, offAction2));
-        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
+        final SystemStatistics testee = new SystemStatistics(airFlowDbAccessor);
 
-        final Duration result = testee.getTotalAirFlowFromDay(yesterday);
+        final Duration result = testee.getTotalFromDay(yesterday);
 
         assertThat(result.toMinutes()).isCloseTo(30, within(1L));
     }

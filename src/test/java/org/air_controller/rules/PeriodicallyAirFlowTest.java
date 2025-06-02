@@ -1,5 +1,6 @@
 package org.air_controller.rules;
 
+import org.air_controller.system.SystemStatistics;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -16,7 +17,7 @@ import static org.mockito.Mockito.when;
 class PeriodicallyAirFlowTest {
 
     @Mock
-    private AirFlowStatistics statistics;
+    private SystemStatistics statistics;
 
     @ParameterizedTest(name = "{index} => onDuration={0}, expectedResult={1}")
     @CsvSource({
@@ -25,7 +26,7 @@ class PeriodicallyAirFlowTest {
             "30, 0"
     })
     void shouldReturnPercentage(int onDuration, double expectedResult) {
-        when(statistics.getAirFlowOnDurationInLastHour()).thenReturn(Duration.ofMinutes(onDuration));
+        when(statistics.getOnDurationInLastHour()).thenReturn(Duration.ofMinutes(onDuration));
         final PeriodicallyAirFlow testee = new PeriodicallyAirFlow(statistics);
 
         final Confidence airFlowNeed = testee.turnOnConfidence();
