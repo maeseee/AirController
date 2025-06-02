@@ -1,7 +1,7 @@
 package org.air_controller;
 
+import org.air_controller.rules.AirFlowStatistics;
 import org.air_controller.rules.RuleApplier;
-import org.air_controller.rules.TimeKeeper;
 import org.air_controller.sensor.Sensors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,13 +20,13 @@ public class Application {
 
     private final Sensors sensors;
     private final RuleApplier ruleApplier;
-    private final TimeKeeper timeKeeper;
+    private final AirFlowStatistics statistics;
     private final ScheduledExecutorService executor;
 
-    Application(Sensors sensors, RuleApplier ruleApplier, TimeKeeper timeKeeper, ScheduledExecutorService executor) {
+    Application(Sensors sensors, RuleApplier ruleApplier, AirFlowStatistics statistics, ScheduledExecutorService executor) {
         this.sensors = sensors;
         this.ruleApplier = ruleApplier;
-        this.timeKeeper = timeKeeper;
+        this.statistics = statistics;
         this.executor = executor;
     }
 
@@ -38,7 +38,7 @@ public class Application {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final ZonedDateTime midnight = ZonedDateTime.of(now.toLocalDate().atStartOfDay().plusDays(1), ZoneOffset.UTC);
         final long initialDelay = Duration.between(now, midnight).plusSeconds(1).toSeconds();
-        executor.scheduleAtFixedRate(timeKeeper, initialDelay, TimeUnit.DAYS.toSeconds(1), TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(statistics, initialDelay, TimeUnit.DAYS.toSeconds(1), TimeUnit.SECONDS);
 
         logger.info("All setup and running...");
     }

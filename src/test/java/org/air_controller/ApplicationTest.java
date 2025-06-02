@@ -1,7 +1,7 @@
 package org.air_controller;
 
+import org.air_controller.rules.AirFlowStatistics;
 import org.air_controller.rules.RuleApplier;
-import org.air_controller.rules.TimeKeeper;
 import org.air_controller.sensor.Sensor;
 import org.air_controller.sensor.Sensors;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ class ApplicationTest {
     @Mock
     private RuleApplier ruleApplier;
     @Mock
-    private TimeKeeper timeKeeper;
+    private AirFlowStatistics statistics;
     @Mock
     private ScheduledExecutorService executor;
 
@@ -40,13 +40,13 @@ class ApplicationTest {
 
     @Test
     void testWhenCreateApplicationThenScheduleExecutor() {
-        final Application testee = new Application(sensors, ruleApplier, timeKeeper, executor);
+        final Application testee = new Application(sensors, ruleApplier, statistics, executor);
 
         testee.run();
 
         verify(executor).scheduleAtFixedRate(outdoorSensor, 0, 10, TimeUnit.MINUTES);
         verify(executor).scheduleAtFixedRate(indoorSensor, 0, 10, TimeUnit.MINUTES);
         verify(executor).scheduleAtFixedRate(ruleApplier, 0, 1, TimeUnit.MINUTES);
-        verify(executor).scheduleAtFixedRate(eq(timeKeeper), anyLong(), eq(86400L), eq(TimeUnit.SECONDS));
+        verify(executor).scheduleAtFixedRate(eq(statistics), anyLong(), eq(86400L), eq(TimeUnit.SECONDS));
     }
 }

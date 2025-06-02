@@ -8,10 +8,10 @@ public class PeriodicallyAirFlow implements Rule {
     private static final double B = 1; // y = xm + b
     private static final double M = -B / HOURLY_FRESH_AIR.toMinutes(); // y = xm + b
 
-    private final TimeKeeper timeKeeper;
+    private final AirFlowStatistics statistics;
 
-    public PeriodicallyAirFlow(TimeKeeper timeKeeper) {
-        this.timeKeeper = timeKeeper;
+    public PeriodicallyAirFlow(AirFlowStatistics statistics) {
+        this.statistics = statistics;
     }
 
     @Override
@@ -21,7 +21,7 @@ public class PeriodicallyAirFlow implements Rule {
 
     @Override
     public Confidence turnOnConfidence() {
-        final Duration airFlowOnDurationInLastHour = timeKeeper.getAirFlowOnDurationInLastHour();
+        final Duration airFlowOnDurationInLastHour = statistics.getAirFlowOnDurationInLastHour();
         final double impact = M * airFlowOnDurationInLastHour.toMinutes() + B;
         return new Confidence(impact);
     }

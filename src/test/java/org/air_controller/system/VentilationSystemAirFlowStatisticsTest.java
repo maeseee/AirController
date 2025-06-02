@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class VentilationSystemTimeKeeperTest {
+class VentilationSystemAirFlowStatisticsTest {
 
     @Mock
     private SystemActionDbAccessor airFlowDbAccessor;
@@ -26,7 +26,7 @@ class VentilationSystemTimeKeeperTest {
     @Test
     void shouldReturnZero_whenNoEventInTheLastHour() {
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(emptyList());
-        final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(airFlowDbAccessor);
+        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
 
         final Duration result = testee.getAirFlowOnDurationInLastHour();
 
@@ -36,7 +36,7 @@ class VentilationSystemTimeKeeperTest {
     @Test
     void shouldReturnAnHour_whenNoEventInTheLastHourButLastEventWasOn() {
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(emptyList());
-        final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(airFlowDbAccessor);
+        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
 
         testee.setAirFlowOn(OutputState.ON);
         final Duration result = testee.getAirFlowOnDurationInLastHour();
@@ -49,7 +49,7 @@ class VentilationSystemTimeKeeperTest {
         final ZonedDateTime offTime = ZonedDateTime.now(ZoneOffset.UTC).minusHours(1).plusMinutes(20);
         final SystemAction offAction = new SystemAction(offTime, SystemPart.AIR_FLOW, OutputState.OFF);
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(List.of(offAction));
-        final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(airFlowDbAccessor);
+        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
 
         final Duration result = testee.getAirFlowOnDurationInLastHour();
 
@@ -61,7 +61,7 @@ class VentilationSystemTimeKeeperTest {
         final ZonedDateTime onTime = ZonedDateTime.now(ZoneOffset.UTC).minusHours(1).plusMinutes(20);
         final SystemAction onAction = new SystemAction(onTime, SystemPart.AIR_FLOW, OutputState.ON);
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(List.of(onAction));
-        final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(airFlowDbAccessor);
+        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
 
         final Duration result = testee.getAirFlowOnDurationInLastHour();
 
@@ -78,7 +78,7 @@ class VentilationSystemTimeKeeperTest {
         final SystemAction offAction2 = new SystemAction(startTime.plusMinutes(50), SystemPart.AIR_FLOW, OutputState.OFF);
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(
                 List.of(onAction1, offAction1, onAction2, offAction2));
-        final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(airFlowDbAccessor);
+        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
 
         final Duration result = testee.getAirFlowOnDurationInLastHour();
 
@@ -89,7 +89,7 @@ class VentilationSystemTimeKeeperTest {
     void shouldReturnZero_whenNoEventYesterday() {
         final LocalDate yesterday = LocalDateTime.now().minusDays(1).toLocalDate();
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(emptyList());
-        final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(airFlowDbAccessor);
+        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
 
         final Duration result = testee.getTotalAirFlowFromDay(yesterday);
 
@@ -102,7 +102,7 @@ class VentilationSystemTimeKeeperTest {
         final ZonedDateTime startTime = ZonedDateTime.of(yesterday.atStartOfDay(), ZoneOffset.UTC).plusHours(10);
         final SystemAction offAction = new SystemAction(startTime.plusMinutes(20), SystemPart.AIR_FLOW, OutputState.OFF);
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(List.of(offAction));
-        final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(airFlowDbAccessor);
+        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
 
         final Duration result = testee.getTotalAirFlowFromDay(yesterday);
 
@@ -115,7 +115,7 @@ class VentilationSystemTimeKeeperTest {
         final ZonedDateTime startTime = ZonedDateTime.of(yesterday.atStartOfDay(), ZoneOffset.UTC).plusHours(10);
         final SystemAction offAction = new SystemAction(startTime.plusMinutes(20), SystemPart.AIR_FLOW, OutputState.ON);
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(List.of(offAction));
-        final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(airFlowDbAccessor);
+        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
 
         final Duration result = testee.getTotalAirFlowFromDay(yesterday);
 
@@ -132,7 +132,7 @@ class VentilationSystemTimeKeeperTest {
         final SystemAction offAction2 = new SystemAction(startTime.plusMinutes(50), SystemPart.AIR_FLOW, OutputState.OFF);
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(
                 List.of(onAction1, offAction1, onAction2, offAction2));
-        final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(airFlowDbAccessor);
+        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
 
         final Duration result = testee.getTotalAirFlowFromDay(yesterday);
 
@@ -147,7 +147,7 @@ class VentilationSystemTimeKeeperTest {
         final SystemAction offAction1 = new SystemAction(startTime.plusMinutes(10), SystemPart.AIR_FLOW, OutputState.OFF);
         final SystemAction offAction2 = new SystemAction(startTime.plusMinutes(30), SystemPart.AIR_FLOW, OutputState.OFF);
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(List.of(onAction1, offAction1, offAction2));
-        final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(airFlowDbAccessor);
+        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
 
         final Duration result = testee.getTotalAirFlowFromDay(yesterday);
 
@@ -162,7 +162,7 @@ class VentilationSystemTimeKeeperTest {
         final SystemAction onAction2 = new SystemAction(startTime.plusMinutes(10), SystemPart.AIR_FLOW, OutputState.ON);
         final SystemAction offAction2 = new SystemAction(startTime.plusMinutes(30), SystemPart.AIR_FLOW, OutputState.OFF);
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(List.of(onAction1, onAction2, offAction2));
-        final VentilationSystemTimeKeeper testee = new VentilationSystemTimeKeeper(airFlowDbAccessor);
+        final VentilationSystemAirFlowStatistics testee = new VentilationSystemAirFlowStatistics(airFlowDbAccessor);
 
         final Duration result = testee.getTotalAirFlowFromDay(yesterday);
 

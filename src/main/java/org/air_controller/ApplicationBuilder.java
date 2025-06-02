@@ -13,7 +13,7 @@ import org.air_controller.sensor_values.CurrentSensorData;
 import org.air_controller.sensor_values.CurrentSensors;
 import org.air_controller.system.ControlledVentilationSystem;
 import org.air_controller.system.VentilationSystem;
-import org.air_controller.system.VentilationSystemTimeKeeper;
+import org.air_controller.system.VentilationSystemAirFlowStatistics;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemActionDbAccessors;
 import org.air_controller.system_action.SystemActionPersistence;
@@ -29,7 +29,7 @@ public class ApplicationBuilder {
 
     private Sensors sensors;
     private RuleApplier ruleApplier;
-    private VentilationSystemTimeKeeper timeKeeper;
+    private VentilationSystemAirFlowStatistics statistics;
     private ScheduledExecutorService executor;
 
     private SystemActionDbAccessors systemActionDbAccessors;
@@ -37,7 +37,7 @@ public class ApplicationBuilder {
 
     public Application build() throws SQLException {
         createNotMockedObjects();
-        return new Application(sensors, ruleApplier, timeKeeper, executor);
+        return new Application(sensors, ruleApplier, statistics, executor);
     }
 
     private void createNotMockedObjects() throws SQLException {
@@ -62,8 +62,8 @@ public class ApplicationBuilder {
     }
 
     private void createTimeKeeperIfNotAvailable() {
-        if (timeKeeper == null) {
-            timeKeeper = new VentilationSystemTimeKeeper(systemActionDbAccessors.airFlow());
+        if (statistics == null) {
+            statistics = new VentilationSystemAirFlowStatistics(systemActionDbAccessors.airFlow());
         }
     }
 
@@ -75,7 +75,7 @@ public class ApplicationBuilder {
 
     private void createRuleApplierIfNotAvailable() {
         if (ruleApplier == null) {
-            ruleApplier = new RuleApplierBuilder().build(createVentilationSystems(), createCurrentSensors(), timeKeeper);
+            ruleApplier = new RuleApplierBuilder().build(createVentilationSystems(), createCurrentSensors(), statistics);
         }
     }
 
@@ -100,7 +100,7 @@ public class ApplicationBuilder {
     private List<VentilationSystem> createVentilationSystems() {
         final VentilationSystem ventilationSystem = new ControlledVentilationSystem(gpioPins);
         final SystemActionPersistence systemActionPersistence = new SystemActionPersistence(systemActionDbAccessors);
-        return List.of(ventilationSystem, timeKeeper, systemActionPersistence);
+        return List.of(ventilationSystem, statistics, systemActionPersistence);
     }
 
     private CurrentSensors createCurrentSensors() {

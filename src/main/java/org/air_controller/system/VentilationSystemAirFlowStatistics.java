@@ -1,7 +1,7 @@
 package org.air_controller.system;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.air_controller.rules.TimeKeeper;
+import org.air_controller.rules.AirFlowStatistics;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.apache.logging.log4j.LogManager;
@@ -12,13 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class VentilationSystemTimeKeeper implements VentilationSystem, TimeKeeper {
-    private static final Logger logger = LogManager.getLogger(VentilationSystemTimeKeeper.class);
+public class VentilationSystemAirFlowStatistics implements VentilationSystem, AirFlowStatistics {
+    private static final Logger logger = LogManager.getLogger(VentilationSystemAirFlowStatistics.class);
 
     private final SystemActionDbAccessor airFlowDbAccessor;
     private OutputState currentAirFlowState;
 
-    public VentilationSystemTimeKeeper(SystemActionDbAccessor airFlowDbAccessor) {
+    public VentilationSystemAirFlowStatistics(SystemActionDbAccessor airFlowDbAccessor) {
         this.airFlowDbAccessor = airFlowDbAccessor;
     }
 

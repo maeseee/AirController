@@ -7,17 +7,17 @@ import java.util.List;
 
 public class RuleApplierBuilder {
 
-    public RuleApplier build(List<VentilationSystem> ventilationSystems, CurrentSensors sensors, TimeKeeper timeKeeper) {
-        final List<Rule> freshAirRules = getFreshAirRules(sensors, timeKeeper);
+    public RuleApplier build(List<VentilationSystem> ventilationSystems, CurrentSensors sensors, AirFlowStatistics statistics) {
+        final List<Rule> freshAirRules = getFreshAirRules(sensors, statistics);
         final List<Rule> exchangeHumidityRules = getHumidityExchangeRules(sensors);
         return new RuleApplier(ventilationSystems, freshAirRules, exchangeHumidityRules);
     }
 
-    private List<Rule> getFreshAirRules(CurrentSensors sensors, TimeKeeper timeKeeper) {
+    private List<Rule> getFreshAirRules(CurrentSensors sensors, AirFlowStatistics statistics) {
         final CO2ControlAirFlow co2ControlAirFlow = new CO2ControlAirFlow(sensors.indoorData());
         final DailyAirFlow dailyAirFlow = new DailyAirFlow();
         final HumidityControlAirFlow humidityControlAirFlow = new HumidityControlAirFlow(sensors.indoorData(), sensors.outdoorData());
-        final PeriodicallyAirFlow periodicallyAirFlow = new PeriodicallyAirFlow(timeKeeper);
+        final PeriodicallyAirFlow periodicallyAirFlow = new PeriodicallyAirFlow(statistics);
         return List.of(co2ControlAirFlow, dailyAirFlow, humidityControlAirFlow, periodicallyAirFlow);
     }
 

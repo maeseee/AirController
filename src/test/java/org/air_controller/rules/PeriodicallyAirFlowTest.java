@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 class PeriodicallyAirFlowTest {
 
     @Mock
-    private TimeKeeper timekeeper;
+    private AirFlowStatistics statistics;
 
     @ParameterizedTest(name = "{index} => onDuration={0}, expectedResult={1}")
     @CsvSource({
@@ -25,8 +25,8 @@ class PeriodicallyAirFlowTest {
             "30, 0"
     })
     void shouldReturnPercentage(int onDuration, double expectedResult) {
-        when(timekeeper.getAirFlowOnDurationInLastHour()).thenReturn(Duration.ofMinutes(onDuration));
-        final PeriodicallyAirFlow testee = new PeriodicallyAirFlow(timekeeper);
+        when(statistics.getAirFlowOnDurationInLastHour()).thenReturn(Duration.ofMinutes(onDuration));
+        final PeriodicallyAirFlow testee = new PeriodicallyAirFlow(statistics);
 
         final Confidence airFlowNeed = testee.turnOnConfidence();
 
