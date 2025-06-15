@@ -1,5 +1,8 @@
 package org.air_controller.sensor.qing_ping;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -7,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 class ListDevices {
+    private static final Logger logger = LogManager.getLogger(ListDevices.class);
+
     private final ListDevicesRequest listDevicesRequest;
     private final ListDevicesJsonParser parser;
 
@@ -24,6 +29,9 @@ class ListDevices {
         final List<HwSensorData> sensorDataList = new ArrayList<>();
         Devices.getDeviceList().forEach(
                 mac -> parser.parseDeviceListResponse(response, mac).ifPresent(sensorDataList::add));
+        if (sensorDataList.isEmpty()) {
+            logger.error("No sensor data found in the response: {}", response);
+        }
         return sensorDataList;
     }
 
