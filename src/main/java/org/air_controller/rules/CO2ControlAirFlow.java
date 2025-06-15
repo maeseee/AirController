@@ -5,7 +5,7 @@ import org.air_controller.sensor_values.CurrentSensorData;
 
 import java.util.Optional;
 
-public class CO2ControlAirFlow implements Rule {
+class CO2ControlAirFlow implements Rule {
 
     private static final double UPPER_LIMIT = 900;
     private static final double LOWER_LIMIT = 500;

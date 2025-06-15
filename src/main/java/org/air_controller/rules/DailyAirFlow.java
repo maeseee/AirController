@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
 
-public class DailyAirFlow implements Rule {
+class DailyAirFlow implements Rule {
 
     private static final MonthDay SUMMER_TIME_START = MonthDay.of(5, 10);
     private static final MonthDay SUMMER_TIME_END = MonthDay.of(9, 10);

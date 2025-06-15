@@ -4,7 +4,7 @@ import org.air_controller.system.SystemStatistics;
 
 import java.time.Duration;
 
-public class PeriodicallyAirFlow implements Rule {
+class PeriodicallyAirFlow implements Rule {
 
     private static final Duration HOURLY_FRESH_AIR = Duration.ofMinutes(30);
     private static final double B = 1; // y = xm + b

@@ -8,7 +8,7 @@ import org.air_controller.sensor_values.Temperature;
 
 import java.util.Optional;
 
-public class HumidityControlAirFlow implements Rule {
+class HumidityControlAirFlow implements Rule {
 
     private static final Temperature REFERENCE_TEMPERATURE;
     private static final Humidity UPPER_HUMIDITY;
