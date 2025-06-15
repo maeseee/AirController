@@ -14,7 +14,6 @@ class HwSensorData implements SensorData {
 
     private final Temperature temperature;
     private final Humidity humidity;
-    @Nullable
     private final CarbonDioxide co2;
     private final ZonedDateTime timestamp;
 

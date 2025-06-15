@@ -12,7 +12,7 @@ import java.time.ZonedDateTime;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class Application {
+class Application {
     private static final Logger logger = LogManager.getLogger(Application.class);
     private static final int OUTDOOR_SENSOR_READ_PERIOD_MINUTES = 10;
     private static final int INDOOR_SENSOR_READ_PERIOD_MINUTES = 10;

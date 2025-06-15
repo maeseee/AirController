@@ -74,7 +74,7 @@ public class SensorDataDb implements SensorDataPersistence {
                 return Optional.of(createSensorData(resultSet));
             }
         } catch (InvalidArgumentException | SQLException e) {
-            logger.error("SQL Exception on read ! {}", e.getMessage());
+            logger.error("SQL Exception on getMostCurrentSensorData ! {}", e.getMessage());
         }
         return Optional.empty();
     }

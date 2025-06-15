@@ -25,7 +25,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 @Setter
-public class ApplicationBuilder {
+class ApplicationBuilder {
 
     private Sensors sensors;
     private RuleApplier ruleApplier;

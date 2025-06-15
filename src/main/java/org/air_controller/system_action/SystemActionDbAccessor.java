@@ -40,7 +40,7 @@ public class SystemActionDbAccessor {
                 addResultIfAvailable(entries, resultSet);
             }
         } catch (SQLException e) {
-            logger.error("SQL Exception on read ! {}", e.getMessage());
+            logger.error("SQL Exception on getActionsFromTimeToNow ! {}", e.getMessage());
         }
         return entries;
     }
@@ -56,7 +56,7 @@ public class SystemActionDbAccessor {
                 return Optional.of(createSystemAction(resultSet));
             }
         } catch (SQLException e) {
-            logger.error("SQL Exception on read ! {}", e.getMessage());
+            logger.error("SQL Exception on getMostCurrentState ! {}", e.getMessage());
         }
         return Optional.empty();
     }
