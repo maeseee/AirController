@@ -15,15 +15,14 @@ public class MockGpioPin implements GpioPin {
     }
 
     @Override
-    public boolean getGpioState() {
-        return gpioState;
-    }
-
-    @Override
     public void setGpioState(boolean stateOn) {
         if (getGpioState() != stateOn) {
             logger.info("{} set to {}", name, stateOn ? "on" : "off");
             gpioState = stateOn;
         }
+    }
+
+    boolean getGpioState() {
+        return gpioState;
     }
 }

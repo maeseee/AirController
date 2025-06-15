@@ -26,20 +26,19 @@ public class DingtianPin implements GpioPin {
     }
 
     @Override
-    public boolean getGpioState() {
+    public void setGpioState(boolean stateOn) {
+        if (getGpioState() != stateOn) {
+            logger.info("{} set to {}", name, stateOn ? "on" : "off");
+            communication.setRelayState(relay.getRelayIndex(), stateOn);
+        }
+    }
+
+    boolean getGpioState() {
         final List<Boolean> states = communication.readStates();
         if (relay.getRelayIndex() < states.size()) {
             return states.get(relay.getRelayIndex());
         }
         logger.error("Could not read the gpio state of {}", name);
         return false;
-    }
-
-    @Override
-    public void setGpioState(boolean stateOn) {
-        if (getGpioState() != stateOn) {
-            logger.info("{} set to {}", name, stateOn ? "on" : "off");
-            communication.setRelayState(relay.getRelayIndex(), stateOn);
-        }
     }
 }
