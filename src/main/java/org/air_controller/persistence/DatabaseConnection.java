@@ -6,4 +6,6 @@ import java.sql.SQLException;
 public interface DatabaseConnection {
 
     Connection createConnection() throws SQLException;
+
+    void execute(String sql);
 }

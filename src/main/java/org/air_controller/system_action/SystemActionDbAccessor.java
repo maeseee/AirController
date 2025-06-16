@@ -19,7 +19,7 @@ public class SystemActionDbAccessor {
     private final DatabaseConnection database;
     private final SystemPart systemPart;
 
-    public SystemActionDbAccessor(DatabaseConnection database, SystemPart systemPart) throws SQLException {
+    public SystemActionDbAccessor(DatabaseConnection database, SystemPart systemPart) {
         this.database = database;
         this.systemPart = systemPart;
         createTableIfNotExists();
@@ -80,17 +80,14 @@ public class SystemActionDbAccessor {
         }
     }
 
-    private void createTableIfNotExists() throws SQLException {
+    private void createTableIfNotExists() {
         final String sql =
                 "CREATE TABLE IF NOT EXISTS " + systemPart.getTableName() + " (\n" +
                         "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
                         "system_part VARCHAR(20),\n" +
                         "status VARCHAR(20),\n" +
                         "action_time TIMESTAMP);";
-        try (Connection connection = database.createConnection();
-             Statement statement = connection.createStatement()) {
-            statement.execute(sql);
-        }
+        database.execute(sql);
     }
 
     private SystemAction createSystemAction(ResultSet resultSet) throws SQLException {

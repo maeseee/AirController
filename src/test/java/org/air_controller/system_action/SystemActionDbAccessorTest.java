@@ -21,12 +21,12 @@ class SystemActionDbAccessorTest {
     private DatabaseConnection database;
 
     @BeforeEach
-    void setupDatabase() throws Exception {
+    void setupDatabase() {
         database = new LocalInMemoryDatabase();
     }
 
     @Test
-    void shouldReturnTheMostCurrentState() throws Exception {
+    void shouldReturnTheMostCurrentState() {
         final SystemActionDbAccessor testee = new SystemActionDbAccessor(database, SYSTEM_PART);
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         testee.insertAction(OutputState.ON, now.minusHours(1));
@@ -42,7 +42,7 @@ class SystemActionDbAccessorTest {
     }
 
     @Test
-    void shouldReturnActionsInTimeRange() throws Exception {
+    void shouldReturnActionsInTimeRange() {
         final SystemActionDbAccessor testee = new SystemActionDbAccessor(database, SYSTEM_PART);
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         testee.insertAction(OutputState.ON, now.minusHours(1));

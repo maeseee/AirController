@@ -84,12 +84,7 @@ public class SensorDataDb implements SensorDataPersistence {
     @VisibleForTesting
     void resetDB() {
         final String sql = "DELETE FROM " + sensorDataTableName + ";";
-        try (Connection connection = database.createConnection();
-             Statement statement = connection.createStatement()) {
-            statement.execute(sql);
-        } catch (SQLException e) {
-            logger.error("SQL Exception on resetting DB! {}", e.getMessage());
-        }
+        database.execute(sql);
     }
 
     private SensorData createSensorData(ResultSet resultSet) throws SQLException, InvalidArgumentException {
@@ -102,17 +97,14 @@ public class SensorDataDb implements SensorDataPersistence {
     }
 
     private void createTableIfNotExists() throws SQLException {
-        try (Connection connection = database.createConnection();
-             Statement statement = connection.createStatement()) {
-            final String sql =
-                    "CREATE TABLE IF NOT EXISTS " + sensorDataTableName + " (\n" +
-                            "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
-                            "temperature DOUBLE,\n" +
-                            "humidity DOUBLE,\n" +
-                            "co2 DOUBLE,\n" +
-                            "event_time TIMESTAMP);";
-            statement.execute(sql);
-        }
+        final String sql =
+                "CREATE TABLE IF NOT EXISTS " + sensorDataTableName + " (\n" +
+                        "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
+                        "temperature DOUBLE,\n" +
+                        "humidity DOUBLE,\n" +
+                        "co2 DOUBLE,\n" +
+                        "event_time TIMESTAMP);";
+        database.execute(sql);
     }
 
     private void insertSensorData(Double temperature, Double humidity, Double co2, ZonedDateTime timestamp) throws SQLException {
