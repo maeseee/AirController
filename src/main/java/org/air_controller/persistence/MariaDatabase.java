@@ -8,7 +8,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 @NoArgsConstructor
-public class Persistence implements DatabaseConnection {
+public class MariaDatabase implements DatabaseConnection {
 
     @Override
     public Connection createConnection() throws SQLException {

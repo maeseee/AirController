@@ -4,7 +4,7 @@ import lombok.Setter;
 import org.air_controller.gpio.GpioPins;
 import org.air_controller.gpio.dingtian_relay.DingtianPin;
 import org.air_controller.gpio.dingtian_relay.DingtianRelay;
-import org.air_controller.persistence.Persistence;
+import org.air_controller.persistence.MariaDatabase;
 import org.air_controller.rules.RuleApplier;
 import org.air_controller.rules.RuleApplierBuilder;
 import org.air_controller.sensor.Sensors;
@@ -94,7 +94,7 @@ class ApplicationBuilder {
     }
 
     private SystemActionDbAccessor createDbAccessor(SystemPart systemPart) throws SQLException {
-        return new SystemActionDbAccessor(new Persistence(), systemPart);
+        return new SystemActionDbAccessor(new MariaDatabase(), systemPart);
     }
 
     private List<VentilationSystem> createVentilationSystems() {

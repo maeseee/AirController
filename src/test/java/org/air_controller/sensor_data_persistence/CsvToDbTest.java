@@ -1,6 +1,6 @@
 package org.air_controller.sensor_data_persistence;
 
-import org.air_controller.persistence.Persistence;
+import org.air_controller.persistence.LocalInMemoryDatabase;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.SensorData;
 import org.air_controller.sensor_values.SensorDataImpl;
@@ -22,11 +22,11 @@ class CsvToDbTest {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         persistDataToCsv(now);
         final String sensorTableName = "DbToCsvTable";
-        final CsvToDb testee = new CsvToDb();
+        final CsvToDb testee = new CsvToDb(new LocalInMemoryDatabase());
 
         testee.persistToDbFromCsv(sensorDataCsvPath, sensorTableName);
 
-        final SensorDataDb sensorDataDb = new SensorDataDb(new Persistence(), sensorTableName);
+        final SensorDataDb sensorDataDb = new SensorDataDb(new LocalInMemoryDatabase(), sensorTableName);
         final List<SensorData> sensorDataList = sensorDataDb.read();
         final SensorData lastSensorData = sensorDataList.getLast();
         assertThat(lastSensorData.getTemperature()).isPresent().hasValueSatisfying(

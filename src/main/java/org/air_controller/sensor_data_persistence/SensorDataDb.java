@@ -1,7 +1,7 @@
 package org.air_controller.sensor_data_persistence;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.air_controller.persistence.Persistence;
+import org.air_controller.persistence.DatabaseConnection;
 import org.air_controller.sensor_values.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,10 +18,10 @@ public class SensorDataDb implements SensorDataPersistence {
     private static final Logger logger = LogManager.getLogger(SensorDataDb.class);
 
     private final String sensorDataTableName;
-    private final Persistence persistence;
+    private final DatabaseConnection database;
 
-    public SensorDataDb(Persistence persistence, String sensorDataTableName) {
-        this.persistence = persistence;
+    public SensorDataDb(DatabaseConnection database, String sensorDataTableName) {
+        this.database = database;
         this.sensorDataTableName = sensorDataTableName;
         try {
             createTableIfNotExists();
@@ -49,7 +49,7 @@ public class SensorDataDb implements SensorDataPersistence {
     public List<SensorData> read() {
         final List<SensorData> entries = new ArrayList<>();
         final String sql = "SELECT * FROM " + sensorDataTableName + ";";
-        try (Connection connection = persistence.createConnection();
+        try (Connection connection = database.createConnection();
              Statement statement = connection.createStatement()) {
             final ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
@@ -68,7 +68,7 @@ public class SensorDataDb implements SensorDataPersistence {
                         "WHERE i.EVENT_TIME > ? " +
                         "ORDER BY i.EVENT_TIME DESC " +
                         "LIMIT 1;";
-        try (Connection connection = persistence.createConnection();
+        try (Connection connection = database.createConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setTimestamp(1, Timestamp.valueOf(lastValidTimestamp.toLocalDateTime()));
             final ResultSet resultSet = preparedStatement.executeQuery();
@@ -84,7 +84,7 @@ public class SensorDataDb implements SensorDataPersistence {
     @VisibleForTesting
     void resetDB() {
         final String sql = "DELETE FROM " + sensorDataTableName + ";";
-        try (Connection connection = persistence.createConnection();
+        try (Connection connection = database.createConnection();
              Statement statement = connection.createStatement()) {
             statement.execute(sql);
         } catch (SQLException e) {
@@ -102,7 +102,7 @@ public class SensorDataDb implements SensorDataPersistence {
     }
 
     private void createTableIfNotExists() throws SQLException {
-        try (Connection connection = persistence.createConnection();
+        try (Connection connection = database.createConnection();
              Statement statement = connection.createStatement()) {
             final String sql =
                     "CREATE TABLE IF NOT EXISTS " + sensorDataTableName + " (\n" +
@@ -117,7 +117,7 @@ public class SensorDataDb implements SensorDataPersistence {
 
     private void insertSensorData(Double temperature, Double humidity, Double co2, ZonedDateTime timestamp) throws SQLException {
         final String sql = "INSERT INTO " + sensorDataTableName + " (temperature, humidity, co2, event_time) VALUES (?, ?, ?, ?)";
-        try (Connection connection = persistence.createConnection();
+        try (Connection connection = database.createConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setObject(1, temperature);
             preparedStatement.setObject(2, humidity);

@@ -14,7 +14,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class SystemActionPersistenceTest {
+class SystemActionMariaDatabaseTest {
 
     private SystemActionDbAccessors dbAccessors;
 
