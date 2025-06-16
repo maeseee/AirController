@@ -1,5 +1,6 @@
 package org.air_controller.sensor_data_persistence;
 
+import org.air_controller.persistence.Persistence;
 import org.air_controller.sensor_values.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -67,7 +68,7 @@ class SensorDataTest {
     private static Stream<Arguments> sensorDataImplementations() {
         return Stream.of(
                 Arguments.of(new SensorDataCsv(CSV_FILE_PATH)),
-                Arguments.of(new SensorDataDb(TABLE_NAME))
+                Arguments.of(new SensorDataDb(new Persistence(), TABLE_NAME))
         );
     }
 

@@ -1,5 +1,6 @@
 package org.air_controller.sensor_data_persistence;
 
+import org.air_controller.persistence.Persistence;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.SensorData;
 import org.air_controller.sensor_values.SensorDataImpl;
@@ -38,7 +39,7 @@ class DbToCsvTest {
     }
 
     private void prepareDB(ZonedDateTime now) throws InvalidArgumentException {
-        final SensorDataDb sensorDataDb = new SensorDataDb(sensorDataTableName);
+        final SensorDataDb sensorDataDb = new SensorDataDb(new Persistence(), sensorDataTableName);
         sensorDataDb.resetDB();
         final SensorData sensorData = new SensorDataImpl(21.0, 10.0, 500.0, now);
         sensorDataDb.persist(sensorData);

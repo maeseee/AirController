@@ -1,5 +1,6 @@
 package org.air_controller.sensor_data_persistence;
 
+import org.air_controller.persistence.Persistence;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.SensorData;
 import org.air_controller.sensor_values.SensorDataImpl;
@@ -25,7 +26,7 @@ class CsvToDbTest {
 
         testee.persistToDbFromCsv(sensorDataCsvPath, sensorTableName);
 
-        final SensorDataDb sensorDataDb = new SensorDataDb(sensorTableName);
+        final SensorDataDb sensorDataDb = new SensorDataDb(new Persistence(), sensorTableName);
         final List<SensorData> sensorDataList = sensorDataDb.read();
         final SensorData lastSensorData = sensorDataList.getLast();
         assertThat(lastSensorData.getTemperature()).isPresent().hasValueSatisfying(

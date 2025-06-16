@@ -18,12 +18,12 @@ public class SensorDataDb implements SensorDataPersistence {
     private static final Logger logger = LogManager.getLogger(SensorDataDb.class);
 
     private final String sensorDataTableName;
-    private final Connection connection;
+    private final Persistence persistence;
 
-    public SensorDataDb(String sensorDataTableName) {
+    public SensorDataDb(Persistence persistence, String sensorDataTableName) {
+        this.persistence = persistence;
         this.sensorDataTableName = sensorDataTableName;
         try {
-            connection = Persistence.createConnection();
             createTableIfNotExists();
         } catch (SQLException e) {
             logger.error(e);
@@ -49,7 +49,8 @@ public class SensorDataDb implements SensorDataPersistence {
     public List<SensorData> read() {
         final List<SensorData> entries = new ArrayList<>();
         final String sql = "SELECT * FROM " + sensorDataTableName + ";";
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = persistence.createConnection();
+             Statement statement = connection.createStatement()) {
             final ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 addResultIfAvailable(entries, resultSet);
@@ -67,7 +68,8 @@ public class SensorDataDb implements SensorDataPersistence {
                         "WHERE i.EVENT_TIME > ? " +
                         "ORDER BY i.EVENT_TIME DESC " +
                         "LIMIT 1;";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = persistence.createConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setTimestamp(1, Timestamp.valueOf(lastValidTimestamp.toLocalDateTime()));
             final ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -82,7 +84,8 @@ public class SensorDataDb implements SensorDataPersistence {
     @VisibleForTesting
     void resetDB() {
         final String sql = "DELETE FROM " + sensorDataTableName + ";";
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = persistence.createConnection();
+             Statement statement = connection.createStatement()) {
             statement.execute(sql);
         } catch (SQLException e) {
             logger.error("SQL Exception on resetting DB! {}", e.getMessage());
@@ -99,7 +102,8 @@ public class SensorDataDb implements SensorDataPersistence {
     }
 
     private void createTableIfNotExists() throws SQLException {
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = persistence.createConnection();
+             Statement statement = connection.createStatement()) {
             final String sql =
                     "CREATE TABLE IF NOT EXISTS " + sensorDataTableName + " (\n" +
                             "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
@@ -113,7 +117,8 @@ public class SensorDataDb implements SensorDataPersistence {
 
     private void insertSensorData(Double temperature, Double humidity, Double co2, ZonedDateTime timestamp) throws SQLException {
         final String sql = "INSERT INTO " + sensorDataTableName + " (temperature, humidity, co2, event_time) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = persistence.createConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setObject(1, temperature);
             preparedStatement.setObject(2, humidity);
             preparedStatement.setObject(3, co2);

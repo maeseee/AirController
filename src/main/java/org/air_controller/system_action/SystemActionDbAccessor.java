@@ -1,5 +1,6 @@
 package org.air_controller.system_action;
 
+import org.air_controller.persistence.DatabaseConnection;
 import org.air_controller.system.OutputState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,11 +16,11 @@ import java.util.Optional;
 public class SystemActionDbAccessor {
     private static final Logger logger = LogManager.getLogger(SystemActionDbAccessor.class);
 
-    private final Connection connection;
+    private final DatabaseConnection database;
     private final SystemPart systemPart;
 
-    public SystemActionDbAccessor(Connection connection, SystemPart systemPart) throws SQLException {
-        this.connection = connection;
+    public SystemActionDbAccessor(DatabaseConnection database, SystemPart systemPart) throws SQLException {
+        this.database = database;
         this.systemPart = systemPart;
         createTableIfNotExists();
     }
@@ -31,7 +32,8 @@ public class SystemActionDbAccessor {
                         "WHERE i.action_time > ? " +
                         "AND i.system_part = ? " +
                         "ORDER BY i.action_time;";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = database.createConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setTimestamp(1, Timestamp.valueOf(startDateTime.toLocalDateTime()));
             preparedStatement.setString(2, systemPart.name());
             final ResultSet resultSet = preparedStatement.executeQuery();
@@ -50,7 +52,8 @@ public class SystemActionDbAccessor {
                 "SELECT * FROM " + systemPart.getTableName() + " i " +
                         "ORDER BY i.action_time DESC " +
                         "LIMIT 1;";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = database.createConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             final ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return Optional.of(createSystemAction(resultSet));
@@ -65,7 +68,8 @@ public class SystemActionDbAccessor {
         final String sql =
                 "INSERT INTO " + systemPart.getTableName() + " (system_part, status, action_time) " +
                         "VALUES (?, ?, ?)";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = database.createConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, systemPart.name());
             preparedStatement.setObject(2, state.name());
             preparedStatement.setObject(3, timestamp.toLocalDateTime());
@@ -83,7 +87,8 @@ public class SystemActionDbAccessor {
                         "system_part VARCHAR(20),\n" +
                         "status VARCHAR(20),\n" +
                         "action_time TIMESTAMP);";
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = database.createConnection();
+             Statement statement = connection.createStatement()) {
             statement.execute(sql);
         }
     }

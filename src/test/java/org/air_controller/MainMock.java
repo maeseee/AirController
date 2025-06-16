@@ -3,12 +3,11 @@ package org.air_controller;
 import org.air_controller.gpio.GpioPin;
 import org.air_controller.gpio.GpioPins;
 import org.air_controller.gpio.MockGpioPin;
+import org.air_controller.persistence.LocalInMemoryDatabase;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemActionDbAccessors;
 import org.air_controller.system_action.SystemPart;
-import org.h2.jdbcx.JdbcDataSource;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 class MainMock {
@@ -32,14 +31,6 @@ class MainMock {
     }
 
     private static SystemActionDbAccessor createSystemActionDbAccessorWithLocalDb(SystemPart systemPart) throws SQLException {
-        return new SystemActionDbAccessor(createLocalDbConnection(), systemPart);
-    }
-
-    private static Connection createLocalDbConnection() throws SQLException {
-        final JdbcDataSource dataSource = new JdbcDataSource();
-        dataSource.setURL("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1");
-        dataSource.setUser("sa");
-        dataSource.setPassword("");
-        return dataSource.getConnection();
+        return new SystemActionDbAccessor(new LocalInMemoryDatabase(), systemPart);
     }
 }

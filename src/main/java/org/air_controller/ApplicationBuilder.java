@@ -94,7 +94,7 @@ class ApplicationBuilder {
     }
 
     private SystemActionDbAccessor createDbAccessor(SystemPart systemPart) throws SQLException {
-        return new SystemActionDbAccessor(Persistence.createConnection(), systemPart);
+        return new SystemActionDbAccessor(new Persistence(), systemPart);
     }
 
     private List<VentilationSystem> createVentilationSystems() {
