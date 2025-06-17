@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 public class RuleApplier implements Runnable {
     private static final Logger logger = LogManager.getLogger(RuleApplier.class);
     private static final double HYSTERESIS = 0.05;
+    private static final double ON_CONFIDENCE = 0.1;
 
     private final List<VentilationSystem> ventilationSystem;
     private final List<Rule> freshAirRules;
@@ -52,7 +53,7 @@ public class RuleApplier implements Runnable {
 
     private OutputState nextStateWithHysteresis(double confidence, OutputState currentState) {
         confidence += (currentState.isOn()) ? HYSTERESIS : -HYSTERESIS;
-        return confidence >= 0 ? OutputState.ON : OutputState.OFF;
+        return confidence >= ON_CONFIDENCE ? OutputState.ON : OutputState.OFF;
     }
 
 
