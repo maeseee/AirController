@@ -14,7 +14,7 @@ import java.util.List;
 public class SensorsBuilder {
 
     public Sensors build() {
-        return new Sensors(createOutdoorSensor(), createIndoorSensor());
+        return new Sensors(createIndoorSensor(), createOutdoorSensor());
     }
 
     private static Sensor createOutdoorSensor() {
