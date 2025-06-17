@@ -6,9 +6,9 @@ import java.time.Duration;
 
 class PeriodicallyAirFlow implements Rule {
 
-    private static final Duration HOURLY_FRESH_AIR = Duration.ofMinutes(30);
+    private static final Duration TWO_HOURLY_FRESH_AIR = Duration.ofMinutes(60);
     private static final double B = 1; // y = xm + b
-    private static final double M = -B / HOURLY_FRESH_AIR.toMinutes(); // y = xm + b
+    private static final double M = -B / TWO_HOURLY_FRESH_AIR.toMinutes(); // y = xm + b
 
     private final SystemStatistics statistics;
 
@@ -18,13 +18,13 @@ class PeriodicallyAirFlow implements Rule {
 
     @Override
     public String name() {
-        return "Hourly air flow control";
+        return "Two hourly air flow control";
     }
 
     @Override
     public Confidence turnOnConfidence() {
-        final Duration airFlowOnDurationInLastHour = statistics.getOnDurationInLastHour();
+        final Duration airFlowOnDurationInLastHour = statistics.getOnDurationOfLastTwoHours();
         final double impact = M * airFlowOnDurationInLastHour.toMinutes() + B;
-        return new Confidence(impact);
+        return new Confidence(impact, 0.5);
     }
 }

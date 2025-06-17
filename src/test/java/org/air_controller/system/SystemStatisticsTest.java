@@ -29,7 +29,7 @@ class SystemStatisticsTest {
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(emptyList());
         final SystemStatistics testee = new SystemStatistics(airFlowDbAccessor);
 
-        final Duration result = testee.getOnDurationInLastHour();
+        final Duration result = testee.getOnDurationOfLastTwoHours();
 
         assertThat(result).isEqualTo(Duration.ZERO);
     }
@@ -41,19 +41,19 @@ class SystemStatisticsTest {
         when(airFlowDbAccessor.getMostCurrentState()).thenReturn(Optional.of(systemAction));
         final SystemStatistics testee = new SystemStatistics(airFlowDbAccessor);
 
-        final Duration result = testee.getOnDurationInLastHour();
+        final Duration result = testee.getOnDurationOfLastTwoHours();
 
         assertThat(result).isEqualTo(Duration.ofHours(1));
     }
 
     @Test
     void shouldReturnDurationToOff_whenNoMore() {
-        final ZonedDateTime offTime = ZonedDateTime.now(ZoneOffset.UTC).minusHours(1).plusMinutes(20);
+        final ZonedDateTime offTime = ZonedDateTime.now(ZoneOffset.UTC).minusHours(2).plusMinutes(20);
         final SystemAction offAction = new SystemAction(offTime, SystemPart.AIR_FLOW, OutputState.OFF);
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(List.of(offAction));
         final SystemStatistics testee = new SystemStatistics(airFlowDbAccessor);
 
-        final Duration result = testee.getOnDurationInLastHour();
+        final Duration result = testee.getOnDurationOfLastTwoHours();
 
         assertThat(result.toMinutes()).isCloseTo(20, within(1L));
     }
@@ -65,7 +65,7 @@ class SystemStatisticsTest {
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(List.of(onAction));
         final SystemStatistics testee = new SystemStatistics(airFlowDbAccessor);
 
-        final Duration result = testee.getOnDurationInLastHour();
+        final Duration result = testee.getOnDurationOfLastTwoHours();
 
         assertThat(result.toMinutes()).isCloseTo(40, within(1L));
     }
@@ -82,7 +82,7 @@ class SystemStatisticsTest {
                 List.of(onAction1, offAction1, onAction2, offAction2));
         final SystemStatistics testee = new SystemStatistics(airFlowDbAccessor);
 
-        final Duration result = testee.getOnDurationInLastHour();
+        final Duration result = testee.getOnDurationOfLastTwoHours();
 
         assertThat(result.toMinutes()).isCloseTo(20, within(1L));
     }

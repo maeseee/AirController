@@ -21,12 +21,12 @@ class PeriodicallyAirFlowTest {
 
     @ParameterizedTest(name = "{index} => onDuration={0}, expectedResult={1}")
     @CsvSource({
-            "0, 1",
-            "60, -1",
-            "30, 0"
+            "0, 0.5",
+            "120, -0.5",
+            "60, 0"
     })
     void shouldReturnPercentage(int onDuration, double expectedResult) {
-        when(statistics.getOnDurationInLastHour()).thenReturn(Duration.ofMinutes(onDuration));
+        when(statistics.getOnDurationOfLastTwoHours()).thenReturn(Duration.ofMinutes(onDuration));
         final PeriodicallyAirFlow testee = new PeriodicallyAirFlow(statistics);
 
         final Confidence airFlowNeed = testee.turnOnConfidence();
