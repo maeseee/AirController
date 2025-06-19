@@ -40,10 +40,11 @@ class HumidityControlAirFlowTest {
     void shouldCalculateHumidityPercentage(double indoorHumidityValue, double outdoorHumidityValue,
             double expectedResult)
             throws InvalidArgumentException {
-        final Temperature temperature = Temperature.createFromCelsius(22.0);
+        final Temperature temperature = Temperature.createFromCelsius(22.5);
         final Humidity indoorHumidity = Humidity.createFromRelative(indoorHumidityValue, temperature);
         final Humidity outdoorHumidity = Humidity.createFromRelative(outdoorHumidityValue, temperature);
         when(currentIndoorSensorData.getHumidity()).thenReturn(Optional.of(indoorHumidity));
+        when(currentIndoorSensorData.getTemperature()).thenReturn(Optional.of(temperature));
         when(currentOutdoorSensorData.getHumidity()).thenReturn(Optional.of(outdoorHumidity));
         final HumidityControlAirFlow testee = new HumidityControlAirFlow(currentIndoorSensorData, currentOutdoorSensorData);
 

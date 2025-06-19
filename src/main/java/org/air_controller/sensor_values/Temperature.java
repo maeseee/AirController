@@ -39,7 +39,6 @@ public class Temperature {
         }
     }
 
-
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

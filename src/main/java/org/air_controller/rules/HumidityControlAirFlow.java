@@ -5,26 +5,16 @@ import org.air_controller.sensor_values.CurrentSensorData;
 import org.air_controller.sensor_values.Humidity;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.Temperature;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Optional;
 
 class HumidityControlAirFlow implements Rule {
+    private static final Logger logger = LogManager.getLogger(HumidityControlAirFlow.class);
 
-    private static final Temperature REFERENCE_TEMPERATURE;
-    private static final Humidity UPPER_HUMIDITY;
-    private static final Humidity IDEAL_HUMIDITY;
-
-    static {
-        try {
-            REFERENCE_TEMPERATURE = Temperature.createFromCelsius(22.0);
-            UPPER_HUMIDITY = Humidity.createFromRelative(65.0, REFERENCE_TEMPERATURE);
-            IDEAL_HUMIDITY = Humidity.createFromRelative(52.5, REFERENCE_TEMPERATURE);
-        } catch (InvalidArgumentException e) {
-            throw new SensorException("Invalid sensor values", e.getCause());
-        }
-    }
-
-    private static final double HUMIDITY_FACTOR = UPPER_HUMIDITY.getAbsoluteHumidity() - IDEAL_HUMIDITY.getAbsoluteHumidity();
+    private static final double UPPER_RELATIV_HUMIDITY = 65.0;
+    private static final double IDEAL_RELATIV_HUMIDITY = 52.5;
 
     private final CurrentSensorData currentIndoorSensorData;
     private final CurrentSensorData currentOutdoorSensorData;
@@ -50,13 +40,22 @@ class HumidityControlAirFlow implements Rule {
     }
 
     private Confidence calculateConfidence(Humidity indoorHumidity, Humidity outdoorHumidity) {
-        final double indoorConfidence = Math.abs(indoorHumidity.getAbsoluteHumidity() - IDEAL_HUMIDITY.getAbsoluteHumidity());
-        final double outdoorCorrectionFactor = calculateOutdoorCorrectionFactor(indoorHumidity, outdoorHumidity);
-        return new Confidence(indoorConfidence * outdoorCorrectionFactor / HUMIDITY_FACTOR);
+        final double indoorToIdealDiff = indoorHumidity.getAbsoluteHumidity() - createHumidity(IDEAL_RELATIV_HUMIDITY).getAbsoluteHumidity();
+        final double confidenceBase =
+                createHumidity(UPPER_RELATIV_HUMIDITY).getAbsoluteHumidity() - createHumidity(IDEAL_RELATIV_HUMIDITY).getAbsoluteHumidity();
+        final double indoorConfidence = indoorToIdealDiff / confidenceBase;
+        final double indoorToOutdoorDiff = indoorHumidity.getAbsoluteHumidity() - outdoorHumidity.getAbsoluteHumidity();
+        final double outdoorCorrectionFactor = indoorToOutdoorDiff / confidenceBase;
+        return new Confidence(indoorConfidence * outdoorCorrectionFactor);
     }
 
-    private double calculateOutdoorCorrectionFactor(Humidity indoorHumidity, Humidity outdoorHumidity) {
-        final double sign = Math.signum(indoorHumidity.getAbsoluteHumidity() - IDEAL_HUMIDITY.getAbsoluteHumidity());
-        return (indoorHumidity.getAbsoluteHumidity() - outdoorHumidity.getAbsoluteHumidity()) * sign;
+    private Humidity createHumidity(double relativeHumidity) {
+        try {
+            final Temperature currentIndoorTemperature = currentIndoorSensorData.getTemperature().orElse(Temperature.createFromCelsius(22.5));
+            return Humidity.createFromRelative(relativeHumidity, currentIndoorTemperature);
+        } catch (InvalidArgumentException e) {
+            logger.error("Ideal humidity could not be created", e);
+            throw new SensorException("Invalid sensor values", e.getCause());
+        }
     }
 }
