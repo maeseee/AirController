@@ -3,10 +3,7 @@ package org.air_controller.persistence;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +12,14 @@ public abstract class DatabaseConnection {
 
     public abstract Connection createConnection() throws SQLException;
 
-    public abstract void execute(String sql);
+    public void execute(String sql) {
+        try (Connection connection = createConnection();
+             Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+        } catch (SQLException e) {
+            logger.error("SQL Exception on execute {}! {}", sql, e.getMessage());
+        }
+    }
 
     public void executeUpdate(String sql, PreparedStatementSetter setter) {
         try (Connection connection = createConnection();
