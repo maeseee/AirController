@@ -72,7 +72,10 @@ public class RuleApplier implements Runnable {
         final String ruleValues = freshAirRules.stream()
                 .map(rule -> String.format("%s: %.2f, ", rule.name(), rule.turnOnConfidence().getWeightedConfidenceValue()))
                 .collect(Collectors.joining());
-        logger.info("Fresh air state changed to {} because of the confidence score {}\n{}", nextAirFlowState, confidenceScore, ruleValues);
+        final String message =
+                String.format("Fresh air state changed to %s because of the confidence score %.2f\n%s", nextAirFlowState, confidenceScore,
+                        ruleValues);
+        logger.info(message);
     }
 
     private void updateHumidityExchanger(OutputState nextHumidityExchangerState) {
