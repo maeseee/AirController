@@ -46,7 +46,7 @@ public abstract class DatabaseConnection {
                 }
             }
         } catch (SQLException e) {
-            logger.error("SQL Exception on executeUpdate! {}", e.getMessage());
+            logger.error("SQL Exception on executeQuery! {}", e.getMessage());
         }
         return entries;
     }
