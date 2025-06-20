@@ -7,11 +7,12 @@ import org.air_controller.system.OutputState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,25 +29,16 @@ public class SystemActionDbAccessor {
     }
 
     public List<SystemAction> getActionsFromTimeToNow(ZonedDateTime startDateTime) {
-        final List<SystemAction> entries = new ArrayList<>();
-        final String sql =
-                "SELECT * FROM " + systemPart.getTableName() + " i " +
-                        "WHERE i.action_time > ? " +
-                        "AND i.system_part = ? " +
-                        "ORDER BY i.action_time;";
-        try (Connection connection = database.createConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        final String sql = "SELECT * FROM " + systemPart.getTableName() + " i " +
+                "WHERE i.action_time > ? " +
+                "AND i.system_part = ? " +
+                "ORDER BY i.action_time;";
+        final PreparedStatementSetter setter = preparedStatement -> {
             preparedStatement.setTimestamp(1, Timestamp.valueOf(startDateTime.toLocalDateTime()));
             preparedStatement.setString(2, systemPart.name());
-            final ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                addResultIfAvailable(entries, resultSet);
-            }
-        } catch (SQLException e) {
-            logger.error("SQL Exception on getActionsFromTimeToNow ! {}", e.getMessage());
-        }
-        return entries;
+        };
+        final EntryAdder<SystemAction> adder = this::addResultIfAvailable;
+        return database.executeQuery(sql, setter, adder);
     }
 
     public Optional<SystemAction> getMostCurrentState() {
