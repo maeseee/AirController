@@ -2,6 +2,7 @@ package org.air_controller.sensor_data_persistence;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.air_controller.persistence.DatabaseConnection;
+import org.air_controller.persistence.EntryAdder;
 import org.air_controller.persistence.PreparedStatementSetter;
 import org.air_controller.sensor_values.*;
 import org.apache.logging.log4j.LogManager;
@@ -69,17 +70,12 @@ public class SensorDataDb implements SensorDataPersistence {
                         "WHERE i.EVENT_TIME > ? " +
                         "ORDER BY i.EVENT_TIME DESC " +
                         "LIMIT 1;";
-        try (Connection connection = database.createConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        final PreparedStatementSetter setter = preparedStatement -> {
             preparedStatement.setTimestamp(1, Timestamp.valueOf(lastValidTimestamp.toLocalDateTime()));
-            final ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return Optional.of(createSensorData(resultSet));
-            }
-        } catch (InvalidArgumentException | SQLException e) {
-            logger.error("SQL Exception on getMostCurrentSensorData ! {}", e.getMessage());
-        }
-        return Optional.empty();
+        };
+        final EntryAdder<SensorData> adder = this::addResultIfAvailable;
+        final List<SensorData> sensorData = database.executeQuery(sql, setter, adder);
+        return sensorData.stream().findFirst();
     }
 
     @VisibleForTesting
@@ -110,19 +106,19 @@ public class SensorDataDb implements SensorDataPersistence {
 
     private void insertSensorData(Double temperature, Double humidity, Double co2, ZonedDateTime timestamp) throws SQLException {
         final String sql = "INSERT INTO " + sensorDataTableName + " (temperature, humidity, co2, event_time) VALUES (?, ?, ?, ?)";
-        final PreparedStatementSetter preparedStatementSetter = preparedStatement -> {
+        final PreparedStatementSetter setter = preparedStatement -> {
             preparedStatement.setObject(1, temperature);
             preparedStatement.setObject(2, humidity);
             preparedStatement.setObject(3, co2);
             preparedStatement.setTimestamp(4, Timestamp.valueOf(timestamp.toLocalDateTime()));
         };
-        database.executeUpdate(sql, preparedStatementSetter);
+        database.executeUpdate(sql, setter);
     }
 
-    private void addResultIfAvailable(List<SensorData> entries, ResultSet resultSet) throws SQLException {
+    private void addResultIfAvailable(List<SensorData> entries, ResultSet resultSet) {
         try {
             entries.add(createSensorData(resultSet));
-        } catch (InvalidArgumentException e) {
+        } catch (InvalidArgumentException | SQLException e) {
             logger.error("Next entry could not be loaded! {}", e.getMessage());
         }
     }

@@ -5,7 +5,10 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class DatabaseConnection {
     private static final Logger logger = LogManager.getLogger(DatabaseConnection.class);
@@ -22,5 +25,21 @@ public abstract class DatabaseConnection {
         } catch (SQLException e) {
             logger.error("SQL Exception on executeUpdate! {}", e.getMessage());
         }
+    }
+
+    public <R> List<R> executeQuery(String sql, PreparedStatementSetter setter, EntryAdder<R> adder) {
+        final List<R> entries = new ArrayList<>();
+        try (Connection connection = createConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            setter.setParameters(preparedStatement);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    adder.addResultIfAvailable(entries, resultSet);
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("SQL Exception on executeUpdate! {}", e.getMessage());
+        }
+        return entries;
     }
 }
