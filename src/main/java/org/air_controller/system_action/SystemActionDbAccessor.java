@@ -1,6 +1,7 @@
 package org.air_controller.system_action;
 
 import org.air_controller.persistence.DatabaseConnection;
+import org.air_controller.persistence.PreparedStatementSetter;
 import org.air_controller.system.OutputState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,19 +66,13 @@ public class SystemActionDbAccessor {
     }
 
     public void insertAction(OutputState state, ZonedDateTime timestamp) {
-        final String sql =
-                "INSERT INTO " + systemPart.getTableName() + " (system_part, status, action_time) " +
-                        "VALUES (?, ?, ?)";
-        try (Connection connection = database.createConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        final String sql = "INSERT INTO " + systemPart.getTableName() + " (system_part, status, action_time) " + "VALUES (?, ?, ?)";
+        final PreparedStatementSetter preparedStatementSetter = preparedStatement -> {
             preparedStatement.setString(1, systemPart.name());
             preparedStatement.setObject(2, state.name());
             preparedStatement.setObject(3, timestamp.toLocalDateTime());
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            logger.error("SQL Exception on write ! {}", e.getMessage());
-            throw new RuntimeException(e);
-        }
+        };
+        database.executeUpdate(sql, preparedStatementSetter);
     }
 
     private void createTableIfNotExists() {

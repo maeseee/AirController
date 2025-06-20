@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 @NoArgsConstructor
-public class MariaDatabase implements DatabaseConnection {
+public class MariaDatabase extends DatabaseConnection {
     private static final Logger logger = LogManager.getLogger(MariaDatabase.class);
 
     @Override
