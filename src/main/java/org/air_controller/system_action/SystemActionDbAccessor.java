@@ -1,6 +1,7 @@
 package org.air_controller.system_action;
 
 import org.air_controller.persistence.DatabaseConnection;
+import org.air_controller.persistence.EntryAdder;
 import org.air_controller.persistence.PreparedStatementSetter;
 import org.air_controller.system.OutputState;
 import org.apache.logging.log4j.LogManager;
@@ -49,20 +50,14 @@ public class SystemActionDbAccessor {
     }
 
     public Optional<SystemAction> getMostCurrentState() {
-        final String sql =
-                "SELECT * FROM " + systemPart.getTableName() + " i " +
-                        "ORDER BY i.action_time DESC " +
-                        "LIMIT 1;";
-        try (Connection connection = database.createConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            final ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return Optional.of(createSystemAction(resultSet));
-            }
-        } catch (SQLException e) {
-            logger.error("SQL Exception on getMostCurrentState ! {}", e.getMessage());
-        }
-        return Optional.empty();
+        final String sql = "SELECT * FROM " + systemPart.getTableName() + " i " +
+                "ORDER BY i.action_time DESC " +
+                "LIMIT 1;";
+        final PreparedStatementSetter setter = preparedStatement -> {
+        };
+        final EntryAdder<SystemAction> adder = this::addResultIfAvailable;
+        final List<SystemAction> systemActions = database.executeQuery(sql, setter, adder);
+        return systemActions.stream().findFirst();
     }
 
     public void insertAction(OutputState state, ZonedDateTime timestamp) {
