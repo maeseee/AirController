@@ -2,6 +2,7 @@ package org.air_controller.sensor_data_persistence;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.air_controller.persistence.DatabaseConnection;
+import org.air_controller.persistence.PreparedStatementSetter;
 import org.air_controller.sensor_values.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -109,14 +110,13 @@ public class SensorDataDb implements SensorDataPersistence {
 
     private void insertSensorData(Double temperature, Double humidity, Double co2, ZonedDateTime timestamp) throws SQLException {
         final String sql = "INSERT INTO " + sensorDataTableName + " (temperature, humidity, co2, event_time) VALUES (?, ?, ?, ?)";
-        try (Connection connection = database.createConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        final PreparedStatementSetter preparedStatementSetter = preparedStatement -> {
             preparedStatement.setObject(1, temperature);
             preparedStatement.setObject(2, humidity);
             preparedStatement.setObject(3, co2);
             preparedStatement.setTimestamp(4, Timestamp.valueOf(timestamp.toLocalDateTime()));
-            preparedStatement.executeUpdate();
-        }
+        };
+        database.executeUpdate(sql, preparedStatementSetter);
     }
 
     private void addResultIfAvailable(List<SensorData> entries, ResultSet resultSet) throws SQLException {
