@@ -22,8 +22,8 @@ class CO2ControlAirFlowTest {
 
     @ParameterizedTest(name = "{index} => co2 ppm={0}, expectedConfidence={1}")
     @CsvSource({
-            "500, -1.0",
-            "900, 1.0",
+            "400, -1.0",
+            "1000, 1.0",
             "1400, 1.0",
             "700, 0.0"
     })

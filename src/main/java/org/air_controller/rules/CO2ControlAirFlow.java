@@ -7,10 +7,10 @@ import java.util.Optional;
 
 class CO2ControlAirFlow implements Rule {
 
-    private static final double UPPER_LIMIT = 900;
-    private static final double LOWER_LIMIT = 500;
+    private static final double UPPER_LIMIT = 1000;
+    private static final double LOWER_LIMIT = 400;
     private static final double M = 2.0 / (UPPER_LIMIT - LOWER_LIMIT); // y = xm + b
-    private static final double B = 1 - (UPPER_LIMIT * M); // y = xm + b
+    private static final double B = -1 - (LOWER_LIMIT * M); // y = xm + b
 
     private final CurrentSensorData currentIndoorSensorData;
 
