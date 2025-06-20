@@ -26,12 +26,7 @@ public class SensorDataDb implements SensorDataPersistence {
     public SensorDataDb(DatabaseConnection database, String sensorDataTableName) {
         this.database = database;
         this.sensorDataTableName = sensorDataTableName;
-        try {
-            createTableIfNotExists();
-        } catch (SQLException e) {
-            logger.error(e);
-            throw new ParseException("SQL Exception on creating connection! " + e.getMessage(), e.getCause());
-        }
+        createTableIfNotExists();
     }
 
     @Override
@@ -39,13 +34,7 @@ public class SensorDataDb implements SensorDataPersistence {
         final Double temperature = sensorData.getTemperature().map(Temperature::getCelsius).orElse(null);
         final Double humidity = sensorData.getHumidity().map(Humidity::getAbsoluteHumidity).orElse(null);
         final Double co2 = sensorData.getCo2().map(CarbonDioxide::getPpm).orElse(null);
-        try {
-            insertSensorData(temperature, humidity, co2, sensorData.getTimeStamp());
-        } catch (SQLException e) {
-            logger.error("SQL Exception! {}", e.getMessage());
-        } catch (Exception e) {
-            logger.error("Unknown error! {}", e.getMessage());
-        }
+        insertSensorData(temperature, humidity, co2, sensorData.getTimeStamp());
     }
 
     @Override
@@ -62,9 +51,8 @@ public class SensorDataDb implements SensorDataPersistence {
                         "WHERE i.EVENT_TIME > ? " +
                         "ORDER BY i.EVENT_TIME DESC " +
                         "LIMIT 1;";
-        final PreparedStatementSetter setter = preparedStatement -> {
-            preparedStatement.setTimestamp(1, Timestamp.valueOf(lastValidTimestamp.toLocalDateTime()));
-        };
+        final PreparedStatementSetter setter =
+                preparedStatement -> preparedStatement.setTimestamp(1, Timestamp.valueOf(lastValidTimestamp.toLocalDateTime()));
         final EntryAdder<SensorData> adder = this::addResultIfAvailable;
         final List<SensorData> sensorData = database.executeQuery(sql, adder, setter);
         return sensorData.stream().findFirst();
@@ -85,7 +73,7 @@ public class SensorDataDb implements SensorDataPersistence {
         return new SensorDataImpl(temp, hum, carbonDioxide, timestamp);
     }
 
-    private void createTableIfNotExists() throws SQLException {
+    private void createTableIfNotExists() {
         final String sql =
                 "CREATE TABLE IF NOT EXISTS " + sensorDataTableName + " (\n" +
                         "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
@@ -96,7 +84,7 @@ public class SensorDataDb implements SensorDataPersistence {
         database.executeUpdate(sql);
     }
 
-    private void insertSensorData(Double temperature, Double humidity, Double co2, ZonedDateTime timestamp) throws SQLException {
+    private void insertSensorData(Double temperature, Double humidity, Double co2, ZonedDateTime timestamp) {
         final String sql = "INSERT INTO " + sensorDataTableName + " (temperature, humidity, co2, event_time) VALUES (?, ?, ?, ?)";
         final PreparedStatementSetter setter = preparedStatement -> {
             preparedStatement.setObject(1, temperature);
