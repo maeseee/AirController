@@ -8,11 +8,12 @@ import org.air_controller.sensor_values.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,18 +50,11 @@ public class SensorDataDb implements SensorDataPersistence {
 
     @Override
     public List<SensorData> read() {
-        final List<SensorData> entries = new ArrayList<>();
         final String sql = "SELECT * FROM " + sensorDataTableName + ";";
-        try (Connection connection = database.createConnection();
-             Statement statement = connection.createStatement()) {
-            final ResultSet resultSet = statement.executeQuery(sql);
-            while (resultSet.next()) {
-                addResultIfAvailable(entries, resultSet);
-            }
-        } catch (SQLException e) {
-            logger.error("SQL Exception on read ! {}", e.getMessage());
-        }
-        return entries;
+        final PreparedStatementSetter setter = preparedStatement -> {
+        };
+        final EntryAdder<SensorData> adder = this::addResultIfAvailable;
+        return database.executeQuery(sql, setter, adder);
     }
 
     @Override
