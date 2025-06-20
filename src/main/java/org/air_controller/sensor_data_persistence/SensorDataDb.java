@@ -51,10 +51,8 @@ public class SensorDataDb implements SensorDataPersistence {
     @Override
     public List<SensorData> read() {
         final String sql = "SELECT * FROM " + sensorDataTableName + ";";
-        final PreparedStatementSetter setter = preparedStatement -> {
-        };
         final EntryAdder<SensorData> adder = this::addResultIfAvailable;
-        return database.executeQuery(sql, setter, adder);
+        return database.executeQuery(sql, adder);
     }
 
     @Override
@@ -68,7 +66,7 @@ public class SensorDataDb implements SensorDataPersistence {
             preparedStatement.setTimestamp(1, Timestamp.valueOf(lastValidTimestamp.toLocalDateTime()));
         };
         final EntryAdder<SensorData> adder = this::addResultIfAvailable;
-        final List<SensorData> sensorData = database.executeQuery(sql, setter, adder);
+        final List<SensorData> sensorData = database.executeQuery(sql, adder, setter);
         return sensorData.stream().findFirst();
     }
 

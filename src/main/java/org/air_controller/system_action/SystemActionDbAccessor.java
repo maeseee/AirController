@@ -38,17 +38,15 @@ public class SystemActionDbAccessor {
             preparedStatement.setString(2, systemPart.name());
         };
         final EntryAdder<SystemAction> adder = this::addResultIfAvailable;
-        return database.executeQuery(sql, setter, adder);
+        return database.executeQuery(sql, adder, setter);
     }
 
     public Optional<SystemAction> getMostCurrentState() {
         final String sql = "SELECT * FROM " + systemPart.getTableName() + " i " +
                 "ORDER BY i.action_time DESC " +
                 "LIMIT 1;";
-        final PreparedStatementSetter setter = preparedStatement -> {
-        };
         final EntryAdder<SystemAction> adder = this::addResultIfAvailable;
-        final List<SystemAction> systemActions = database.executeQuery(sql, setter, adder);
+        final List<SystemAction> systemActions = database.executeQuery(sql, adder);
         return systemActions.stream().findFirst();
     }
 

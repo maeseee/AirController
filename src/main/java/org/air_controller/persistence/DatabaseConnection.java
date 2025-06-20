@@ -10,8 +10,6 @@ import java.util.List;
 public abstract class DatabaseConnection {
     private static final Logger logger = LogManager.getLogger(DatabaseConnection.class);
 
-    public abstract Connection createConnection() throws SQLException;
-
     public void execute(String sql) {
         try (Connection connection = createConnection();
              Statement statement = connection.createStatement()) {
@@ -31,7 +29,13 @@ public abstract class DatabaseConnection {
         }
     }
 
-    public <R> List<R> executeQuery(String sql, PreparedStatementSetter setter, EntryAdder<R> adder) {
+    public <R> List<R> executeQuery(String sql, EntryAdder<R> adder) {
+        final PreparedStatementSetter setter = preparedStatement -> {
+        };
+        return executeQuery(sql, adder, setter);
+    }
+
+    public <R> List<R> executeQuery(String sql, EntryAdder<R> adder, PreparedStatementSetter setter) {
         final List<R> entries = new ArrayList<>();
         try (Connection connection = createConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -46,4 +50,6 @@ public abstract class DatabaseConnection {
         }
         return entries;
     }
+
+    protected abstract Connection createConnection() throws SQLException;
 }
