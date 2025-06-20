@@ -67,7 +67,7 @@ public class SystemActionDbAccessor {
                         "system_part VARCHAR(20),\n" +
                         "status VARCHAR(20),\n" +
                         "action_time TIMESTAMP);";
-        database.execute(sql);
+        database.executeUpdate(sql);
     }
 
     private SystemAction createSystemAction(ResultSet resultSet) throws SQLException {

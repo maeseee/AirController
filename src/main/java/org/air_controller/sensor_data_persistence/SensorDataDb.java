@@ -73,7 +73,7 @@ public class SensorDataDb implements SensorDataPersistence {
     @VisibleForTesting
     void resetDB() {
         final String sql = "DELETE FROM " + sensorDataTableName + ";";
-        database.execute(sql);
+        database.executeUpdate(sql);
     }
 
     private SensorData createSensorData(ResultSet resultSet) throws SQLException, InvalidArgumentException {
@@ -93,7 +93,7 @@ public class SensorDataDb implements SensorDataPersistence {
                         "humidity DOUBLE,\n" +
                         "co2 DOUBLE,\n" +
                         "event_time TIMESTAMP);";
-        database.execute(sql);
+        database.executeUpdate(sql);
     }
 
     private void insertSensorData(Double temperature, Double humidity, Double co2, ZonedDateTime timestamp) throws SQLException {
