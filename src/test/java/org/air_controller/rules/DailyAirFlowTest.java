@@ -36,7 +36,7 @@ class DailyAirFlowTest {
 
             final Confidence result = testee.turnOnConfidence();
 
-            assertThat(result.getWeightedConfidenceValue()).isCloseTo(expectedResult, within(0.01));
+            assertThat(result.getWeightedConfidenceValue()).isCloseTo(expectedResult * 0.5, within(0.01));
         }
     }
 }

@@ -21,7 +21,7 @@ class DailyAirFlow implements Rule {
         final LocalDateTime now = LocalDateTime.now();
         final double sign = isSummer(MonthDay.from(now)) ? 1.0 : -1.0;
         final double confidence = getCosinus(now.toLocalTime());
-        return new Confidence(confidence * sign);
+        return new Confidence(confidence * sign, 0.5);
     }
 
     private boolean isSummer(MonthDay dateNow) {
