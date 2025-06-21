@@ -20,6 +20,7 @@ public abstract class DatabaseConnection {
     }
 
     public void executeUpdate(String sql, PreparedStatementSetter setter) {
+        //noinspection SqlSourceToSinkFlow
         try (Connection connection = createConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             setter.setParameters(preparedStatement);
@@ -37,6 +38,7 @@ public abstract class DatabaseConnection {
 
     public <R> List<R> executeQuery(String sql, EntryAdder<R> adder, PreparedStatementSetter setter) {
         final List<R> entries = new ArrayList<>();
+        //noinspection SqlSourceToSinkFlow
         try (Connection connection = createConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             setter.setParameters(preparedStatement);
