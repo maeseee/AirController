@@ -1,15 +1,12 @@
 package org.air_controller.rules;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.MonthDay;
+import java.time.*;
 
 class DailyAirFlow implements Rule {
 
     private static final MonthDay SUMMER_TIME_START = MonthDay.of(5, 10);
     private static final MonthDay SUMMER_TIME_END = MonthDay.of(9, 10);
-    private static final LocalTime HEAT_PEAK_TIME_UTC = LocalTime.of(2, 0, 0); // TODO refactor to set type to utc (Synology reads only UTC)
+    private static final LocalTime HEAT_PEAK_TIME_UTC = LocalTime.of(2, 0, 0);
 
     @Override
     public String name() {
@@ -18,7 +15,7 @@ class DailyAirFlow implements Rule {
 
     @Override
     public Confidence turnOnConfidence() {
-        final LocalDateTime now = LocalDateTime.now();
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final double sign = isSummer(MonthDay.from(now)) ? 1.0 : -1.0;
         final double confidence = getCosinus(now.toLocalTime());
         return new Confidence(confidence * sign, 0.6);
@@ -27,7 +24,6 @@ class DailyAirFlow implements Rule {
     private boolean isSummer(MonthDay dateNow) {
         return dateNow.isAfter(SUMMER_TIME_START) && dateNow.isBefore(SUMMER_TIME_END);
     }
-
 
     private double getCosinus(LocalTime timeNow) {
         final Duration diffToPeak = Duration.between(HEAT_PEAK_TIME_UTC, timeNow);
