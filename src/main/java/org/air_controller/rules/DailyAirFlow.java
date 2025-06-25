@@ -1,11 +1,13 @@
 package org.air_controller.rules;
 
 import java.time.*;
+import java.time.temporal.ChronoUnit;
 
 class DailyAirFlow implements Rule {
 
     private static final MonthDay SUMMER_TIME_START = MonthDay.of(5, 10);
-    private static final MonthDay SUMMER_TIME_END = MonthDay.of(9, 10);
+    private static final MonthDay SUMMER_TIME_END = MonthDay.of(9, 21);
+    private static final Duration transitionalSeason = Duration.ofDays(20);
     private static final LocalTime HEAT_PEAK_TIME_UTC = LocalTime.of(2, 0, 0);
 
     @Override
@@ -16,13 +18,34 @@ class DailyAirFlow implements Rule {
     @Override
     public Confidence turnOnConfidence() {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        final double sign = isSummer(MonthDay.from(now)) ? 1.0 : -1.0;
+        final double sign = calculateSeasonFactor(MonthDay.from(now));
         final double confidence = getCosinus(now.toLocalTime());
         return new Confidence(confidence * sign, 0.6);
     }
 
     private boolean isSummer(MonthDay dateNow) {
         return dateNow.isAfter(SUMMER_TIME_START) && dateNow.isBefore(SUMMER_TIME_END);
+    }
+
+    private double calculateSeasonFactor(MonthDay dateNow) {
+        final int year = 2025;
+        final LocalDate now = dateNow.atYear(year);
+
+        final LocalDate summerStart = SUMMER_TIME_START.atYear(year);
+        double daysSinceSummerStart = ChronoUnit.DAYS.between(summerStart, now);
+        final double springSeasonFactor = daysSinceSummerStart / (double) transitionalSeason.toDays();
+        if (Math.abs(springSeasonFactor) < 1.0) {
+            return springSeasonFactor;
+        }
+
+        final LocalDate summerEnd = SUMMER_TIME_END.atYear(year);
+        final double daysToSummerEnd = ChronoUnit.DAYS.between(now, summerEnd);
+        final double autumnSeasonFactor = daysToSummerEnd / (double) transitionalSeason.toDays();
+        if (Math.abs(autumnSeasonFactor) < 1.0) {
+            return autumnSeasonFactor;
+        }
+
+        return isSummer(dateNow) ? 1.0 : -1.0;
     }
 
     private double getCosinus(LocalTime timeNow) {

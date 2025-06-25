@@ -16,17 +16,17 @@ class DailyAirFlowTest {
 
     @ParameterizedTest(name = "{index} => dateTime={0}, expectedResult={1}")
     @CsvSource({
-            "2023-07-20 02:00 Z, 1.0",
-            "2023-07-20 05:00 Z, 0.707",
-            "2023-07-20 08:00 Z, 0.0",
-            "2023-07-20 11:00 Z, -0.707",
-            "2023-07-20 14:00 Z, -1.0",
-            "2023-07-20 17:00 Z, -0.707",
-            "2023-07-20 20:00 Z, 0.0",
-            "2023-07-20 23:00 Z, 0.707",
-            "2023-01-20 02:00 Z, -1.0",
-            "2023-01-20 08:00 Z, 0.0",
-            "2023-01-20 20:00 Z, 0.0"
+            "2023-07-24 02:00 Z, 1.0",
+            "2023-07-24 05:00 Z, 0.707",
+            "2023-07-24 08:00 Z, 0.0",
+            "2023-07-24 11:00 Z, -0.707",
+            "2023-07-24 14:00 Z, -1.0",
+            "2023-07-24 17:00 Z, -0.707",
+            "2023-07-24 20:00 Z, 0.0",
+            "2023-07-24 23:00 Z, 0.707",
+            "2023-01-24 02:00 Z, -1.0",
+            "2023-01-24 08:00 Z, 0.0",
+            "2023-01-24 20:00 Z, 0.0"
     })
     void shouldCalculateFreshAirConfidenceAccordingToSeason(String dateTimeString, double expectedResult) {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm X");
