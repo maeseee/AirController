@@ -18,13 +18,9 @@ class DailyAirFlow implements Rule {
     @Override
     public Confidence turnOnConfidence() {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        final double sign = calculateSeasonFactor(MonthDay.from(now));
+        final double seasonFactor = calculateSeasonFactor(MonthDay.from(now));
         final double confidence = getCosinus(now.toLocalTime());
-        return new Confidence(confidence * sign, 0.6);
-    }
-
-    private boolean isSummer(MonthDay dateNow) {
-        return dateNow.isAfter(SUMMER_TIME_START) && dateNow.isBefore(SUMMER_TIME_END);
+        return new Confidence(confidence * seasonFactor, 0.6);
     }
 
     private double calculateSeasonFactor(MonthDay dateNow) {
@@ -34,18 +30,14 @@ class DailyAirFlow implements Rule {
         final LocalDate summerStart = SUMMER_TIME_START.atYear(year);
         double daysSinceSummerStart = ChronoUnit.DAYS.between(summerStart, now);
         final double springSeasonFactor = daysSinceSummerStart / (double) transitionalSeason.toDays();
-        if (Math.abs(springSeasonFactor) < 1.0) {
-            return springSeasonFactor;
-        }
 
         final LocalDate summerEnd = SUMMER_TIME_END.atYear(year);
         final double daysToSummerEnd = ChronoUnit.DAYS.between(now, summerEnd);
         final double autumnSeasonFactor = daysToSummerEnd / (double) transitionalSeason.toDays();
-        if (Math.abs(autumnSeasonFactor) < 1.0) {
-            return autumnSeasonFactor;
-        }
 
-        return isSummer(dateNow) ? 1.0 : -1.0;
+        final double minSeasonFactor = Math.min(Math.abs(springSeasonFactor), Math.abs(autumnSeasonFactor));
+        final double sign = Math.signum(springSeasonFactor * autumnSeasonFactor);
+        return Math.min(minSeasonFactor, 1.0) * sign;
     }
 
     private double getCosinus(LocalTime timeNow) {
