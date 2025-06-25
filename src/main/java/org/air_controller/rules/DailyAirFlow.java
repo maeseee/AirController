@@ -26,15 +26,20 @@ class DailyAirFlow implements Rule {
     private double calculateSeasonFactor(MonthDay dateNow) {
         final int year = 2025;
         final LocalDate now = dateNow.atYear(year);
-
         final LocalDate summerStart = SUMMER_TIME_START.atYear(year);
-        double daysSinceSummerStart = ChronoUnit.DAYS.between(summerStart, now);
-        final double springSeasonFactor = daysSinceSummerStart / (double) transitionalSeason.toDays();
-
         final LocalDate summerEnd = SUMMER_TIME_END.atYear(year);
-        final double daysToSummerEnd = ChronoUnit.DAYS.between(now, summerEnd);
-        final double autumnSeasonFactor = daysToSummerEnd / (double) transitionalSeason.toDays();
 
+        final double springSeasonFactor = getSeasonFactor(summerStart, now);
+        final double autumnSeasonFactor = getSeasonFactor(now, summerEnd);
+        return calculateFactor(springSeasonFactor, autumnSeasonFactor);
+    }
+
+    private double getSeasonFactor(LocalDate dateStart, LocalDate dateEnd) {
+        double daysSinceSummerStart = ChronoUnit.DAYS.between(dateStart, dateEnd);
+        return daysSinceSummerStart / (double) transitionalSeason.toDays();
+    }
+
+    private double calculateFactor(double springSeasonFactor, double autumnSeasonFactor) {
         final double minSeasonFactor = Math.min(Math.abs(springSeasonFactor), Math.abs(autumnSeasonFactor));
         final double sign = Math.signum(springSeasonFactor * autumnSeasonFactor);
         return Math.min(minSeasonFactor, 1.0) * sign;
