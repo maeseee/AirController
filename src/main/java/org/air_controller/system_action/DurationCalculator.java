@@ -38,7 +38,7 @@ public class DurationCalculator {
         return actions;
     }
 
-    private SystemAction createLastAction(ZonedDateTime endTime) throws ActionException {
+    private SystemAction createLastAction(ZonedDateTime endTime) {
         final SystemAction lastActionInTimeRange = systemActions.stream()
                 .filter(systemAction -> systemAction.actionTime().isBefore(endTime))
                 .reduce(this::getLastAction)

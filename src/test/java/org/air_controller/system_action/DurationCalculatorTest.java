@@ -2,7 +2,6 @@ package org.air_controller.system_action;
 
 import org.air_controller.system.OutputState;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 import java.time.Duration;
 import java.time.ZoneOffset;
@@ -13,9 +12,6 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class DurationCalculatorTest {
-
-    @Mock
-    private SystemActionDbAccessor airFlowDbAccessor;
 
     @Test
     void shouldReturnZero_whenNoActionsInTheTimeRange() {

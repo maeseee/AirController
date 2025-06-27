@@ -18,13 +18,6 @@ public class SystemStatistics implements Runnable {
 
     private final SystemActionDbAccessor dbAccessor;
 
-    public Duration getOnDurationOfLastTwoHours() {
-        final ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
-        final ZonedDateTime startTime = endTime.minusHours(2);
-        final List<SystemAction> actionsFromLastHour = dbAccessor.getActionsFromTimeToNow(startTime);
-        return getDuration(actionsFromLastHour, startTime, endTime);
-    }
-
     @Override
     public void run() {
         try {

@@ -26,13 +26,13 @@ class MainMock {
         Thread.currentThread().join();
     }
 
-    private static SystemActionDbAccessors createSystemActionDbAccessors() throws SQLException {
+    private static SystemActionDbAccessors createSystemActionDbAccessors() {
         return new SystemActionDbAccessors(
                 createSystemActionDbAccessorWithLocalDb(SystemPart.AIR_FLOW),
                 createSystemActionDbAccessorWithLocalDb(SystemPart.HUMIDITY));
     }
 
-    private static SystemActionDbAccessor createSystemActionDbAccessorWithLocalDb(SystemPart systemPart) throws SQLException {
+    private static SystemActionDbAccessor createSystemActionDbAccessorWithLocalDb(SystemPart systemPart) {
         return new SystemActionDbAccessor(new LocalInMemoryDatabase(), systemPart);
     }
 }
