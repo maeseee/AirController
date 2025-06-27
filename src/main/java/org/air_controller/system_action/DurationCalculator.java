@@ -19,17 +19,13 @@ public class DurationCalculator {
             return Duration.ZERO;
         }
 
-        try {
-            final List<SystemAction> actionsWithStartAndEnd = cutListToStartAndEnd(startTime, endTime);
-            final List<Duration> onDurations = convertToOnDurationList(actionsWithStartAndEnd);
-            return onDurations.stream().reduce(Duration.ZERO, Duration::plus);
-        } catch (ActionException e) {
-            return Duration.ZERO;
-        }
+        final List<SystemAction> actionsWithStartAndEnd = cutListToStartAndEnd(startTime, endTime);
+        final List<Duration> onDurations = convertToOnDurationList(actionsWithStartAndEnd);
+        return onDurations.stream().reduce(Duration.ZERO, Duration::plus);
     }
 
 
-    private List<SystemAction> cutListToStartAndEnd(ZonedDateTime startTime, ZonedDateTime endTime) throws ActionException {
+    private List<SystemAction> cutListToStartAndEnd(ZonedDateTime startTime, ZonedDateTime endTime) {
         final List<SystemAction> actions = systemActions.stream()
                 .filter(systemAction -> isActionInRange(systemAction.actionTime(), startTime, endTime))
                 .collect(Collectors.toList());
