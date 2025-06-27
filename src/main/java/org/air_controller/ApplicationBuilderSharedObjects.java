@@ -11,7 +11,6 @@ import org.air_controller.sensor.Sensors;
 import org.air_controller.sensor_values.CurrentSensorData;
 import org.air_controller.sensor_values.CurrentSensors;
 import org.air_controller.system.ControlledVentilationSystem;
-import org.air_controller.system.SystemStatistics;
 import org.air_controller.system.VentilationSystem;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemActionDbAccessors;
@@ -49,9 +48,9 @@ class ApplicationBuilderSharedObjects {
         return currentSensors;
     }
 
-    public List<Rule> getFreshAirRules(Sensors sensors, SystemStatistics statistics) {
+    public List<Rule> getFreshAirRules(Sensors sensors) {
         if (freshAirRules == null) {
-            createFreshAirRules(sensors, statistics);
+            createFreshAirRules(sensors, getDbAccessor(SystemPart.AIR_FLOW));
         }
         return freshAirRules;
     }
@@ -79,8 +78,8 @@ class ApplicationBuilderSharedObjects {
         currentSensors = new CurrentSensors(currentIndoorSensorData, currentOutdoorSensorData);
     }
 
-    private void createFreshAirRules(Sensors sensors, SystemStatistics statistics) {
-        freshAirRules = new FreshAirRuleBuilder().build(getCurrentSensors(sensors), statistics);
+    private void createFreshAirRules(Sensors sensors, SystemActionDbAccessor dbAccessor) {
+        freshAirRules = new FreshAirRuleBuilder().build(getCurrentSensors(sensors), dbAccessor);
     }
 
     private void createDingtianPins() {

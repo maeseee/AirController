@@ -51,7 +51,7 @@ class ApplicationBuilder {
 
     private void createRuleApplierIfNotAvailable() {
         if (ruleApplier == null) {
-            final List<Rule> freshAirRules = sharedObjects.getFreshAirRules(sensors, statistics);
+            final List<Rule> freshAirRules = sharedObjects.getFreshAirRules(sensors);
             final List<Rule> humidityExchangeRules =
                     new HumidityExchangerRuleBuilder().getHumidityExchangeRules(sharedObjects.getCurrentSensors(sensors));
             ruleApplier = new RuleApplier(sharedObjects.getVentilationSystems(), freshAirRules, humidityExchangeRules);
@@ -66,7 +66,7 @@ class ApplicationBuilder {
 
     private void createSystemStateLoggerIfNotAvailable() {
         if (systemStateLogger == null) {
-            final List<Rule> freshAirRules = sharedObjects.getFreshAirRules(sensors, statistics);
+            final List<Rule> freshAirRules = sharedObjects.getFreshAirRules(sensors);
             systemStateLogger = new SystemStateLogger(sharedObjects.getVentilationSystems().getFirst(), freshAirRules);
         }
     }
