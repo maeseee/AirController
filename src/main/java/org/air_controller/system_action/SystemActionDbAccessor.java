@@ -71,12 +71,10 @@ public class SystemActionDbAccessor {
     }
 
     private SystemAction createSystemAction(ResultSet resultSet) throws SQLException {
-        final String systemPartString = resultSet.getString("system_part");
-        final SystemPart systemPart = SystemPart.valueOf(systemPartString);
         final String statusString = resultSet.getString("status");
         final OutputState outputState = OutputState.valueOf(statusString);
         final ZonedDateTime actionTime = ZonedDateTime.of(resultSet.getObject("action_time", LocalDateTime.class), ZoneOffset.UTC);
-        return new SystemAction(actionTime, systemPart, outputState);
+        return new SystemAction(actionTime, outputState);
     }
 
     private void addResultIfAvailable(List<SystemAction> entries, ResultSet resultSet) {

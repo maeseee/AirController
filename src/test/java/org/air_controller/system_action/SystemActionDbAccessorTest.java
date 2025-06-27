@@ -36,7 +36,6 @@ class SystemActionDbAccessorTest {
         final Optional<SystemAction> result = testee.getMostCurrentState();
 
         assertThat(result).isPresent();
-        assertThat(result.get().systemPart()).isEqualTo(SystemPart.AIR_FLOW);
         assertThat(result.get().outputState()).isEqualTo(OutputState.OFF);
         assertThat(result.get().actionTime()).isCloseTo(now, within(1, ChronoUnit.SECONDS));
     }

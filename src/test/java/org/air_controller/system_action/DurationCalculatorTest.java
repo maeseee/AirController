@@ -30,9 +30,9 @@ class DurationCalculatorTest {
         final ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
         final ZonedDateTime startTime = endTime.minusHours(1);
         final List<SystemAction> systemActions = new ArrayList<>();
-        systemActions.add(new SystemAction(startTime.minusMinutes(15), SystemPart.AIR_FLOW, OutputState.OFF));
-        systemActions.add(new SystemAction(endTime.minusMinutes(45), SystemPart.AIR_FLOW, OutputState.ON));
-        systemActions.add(new SystemAction(endTime.minusMinutes(15), SystemPart.AIR_FLOW, OutputState.OFF));
+        systemActions.add(new SystemAction(startTime.minusMinutes(15), OutputState.OFF));
+        systemActions.add(new SystemAction(endTime.minusMinutes(45), OutputState.ON));
+        systemActions.add(new SystemAction(endTime.minusMinutes(15), OutputState.OFF));
         final DurationCalculator testee = new DurationCalculator(systemActions);
 
         final Duration result = testee.getDuration(startTime, endTime);
@@ -45,8 +45,8 @@ class DurationCalculatorTest {
         final ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
         final ZonedDateTime startTime = endTime.minusHours(1);
         final List<SystemAction> systemActions = new ArrayList<>();
-        systemActions.add(new SystemAction(startTime.minusMinutes(15), SystemPart.AIR_FLOW, OutputState.ON));
-        systemActions.add(new SystemAction(startTime.plusMinutes(15), SystemPart.AIR_FLOW, OutputState.OFF));
+        systemActions.add(new SystemAction(startTime.minusMinutes(15), OutputState.ON));
+        systemActions.add(new SystemAction(startTime.plusMinutes(15), OutputState.OFF));
         final DurationCalculator testee = new DurationCalculator(systemActions);
 
         final Duration result = testee.getDuration(startTime, endTime);
@@ -59,8 +59,8 @@ class DurationCalculatorTest {
         final ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
         final ZonedDateTime startTime = endTime.minusHours(1);
         final List<SystemAction> systemActions = new ArrayList<>();
-        systemActions.add(new SystemAction(startTime.minusMinutes(15), SystemPart.AIR_FLOW, OutputState.OFF));
-        systemActions.add(new SystemAction(endTime.minusMinutes(15), SystemPart.AIR_FLOW, OutputState.ON));
+        systemActions.add(new SystemAction(startTime.minusMinutes(15), OutputState.OFF));
+        systemActions.add(new SystemAction(endTime.minusMinutes(15), OutputState.ON));
         final DurationCalculator testee = new DurationCalculator(systemActions);
 
         final Duration result = testee.getDuration(startTime, endTime);
@@ -73,11 +73,11 @@ class DurationCalculatorTest {
         final ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
         final ZonedDateTime startTime = endTime.minusHours(1);
         final List<SystemAction> systemActions = new ArrayList<>();
-        systemActions.add(new SystemAction(startTime.minusMinutes(15), SystemPart.AIR_FLOW, OutputState.OFF));
-        systemActions.add(new SystemAction(endTime.minusMinutes(55), SystemPart.AIR_FLOW, OutputState.ON));
-        systemActions.add(new SystemAction(endTime.minusMinutes(50), SystemPart.AIR_FLOW, OutputState.OFF));
-        systemActions.add(new SystemAction(endTime.minusMinutes(45), SystemPart.AIR_FLOW, OutputState.ON));
-        systemActions.add(new SystemAction(endTime.minusMinutes(40), SystemPart.AIR_FLOW, OutputState.OFF));
+        systemActions.add(new SystemAction(startTime.minusMinutes(15), OutputState.OFF));
+        systemActions.add(new SystemAction(endTime.minusMinutes(55), OutputState.ON));
+        systemActions.add(new SystemAction(endTime.minusMinutes(50), OutputState.OFF));
+        systemActions.add(new SystemAction(endTime.minusMinutes(45), OutputState.ON));
+        systemActions.add(new SystemAction(endTime.minusMinutes(40), OutputState.OFF));
         final DurationCalculator testee = new DurationCalculator(systemActions);
 
         final Duration result = testee.getDuration(startTime, endTime);
@@ -90,8 +90,8 @@ class DurationCalculatorTest {
         final ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
         final ZonedDateTime startTime = endTime.minusHours(1);
         final List<SystemAction> systemActions = new ArrayList<>();
-        systemActions.add(new SystemAction(endTime.minusMinutes(45), SystemPart.AIR_FLOW, OutputState.ON));
-        systemActions.add(new SystemAction(endTime.minusMinutes(40), SystemPart.AIR_FLOW, OutputState.OFF));
+        systemActions.add(new SystemAction(endTime.minusMinutes(45), OutputState.ON));
+        systemActions.add(new SystemAction(endTime.minusMinutes(40), OutputState.OFF));
         final DurationCalculator testee = new DurationCalculator(systemActions);
 
         final Duration result = testee.getDuration(startTime, endTime);
@@ -104,7 +104,7 @@ class DurationCalculatorTest {
         final ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
         final ZonedDateTime startTime = endTime.minusHours(1);
         final List<SystemAction> systemActions = new ArrayList<>();
-        systemActions.add(new SystemAction(endTime.minusMinutes(20), SystemPart.AIR_FLOW, OutputState.ON));
+        systemActions.add(new SystemAction(endTime.minusMinutes(20), OutputState.ON));
         final DurationCalculator testee = new DurationCalculator(systemActions);
 
         final Duration result = testee.getDuration(startTime, endTime);

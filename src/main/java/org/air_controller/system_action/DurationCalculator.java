@@ -42,8 +42,8 @@ public class DurationCalculator {
         final SystemAction lastActionInTimeRange = systemActions.stream()
                 .filter(systemAction -> systemAction.actionTime().isBefore(endTime))
                 .reduce(this::getLastAction)
-                .orElse(new SystemAction(endTime, SystemPart.AIR_FLOW, OutputState.OFF));
-        return new SystemAction(endTime, lastActionInTimeRange.systemPart(), lastActionInTimeRange.outputState());
+                .orElse(new SystemAction(endTime, OutputState.OFF));
+        return new SystemAction(endTime, lastActionInTimeRange.outputState());
     }
 
     private SystemAction getLastAction(SystemAction action1, SystemAction action2) {

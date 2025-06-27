@@ -3,7 +3,6 @@ package org.air_controller.rules;
 import org.air_controller.system.OutputState;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
-import org.air_controller.system_action.SystemPart;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -35,8 +34,8 @@ class PeriodicallyAirFlowTest {
     void shouldReturnPercentage(int onDuration, double expectedResult) {
         final ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
         final List<SystemAction> systemActions = new ArrayList<>();
-        systemActions.add(new SystemAction(endTime.minusMinutes(onDuration), SystemPart.AIR_FLOW, OutputState.ON));
-        systemActions.add(new SystemAction(endTime, SystemPart.AIR_FLOW, OutputState.OFF));
+        systemActions.add(new SystemAction(endTime.minusMinutes(onDuration), OutputState.ON));
+        systemActions.add(new SystemAction(endTime, OutputState.OFF));
         when(dbAccessor.getActionsFromTimeToNow(any())).thenReturn(systemActions);
         final PeriodicallyAirFlow testee = new PeriodicallyAirFlow(dbAccessor);
 

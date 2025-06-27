@@ -31,7 +31,7 @@ class SystemActionMariaDatabaseTest {
     @Test
     void shouldSetTheState() {
         final ZonedDateTime startTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(1);
-        final SystemAction mostCurrentAction = new SystemAction(startTime, SystemPart.AIR_FLOW, OutputState.OFF);
+        final SystemAction mostCurrentAction = new SystemAction(startTime, OutputState.OFF);
         when(airFlowDbAccessor.getMostCurrentState()).thenReturn(Optional.of(mostCurrentAction));
         final SystemActionPersistence testee = new SystemActionPersistence(dbAccessors);
 
@@ -45,7 +45,7 @@ class SystemActionMariaDatabaseTest {
     @Test
     void shouldIgnoreSettingTheSameStateTwice() {
         final ZonedDateTime startTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(1);
-        final SystemAction mostCurrentAction = new SystemAction(startTime, SystemPart.AIR_FLOW, OutputState.ON);
+        final SystemAction mostCurrentAction = new SystemAction(startTime, OutputState.ON);
         when(airFlowDbAccessor.getMostCurrentState()).thenReturn(Optional.of(mostCurrentAction));
         final SystemActionPersistence testee = new SystemActionPersistence(dbAccessors);
 
