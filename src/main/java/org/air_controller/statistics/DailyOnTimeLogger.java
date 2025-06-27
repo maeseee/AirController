@@ -1,4 +1,4 @@
-package org.air_controller.system;
+package org.air_controller.statistics;
 
 import com.google.common.annotations.VisibleForTesting;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +12,8 @@ import java.time.*;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class SystemStatistics implements Runnable {
-    private static final Logger logger = LogManager.getLogger(SystemStatistics.class);
+public class DailyOnTimeLogger implements Runnable {
+    private static final Logger logger = LogManager.getLogger(DailyOnTimeLogger.class);
 
     private final SystemActionDbAccessor dbAccessor;
 

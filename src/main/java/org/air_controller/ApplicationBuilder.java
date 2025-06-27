@@ -6,8 +6,8 @@ import org.air_controller.rules.Rule;
 import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor.Sensors;
 import org.air_controller.sensor.SensorsBuilder;
+import org.air_controller.statistics.DailyOnTimeLogger;
 import org.air_controller.statistics.SystemStateLogger;
-import org.air_controller.system.SystemStatistics;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -19,7 +19,7 @@ class ApplicationBuilder {
 
     private Sensors sensors;
     private RuleApplier ruleApplier;
-    private SystemStatistics statistics;
+    private DailyOnTimeLogger statistics;
     private ScheduledExecutorService executor;
     private SystemStateLogger systemStateLogger;
     private ApplicationBuilderSharedObjects sharedObjects = new ApplicationBuilderSharedObjects();
@@ -45,7 +45,7 @@ class ApplicationBuilder {
 
     private void createTimeKeeperIfNotAvailable() {
         if (statistics == null) {
-            statistics = new SystemStatistics(sharedObjects.getSystemActionDbAccessors().airFlow());
+            statistics = new DailyOnTimeLogger(sharedObjects.getSystemActionDbAccessors().airFlow());
         }
     }
 
