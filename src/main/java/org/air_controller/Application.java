@@ -14,9 +14,8 @@ import java.util.concurrent.TimeUnit;
 
 class Application {
     private static final Logger logger = LogManager.getLogger(Application.class);
-    private static final int OUTDOOR_SENSOR_READ_PERIOD_MINUTES = 10;
-    private static final int INDOOR_SENSOR_READ_PERIOD_MINUTES = 10;
-    private static final int RULE_APPLIER_PERIOD_MINUTES = 1;
+    private static final Duration SENSOR_READ_PERIOD = Duration.ofMinutes(10);
+    private static final Duration RULE_APPLIER_PERIOD = Duration.ofMinutes(1);
 
     private final Sensors sensors;
     private final RuleApplier ruleApplier;
@@ -31,9 +30,9 @@ class Application {
     }
 
     public void run() {
-        executor.scheduleAtFixedRate(sensors.outdoor(), 0, OUTDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
-        executor.scheduleAtFixedRate(sensors.indoor(), 0, INDOOR_SENSOR_READ_PERIOD_MINUTES, TimeUnit.MINUTES);
-        executor.scheduleAtFixedRate(ruleApplier, 0, RULE_APPLIER_PERIOD_MINUTES, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(sensors.outdoor(), 0, SENSOR_READ_PERIOD.toMinutes(), TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(sensors.indoor(), 0, SENSOR_READ_PERIOD.toMinutes(), TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(ruleApplier, 0, RULE_APPLIER_PERIOD.toMinutes(), TimeUnit.MINUTES);
 
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final ZonedDateTime midnight = ZonedDateTime.of(now.toLocalDate().atStartOfDay().plusDays(1), ZoneOffset.UTC);
