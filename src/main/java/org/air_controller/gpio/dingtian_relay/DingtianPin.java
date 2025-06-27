@@ -33,7 +33,8 @@ public class DingtianPin implements GpioPin {
         }
     }
 
-    boolean getGpioState() {
+    @Override
+    public boolean getGpioState() {
         final List<Boolean> states = communication.readStates();
         if (relay.getRelayIndex() < states.size()) {
             return states.get(relay.getRelayIndex());

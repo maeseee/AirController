@@ -32,6 +32,8 @@ class ApplicationTest {
     private SystemStatistics statistics;
     @Mock
     private ScheduledExecutorService executor;
+    @Mock
+    private SystemStateLogger systemStateLogger;
 
     @BeforeEach
     void setUp() {
@@ -40,13 +42,14 @@ class ApplicationTest {
 
     @Test
     void testWhenCreateApplicationThenScheduleExecutor() {
-        final Application testee = new Application(sensors, ruleApplier, statistics, executor);
+        final Application testee = new Application(sensors, ruleApplier, statistics, executor, systemStateLogger);
 
         testee.run();
 
         verify(executor).scheduleAtFixedRate(outdoorSensor, 0, 10, TimeUnit.MINUTES);
         verify(executor).scheduleAtFixedRate(indoorSensor, 0, 10, TimeUnit.MINUTES);
         verify(executor).scheduleAtFixedRate(ruleApplier, 0, 1, TimeUnit.MINUTES);
+        verify(executor).scheduleAtFixedRate(systemStateLogger, 5, 60, TimeUnit.MINUTES);
         verify(executor).scheduleAtFixedRate(eq(statistics), anyLong(), eq(86400L), eq(TimeUnit.SECONDS));
     }
 }

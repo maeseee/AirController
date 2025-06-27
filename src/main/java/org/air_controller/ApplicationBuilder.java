@@ -5,8 +5,10 @@ import org.air_controller.gpio.GpioPins;
 import org.air_controller.gpio.dingtian_relay.DingtianPin;
 import org.air_controller.gpio.dingtian_relay.DingtianRelay;
 import org.air_controller.persistence.MariaDatabase;
+import org.air_controller.rules.FreshAirRuleBuilder;
+import org.air_controller.rules.HumidityExchangerRuleBuilder;
+import org.air_controller.rules.Rule;
 import org.air_controller.rules.RuleApplier;
-import org.air_controller.rules.RuleApplierBuilder;
 import org.air_controller.sensor.Sensors;
 import org.air_controller.sensor.SensorsBuilder;
 import org.air_controller.sensor_values.CurrentSensorData;
@@ -27,17 +29,23 @@ import java.util.concurrent.ScheduledExecutorService;
 @Setter
 class ApplicationBuilder {
 
+    // necessary objects
     private Sensors sensors;
     private RuleApplier ruleApplier;
     private SystemStatistics statistics;
     private ScheduledExecutorService executor;
+    private SystemStateLogger systemStateLogger;
 
+    // shared helper objects
     private SystemActionDbAccessors systemActionDbAccessors;
     private GpioPins gpioPins;
+    private List<VentilationSystem> ventilationSystems;
+    private CurrentSensors currentSensors;
+    private List<Rule> freshAirRules;
 
     public Application build() throws SQLException {
         createNotMockedObjects();
-        return new Application(sensors, ruleApplier, statistics, executor);
+        return new Application(sensors, ruleApplier, statistics, executor, systemStateLogger);
     }
 
     private void createNotMockedObjects() throws SQLException {
@@ -47,6 +55,7 @@ class ApplicationBuilder {
         createGpioPinsIfNotAvailable();
         createRuleApplierIfNotAvailable();
         createExecutorIfNotAvailable();
+        createSystemStateLoggerIfNotAvailable();
     }
 
     private void createSensorsIfNotAvailable() {
@@ -75,13 +84,21 @@ class ApplicationBuilder {
 
     private void createRuleApplierIfNotAvailable() {
         if (ruleApplier == null) {
-            ruleApplier = new RuleApplierBuilder().build(createVentilationSystems(), createCurrentSensors(), statistics);
+            final List<Rule> freshAirRules = getFreshAirRules();
+            final List<Rule> humidityExchangeRules = new HumidityExchangerRuleBuilder().getHumidityExchangeRules(getCurrentSensors());
+            ruleApplier = new RuleApplier(getVentilationSystems(), freshAirRules, humidityExchangeRules);
         }
     }
 
     private void createExecutorIfNotAvailable() {
         if (executor == null) {
             executor = Executors.newScheduledThreadPool(1);
+        }
+    }
+
+    private void createSystemStateLoggerIfNotAvailable() {
+        if (systemStateLogger == null) {
+            systemStateLogger = new SystemStateLogger(getVentilationSystems().getFirst(), getFreshAirRules());
         }
     }
 
@@ -97,15 +114,37 @@ class ApplicationBuilder {
         return new SystemActionDbAccessor(new MariaDatabase(), systemPart);
     }
 
-    private List<VentilationSystem> createVentilationSystems() {
-        final VentilationSystem ventilationSystem = new ControlledVentilationSystem(gpioPins);
-        final SystemActionPersistence systemActionPersistence = new SystemActionPersistence(systemActionDbAccessors);
-        return List.of(ventilationSystem, systemActionPersistence);
+    private List<VentilationSystem> getVentilationSystems() {
+        if (ventilationSystems == null) {
+            createVentilationSystems();
+        }
+        return ventilationSystems;
     }
 
-    private CurrentSensors createCurrentSensors() {
+    private void createVentilationSystems() {
+        final VentilationSystem ventilationSystem = new ControlledVentilationSystem(gpioPins);
+        final SystemActionPersistence systemActionPersistence = new SystemActionPersistence(systemActionDbAccessors);
+        ventilationSystems = List.of(ventilationSystem, systemActionPersistence);
+    }
+
+    private CurrentSensors getCurrentSensors() {
+        if (currentSensors == null) {
+            createCurrentSensors();
+        }
+        return currentSensors;
+    }
+
+    private void createCurrentSensors() {
         final CurrentSensorData currentIndoorSensorData = new CurrentSensorData(sensors.indoor().getPersistence());
         final CurrentSensorData currentOutdoorSensorData = new CurrentSensorData(sensors.outdoor().getPersistence());
-        return new CurrentSensors(currentIndoorSensorData, currentOutdoorSensorData);
+        currentSensors = new CurrentSensors(currentIndoorSensorData, currentOutdoorSensorData);
     }
+
+    private List<Rule> getFreshAirRules() {
+        if (freshAirRules == null) {
+            freshAirRules = new FreshAirRuleBuilder().build(getCurrentSensors(), statistics);
+        }
+        return freshAirRules;
+    }
+
 }

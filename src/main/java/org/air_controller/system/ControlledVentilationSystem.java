@@ -17,4 +17,9 @@ public class ControlledVentilationSystem implements VentilationSystem {
     public void setHumidityExchangerOn(OutputState state) {
         gpioPins.humidity().setGpioState(state.isOn());
     }
+
+    @Override
+    public OutputState isAirFlowOn() {
+        return gpioPins.airFlow().getGpioState() ? OutputState.ON : OutputState.OFF;
+    }
 }

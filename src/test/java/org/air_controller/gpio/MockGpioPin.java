@@ -22,7 +22,8 @@ public class MockGpioPin implements GpioPin {
         }
     }
 
-    boolean getGpioState() {
+    @Override
+    public boolean getGpioState() {
         return gpioState;
     }
 }

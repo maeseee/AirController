@@ -25,4 +25,12 @@ public class SystemActionPersistence implements VentilationSystem {
     public void setHumidityExchangerOn(OutputState state) {
         dbAccessors.humidity().insertAction(state, ZonedDateTime.now(ZoneOffset.UTC));
     }
+
+    @Override
+    public OutputState isAirFlowOn() {
+        return dbAccessors.airFlow()
+                .getMostCurrentState()
+                .map(SystemAction::outputState)
+                .orElse(OutputState.INITIALIZING);
+    }
 }

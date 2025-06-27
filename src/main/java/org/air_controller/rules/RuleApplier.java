@@ -1,13 +1,14 @@
 package org.air_controller.rules;
 
+import lombok.RequiredArgsConstructor;
 import org.air_controller.system.OutputState;
 import org.air_controller.system.VentilationSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 public class RuleApplier implements Runnable {
     private static final Logger logger = LogManager.getLogger(RuleApplier.class);
     private static final double HYSTERESIS = 0.05;
@@ -18,12 +19,6 @@ public class RuleApplier implements Runnable {
     private final List<Rule> exchangeHumidityRules;
     private OutputState airFlowState = OutputState.INITIALIZING; // The system for fresh air should be on by default
     private OutputState humidityExchangerState = OutputState.INITIALIZING; // The system to exchange humidity should be off by default
-
-    public RuleApplier(List<VentilationSystem> ventilationSystem, List<Rule> freshAirRules, List<Rule> exchangeHumidityRules) {
-        this.ventilationSystem = ventilationSystem;
-        this.freshAirRules = freshAirRules;
-        this.exchangeHumidityRules = exchangeHumidityRules;
-    }
 
     @Override
     public void run() {
@@ -61,21 +56,7 @@ public class RuleApplier implements Runnable {
         if (airFlowState != nextAirFlowState) {
             ventilationSystem.forEach(system -> system.setAirFlowOn(nextAirFlowState));
             airFlowState = nextAirFlowState;
-            logUpdateDecision(nextAirFlowState);
         }
-    }
-
-    private void logUpdateDecision(OutputState nextAirFlowState) {
-        final double confidenceScore = freshAirRules.stream()
-                .mapToDouble(rule -> rule.turnOnConfidence().getWeightedConfidenceValue())
-                .sum();
-        final String ruleValues = freshAirRules.stream()
-                .map(rule -> String.format("%s: %.2f, ", rule.name(), rule.turnOnConfidence().getWeightedConfidenceValue()))
-                .collect(Collectors.joining());
-        final String message =
-                String.format("Fresh air state changed to %s because of the confidence score %.2f\n%s", nextAirFlowState, confidenceScore,
-                        ruleValues);
-        logger.info(message);
     }
 
     private void updateHumidityExchanger(OutputState nextHumidityExchangerState) {
