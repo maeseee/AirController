@@ -6,6 +6,7 @@ import org.air_controller.rules.Rule;
 import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor.Sensors;
 import org.air_controller.sensor.SensorsBuilder;
+import org.air_controller.statistics.SystemStateLogger;
 import org.air_controller.system.SystemStatistics;
 
 import java.sql.SQLException;

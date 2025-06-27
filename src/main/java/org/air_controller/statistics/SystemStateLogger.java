@@ -1,4 +1,4 @@
-package org.air_controller;
+package org.air_controller.statistics;
 
 import lombok.RequiredArgsConstructor;
 import org.air_controller.rules.Rule;

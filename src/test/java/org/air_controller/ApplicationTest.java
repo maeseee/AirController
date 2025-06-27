@@ -3,6 +3,7 @@ package org.air_controller;
 import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor.Sensor;
 import org.air_controller.sensor.Sensors;
+import org.air_controller.statistics.SystemStateLogger;
 import org.air_controller.system.SystemStatistics;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -2,6 +2,7 @@ package org.air_controller;
 
 import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor.Sensors;
+import org.air_controller.statistics.SystemStateLogger;
 import org.air_controller.system.SystemStatistics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
