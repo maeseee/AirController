@@ -17,8 +17,10 @@ class MainMock {
         final GpioPin humidityExchanger = new MockGpioPin("HUMIDITY_EXCHANGER", true);
         final GpioPins gpioPins = new GpioPins(airFlow, humidityExchanger);
         final ApplicationBuilder builder = new ApplicationBuilder();
-        builder.setGpioPins(gpioPins);
-        builder.setSystemActionDbAccessors(createSystemActionDbAccessors());
+        final ApplicationBuilderSharedObjects sharedObjects = new ApplicationBuilderSharedObjects();
+        sharedObjects.setGpioPins(gpioPins);
+        sharedObjects.setSystemActionDbAccessors(createSystemActionDbAccessors());
+        builder.setSharedObjects(sharedObjects);
         final Application application = builder.build();
         application.run();
         Thread.currentThread().join();
