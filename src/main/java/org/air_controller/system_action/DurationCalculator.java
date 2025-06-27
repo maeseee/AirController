@@ -15,7 +15,7 @@ public class DurationCalculator {
     private final List<SystemAction> systemActions;
 
     public Duration getDuration(ZonedDateTime startTime, ZonedDateTime endTime) {
-        if (systemActions.size() < 2) {
+        if (systemActions.isEmpty()) {
             return Duration.ZERO;
         }
 

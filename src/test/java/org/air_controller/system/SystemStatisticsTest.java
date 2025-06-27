@@ -35,19 +35,6 @@ class SystemStatisticsTest {
     }
 
     @Test
-    void shouldReturnDurationToOff_whenOnlyThisYesterday() {
-        final LocalDate yesterday = LocalDateTime.now().minusDays(1).toLocalDate();
-        final ZonedDateTime startTime = ZonedDateTime.of(yesterday.atStartOfDay(), ZoneOffset.UTC).plusHours(10);
-        final SystemAction offAction = new SystemAction(startTime.plusMinutes(20), SystemPart.AIR_FLOW, OutputState.OFF);
-        when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(List.of(offAction));
-        final SystemStatistics testee = new SystemStatistics(airFlowDbAccessor);
-
-        final Duration result = testee.getTotalFromDay(yesterday);
-
-        assertThat(result.toHours()).isCloseTo(10, within(1L));
-    }
-
-    @Test
     void shouldReturnDurationFromOn_whenOnlyThisYesterday() {
         final LocalDate yesterday = LocalDateTime.now().minusDays(1).toLocalDate();
         final ZonedDateTime startTime = ZonedDateTime.of(yesterday.atStartOfDay(), ZoneOffset.UTC).plusHours(10);

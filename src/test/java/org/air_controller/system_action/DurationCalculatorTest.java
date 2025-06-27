@@ -98,4 +98,17 @@ class DurationCalculatorTest {
 
         assertThat(result).isEqualTo(Duration.ofMinutes(5));
     }
+
+    @Test
+    void shouldReturnOnTime_whenOnlyOneAction() {
+        final ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
+        final ZonedDateTime startTime = endTime.minusHours(1);
+        final List<SystemAction> systemActions = new ArrayList<>();
+        systemActions.add(new SystemAction(endTime.minusMinutes(20), SystemPart.AIR_FLOW, OutputState.ON));
+        final DurationCalculator testee = new DurationCalculator(systemActions);
+
+        final Duration result = testee.getDuration(startTime, endTime);
+
+        assertThat(result).isEqualTo(Duration.ofMinutes(20));
+    }
 }
