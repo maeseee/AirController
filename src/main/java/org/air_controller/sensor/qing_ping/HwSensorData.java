@@ -65,10 +65,6 @@ class HwSensorData implements SensorData {
 
     @Override
     public int hashCode() {
-        int result = temperature.hashCode();
-        result = 31 * result + humidity.hashCode();
-        result = 31 * result + Objects.hashCode(co2);
-        result = 31 * result + timestamp.hashCode();
-        return result;
+        return Objects.hash(temperature, humidity, co2, timestamp);
     }
 }
