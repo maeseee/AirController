@@ -8,13 +8,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ControlledVentilationSystemTest {
 
-    private GpioPins gpioPins;
+    private ControlledVentilationSystem testee;
 
     @Mock
     private GpioPin airFlow;
@@ -23,13 +23,12 @@ class ControlledVentilationSystemTest {
 
     @BeforeEach
     void setup() {
-        gpioPins = new GpioPins(airFlow, humidityExchanger);
+        final GpioPins gpioPins = new GpioPins(airFlow, humidityExchanger);
+        testee = new ControlledVentilationSystem(gpioPins);
     }
 
     @Test
     void shouldSetAirFlowOn() {
-        final ControlledVentilationSystem testee = new ControlledVentilationSystem(gpioPins);
-
         testee.setAirFlowOn(OutputState.ON);
 
         verify(airFlow).setGpioState(true);
@@ -38,11 +37,27 @@ class ControlledVentilationSystemTest {
 
     @Test
     void shouldSetHumidityExchangerOn() {
-        final ControlledVentilationSystem testee = new ControlledVentilationSystem(gpioPins);
-
         testee.setHumidityExchangerOn(OutputState.ON);
 
         verify(humidityExchanger).setGpioState(true);
         verifyNoMoreInteractions(airFlow);
+    }
+
+    @Test
+    void shouldReturnAirFlowOn_whenOn() {
+        when(airFlow.getGpioState()).thenReturn(true);
+
+        final OutputState airFlowOn = testee.isAirFlowOn();
+
+        assertThat(airFlowOn).isEqualTo(OutputState.ON);
+    }
+
+    @Test
+    void shouldReturnAirFlowOff_whenOff() {
+        when(airFlow.getGpioState()).thenReturn(false);
+
+        final OutputState airFlowOn = testee.isAirFlowOn();
+
+        assertThat(airFlowOn).isEqualTo(OutputState.OFF);
     }
 }
