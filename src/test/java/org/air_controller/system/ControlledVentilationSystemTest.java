@@ -2,17 +2,32 @@ package org.air_controller.system;
 
 import org.air_controller.gpio.GpioPin;
 import org.air_controller.gpio.GpioPins;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+@ExtendWith(MockitoExtension.class)
 class ControlledVentilationSystemTest {
+
+    private GpioPins gpioPins;
+
+    @Mock
+    private GpioPin airFlow;
+    @Mock
+    private GpioPin humidityExchanger;
+
+    @BeforeEach
+    void setup() {
+        gpioPins = new GpioPins(airFlow, humidityExchanger);
+    }
 
     @Test
     void shouldSetAirFlowOn() {
-        final GpioPin airFlow = mock(GpioPin.class);
-        final GpioPin humidityExchanger = mock(GpioPin.class);
-        final GpioPins gpioPins = new GpioPins(airFlow, humidityExchanger);
         final ControlledVentilationSystem testee = new ControlledVentilationSystem(gpioPins);
 
         testee.setAirFlowOn(OutputState.ON);
@@ -23,9 +38,6 @@ class ControlledVentilationSystemTest {
 
     @Test
     void shouldSetHumidityExchangerOn() {
-        final GpioPin airFlow = mock(GpioPin.class);
-        final GpioPin humidityExchanger = mock(GpioPin.class);
-        final GpioPins gpioPins = new GpioPins(airFlow, humidityExchanger);
         final ControlledVentilationSystem testee = new ControlledVentilationSystem(gpioPins);
 
         testee.setHumidityExchangerOn(OutputState.ON);
