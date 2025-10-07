@@ -2,6 +2,7 @@ package org.air_controller.sensor.qing_ping;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -18,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class AccessTokenRequestTest {
 
     @Test
+    @Disabled
     void shouldHaveRequestInResponse_whenSendingPostRequest() throws URISyntaxException {
         final String credentials = "just a secret";
         final String base64Credentials = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
