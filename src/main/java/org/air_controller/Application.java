@@ -10,8 +10,7 @@ import org.apache.logging.log4j.Logger;
 import java.time.Duration;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 class Application {
     private static final Logger logger = LogManager.getLogger(Application.class);
@@ -35,16 +34,30 @@ class Application {
     }
 
     public void run() {
-        executor.scheduleAtFixedRate(sensors.outdoor(), 0, SENSOR_READ_PERIOD.toMinutes(), TimeUnit.MINUTES);
-        executor.scheduleAtFixedRate(sensors.indoor(), 0, SENSOR_READ_PERIOD.toMinutes(), TimeUnit.MINUTES);
-        executor.scheduleAtFixedRate(ruleApplier, 0, RULE_APPLIER_PERIOD.toMinutes(), TimeUnit.MINUTES);
-        executor.scheduleAtFixedRate(systemStateLogger, SENSOR_READ_PERIOD.toMinutes() / 2, LOG_PERIOD.toMinutes(), TimeUnit.MINUTES);
+        addThreadExecutorWithTimeout(sensors.outdoor(), Duration.ZERO, SENSOR_READ_PERIOD);
+        addThreadExecutorWithTimeout(sensors.indoor(), Duration.ZERO, SENSOR_READ_PERIOD);
+        addThreadExecutorWithTimeout(ruleApplier, Duration.ZERO, RULE_APPLIER_PERIOD);
+        addThreadExecutorWithTimeout(systemStateLogger, SENSOR_READ_PERIOD.dividedBy(2), LOG_PERIOD);
 
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final ZonedDateTime midnight = ZonedDateTime.of(now.toLocalDate().atStartOfDay().plusDays(1), ZoneOffset.UTC);
-        final long initialDelay = Duration.between(now, midnight).plusSeconds(1).toSeconds();
-        executor.scheduleAtFixedRate(statistics, initialDelay, TimeUnit.DAYS.toSeconds(1), TimeUnit.SECONDS);
+        final Duration initialDelay = Duration.between(now, midnight).plusSeconds(1);
+        addThreadExecutorWithTimeout(statistics, initialDelay, Duration.ofDays(1));
 
         logger.info("All setup and running...");
+    }
+
+    private void addThreadExecutorWithTimeout(Runnable command, Duration initialDelay, Duration period) {
+        executor.scheduleAtFixedRate(() -> {
+            Future<?> future = Executors.newSingleThreadExecutor().submit(command);
+            try {
+                future.get(120, TimeUnit.SECONDS);
+            } catch (TimeoutException e) {
+                logger.error("Scheduled task timed out!");
+                future.cancel(true);
+            } catch (Exception e) {
+                logger.error("Task failed", e);
+            }
+        }, initialDelay.toMinutes(), period.toMinutes(), TimeUnit.SECONDS);
     }
 }
