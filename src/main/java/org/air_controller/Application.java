@@ -24,8 +24,12 @@ class Application {
     private final ScheduledExecutorService executor;
     private final SystemStateLogger systemStateLogger;
 
-    Application(Sensors sensors, RuleApplier ruleApplier, DailyOnTimeLogger statistics, ScheduledExecutorService executor,
-            SystemStateLogger systemStateLogger) {
+    Application(Sensors sensors, RuleApplier ruleApplier, DailyOnTimeLogger statistics, SystemStateLogger systemStateLogger) {
+        this(sensors, ruleApplier, statistics, systemStateLogger, Executors.newScheduledThreadPool(1));
+    }
+
+    Application(Sensors sensors, RuleApplier ruleApplier, DailyOnTimeLogger statistics, SystemStateLogger systemStateLogger,
+            ScheduledExecutorService executor) {
         this.sensors = sensors;
         this.ruleApplier = ruleApplier;
         this.statistics = statistics;
@@ -49,14 +53,16 @@ class Application {
 
     private void addThreadExecutorWithTimeout(Runnable command, Duration initialDelay, Duration period) {
         executor.scheduleAtFixedRate(() -> {
-            Future<?> future = Executors.newSingleThreadExecutor().submit(command);
-            try {
-                future.get(120, TimeUnit.SECONDS);
-            } catch (TimeoutException e) {
-                logger.error("Scheduled task timed out!");
-                future.cancel(true);
-            } catch (Exception e) {
-                logger.error("Task failed", e);
+            try (ExecutorService service = Executors.newSingleThreadExecutor()) {
+                Future<?> future = service.submit(command);
+                try {
+                    future.get(120, TimeUnit.SECONDS);
+                } catch (TimeoutException e) {
+                    logger.error("Scheduled task timed out!");
+                    future.cancel(true);
+                } catch (Exception e) {
+                    logger.error("Task failed", e);
+                }
             }
         }, initialDelay.toMinutes(), period.toMinutes(), TimeUnit.SECONDS);
     }

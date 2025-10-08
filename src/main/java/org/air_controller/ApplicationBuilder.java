@@ -11,8 +11,6 @@ import org.air_controller.statistics.SystemStateLogger;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 @Setter
 class ApplicationBuilder {
@@ -20,20 +18,18 @@ class ApplicationBuilder {
     private Sensors sensors;
     private RuleApplier ruleApplier;
     private DailyOnTimeLogger statistics;
-    private ScheduledExecutorService executor;
     private SystemStateLogger systemStateLogger;
     private ApplicationBuilderSharedObjects sharedObjects = new ApplicationBuilderSharedObjects();
 
     public Application build() throws SQLException {
         createNotMockedObjects();
-        return new Application(sensors, ruleApplier, statistics, executor, systemStateLogger);
+        return new Application(sensors, ruleApplier, statistics, systemStateLogger);
     }
 
     private void createNotMockedObjects() {
         createSensorsIfNotAvailable();
         createTimeKeeperIfNotAvailable();
         createRuleApplierIfNotAvailable();
-        createExecutorIfNotAvailable();
         createSystemStateLoggerIfNotAvailable();
     }
 
@@ -55,12 +51,6 @@ class ApplicationBuilder {
             final List<Rule> humidityExchangeRules =
                     new HumidityExchangerRuleBuilder().getHumidityExchangeRules(sharedObjects.getCurrentSensors(sensors));
             ruleApplier = new RuleApplier(sharedObjects.getVentilationSystems(), freshAirRules, humidityExchangeRules);
-        }
-    }
-
-    private void createExecutorIfNotAvailable() {
-        if (executor == null) {
-            executor = Executors.newScheduledThreadPool(1);
         }
     }
 

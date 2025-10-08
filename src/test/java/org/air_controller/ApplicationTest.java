@@ -43,7 +43,7 @@ class ApplicationTest {
 
     @Test
     void testWhenCreateApplicationThenScheduleExecutor() {
-        final Application testee = new Application(sensors, ruleApplier, statistics, executor, systemStateLogger);
+        final Application testee = new Application(sensors, ruleApplier, statistics, systemStateLogger, executor);
 
         testee.run();
 
