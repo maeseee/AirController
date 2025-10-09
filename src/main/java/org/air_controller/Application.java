@@ -64,6 +64,6 @@ class Application {
                     logger.error("Task failed", e);
                 }
             }
-        }, initialDelay.toMinutes(), period.toMinutes(), TimeUnit.SECONDS);
+        }, initialDelay.toSeconds(), period.toSeconds(), TimeUnit.SECONDS);
     }
 }

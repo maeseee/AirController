@@ -14,8 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,10 +47,9 @@ class ApplicationTest {
 
         testee.run();
 
-        verify(executor).scheduleAtFixedRate(outdoorSensor, 0, 10, TimeUnit.MINUTES);
-        verify(executor).scheduleAtFixedRate(indoorSensor, 0, 10, TimeUnit.MINUTES);
-        verify(executor).scheduleAtFixedRate(ruleApplier, 0, 1, TimeUnit.MINUTES);
-        verify(executor).scheduleAtFixedRate(systemStateLogger, 5, 60, TimeUnit.MINUTES);
-        verify(executor).scheduleAtFixedRate(eq(statistics), anyLong(), eq(86400L), eq(TimeUnit.SECONDS));
+        verify(executor, times(2)).scheduleAtFixedRate(any(), eq(0L), eq(600L), eq(TimeUnit.SECONDS)); // outdoorSensor + indoorSensor
+        verify(executor).scheduleAtFixedRate(any(), eq(0L), eq(60L), eq(TimeUnit.SECONDS)); // ruleApplier
+        verify(executor).scheduleAtFixedRate(any(), eq(5 * 60L), eq(60 * 60L), eq(TimeUnit.SECONDS)); // systemStateLogger
+        verify(executor).scheduleAtFixedRate(any(), anyLong(), eq(86400L), eq(TimeUnit.SECONDS)); // statistics
     }
 }
