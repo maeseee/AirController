@@ -21,7 +21,7 @@ class CarbonDioxideTest {
     void shouldReturnInitializedValue() throws InvalidArgumentException {
         CarbonDioxide testee = CarbonDioxide.createFromPpm(123456.0);
 
-        double co2 = testee.getPpm();
+        double co2 = testee.ppm();
 
         assertThat(co2).isEqualTo(123456.0);
     }

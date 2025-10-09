@@ -29,7 +29,7 @@ class CO2ControlAirFlow implements Rule {
         if (indoorCo2.isEmpty()) {
             return new Confidence(0.0);
         }
-        final double impact = M * indoorCo2.get().getPpm() + B;
+        final double impact = M * indoorCo2.get().ppm() + B;
         return new Confidence(impact);
     }
 }

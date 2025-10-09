@@ -34,7 +34,7 @@ class DbToCsvTest {
         assertThat(lastSensorData.getHumidity()).isPresent().hasValueSatisfying(
                 humidity -> assertThat(humidity.getAbsoluteHumidity()).isCloseTo(10.0, within(0.001)));
         assertThat(lastSensorData.getCo2()).isPresent().hasValueSatisfying(
-                co2 -> assertThat(co2.getPpm()).isCloseTo(500.0, within(0.001)));
+                co2 -> assertThat(co2.ppm()).isCloseTo(500.0, within(0.001)));
         assertThat(lastSensorData.getTimeStamp()).isCloseTo(now, within(1, ChronoUnit.SECONDS));
     }
 

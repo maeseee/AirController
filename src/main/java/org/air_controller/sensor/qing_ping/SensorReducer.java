@@ -44,7 +44,7 @@ class SensorReducer {
     private CarbonDioxide getAverageCo2(List<HwSensorData> currentSensorDataList) throws InvalidArgumentException {
         final OptionalDouble averageCo2 = currentSensorDataList.stream()
                 .filter(sensorData -> sensorData.getCo2().isPresent())
-                .mapToDouble(value -> value.getCo2().get().getPpm())
+                .mapToDouble(value -> value.getCo2().get().ppm())
                 .average();
         return averageCo2.isPresent() ? CarbonDioxide.createFromPpm(averageCo2.getAsDouble()) : null;
     }

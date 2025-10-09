@@ -60,7 +60,7 @@ class SensorDataTest {
                     humidity -> assertThat(humidity.getRelativeHumidity(sensorData.getTemperature().get())).isCloseTo(relativeHumidity,
                             within(0.01)));
             assertThat(sensorData.getCo2()).isPresent().hasValueSatisfying(
-                    co2 -> assertThat(co2.getPpm()).isCloseTo(co2Ppm, within(1.0)));
+                    co2 -> assertThat(co2.ppm()).isCloseTo(co2Ppm, within(1.0)));
             assertThat(sensorData.getTimeStamp()).isCloseTo(time, within(1, ChronoUnit.SECONDS));
         });
     }

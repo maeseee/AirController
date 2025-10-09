@@ -1,18 +1,11 @@
 package org.air_controller.sensor_values;
 
-import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
-@Getter
-public class CarbonDioxide {
-
-    private final double ppm;
-
-    private CarbonDioxide(double ppm) {
-        this.ppm = ppm;
-    }
+public record CarbonDioxide(double ppm) {
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return String.format("%.0fppm", ppm);
     }
 
@@ -21,18 +14,5 @@ public class CarbonDioxide {
             throw new InvalidArgumentException("Given humidity of " + ppm + "% is out of range!");
         }
         return new CarbonDioxide(ppm);
-    }
-
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CarbonDioxide that)) return false;
-
-        return Double.compare(ppm, that.ppm) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Double.hashCode(ppm);
     }
 }
