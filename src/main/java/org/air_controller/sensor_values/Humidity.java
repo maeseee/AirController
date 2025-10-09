@@ -1,16 +1,12 @@
 package org.air_controller.sensor_values;
 
-import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
-@Getter
-public class Humidity {
+/**
+ * @param absoluteHumidity [g/m3]
+ */
+public record Humidity(double absoluteHumidity) {
     private static final double SPECIFIC_GAS_CONSTANT_FOR_WATER = 461.5; // [J/(kg*K)]
-
-    private final double absoluteHumidity; // [g/m3]
-
-    private Humidity(double absoluteHumidity) {
-        this.absoluteHumidity = absoluteHumidity;
-    }
 
     public double getRelativeHumidity(Temperature temperature) {
         final double saturationVaporPressure = getSaturationVaporPressure(temperature);
@@ -18,21 +14,8 @@ public class Humidity {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return String.format("%.2fg/m3", absoluteHumidity);
-    }
-
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Humidity humidity)) return false;
-
-        return Double.compare(absoluteHumidity, humidity.absoluteHumidity) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Double.hashCode(absoluteHumidity);
     }
 
     public static Humidity createFromRelative(double relativeHumidity, Temperature temperature) throws InvalidArgumentException {

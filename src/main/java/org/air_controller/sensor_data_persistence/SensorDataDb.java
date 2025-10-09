@@ -32,7 +32,7 @@ public class SensorDataDb implements SensorDataPersistence {
     @Override
     public void persist(SensorData sensorData) {
         final Double temperature = sensorData.getTemperature().map(Temperature::getCelsius).orElse(null);
-        final Double humidity = sensorData.getHumidity().map(Humidity::getAbsoluteHumidity).orElse(null);
+        final Double humidity = sensorData.getHumidity().map(Humidity::absoluteHumidity).orElse(null);
         final Double co2 = sensorData.getCo2().map(CarbonDioxide::ppm).orElse(null);
         insertSensorData(temperature, humidity, co2, sensorData.getTimeStamp());
     }

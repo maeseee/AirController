@@ -37,8 +37,8 @@ class HumidityControlAirFlow implements Rule {
     }
 
     private Confidence getConfidence(Humidity indoorHumidity, Humidity outdoorHumidity) {
-        final double indoorToIdealDiff = indoorHumidity.getAbsoluteHumidity() - absoluteHumidityFrom(IDEAL_RELATIV_HUMIDITY);
-        final double indoorToOutdoorDiff = indoorHumidity.getAbsoluteHumidity() - outdoorHumidity.getAbsoluteHumidity();
+        final double indoorToIdealDiff = indoorHumidity.absoluteHumidity() - absoluteHumidityFrom(IDEAL_RELATIV_HUMIDITY);
+        final double indoorToOutdoorDiff = indoorHumidity.absoluteHumidity() - outdoorHumidity.absoluteHumidity();
         return calculateConfidence(indoorToIdealDiff, indoorToOutdoorDiff);
     }
 
@@ -52,7 +52,7 @@ class HumidityControlAirFlow implements Rule {
     private double absoluteHumidityFrom(double relativeHumidity) {
         try {
             final Temperature currentIndoorTemperature = currentIndoorSensorData.getTemperature().orElse(Temperature.createFromCelsius(22.5));
-            return Humidity.createFromRelative(relativeHumidity, currentIndoorTemperature).getAbsoluteHumidity();
+            return Humidity.createFromRelative(relativeHumidity, currentIndoorTemperature).absoluteHumidity();
         } catch (InvalidArgumentException e) {
             logger.error("Ideal humidity could not be created", e);
             throw new SensorException("Invalid sensor values", e.getCause());

@@ -61,7 +61,7 @@ class HumidityTest {
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
         final Humidity testee = Humidity.createFromRelative(relativeHumidity, temperature);
 
-        final double absoluteHumidity = testee.getAbsoluteHumidity();
+        final double absoluteHumidity = testee.absoluteHumidity();
 
         final double expectedMaxDeltaInPercent = 1.0;
         final double expectedMaxDelta = expectedMaxDeltaInPercent * weightFor100Percent / 100.0;
@@ -89,7 +89,7 @@ class HumidityTest {
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
         final Humidity testee = Humidity.createFromRelative(relativeHumidity, temperature);
 
-        final double absoluteHumidity = testee.getAbsoluteHumidity();
+        final double absoluteHumidity = testee.absoluteHumidity();
 
         final double expectedMaxDeltaInPercent = 1.0;
         final double expectedMaxDelta = expectedMaxDeltaInPercent * weightFor100Percent / 100.0;
@@ -104,6 +104,6 @@ class HumidityTest {
 
         System.out.println(testee);
 
-        assertThat(testee.getAbsoluteHumidity()).isCloseTo(5.73, within(0.1));
+        assertThat(testee.absoluteHumidity()).isCloseTo(5.73, within(0.1));
     }
 }

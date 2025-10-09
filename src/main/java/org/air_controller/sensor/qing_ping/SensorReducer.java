@@ -36,7 +36,7 @@ class SensorReducer {
     private Humidity getAverageHumidity(List<HwSensorData> currentSensorDataList) throws InvalidArgumentException {
         final OptionalDouble averageHumidity = currentSensorDataList.stream()
                 .filter(sensorData -> sensorData.getHumidity().isPresent())
-                .mapToDouble(sensorData -> sensorData.getHumidity().get().getAbsoluteHumidity())
+                .mapToDouble(sensorData -> sensorData.getHumidity().get().absoluteHumidity())
                 .average();
         return averageHumidity.isPresent() ? Humidity.createFromAbsolute(averageHumidity.getAsDouble()) : null;
     }
