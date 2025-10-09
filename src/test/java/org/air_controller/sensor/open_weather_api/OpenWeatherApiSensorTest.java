@@ -57,7 +57,7 @@ class OpenWeatherApiSensorTest {
         assertTrue(sensorData.getTemperature().isPresent());
         assertTrue(sensorData.getHumidity().isPresent());
         final Temperature temperature = sensorData.getTemperature().get();
-        assertEquals(10.53, temperature.getCelsius(), 0.1);
+        assertEquals(10.53, temperature.celsius(), 0.1);
         final Humidity humidity = sensorData.getHumidity().get();
         assertEquals(87.0, humidity.getRelativeHumidity(temperature), 0.1);
     }

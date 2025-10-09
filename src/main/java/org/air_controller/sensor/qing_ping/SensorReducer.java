@@ -28,7 +28,7 @@ class SensorReducer {
     private Temperature getAverageTemperature(List<HwSensorData> currentSensorDataList) throws InvalidArgumentException {
         final OptionalDouble averageTemperature = currentSensorDataList.stream()
                 .filter(sensorData -> sensorData.getTemperature().isPresent())
-                .mapToDouble(value -> value.getTemperature().get().getCelsius())
+                .mapToDouble(value -> value.getTemperature().get().celsius())
                 .average();
         return averageTemperature.isPresent() ? Temperature.createFromCelsius(averageTemperature.getAsDouble()) : null;
     }

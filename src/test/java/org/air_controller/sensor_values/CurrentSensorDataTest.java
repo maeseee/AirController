@@ -36,7 +36,7 @@ class CurrentSensorDataTest {
         final CurrentSensorData testee = new CurrentSensorData(persistence);
 
         assertThat(testee.getTemperature()).isPresent().hasValueSatisfying(temperature ->
-                assertThat(temperature.getCelsius()).isEqualTo(20.0));
+                assertThat(temperature.celsius()).isEqualTo(20.0));
         assertThat(testee.getHumidity()).isPresent().hasValueSatisfying(humidity ->
                 assertThat(humidity.absoluteHumidity()).isEqualTo(10.0));
         assertThat(testee.getCo2()).isPresent().hasValueSatisfying(carbonDioxide ->

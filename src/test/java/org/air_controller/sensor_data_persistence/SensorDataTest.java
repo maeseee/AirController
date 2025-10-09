@@ -55,7 +55,7 @@ class SensorDataTest {
 
         assertThat(lastSensorData).hasValueSatisfying(sensorData -> {
             assertThat(sensorData.getTemperature()).isPresent().hasValueSatisfying(
-                    temperature -> assertThat(temperature.getCelsius()).isCloseTo(temperature.getCelsius(), within(0.01)));
+                    temperature -> assertThat(temperature.celsius()).isCloseTo(temperature.celsius(), within(0.01)));
             assertThat(sensorData.getHumidity()).isPresent().hasValueSatisfying(
                     humidity -> assertThat(humidity.getRelativeHumidity(sensorData.getTemperature().get())).isCloseTo(relativeHumidity,
                             within(0.01)));

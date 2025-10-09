@@ -27,7 +27,7 @@ public class SensorDataCsv implements SensorDataPersistence {
     public void persist(SensorData sensorData) {
         final String formattedTime = sensorData.getTimeStamp().format(FORMATTER);
         final String formattedTemperature = sensorData.getTemperature()
-                .map(temperature -> String.format("%.2f", temperature.getCelsius()))
+                .map(temperature -> String.format("%.2f", temperature.celsius()))
                 .orElse("");
         final String formattedHumidity = sensorData.getHumidity()
                 .map(humidity -> String.format("%.2f", humidity.getRelativeHumidity(sensorData.getTemperature().get())))

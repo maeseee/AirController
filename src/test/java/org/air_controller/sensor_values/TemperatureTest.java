@@ -11,7 +11,7 @@ class TemperatureTest {
     void testCelsiusToCelsius() throws InvalidArgumentException {
         final Temperature testee = Temperature.createFromCelsius(0);
 
-        final double celsius = testee.getCelsius();
+        final double celsius = testee.celsius();
 
         assertEquals(0, celsius);
     }
@@ -20,7 +20,7 @@ class TemperatureTest {
     void testKelvinToCelsius() throws InvalidArgumentException {
         final Temperature testee = Temperature.createFromKelvin(273.15);
 
-        final double celsius = testee.getCelsius();
+        final double celsius = testee.celsius();
 
         assertEquals(0, celsius);
     }

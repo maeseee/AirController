@@ -38,7 +38,7 @@ class JsonParserTest {
         assertThat(result.get().getTemperature()).isPresent();
         assertThat(result.get().getHumidity()).isPresent();
         final Temperature temperature = result.get().getTemperature().get();
-        assertThat(temperature.getCelsius()).isCloseTo(10.53, within(0.1));
+        assertThat(temperature.celsius()).isCloseTo(10.53, within(0.1));
         final Humidity humidity = result.get().getHumidity().get();
         assertThat(humidity.getRelativeHumidity(temperature)).isCloseTo(87.0, within(0.1));
     }

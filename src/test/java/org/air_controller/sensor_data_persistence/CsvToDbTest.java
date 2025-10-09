@@ -30,7 +30,7 @@ class CsvToDbTest {
         final List<SensorData> sensorDataList = sensorDataDb.read();
         final SensorData lastSensorData = sensorDataList.getLast();
         assertThat(lastSensorData.getTemperature()).isPresent().hasValueSatisfying(
-                temperature -> assertThat(temperature.getCelsius()).isCloseTo(21.0, within(0.001)));
+                temperature -> assertThat(temperature.celsius()).isCloseTo(21.0, within(0.001)));
         assertThat(lastSensorData.getHumidity()).isPresent().hasValueSatisfying(
                 humidity -> assertThat(humidity.absoluteHumidity()).isCloseTo(10.0, within(0.001)));
         assertThat(lastSensorData.getCo2()).isPresent().hasValueSatisfying(

@@ -40,6 +40,6 @@ public record Humidity(double absoluteHumidity) {
     }
 
     private static double getSaturationVaporPressure(Temperature temperature) {
-        return 0.61078 * Math.exp(17.27 * temperature.getCelsius() / (temperature.getCelsius() + 237.3)) * 1000;
+        return 0.61078 * Math.exp(17.27 * temperature.celsius() / (temperature.celsius() + 237.3)) * 1000;
     }
 }
