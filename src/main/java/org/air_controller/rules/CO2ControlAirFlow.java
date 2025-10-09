@@ -1,10 +1,12 @@
 package org.air_controller.rules;
 
+import lombok.RequiredArgsConstructor;
 import org.air_controller.sensor_values.CarbonDioxide;
 import org.air_controller.sensor_values.CurrentSensorData;
 
 import java.util.Optional;
 
+@RequiredArgsConstructor
 class CO2ControlAirFlow implements Rule {
 
     private static final double UPPER_LIMIT = 1000;
@@ -13,10 +15,6 @@ class CO2ControlAirFlow implements Rule {
     private static final double B = -1 - (LOWER_LIMIT * M); // y = xm + b
 
     private final CurrentSensorData currentIndoorSensorData;
-
-    public CO2ControlAirFlow(CurrentSensorData currentIndoorSensorData) {
-        this.currentIndoorSensorData = currentIndoorSensorData;
-    }
 
     @Override
     public String name() {
