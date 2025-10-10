@@ -2,6 +2,7 @@ package org.air_controller.sensor.qing_ping;
 
 import org.air_controller.secrets.Secret;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -20,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
+@DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
 class QingPingIntegrationTest {
 
     @Test
