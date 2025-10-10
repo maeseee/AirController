@@ -2,7 +2,6 @@ package org.air_controller.sensor.qing_ping;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -35,7 +34,6 @@ class ListDevicesRequestTest {
     }
 
     @Test
-    @Disabled
     void shouldResponseToToken_whenSendingToAnything() throws URISyntaxException, CommunicationException, IOException {
         final String url = "https://httpbin.org/anything";
         final URI uri = new URI(url);
