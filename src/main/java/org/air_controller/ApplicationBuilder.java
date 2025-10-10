@@ -1,5 +1,6 @@
 package org.air_controller;
 
+import com.google.common.annotations.VisibleForTesting;
 import lombok.Setter;
 import org.air_controller.rules.HumidityExchangerRuleBuilder;
 import org.air_controller.rules.Rule;
@@ -21,6 +22,23 @@ class ApplicationBuilder {
     private ApplicationBuilderSharedObjects sharedObjects = new ApplicationBuilderSharedObjects();
 
     public Application build() {
+        if (sensors == null) {
+            throw new IllegalStateException("sensors is null");
+        }
+        if (ruleApplier == null) {
+            throw new IllegalStateException("ruleApplier is null");
+        }
+        if (statistics == null) {
+            throw new IllegalStateException("statistics is null");
+        }
+        if (systemStateLogger == null) {
+            throw new IllegalStateException("systemStateLogger is null");
+        }
+        return new Application(sensors, ruleApplier, statistics, systemStateLogger);
+    }
+
+    @VisibleForTesting
+    Application buildFromTest() {
         createNotMockedObjects();
         return new Application(sensors, ruleApplier, statistics, systemStateLogger);
     }

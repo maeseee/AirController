@@ -8,11 +8,9 @@ import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemActionDbAccessors;
 import org.air_controller.system_action.SystemPart;
 
-import java.sql.SQLException;
-
 class MainMock {
 
-    public static void main(String[] args) throws InterruptedException, SQLException {
+    public static void main(String[] args) throws InterruptedException {
         final GpioPin airFlow = new MockGpioPin("AIR_FLOW", true);
         final GpioPin humidityExchanger = new MockGpioPin("HUMIDITY_EXCHANGER", true);
         final GpioPins gpioPins = new GpioPins(airFlow, humidityExchanger);
@@ -21,7 +19,7 @@ class MainMock {
         sharedObjects.setGpioPins(gpioPins);
         sharedObjects.setSystemActionDbAccessors(createSystemActionDbAccessors());
         builder.setSharedObjects(sharedObjects);
-        final Application application = builder.build();
+        final Application application = builder.buildFromTest();
         application.run();
         Thread.currentThread().join();
     }

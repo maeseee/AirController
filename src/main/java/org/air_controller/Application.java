@@ -1,5 +1,6 @@
 package org.air_controller;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor.Sensors;
 import org.air_controller.statistics.DailyOnTimeLogger;
@@ -28,6 +29,7 @@ class Application {
         this(sensors, ruleApplier, statistics, systemStateLogger, Executors.newScheduledThreadPool(1));
     }
 
+    @VisibleForTesting
     Application(Sensors sensors, RuleApplier ruleApplier, DailyOnTimeLogger statistics, SystemStateLogger systemStateLogger,
             ScheduledExecutorService executor) {
         this.sensors = sensors;
