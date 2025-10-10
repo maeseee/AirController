@@ -9,7 +9,6 @@ import org.air_controller.sensor.SensorsBuilder;
 import org.air_controller.statistics.DailyOnTimeLogger;
 import org.air_controller.statistics.SystemStateLogger;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @Setter
@@ -21,7 +20,7 @@ class ApplicationBuilder {
     private SystemStateLogger systemStateLogger;
     private ApplicationBuilderSharedObjects sharedObjects = new ApplicationBuilderSharedObjects();
 
-    public Application build() throws SQLException {
+    public Application build() {
         createNotMockedObjects();
         return new Application(sensors, ruleApplier, statistics, systemStateLogger);
     }
