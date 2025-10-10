@@ -17,7 +17,6 @@ git clone https://github.com/maeseee/AirController.git
 cd || exit
 echo "export weather_api_key=<api_key>" >> /home/pi/.bashrc
 echo "export qingping_app_secret=<secret>" >> /home/pi/.bashrc
-echo "export dbPassword=<secret>" >> /home/pi/.bashrc
 echo "export mariaDdPassword=<secret>" >> /home/pi/.bashrc
 cd AirController || exit
 # Add variables to airController.service as well

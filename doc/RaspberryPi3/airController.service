@@ -6,6 +6,6 @@ ExecStart=/bin/bash /home/pi/AirController/run.sh
 Restart=always
 RestartSec=60
 User=pi
-Environment=weather_api_key=<key> qingping_app_secret=<secret> dbPassword=<password> mariaDdPassword=<password>
+Environment=weather_api_key=<key> qingping_app_secret=<secret> mariaDdPassword=<password>
 [Install]
 WantedBy=default.target

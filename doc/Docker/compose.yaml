@@ -7,7 +7,6 @@ services:
     environment:
       - weather_api_key=${weather_api_key}
       - qingping_app_secret=${qingping_app_secret}
-      - dbPassword=${dbPassword}
       - mariaDdPassword=${mariaDdPassword}
     volumes:
       - ./AirController-1.0-SNAPSHOT-jar-with-dependencies.jar:/app/AirController.jar
