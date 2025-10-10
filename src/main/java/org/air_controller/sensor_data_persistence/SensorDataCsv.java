@@ -46,16 +46,16 @@ public class SensorDataCsv implements SensorDataPersistence {
 
     @Override
     public List<SensorData> read() {
-        final List<SensorData> entries = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String currentLine;
-            while ((currentLine = reader.readLine()) != null) {
-                addDataIfAvailable(entries, currentLine);
+        try {
+            final File file = new File(filePath);
+            final boolean newlyCreated = file.createNewFile();
+            if (newlyCreated) {
+                logger.info("File {} has been created", filePath);
             }
+            return readCsvFile(file);
         } catch (IOException e) {
-            throw new ParseException("CSV could not be read! " + e.getMessage(), e.getCause());
+            throw new ParseException("Could not create the CSV file! " + e.getMessage(), e.getCause());
         }
-        return entries;
     }
 
     @Override
@@ -87,5 +87,18 @@ public class SensorDataCsv implements SensorDataPersistence {
 
     private SensorData getSensorData(String currentLine) throws InvalidArgumentException {
         return createSensorData(currentLine);
+    }
+
+    private List<SensorData> readCsvFile(File file) throws IOException {
+        final List<SensorData> entries = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String currentLine;
+            while ((currentLine = reader.readLine()) != null) {
+                addDataIfAvailable(entries, currentLine);
+            }
+        } catch (IOException e) {
+            throw new ParseException("CSV could not be read! " + e.getMessage(), e.getCause());
+        }
+        return entries;
     }
 }

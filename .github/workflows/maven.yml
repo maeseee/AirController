@@ -18,6 +18,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    environment: development
     permissions: write-all
 
     steps:
