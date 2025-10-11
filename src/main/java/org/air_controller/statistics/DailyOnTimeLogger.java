@@ -1,6 +1,5 @@
 package org.air_controller.statistics;
 
-import com.google.common.annotations.VisibleForTesting;
 import lombok.RequiredArgsConstructor;
 import org.air_controller.system_action.DurationCalculator;
 import org.air_controller.system_action.SystemAction;
@@ -30,7 +29,6 @@ public class DailyOnTimeLogger implements Runnable {
         }
     }
 
-    @VisibleForTesting
     Duration getTotalFromDay(LocalDate day) {
         final ZonedDateTime startTime = day.atStartOfDay(ZoneOffset.UTC);
         final ZonedDateTime endTime = ZonedDateTime.of(day.atTime(LocalTime.MAX), ZoneOffset.UTC);

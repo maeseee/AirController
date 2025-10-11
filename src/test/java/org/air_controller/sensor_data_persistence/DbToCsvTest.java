@@ -40,7 +40,6 @@ class DbToCsvTest {
 
     private void prepareDB(ZonedDateTime now) throws InvalidArgumentException {
         final SensorDataDb sensorDataDb = new SensorDataDb(new LocalInMemoryDatabase(), sensorDataTableName);
-        sensorDataDb.resetDB();
         final SensorData sensorData = new SensorDataImpl(21.0, 10.0, 500.0, now);
         sensorDataDb.persist(sensorData);
     }

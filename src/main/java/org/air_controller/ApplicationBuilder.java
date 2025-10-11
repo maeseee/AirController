@@ -10,6 +10,7 @@ import org.air_controller.statistics.DailyOnTimeLogger;
 import org.air_controller.statistics.SystemStateLogger;
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
 @Setter
 class ApplicationBuilder {
@@ -21,7 +22,7 @@ class ApplicationBuilder {
 
     public Application build() {
         validateParameters();
-        return new Application(sensors, ruleApplier, statistics, systemStateLogger);
+        return new Application(sensors, ruleApplier, statistics, systemStateLogger, Executors.newScheduledThreadPool(1));
     }
 
     public Sensors createSensors() {

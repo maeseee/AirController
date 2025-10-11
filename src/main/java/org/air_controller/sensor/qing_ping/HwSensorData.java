@@ -4,8 +4,8 @@ import org.air_controller.sensor_values.CarbonDioxide;
 import org.air_controller.sensor_values.Humidity;
 import org.air_controller.sensor_values.SensorData;
 import org.air_controller.sensor_values.Temperature;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.Optional;

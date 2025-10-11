@@ -1,6 +1,5 @@
 package org.air_controller.sensor_data_persistence;
 
-import com.google.common.annotations.VisibleForTesting;
 import org.air_controller.persistence.DatabaseConnection;
 import org.air_controller.persistence.EntryAdder;
 import org.air_controller.persistence.PreparedStatementSetter;
@@ -56,12 +55,6 @@ public class SensorDataDb implements SensorDataPersistence {
         final EntryAdder<SensorData> adder = this::addResultIfAvailable;
         final List<SensorData> sensorData = database.executeQuery(sql, adder, setter);
         return sensorData.stream().findFirst();
-    }
-
-    @VisibleForTesting
-    void resetDB() {
-        final String sql = "DELETE FROM " + sensorDataTableName + ";";
-        database.executeUpdate(sql);
     }
 
     private SensorData createSensorData(ResultSet resultSet) throws SQLException, InvalidArgumentException {
