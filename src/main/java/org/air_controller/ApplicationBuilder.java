@@ -22,18 +22,7 @@ class ApplicationBuilder {
     private ApplicationBuilderSharedObjects sharedObjects = new ApplicationBuilderSharedObjects();
 
     public Application build() {
-        if (sensors == null) {
-            throw new IllegalStateException("sensors is null");
-        }
-        if (ruleApplier == null) {
-            throw new IllegalStateException("ruleApplier is null");
-        }
-        if (statistics == null) {
-            throw new IllegalStateException("statistics is null");
-        }
-        if (systemStateLogger == null) {
-            throw new IllegalStateException("systemStateLogger is null");
-        }
+        validateParameters();
         return new Application(sensors, ruleApplier, statistics, systemStateLogger);
     }
 
@@ -75,6 +64,12 @@ class ApplicationBuilder {
         if (systemStateLogger == null) {
             final List<Rule> freshAirRules = sharedObjects.getFreshAirRules(sensors);
             systemStateLogger = new SystemStateLogger(sharedObjects.getVentilationSystems().getFirst(), freshAirRules);
+        }
+    }
+
+    private void validateParameters() {
+        if (sensors == null || ruleApplier == null || statistics == null || systemStateLogger == null) {
+            throw new IllegalStateException("there is at least one uninitialized parameter in the application");
         }
     }
 }
