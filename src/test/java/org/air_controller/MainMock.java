@@ -19,7 +19,7 @@ class MainMock {
         sharedObjects.setGpioPins(gpioPins);
         sharedObjects.setSystemActionDbAccessors(createSystemActionDbAccessors());
         builder.setSharedObjects(sharedObjects);
-        final Application application = builder.buildFromTest();
+        final Application application = builder.build();
         application.run();
         Thread.currentThread().join();
     }
