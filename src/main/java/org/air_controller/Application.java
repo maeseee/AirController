@@ -52,22 +52,15 @@ class Application {
     }
 
     private void runTask(String taskName, Runnable command) {
-        final int maxRetries = 3;
-        int retryCount = 0;
-
-        while (retryCount < maxRetries) {
-            try (ExecutorService service = Executors.newSingleThreadExecutor()) {
-                Future<?> future = service.submit(command);
-                try {
-                    future.get(120, TimeUnit.SECONDS);
-                } catch (TimeoutException e) {
-                    retryCount++;
-                    logger.error("Scheduled task {} timed out! RetryCount={}\n{}", taskName, retryCount, e.getMessage());
-                    future.cancel(true);
-                } catch (Exception e) {
-                    retryCount++;
-                    logger.error("Task {} failed!  RetryCount={}\n{}", taskName, retryCount, e.getMessage());
-                }
+        try (ExecutorService service = Executors.newSingleThreadExecutor()) {
+            Future<?> future = service.submit(command);
+            try {
+                future.get(120, TimeUnit.SECONDS);
+            } catch (TimeoutException e) {
+                logger.error("Scheduled task {} timed out! \n{}", taskName, e.getMessage());
+                future.cancel(true);
+            } catch (Exception e) {
+                logger.error("Task {} failed! \n{}", taskName, e.getMessage());
             }
         }
     }
