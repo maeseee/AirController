@@ -34,32 +34,41 @@ class Application {
     }
 
     public void run() {
-        addThreadExecutorWithTimeout(sensors.outdoor(), Duration.ZERO, SENSOR_READ_PERIOD);
-        addThreadExecutorWithTimeout(sensors.indoor(), Duration.ZERO, SENSOR_READ_PERIOD);
-        addThreadExecutorWithTimeout(ruleApplier, Duration.ZERO, RULE_APPLIER_PERIOD);
-        addThreadExecutorWithTimeout(systemStateLogger, SENSOR_READ_PERIOD.dividedBy(2), LOG_PERIOD);
+        addThreadExecutorWithTimeout("Outdoorsensor", sensors.outdoor(), Duration.ZERO, SENSOR_READ_PERIOD);
+        addThreadExecutorWithTimeout("Indoorsensor", sensors.indoor(), Duration.ZERO, SENSOR_READ_PERIOD);
+        addThreadExecutorWithTimeout("RuleApplier", ruleApplier, Duration.ZERO, RULE_APPLIER_PERIOD);
+        addThreadExecutorWithTimeout("SystemStateLogger", systemStateLogger, SENSOR_READ_PERIOD.dividedBy(2), LOG_PERIOD);
 
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final ZonedDateTime midnight = ZonedDateTime.of(now.toLocalDate().atStartOfDay().plusDays(1), ZoneOffset.UTC);
         final Duration initialDelay = Duration.between(now, midnight).plusSeconds(1);
-        addThreadExecutorWithTimeout(statistics, initialDelay, Duration.ofDays(1));
+        addThreadExecutorWithTimeout("Statistics", statistics, initialDelay, Duration.ofDays(1));
 
         logger.info("All setup and running...");
     }
 
-    private void addThreadExecutorWithTimeout(Runnable command, Duration initialDelay, Duration period) {
-        executor.scheduleAtFixedRate(() -> {
+    private void addThreadExecutorWithTimeout(String taskName, Runnable command, Duration initialDelay, Duration period) {
+        executor.scheduleAtFixedRate(() -> runTask(taskName, command), initialDelay.toSeconds(), period.toSeconds(), TimeUnit.SECONDS);
+    }
+
+    private void runTask(String taskName, Runnable command) {
+        final int maxRetries = 3;
+        int retryCount = 0;
+
+        while (retryCount < maxRetries) {
             try (ExecutorService service = Executors.newSingleThreadExecutor()) {
                 Future<?> future = service.submit(command);
                 try {
                     future.get(120, TimeUnit.SECONDS);
                 } catch (TimeoutException e) {
-                    logger.error("Scheduled task timed out!");
+                    retryCount++;
+                    logger.error("Scheduled task {} timed out! RetryCount={}\n{}", taskName, retryCount, e.getMessage());
                     future.cancel(true);
                 } catch (Exception e) {
-                    logger.error("Task failed", e);
+                    retryCount++;
+                    logger.error("Task {} failed!  RetryCount={}\n{}", taskName, retryCount, e.getMessage());
                 }
             }
-        }, initialDelay.toSeconds(), period.toSeconds(), TimeUnit.SECONDS);
+        }
     }
 }
