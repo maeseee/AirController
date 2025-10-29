@@ -29,7 +29,6 @@ class ApplicationBuilder {
     }
 
     public Application build() {
-        validateParameters();
         return new Application(sensors, ruleApplier, statistics, systemStateLogger, Executors.newScheduledThreadPool(1));
     }
 
@@ -51,20 +50,5 @@ class ApplicationBuilder {
     private SystemStateLogger createSystemStateLogger() {
         final List<Rule> freshAirRules = sharedObjects.getFreshAirRules(sensors);
         return new SystemStateLogger(sharedObjects.getVentilationSystems().getFirst(), freshAirRules);
-    }
-
-    private void validateParameters() {
-        if (sensors == null) {
-            throw new IllegalStateException("sensors is null");
-        }
-        if (ruleApplier == null) {
-            throw new IllegalStateException("ruleApplier is null");
-        }
-        if (statistics == null) {
-            throw new IllegalStateException("statistics is null");
-        }
-        if (systemStateLogger == null) {
-            throw new IllegalStateException("systemStateLogger is null");
-        }
     }
 }
