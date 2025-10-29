@@ -14,17 +14,18 @@ import java.util.concurrent.Executors;
 
 @Setter
 class ApplicationBuilder {
-    private SystemStateLogger systemStateLogger;
     private final ApplicationBuilderSharedObjects sharedObjects;
     private final Sensors sensors;
     private final DailyOnTimeLogger statistics;
     private final RuleApplier ruleApplier;
+    private final SystemStateLogger systemStateLogger;
 
     public ApplicationBuilder(ApplicationBuilderSharedObjects sharedObjects) {
         this.sharedObjects = sharedObjects;
         this.sensors = createSensors();
         this.statistics = createStatistics();
         this.ruleApplier = createRuleApplier();
+        this.systemStateLogger = createSystemStateLogger();
     }
 
     public Application build() {
@@ -47,7 +48,7 @@ class ApplicationBuilder {
         return new RuleApplier(sharedObjects.getVentilationSystems(), freshAirRules, humidityExchangeRules);
     }
 
-    public SystemStateLogger createSystemStateLogger() {
+    private SystemStateLogger createSystemStateLogger() {
         final List<Rule> freshAirRules = sharedObjects.getFreshAirRules(sensors);
         return new SystemStateLogger(sharedObjects.getVentilationSystems().getFirst(), freshAirRules);
     }
