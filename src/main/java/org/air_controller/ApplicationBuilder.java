@@ -18,7 +18,11 @@ class ApplicationBuilder {
     private RuleApplier ruleApplier;
     private DailyOnTimeLogger statistics;
     private SystemStateLogger systemStateLogger;
-    private ApplicationBuilderSharedObjects sharedObjects = new ApplicationBuilderSharedObjects();
+    private final ApplicationBuilderSharedObjects sharedObjects;
+
+    public ApplicationBuilder(ApplicationBuilderSharedObjects sharedObjects) {
+        this.sharedObjects = sharedObjects;
+    }
 
     public Application build() {
         validateParameters();

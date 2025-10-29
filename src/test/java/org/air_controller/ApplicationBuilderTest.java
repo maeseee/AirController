@@ -8,6 +8,6 @@ class ApplicationBuilderTest {
 
     @Test
     void testWhenCreateApplicationIncompleteThenThrow() {
-        assertThrows(IllegalStateException.class, () -> new  ApplicationBuilder().build());
+        assertThrows(IllegalStateException.class, () -> new  ApplicationBuilder(null).build());
     }
 }
