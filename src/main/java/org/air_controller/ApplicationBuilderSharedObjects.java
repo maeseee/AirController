@@ -1,5 +1,6 @@
 package org.air_controller;
 
+import lombok.Getter;
 import org.air_controller.gpio.GpioPins;
 import org.air_controller.gpio.dingtian_relay.DingtianPin;
 import org.air_controller.gpio.dingtian_relay.DingtianRelay;
@@ -20,11 +21,13 @@ import org.jetbrains.annotations.VisibleForTesting;
 import java.util.List;
 
 class ApplicationBuilderSharedObjects {
-    private SystemActionDbAccessors systemActionDbAccessors;
-    private List<VentilationSystem> ventilationSystems;
+    @Getter
+    private final SystemActionDbAccessors systemActionDbAccessors;
+    private final GpioPins gpioPins;
+    @Getter
+    private final List<VentilationSystem> ventilationSystems;
     private CurrentSensors currentSensors;
     private List<Rule> freshAirRules;
-    private GpioPins gpioPins;
 
     public ApplicationBuilderSharedObjects() {
         this(createSystemActionDbAccessors(), createDingtianPins());
@@ -34,31 +37,17 @@ class ApplicationBuilderSharedObjects {
     public ApplicationBuilderSharedObjects(SystemActionDbAccessors systemActionDbAccessors, GpioPins gpioPins) {
         this.systemActionDbAccessors = systemActionDbAccessors;
         this.gpioPins = gpioPins;
+        this.ventilationSystems = createVentilationSystems();
     }
 
-
-    public SystemActionDbAccessors getSystemActionDbAccessors() {
-        if (systemActionDbAccessors == null) {
-            systemActionDbAccessors = createSystemActionDbAccessors();
-        }
-        return systemActionDbAccessors;
-    }
-
-    public List<VentilationSystem> getVentilationSystems() {
-        if (ventilationSystems == null) {
-            createVentilationSystems();
-        }
-        return ventilationSystems;
-    }
-
-    public CurrentSensors getCurrentSensors(Sensors sensors) {
+    public CurrentSensors getOrCreateCurrentSensors(Sensors sensors) {
         if (currentSensors == null) {
             createCurrentSensors(sensors);
         }
         return currentSensors;
     }
 
-    public List<Rule> getFreshAirRules(Sensors sensors) {
+    public List<Rule> getOrCreateFreshAirRules(Sensors sensors) {
         if (freshAirRules == null) {
             createFreshAirRules(sensors, createDbAccessor(SystemPart.AIR_FLOW));
         }
@@ -69,10 +58,10 @@ class ApplicationBuilderSharedObjects {
         return new SystemActionDbAccessors(createDbAccessor(SystemPart.AIR_FLOW), createDbAccessor(SystemPart.HUMIDITY));
     }
 
-    private void createVentilationSystems() {
+    private List<VentilationSystem> createVentilationSystems() {
         final VentilationSystem ventilationSystem = new ControlledVentilationSystem(gpioPins);
         final SystemActionPersistence systemActionPersistence = new SystemActionPersistence(getSystemActionDbAccessors());
-        ventilationSystems = List.of(ventilationSystem, systemActionPersistence);
+        return List.of(ventilationSystem, systemActionPersistence);
     }
 
     private void createCurrentSensors(Sensors sensors) {
@@ -82,7 +71,7 @@ class ApplicationBuilderSharedObjects {
     }
 
     private void createFreshAirRules(Sensors sensors, SystemActionDbAccessor dbAccessor) {
-        freshAirRules = new FreshAirRuleBuilder().build(getCurrentSensors(sensors), dbAccessor);
+        freshAirRules = new FreshAirRuleBuilder().build(getOrCreateCurrentSensors(sensors), dbAccessor);
     }
 
     private static GpioPins createDingtianPins() {

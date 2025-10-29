@@ -47,14 +47,14 @@ class ApplicationBuilder {
     }
 
     private RuleApplier createRuleApplier() {
-        final List<Rule> freshAirRules = sharedObjects.getFreshAirRules(sensors);
+        final List<Rule> freshAirRules = sharedObjects.getOrCreateFreshAirRules(sensors);
         final List<Rule> humidityExchangeRules =
-                new HumidityExchangerRuleBuilder().getHumidityExchangeRules(sharedObjects.getCurrentSensors(sensors));
+                new HumidityExchangerRuleBuilder().getHumidityExchangeRules(sharedObjects.getOrCreateCurrentSensors(sensors));
         return new RuleApplier(sharedObjects.getVentilationSystems(), freshAirRules, humidityExchangeRules);
     }
 
     private SystemStateLogger createSystemStateLogger() {
-        final List<Rule> freshAirRules = sharedObjects.getFreshAirRules(sensors);
+        final List<Rule> freshAirRules = sharedObjects.getOrCreateFreshAirRules(sensors);
         return new SystemStateLogger(sharedObjects.getVentilationSystems().getFirst(), freshAirRules);
     }
 }
