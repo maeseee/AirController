@@ -11,8 +11,7 @@ public class Main {
     }
 
     private static Application createApplication() {
-        final ApplicationBuilderSharedObjects sharedObjects = new ApplicationBuilderSharedObjects();
-        final ApplicationBuilder builder = new ApplicationBuilder(sharedObjects);
+        final ApplicationBuilder builder = new ApplicationBuilder();
         return builder.build();
     }
 }

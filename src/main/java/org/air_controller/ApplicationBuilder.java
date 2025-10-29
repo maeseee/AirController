@@ -8,6 +8,7 @@ import org.air_controller.sensor.Sensors;
 import org.air_controller.sensor.SensorsBuilder;
 import org.air_controller.statistics.DailyOnTimeLogger;
 import org.air_controller.statistics.SystemStateLogger;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -20,7 +21,12 @@ class ApplicationBuilder {
     private final RuleApplier ruleApplier;
     private final SystemStateLogger systemStateLogger;
 
-    public ApplicationBuilder(ApplicationBuilderSharedObjects sharedObjects) {
+    public ApplicationBuilder() {
+        this(new ApplicationBuilderSharedObjects());
+    }
+
+    @VisibleForTesting
+    ApplicationBuilder(ApplicationBuilderSharedObjects sharedObjects) {
         this.sharedObjects = sharedObjects;
         this.sensors = createSensors();
         this.statistics = createStatistics();
