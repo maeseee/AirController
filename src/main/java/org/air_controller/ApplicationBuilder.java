@@ -14,23 +14,20 @@ import java.util.concurrent.Executors;
 
 @Setter
 class ApplicationBuilder {
-    private Sensors sensors;
     private RuleApplier ruleApplier;
     private DailyOnTimeLogger statistics;
     private SystemStateLogger systemStateLogger;
     private final ApplicationBuilderSharedObjects sharedObjects;
+    private final Sensors sensors;
 
     public ApplicationBuilder(ApplicationBuilderSharedObjects sharedObjects) {
         this.sharedObjects = sharedObjects;
+        this.sensors = new SensorsBuilder().build();
     }
 
     public Application build() {
         validateParameters();
         return new Application(sensors, ruleApplier, statistics, systemStateLogger, Executors.newScheduledThreadPool(1));
-    }
-
-    public Sensors createSensors() {
-        return new SensorsBuilder().build();
     }
 
     public DailyOnTimeLogger createStatistics() {

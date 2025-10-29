@@ -13,7 +13,6 @@ public class Main {
     private static Application createApplication() {
         final ApplicationBuilderSharedObjects sharedObjects = new ApplicationBuilderSharedObjects();
         final ApplicationBuilder builder = new ApplicationBuilder(sharedObjects);
-        builder.setSensors(builder.createSensors());
         builder.setStatistics(builder.createStatistics());
         builder.setRuleApplier(builder.createRuleApplier());
         builder.setSystemStateLogger(builder.createSystemStateLogger());
