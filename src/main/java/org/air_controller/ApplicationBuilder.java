@@ -15,14 +15,15 @@ import java.util.concurrent.Executors;
 @Setter
 class ApplicationBuilder {
     private RuleApplier ruleApplier;
-    private DailyOnTimeLogger statistics;
     private SystemStateLogger systemStateLogger;
     private final ApplicationBuilderSharedObjects sharedObjects;
     private final Sensors sensors;
+    private final DailyOnTimeLogger statistics;
 
     public ApplicationBuilder(ApplicationBuilderSharedObjects sharedObjects) {
         this.sharedObjects = sharedObjects;
-        this.sensors = new SensorsBuilder().build();
+        this.sensors = createSensors();
+        this.statistics = createStatistics();
     }
 
     public Application build() {
@@ -30,7 +31,11 @@ class ApplicationBuilder {
         return new Application(sensors, ruleApplier, statistics, systemStateLogger, Executors.newScheduledThreadPool(1));
     }
 
-    public DailyOnTimeLogger createStatistics() {
+    private static Sensors createSensors() {
+        return new SensorsBuilder().build();
+    }
+
+    private DailyOnTimeLogger createStatistics() {
         return new DailyOnTimeLogger(sharedObjects.getSystemActionDbAccessors().airFlow());
     }
 
