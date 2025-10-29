@@ -25,14 +25,10 @@ public class SensorDataCsv implements SensorDataPersistence {
 
     @Override
     public void persist(SensorData sensorData) {
-        final String formattedTime = sensorData.getTimeStamp().format(FORMATTER);
-        final String formattedTemperature = sensorData.getTemperature()
-                .map(temperature -> String.format("%.2f", temperature.celsius()))
-                .orElse("");
-        final String formattedHumidity = sensorData.getHumidity()
-                .map(humidity -> String.format("%.2f", humidity.getRelativeHumidity(sensorData.getTemperature().get())))
-                .orElse("");
-        final String formattedCo2 = sensorData.getCo2()
+        final String formattedTime = sensorData.timestamp().format(FORMATTER);
+        final String formattedTemperature = String.format("%.2f", sensorData.temperature().celsius());
+        final String formattedHumidity = String.format("%.2f", sensorData.humidity().getRelativeHumidity(sensorData.temperature()));
+        final String formattedCo2 = sensorData.co2()
                 .map(co2 -> String.format("%.0f", co2.ppm()))
                 .orElse("");
         final String csvLine = String.format("%s,%s,%s,%s", formattedTime, formattedTemperature, formattedHumidity, formattedCo2);
@@ -73,7 +69,7 @@ public class SensorDataCsv implements SensorDataPersistence {
         final double humRelative = Double.parseDouble(csv[2]);
         final Humidity humidity = Humidity.createFromRelative(humRelative, temperature);
         final CarbonDioxide co2 = csv.length > 3 ? CarbonDioxide.createFromPpm(Double.parseDouble(csv[3])) : null;
-        return new SensorDataImpl(temperature, humidity, co2, timestamp);
+        return new SensorData(temperature, humidity, Optional.ofNullable(co2), timestamp);
     }
 
     private void addDataIfAvailable(List<SensorData> entries, String currentLine) {

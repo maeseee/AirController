@@ -18,6 +18,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -39,7 +40,7 @@ class QingPingSensorTest {
         final Temperature temperature = Temperature.createFromCelsius(21.5);
         final Humidity humidity = Humidity.createFromAbsolute(10.0);
         final ZonedDateTime time1 = ZonedDateTime.now(ZoneOffset.UTC);
-        final HwSensorData sensorData = new HwSensorData(temperature, humidity, null, time1);
+        final SensorData sensorData = new SensorData(temperature, humidity, Optional.empty(), time1);
         when(listDevices.readSensorDataList(any())).thenReturn(List.of(sensorData));
         final QingPingSensor testee = new QingPingSensor(persistence, accessToken, listDevices);
 
@@ -47,8 +48,8 @@ class QingPingSensorTest {
 
         verify(persistence).persist(indoorSensorDataArgumentCaptor.capture());
         final SensorData indoorSensorDataCapture = indoorSensorDataArgumentCaptor.getValue();
-        assertThat(indoorSensorDataCapture.getTemperature()).isPresent().hasValue(Temperature.createFromCelsius(21.5));
-        assertThat(indoorSensorDataCapture.getHumidity()).isPresent().hasValue(Humidity.createFromAbsolute(10.0));
+        assertThat(indoorSensorDataCapture.temperature()).isEqualTo(Temperature.createFromCelsius(21.5));
+        assertThat(indoorSensorDataCapture.humidity()).isEqualTo(Humidity.createFromAbsolute(10.0));
     }
 
     @Test

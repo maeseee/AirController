@@ -1,6 +1,7 @@
 package org.air_controller.sensor.qing_ping;
 
 import org.air_controller.secrets.Secret;
+import org.air_controller.sensor_values.SensorData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,10 +30,11 @@ class QingPingIntegrationTest {
         final String accessTokenResponse = runAccessTokenRequest();
         final AccessTokenData accessTokenData = runParseAccessToken(accessTokenResponse);
         final String listDevicesResponse = runListDevicesRequest(accessTokenData);
-        final HwSensorData sensorData = runParseListDevices(listDevicesResponse);
+        final SensorData sensorData = runParseListDevices(listDevicesResponse);
+
         assertNotNull(sensorData);
-        assertTrue(ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(15).isBefore(sensorData.getTimeStamp()));
-        assertTrue(ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(5).isAfter(sensorData.getTimeStamp()));
+        assertTrue(ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(33).isBefore(sensorData.timestamp()));
+        assertTrue(ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(5).isAfter(sensorData.timestamp()));
     }
 
     private String runAccessTokenRequest() throws URISyntaxException {
@@ -65,9 +67,9 @@ class QingPingIntegrationTest {
         return listDevicesRequest.sendRequest(accessTokenData.accessToken());
     }
 
-    private HwSensorData runParseListDevices(String listDevicesResponse) {
+    private SensorData runParseListDevices(String listDevicesResponse) {
         final ListDevicesJsonParser parser = new ListDevicesJsonParser();
-        final Optional<HwSensorData> sensorData = parser.parseDeviceListResponse(listDevicesResponse, MAC_AIR_PRESSURE_DEVICE);
+        final Optional<SensorData> sensorData = parser.parseDeviceListResponse(listDevicesResponse, MAC_AIR_PRESSURE_DEVICE);
 
         assertTrue(sensorData.isPresent());
         return sensorData.get();

@@ -3,6 +3,7 @@ package org.air_controller.rules;
 import lombok.RequiredArgsConstructor;
 import org.air_controller.sensor_values.CarbonDioxide;
 import org.air_controller.sensor_values.CurrentSensorData;
+import org.air_controller.sensor_values.SensorData;
 
 import java.util.Optional;
 
@@ -23,7 +24,7 @@ class CO2ControlAirFlow implements Rule {
 
     @Override
     public Confidence turnOnConfidence() {
-        final Optional<CarbonDioxide> indoorCo2 = currentIndoorSensorData.getCo2();
+        final Optional<CarbonDioxide> indoorCo2 = currentIndoorSensorData.getCurrentSensorData().flatMap(SensorData::co2);
         if (indoorCo2.isEmpty()) {
             return new Confidence(0.0);
         }

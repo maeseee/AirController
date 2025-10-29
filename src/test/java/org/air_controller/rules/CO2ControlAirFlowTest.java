@@ -1,14 +1,16 @@
 package org.air_controller.rules;
 
-import org.air_controller.sensor_values.CarbonDioxide;
 import org.air_controller.sensor_values.CurrentSensorData;
 import org.air_controller.sensor_values.InvalidArgumentException;
+import org.air_controller.sensor_values.SensorData;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,8 +30,8 @@ class CO2ControlAirFlowTest {
             "700, 0.0"
     })
     void shouldCalculateCo2Confidence(double co2, double expectedConfidence) throws InvalidArgumentException {
-        final Optional<CarbonDioxide> carbonDioxide = Optional.of(CarbonDioxide.createFromPpm(co2));
-        when(currentIndoorSensorData.getCo2()).thenReturn(carbonDioxide);
+        final SensorData sensorData = SensorData.createFromPrimitives(21.0, 10.0, co2, ZonedDateTime.now(ZoneOffset.UTC));
+        when(currentIndoorSensorData.getCurrentSensorData()).thenReturn(Optional.of(sensorData));
         final CO2ControlAirFlow testee = new CO2ControlAirFlow(currentIndoorSensorData);
 
         final Confidence result = testee.turnOnConfidence();

@@ -1,9 +1,6 @@
 package org.air_controller.sensor.qing_ping;
 
-import org.air_controller.sensor_values.CarbonDioxide;
-import org.air_controller.sensor_values.Humidity;
-import org.air_controller.sensor_values.InvalidArgumentException;
-import org.air_controller.sensor_values.Temperature;
+import org.air_controller.sensor_values.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -116,18 +113,16 @@ class ListDevicesJsonParserTest {
     void shouldParseSensorDataOfAirPressureDevice() throws InvalidArgumentException {
         final ListDevicesJsonParser testee = new ListDevicesJsonParser();
 
-        final Optional<HwSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, MAC_AIR_PRESSURE_DEVICE);
+        final Optional<SensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, MAC_AIR_PRESSURE_DEVICE);
 
         final Temperature expectedTemperature = Temperature.createFromCelsius(21.5);
         final Humidity expectedHumidity = Humidity.createFromRelative(54.2, expectedTemperature);
 
         assertThat(result).isPresent().hasValueSatisfying(sensorData -> {
-            assertThat(sensorData.getTemperature()).isPresent().hasValueSatisfying(temperature ->
-                    assertThat(temperature).isEqualTo(expectedTemperature));
-            assertThat(sensorData.getHumidity()).isPresent().hasValueSatisfying(humidity ->
-                    assertThat(humidity).isEqualTo(expectedHumidity));
-            assertThat(sensorData.getCo2()).isEmpty();
-            assertThat(sensorData.getTimeStamp().toEpochSecond()).isEqualTo(1704516210);
+            assertThat(sensorData.temperature()).isEqualTo(expectedTemperature);
+            assertThat(sensorData.humidity()).isEqualTo(expectedHumidity);
+            assertThat(sensorData.co2()).isEmpty();
+            assertThat(sensorData.timestamp().toEpochSecond()).isEqualTo(1704516210);
         });
     }
 
@@ -135,19 +130,17 @@ class ListDevicesJsonParserTest {
     void shouldParseSensorDataOfCo2Device() throws InvalidArgumentException {
         final ListDevicesJsonParser testee = new ListDevicesJsonParser();
 
-        final Optional<HwSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, MAC_CO2_DEVICE_1);
+        final Optional<SensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, MAC_CO2_DEVICE_1);
 
         final Temperature expectedTemperature = Temperature.createFromCelsius(22.3);
         final Humidity expectedHumidity = Humidity.createFromRelative(47.1, expectedTemperature);
         final CarbonDioxide expectedCo2 = CarbonDioxide.createFromPpm(400);
         assertThat(result).isPresent().hasValueSatisfying(sensorData -> {
-            assertThat(sensorData.getTemperature()).isPresent().hasValueSatisfying(temperature ->
-                    assertThat(temperature).isEqualTo(expectedTemperature));
-            assertThat(sensorData.getHumidity()).isPresent().hasValueSatisfying(humidity ->
-                    assertThat(humidity).isEqualTo(expectedHumidity));
-            assertThat(sensorData.getCo2()).isPresent().hasValueSatisfying(co2 ->
+            assertThat(sensorData.temperature()).isEqualTo(expectedTemperature);
+            assertThat(sensorData.humidity()).isEqualTo(expectedHumidity);
+            assertThat(sensorData.co2()).isPresent().hasValueSatisfying(co2 ->
                     assertThat(co2).isEqualTo(expectedCo2));
-            assertThat(sensorData.getTimeStamp().toEpochSecond()).isEqualTo(1704516210);
+            assertThat(sensorData.timestamp().toEpochSecond()).isEqualTo(1704516210);
         });
     }
 
@@ -155,7 +148,7 @@ class ListDevicesJsonParserTest {
     void shouldReturnOptionalEmpty_whenInvalidMacAddress() {
         final ListDevicesJsonParser testee = new ListDevicesJsonParser();
 
-        final Optional<HwSensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, "mac");
+        final Optional<SensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, "mac");
 
         assertThat(result).isEmpty();
     }

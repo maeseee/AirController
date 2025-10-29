@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +63,7 @@ class SensorDataCollectionTest {
     @Test
     void shouldReturnMostCurrentSensorDataFromFirstPersistence() {
         when(persistence1.getMostCurrentSensorData(any())).thenReturn(Optional.of(sensorData));
-        final ZonedDateTime now = ZonedDateTime.now();
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final SensorDataCollection testee = new SensorDataCollection(persistenceList);
 
         final Optional<SensorData> mostCurrentSensorData = testee.getMostCurrentSensorData(now);

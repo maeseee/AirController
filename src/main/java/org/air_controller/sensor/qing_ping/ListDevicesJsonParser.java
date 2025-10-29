@@ -1,9 +1,6 @@
 package org.air_controller.sensor.qing_ping;
 
-import org.air_controller.sensor_values.CarbonDioxide;
-import org.air_controller.sensor_values.Humidity;
-import org.air_controller.sensor_values.InvalidArgumentException;
-import org.air_controller.sensor_values.Temperature;
+import org.air_controller.sensor_values.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -22,7 +19,7 @@ import java.util.OptionalLong;
 class ListDevicesJsonParser {
     private static final Logger logger = LogManager.getLogger(ListDevicesJsonParser.class);
 
-    public Optional<HwSensorData> parseDeviceListResponse(String jsonString, String macAddress) {
+    public Optional<SensorData> parseDeviceListResponse(String jsonString, String macAddress) {
         // https://developer.qingping.co/main/openApi
         try {
             final JSONTokener tokener = new JSONTokener(jsonString);
@@ -33,7 +30,7 @@ class ListDevicesJsonParser {
                 logger.info("No device with MAC-Address {} found!", macAddress);
                 return Optional.empty();
             }
-            final HwSensorData sensorData = getSensorData(deviceData.get());
+            final SensorData sensorData = getSensorData(deviceData.get());
             return Optional.of(sensorData);
         } catch (Exception e) {
             return Optional.empty();
@@ -53,7 +50,7 @@ class ListDevicesJsonParser {
         return Optional.empty();
     }
 
-    private HwSensorData getSensorData(JSONObject deviceData) throws InvalidArgumentException {
+    private SensorData getSensorData(JSONObject deviceData) throws InvalidArgumentException {
         final double temperatureCelsius = getDoubleValue("temperature", deviceData)
                 .orElseThrow(() -> new InvalidArgumentException("Invalid temperature"));
         final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
@@ -67,7 +64,7 @@ class ListDevicesJsonParser {
         final ZonedDateTime time = ZonedDateTime.ofInstant(
                 Instant.ofEpochSecond(timeFromEpoch),
                 ZoneOffset.UTC);
-        return new HwSensorData(temperature, humidity, co2, time);
+        return new SensorData(temperature, humidity, Optional.ofNullable(co2), time);
     }
 
     private OptionalDouble getDoubleValue(String attribute, JSONObject deviceData) {

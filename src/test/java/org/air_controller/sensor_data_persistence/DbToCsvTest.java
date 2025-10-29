@@ -3,7 +3,6 @@ package org.air_controller.sensor_data_persistence;
 import org.air_controller.persistence.LocalInMemoryDatabase;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.SensorData;
-import org.air_controller.sensor_values.SensorDataImpl;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZoneOffset;
@@ -29,18 +28,16 @@ class DbToCsvTest {
         final SensorDataCsv sensorDataCsv = new SensorDataCsv(sensorCsvPath);
         final List<SensorData> sensorDataList = sensorDataCsv.read();
         final SensorData lastSensorData = sensorDataList.getLast();
-        assertThat(lastSensorData.getTemperature()).isPresent().hasValueSatisfying(
-                temperature -> assertThat(temperature.celsius()).isCloseTo(21.0, within(0.001)));
-        assertThat(lastSensorData.getHumidity()).isPresent().hasValueSatisfying(
-                humidity -> assertThat(humidity.absoluteHumidity()).isCloseTo(10.0, within(0.001)));
-        assertThat(lastSensorData.getCo2()).isPresent().hasValueSatisfying(
+        assertThat(lastSensorData.temperature().celsius()).isCloseTo(21.0, within(0.001));
+        assertThat(lastSensorData.humidity().absoluteHumidity()).isCloseTo(10.0, within(0.001));
+        assertThat(lastSensorData.co2()).isPresent().hasValueSatisfying(
                 co2 -> assertThat(co2.ppm()).isCloseTo(500.0, within(0.001)));
-        assertThat(lastSensorData.getTimeStamp()).isCloseTo(now, within(1, ChronoUnit.SECONDS));
+        assertThat(lastSensorData.timestamp()).isCloseTo(now, within(1, ChronoUnit.SECONDS));
     }
 
     private void prepareDB(ZonedDateTime now) throws InvalidArgumentException {
         final SensorDataDb sensorDataDb = new SensorDataDb(new LocalInMemoryDatabase(), sensorDataTableName);
-        final SensorData sensorData = new SensorDataImpl(21.0, 10.0, 500.0, now);
+        final SensorData sensorData = SensorData.createFromPrimitives(21.0, 10.0, 500.0, now);
         sensorDataDb.persist(sensorData);
     }
 }

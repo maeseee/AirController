@@ -1,5 +1,6 @@
 package org.air_controller.sensor.qing_ping;
 
+import org.air_controller.sensor_values.SensorData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -24,7 +25,7 @@ class ListDevicesTest {
     @Mock
     private ListDevicesJsonParser parser;
     @Mock
-    private HwSensorData sensorData;
+    private SensorData sensorData;
 
     @Test
     void shouldParseSensorList() throws CommunicationException, IOException, URISyntaxException {
@@ -34,7 +35,7 @@ class ListDevicesTest {
         when(parser.parseDeviceListResponse(eq(response), any())).thenReturn(Optional.of(sensorData));
         final ListDevices testee = new ListDevices(listDevicesRequest, parser);
 
-        final List<HwSensorData> sensorDataList = testee.readSensorDataList(token);
+        final List<SensorData> sensorDataList = testee.readSensorDataList(token);
 
         verify(parser).parseDeviceListResponse(response, MAC_AIR_PRESSURE_DEVICE);
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_1);
@@ -51,7 +52,7 @@ class ListDevicesTest {
         when(parser.parseDeviceListResponse(eq(response), any())).thenReturn(Optional.empty());
         final ListDevices testee = new ListDevices(listDevicesRequest, parser);
 
-        final List<HwSensorData> sensorDataList = testee.readSensorDataList(token);
+        final List<SensorData> sensorDataList = testee.readSensorDataList(token);
 
         verify(parser).parseDeviceListResponse(response, MAC_AIR_PRESSURE_DEVICE);
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_1);

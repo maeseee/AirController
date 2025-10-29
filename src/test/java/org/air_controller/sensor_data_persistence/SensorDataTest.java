@@ -31,7 +31,7 @@ class SensorDataTest {
         final double relativeHumidity = random.nextDouble() * 100;
         final double co2Ppm = random.nextDouble() * 100000;
         final ZonedDateTime time = ZonedDateTime.of(LocalDateTime.of(2024, 9, 27, 20, 51, 12), ZoneOffset.UTC);
-        final SensorData inputSensorData = createSensorData(celsiusTemperature, relativeHumidity, co2Ppm, time);
+        final SensorData inputSensorData = SensorData.createFromPrimitives(celsiusTemperature, relativeHumidity, co2Ppm, time);
         final int initialSize = testee.read().size();
 
         testee.persist(inputSensorData);
@@ -48,20 +48,17 @@ class SensorDataTest {
         final double relativeHumidity = random.nextDouble() * 100;
         final double co2Ppm = random.nextDouble() * 100000;
         final ZonedDateTime time = ZonedDateTime.now(ZoneOffset.UTC);
-        final SensorData inputSensorData = createSensorData(celsiusTemperature, relativeHumidity, co2Ppm, time);
+        final SensorData inputSensorData = SensorData.createFromPrimitivesWithRelativHumidity(celsiusTemperature, relativeHumidity, co2Ppm, time);
 
         testee.persist(inputSensorData);
         final Optional<SensorData> lastSensorData = testee.getMostCurrentSensorData(time.minusMinutes(10));
 
         assertThat(lastSensorData).hasValueSatisfying(sensorData -> {
-            assertThat(sensorData.getTemperature()).isPresent().hasValueSatisfying(
-                    temperature -> assertThat(temperature.celsius()).isCloseTo(temperature.celsius(), within(0.01)));
-            assertThat(sensorData.getHumidity()).isPresent().hasValueSatisfying(
-                    humidity -> assertThat(humidity.getRelativeHumidity(sensorData.getTemperature().get())).isCloseTo(relativeHumidity,
-                            within(0.01)));
-            assertThat(sensorData.getCo2()).isPresent().hasValueSatisfying(
+            assertThat(sensorData.temperature().celsius()).isCloseTo(celsiusTemperature, within(0.01));
+            assertThat(sensorData.humidity().getRelativeHumidity(sensorData.temperature())).isCloseTo(relativeHumidity, within(0.01));
+            assertThat(sensorData.co2()).isPresent().hasValueSatisfying(
                     co2 -> assertThat(co2.ppm()).isCloseTo(co2Ppm, within(1.0)));
-            assertThat(sensorData.getTimeStamp()).isCloseTo(time, within(1, ChronoUnit.SECONDS));
+            assertThat(sensorData.timestamp()).isCloseTo(time, within(1, ChronoUnit.SECONDS));
         });
     }
 
@@ -70,13 +67,5 @@ class SensorDataTest {
                 Arguments.of(new SensorDataCsv(CSV_FILE_PATH)),
                 Arguments.of(new SensorDataDb(new LocalInMemoryDatabase(), TABLE_NAME))
         );
-    }
-
-    private SensorData createSensorData(double celsiusTemperatur, double relativeHumidity, double co2Ppm, ZonedDateTime time)
-            throws InvalidArgumentException {
-        final Temperature temperature = Temperature.createFromCelsius(celsiusTemperatur);
-        final Humidity humidity = Humidity.createFromRelative(relativeHumidity, temperature);
-        final CarbonDioxide co2 = CarbonDioxide.createFromPpm(co2Ppm);
-        return new SensorDataImpl(temperature, humidity, co2, time);
     }
 }

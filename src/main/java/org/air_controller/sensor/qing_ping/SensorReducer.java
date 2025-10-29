@@ -6,14 +6,15 @@ import java.time.Duration;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.OptionalDouble;
 
 class SensorReducer {
     private static final Duration SENSOR_INVALIDATION_TIME = Duration.ofHours(1);
 
-    public SensorData reduce(List<HwSensorData> sensorDataList) throws CalculationException, InvalidArgumentException {
-        final List<HwSensorData> currentSensorDataList = sensorDataList.stream()
-                .filter(sensorData -> sensorData.getTimeStamp().isAfter(ZonedDateTime.now(ZoneOffset.UTC).minus(SENSOR_INVALIDATION_TIME)))
+    public SensorData reduce(List<SensorData> sensorDataList) throws CalculationException, InvalidArgumentException {
+        final List<SensorData> currentSensorDataList = sensorDataList.stream()
+                .filter(sensorData -> sensorData.timestamp().isAfter(ZonedDateTime.now(ZoneOffset.UTC).minus(SENSOR_INVALIDATION_TIME)))
                 .toList();
         if (currentSensorDataList.isEmpty()) {
             throw new CalculationException("No current indoor data at the moment");
@@ -22,36 +23,34 @@ class SensorReducer {
         final Humidity humidity = getAverageHumidity(currentSensorDataList);
         final CarbonDioxide co2 = getAverageCo2(currentSensorDataList);
         final ZonedDateTime time = getNewestTimestamp(currentSensorDataList);
-        return new HwSensorData(temperature, humidity, co2, time);
+        return new SensorData(temperature, humidity, Optional.ofNullable(co2), time);
     }
 
-    private Temperature getAverageTemperature(List<HwSensorData> currentSensorDataList) throws InvalidArgumentException {
+    private Temperature getAverageTemperature(List<SensorData> currentSensorDataList) throws InvalidArgumentException {
         final OptionalDouble averageTemperature = currentSensorDataList.stream()
-                .filter(sensorData -> sensorData.getTemperature().isPresent())
-                .mapToDouble(value -> value.getTemperature().get().celsius())
+                .mapToDouble(value -> value.temperature().celsius())
                 .average();
         return averageTemperature.isPresent() ? Temperature.createFromCelsius(averageTemperature.getAsDouble()) : null;
     }
 
-    private Humidity getAverageHumidity(List<HwSensorData> currentSensorDataList) throws InvalidArgumentException {
+    private Humidity getAverageHumidity(List<SensorData> currentSensorDataList) throws InvalidArgumentException {
         final OptionalDouble averageHumidity = currentSensorDataList.stream()
-                .filter(sensorData -> sensorData.getHumidity().isPresent())
-                .mapToDouble(sensorData -> sensorData.getHumidity().get().absoluteHumidity())
+                .mapToDouble(sensorData -> sensorData.humidity().absoluteHumidity())
                 .average();
         return averageHumidity.isPresent() ? Humidity.createFromAbsolute(averageHumidity.getAsDouble()) : null;
     }
 
-    private CarbonDioxide getAverageCo2(List<HwSensorData> currentSensorDataList) throws InvalidArgumentException {
+    private CarbonDioxide getAverageCo2(List<SensorData> currentSensorDataList) throws InvalidArgumentException {
         final OptionalDouble averageCo2 = currentSensorDataList.stream()
-                .filter(sensorData -> sensorData.getCo2().isPresent())
-                .mapToDouble(value -> value.getCo2().get().ppm())
+                .filter(sensorData -> sensorData.co2().isPresent())
+                .mapToDouble(value -> value.co2().get().ppm())
                 .average();
         return averageCo2.isPresent() ? CarbonDioxide.createFromPpm(averageCo2.getAsDouble()) : null;
     }
 
-    private ZonedDateTime getNewestTimestamp(List<HwSensorData> currentSensorDataList) {
+    private ZonedDateTime getNewestTimestamp(List<SensorData> currentSensorDataList) {
         return currentSensorDataList.stream()
-                .map(HwSensorData::getTimeStamp)
+                .map(SensorData::timestamp)
                 .max(ZonedDateTime::compareTo).orElse(ZonedDateTime.now(ZoneOffset.UTC));
     }
 }

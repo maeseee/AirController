@@ -3,6 +3,7 @@ package org.air_controller.sensor.open_weather_api;
 import org.air_controller.http.HttpsGetRequest;
 import org.air_controller.sensor_data_persistence.SensorDataPersistence;
 import org.air_controller.sensor_values.Humidity;
+import org.air_controller.sensor_values.SensorData;
 import org.air_controller.sensor_values.Temperature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,7 +42,7 @@ class OpenWeatherApiSensorTest {
     @Mock
     private SensorDataPersistence persistence;
     @Captor
-    private ArgumentCaptor<WebSensorData> outdoorSensorDataArgumentCaptor;
+    private ArgumentCaptor<SensorData> outdoorSensorDataArgumentCaptor;
 
     @Test
     void testWhenMeasureValuesThenPersistData() {
@@ -53,12 +53,10 @@ class OpenWeatherApiSensorTest {
         testee.run();
 
         verify(persistence).persist(outdoorSensorDataArgumentCaptor.capture());
-        final WebSensorData sensorData = outdoorSensorDataArgumentCaptor.getValue();
-        assertTrue(sensorData.getTemperature().isPresent());
-        assertTrue(sensorData.getHumidity().isPresent());
-        final Temperature temperature = sensorData.getTemperature().get();
+        final SensorData sensorData = outdoorSensorDataArgumentCaptor.getValue();
+        final Temperature temperature = sensorData.temperature();
         assertEquals(10.53, temperature.celsius(), 0.1);
-        final Humidity humidity = sensorData.getHumidity().get();
+        final Humidity humidity = sensorData.humidity();
         assertEquals(87.0, humidity.getRelativeHumidity(temperature), 0.1);
     }
 

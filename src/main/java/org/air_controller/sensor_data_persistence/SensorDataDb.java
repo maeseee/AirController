@@ -30,10 +30,10 @@ public class SensorDataDb implements SensorDataPersistence {
 
     @Override
     public void persist(SensorData sensorData) {
-        final Double temperature = sensorData.getTemperature().map(Temperature::celsius).orElse(null);
-        final Double humidity = sensorData.getHumidity().map(Humidity::absoluteHumidity).orElse(null);
-        final Double co2 = sensorData.getCo2().map(CarbonDioxide::ppm).orElse(null);
-        insertSensorData(temperature, humidity, co2, sensorData.getTimeStamp());
+        final Double temperature = sensorData.temperature().celsius();
+        final Double humidity = sensorData.humidity().absoluteHumidity();
+        final Double co2 = sensorData.co2().map(CarbonDioxide::ppm).orElse(null);
+        insertSensorData(temperature, humidity, co2, sensorData.timestamp());
     }
 
     @Override
@@ -63,7 +63,7 @@ public class SensorDataDb implements SensorDataPersistence {
         final Double hum = resultSet.getObject("humidity", Double.class);
         final Double carbonDioxide = resultSet.getObject("co2", Double.class);
         final ZonedDateTime timestamp = ZonedDateTime.of(resultSet.getObject("event_time", LocalDateTime.class), ZoneOffset.UTC);
-        return new SensorDataImpl(temp, hum, carbonDioxide, timestamp);
+        return SensorData.createFromPrimitives(temp, hum, carbonDioxide, timestamp);
     }
 
     private void createTableIfNotExists() {

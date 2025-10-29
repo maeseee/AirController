@@ -1,5 +1,6 @@
 package org.air_controller.sensor.qing_ping;
 
+import org.air_controller.sensor_values.SensorData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,9 +25,9 @@ class ListDevices {
         this.parser = parser;
     }
 
-    public List<HwSensorData> readSensorDataList(String token) throws CommunicationException, IOException, URISyntaxException {
+    public List<SensorData> readSensorDataList(String token) throws CommunicationException, IOException, URISyntaxException {
         final String response = listDevicesRequest.sendRequest(token);
-        final List<HwSensorData> sensorDataList = new ArrayList<>();
+        final List<SensorData> sensorDataList = new ArrayList<>();
         Devices.getDeviceList().forEach(
                 mac -> parser.parseDeviceListResponse(response, mac).ifPresent(sensorDataList::add));
         if (sensorDataList.isEmpty()) {
