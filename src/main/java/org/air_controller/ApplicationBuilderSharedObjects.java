@@ -21,22 +21,22 @@ import org.jetbrains.annotations.VisibleForTesting;
 import java.util.List;
 
 class ApplicationBuilderSharedObjects {
+    private final GpioPins gpioPins;
     @Getter
     private final SystemActionDbAccessors systemActionDbAccessors;
-    private final GpioPins gpioPins;
     @Getter
     private final List<VentilationSystem> ventilationSystems;
     private CurrentSensors currentSensors;
     private List<Rule> freshAirRules;
 
     public ApplicationBuilderSharedObjects() {
-        this(createSystemActionDbAccessors(), createDingtianPins());
+        this(createDingtianPins());
     }
 
     @VisibleForTesting
-    public ApplicationBuilderSharedObjects(SystemActionDbAccessors systemActionDbAccessors, GpioPins gpioPins) {
-        this.systemActionDbAccessors = systemActionDbAccessors;
+    public ApplicationBuilderSharedObjects(GpioPins gpioPins) {
         this.gpioPins = gpioPins;
+        this.systemActionDbAccessors = createSystemActionDbAccessors();
         this.ventilationSystems = createVentilationSystems();
     }
 
