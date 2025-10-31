@@ -2,7 +2,6 @@ package org.air_controller;
 
 import lombok.Getter;
 import org.air_controller.gpio.GpioPins;
-import org.air_controller.persistence.MariaDatabase;
 import org.air_controller.rules.FreshAirRuleBuilder;
 import org.air_controller.rules.Rule;
 import org.air_controller.sensor.Sensors;
@@ -13,7 +12,6 @@ import org.air_controller.system.VentilationSystem;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemActionDbAccessors;
 import org.air_controller.system_action.SystemActionPersistence;
-import org.air_controller.system_action.SystemPart;
 
 import java.util.List;
 
@@ -26,9 +24,9 @@ class ApplicationBuilderSharedObjects {
     private CurrentSensors currentSensors;
     private List<Rule> freshAirRules;
 
-    public ApplicationBuilderSharedObjects(GpioPins gpioPins) {
+    public ApplicationBuilderSharedObjects(GpioPins gpioPins, SystemActionDbAccessors systemActionDbAccessors) {
         this.gpioPins = gpioPins;
-        this.systemActionDbAccessors = createSystemActionDbAccessors();
+        this.systemActionDbAccessors = systemActionDbAccessors;
         this.ventilationSystems = createVentilationSystems();
     }
 
@@ -41,13 +39,9 @@ class ApplicationBuilderSharedObjects {
 
     public List<Rule> getOrCreateFreshAirRules(Sensors sensors) {
         if (freshAirRules == null) {
-            createFreshAirRules(sensors, createDbAccessor(SystemPart.AIR_FLOW));
+            createFreshAirRules(sensors, systemActionDbAccessors.airFlow());
         }
         return freshAirRules;
-    }
-
-    private static SystemActionDbAccessors createSystemActionDbAccessors() {
-        return new SystemActionDbAccessors(createDbAccessor(SystemPart.AIR_FLOW), createDbAccessor(SystemPart.HUMIDITY));
     }
 
     private List<VentilationSystem> createVentilationSystems() {
@@ -64,9 +58,5 @@ class ApplicationBuilderSharedObjects {
 
     private void createFreshAirRules(Sensors sensors, SystemActionDbAccessor dbAccessor) {
         freshAirRules = new FreshAirRuleBuilder().build(getOrCreateCurrentSensors(sensors), dbAccessor);
-    }
-
-    private static SystemActionDbAccessor createDbAccessor(SystemPart systemPart) {
-        return new SystemActionDbAccessor(new MariaDatabase(), systemPart);
     }
 }
