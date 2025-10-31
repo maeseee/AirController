@@ -29,11 +29,6 @@ class ApplicationBuilderSharedObjects {
     private CurrentSensors currentSensors;
     private List<Rule> freshAirRules;
 
-    public ApplicationBuilderSharedObjects() {
-        this(createDingtianPins());
-    }
-
-    @VisibleForTesting
     public ApplicationBuilderSharedObjects(GpioPins gpioPins) {
         this.gpioPins = gpioPins;
         this.systemActionDbAccessors = createSystemActionDbAccessors();
@@ -72,10 +67,6 @@ class ApplicationBuilderSharedObjects {
 
     private void createFreshAirRules(Sensors sensors, SystemActionDbAccessor dbAccessor) {
         freshAirRules = new FreshAirRuleBuilder().build(getOrCreateCurrentSensors(sensors), dbAccessor);
-    }
-
-    private static GpioPins createDingtianPins() {
-        return new GpioPins(new DingtianPin(DingtianRelay.AIR_FLOW, true), new DingtianPin(DingtianRelay.HUMIDITY_EXCHANGER, false));
     }
 
     private static SystemActionDbAccessor createDbAccessor(SystemPart systemPart) {

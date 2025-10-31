@@ -1,6 +1,9 @@
 package org.air_controller;
 
 import lombok.Setter;
+import org.air_controller.gpio.GpioPins;
+import org.air_controller.gpio.dingtian_relay.DingtianPin;
+import org.air_controller.gpio.dingtian_relay.DingtianRelay;
 import org.air_controller.rules.HumidityExchangerRuleBuilder;
 import org.air_controller.rules.Rule;
 import org.air_controller.rules.RuleApplier;
@@ -22,7 +25,7 @@ class ApplicationBuilder {
     private final SystemStateLogger systemStateLogger;
 
     public ApplicationBuilder() {
-        this(new ApplicationBuilderSharedObjects());
+        this(new ApplicationBuilderSharedObjects(createDingtianPins()));
     }
 
     @VisibleForTesting
@@ -56,5 +59,9 @@ class ApplicationBuilder {
     private SystemStateLogger createSystemStateLogger() {
         final List<Rule> freshAirRules = sharedObjects.getOrCreateFreshAirRules(sensors);
         return new SystemStateLogger(sharedObjects.getVentilationSystems().getFirst(), freshAirRules);
+    }
+
+    private static GpioPins createDingtianPins() {
+        return new GpioPins(new DingtianPin(DingtianRelay.AIR_FLOW, true), new DingtianPin(DingtianRelay.HUMIDITY_EXCHANGER, false));
     }
 }
