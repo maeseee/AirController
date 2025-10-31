@@ -2,8 +2,6 @@ package org.air_controller;
 
 import lombok.Getter;
 import org.air_controller.gpio.GpioPins;
-import org.air_controller.gpio.dingtian_relay.DingtianPin;
-import org.air_controller.gpio.dingtian_relay.DingtianRelay;
 import org.air_controller.persistence.MariaDatabase;
 import org.air_controller.rules.FreshAirRuleBuilder;
 import org.air_controller.rules.Rule;
@@ -16,7 +14,6 @@ import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemActionDbAccessors;
 import org.air_controller.system_action.SystemActionPersistence;
 import org.air_controller.system_action.SystemPart;
-import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.List;
 

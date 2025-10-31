@@ -11,7 +11,6 @@ import org.air_controller.sensor.Sensors;
 import org.air_controller.sensor.SensorsBuilder;
 import org.air_controller.statistics.DailyOnTimeLogger;
 import org.air_controller.statistics.SystemStateLogger;
-import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -24,11 +23,6 @@ class ApplicationBuilder {
     private final RuleApplier ruleApplier;
     private final SystemStateLogger systemStateLogger;
 
-    public ApplicationBuilder() {
-        this(new ApplicationBuilderSharedObjects(createDingtianPins()));
-    }
-
-    @VisibleForTesting
     ApplicationBuilder(ApplicationBuilderSharedObjects sharedObjects) {
         this.sharedObjects = sharedObjects;
         this.sensors = createSensors();
@@ -39,6 +33,12 @@ class ApplicationBuilder {
 
     public Application build() {
         return new Application(sensors, ruleApplier, statistics, systemStateLogger, Executors.newScheduledThreadPool(1));
+    }
+
+    public static ApplicationBuilder createBuilder() {
+        final GpioPins gpios = createDingtianPins();
+        final ApplicationBuilderSharedObjects sharedObjects = new ApplicationBuilderSharedObjects(gpios);
+        return new ApplicationBuilder(sharedObjects);
     }
 
     private static Sensors createSensors() {

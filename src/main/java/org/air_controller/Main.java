@@ -11,7 +11,7 @@ public class Main {
     }
 
     private static Application createApplication() {
-        final ApplicationBuilder builder = new ApplicationBuilder();
+        final ApplicationBuilder builder = ApplicationBuilder.createBuilder();
         return builder.build();
     }
 }
