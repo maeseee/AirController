@@ -22,6 +22,7 @@ class Application {
     private final RuleApplier ruleApplier;
     private final DailyOnTimeLogger statistics;
     private final ScheduledExecutorService executor;
+    private final ExecutorService worker = Executors.newCachedThreadPool();
     private final SystemStateLogger systemStateLogger;
 
     Application(Sensors sensors, RuleApplier ruleApplier, DailyOnTimeLogger statistics, SystemStateLogger systemStateLogger,
@@ -52,16 +53,21 @@ class Application {
     }
 
     private void runTask(String taskName, Runnable command) {
-        try (ExecutorService service = Executors.newSingleThreadExecutor()) {
-            Future<?> future = service.submit(command);
+        try {
+            Future<?> future = worker.submit(command);
             try {
                 future.get(120, TimeUnit.SECONDS);
-            } catch (TimeoutException e) {
-                logger.error("Scheduled task {} timed out! \n{}", taskName, e.getMessage());
+            } catch (TimeoutException te) {
+                logger.error("Task {} timed out after 120s, cancelling. Will try again on next schedule.", taskName, te);
                 future.cancel(true);
-            } catch (Exception e) {
-                logger.error("Task {} failed! \n{}", taskName, e.getMessage());
+            } catch (ExecutionException ee) {
+                logger.error("Task {} threw an exception. {}", taskName, ee.getCause() != null ? ee.getCause() : ee);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                logger.error("Scheduler {} interrupted", taskName, ie);
             }
+        } catch (Throwable t) {
+            logger.error("Unhandled throwable in runTask from {} — scheduler will continue", taskName, t);
         }
     }
 }
