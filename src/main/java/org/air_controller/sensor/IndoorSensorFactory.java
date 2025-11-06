@@ -1,7 +1,7 @@
 package org.air_controller.sensor;
 
+import lombok.RequiredArgsConstructor;
 import org.air_controller.persistence.MariaDatabase;
-import org.air_controller.sensor.open_weather_api.OpenWeatherApiSensor;
 import org.air_controller.sensor.qing_ping.QingPingSensor;
 import org.air_controller.sensor_data_persistence.SensorDataCollection;
 import org.air_controller.sensor_data_persistence.SensorDataCsv;
@@ -11,20 +11,11 @@ import org.air_controller.sensor_data_persistence.SensorDataPersistence;
 import java.net.URISyntaxException;
 import java.util.List;
 
-public class SensorsBuilder {
+@RequiredArgsConstructor
+public class IndoorSensorFactory extends SensorFactory {
 
-    public Sensors build() {
-        return new Sensors(createIndoorSensor(), createOutdoorSensor());
-    }
-
-    private static Sensor createOutdoorSensor() {
-        final SensorDataPersistence persistence = new SensorDataCollection(List.of(
-                new SensorDataDb(new MariaDatabase(), SensorDataPersistence.OUTDOOR_TABLE_NAME),
-                new SensorDataCsv(SensorDataPersistence.OUTDOOR_SENSOR_CSV_PATH)));
-        return new OpenWeatherApiSensor(persistence);
-    }
-
-    private static Sensor createIndoorSensor() {
+    @Override
+    protected Sensor createSensor() {
         final SensorDataPersistence persistence = new SensorDataCollection(List.of(
                 new SensorDataDb(new MariaDatabase(), SensorDataPersistence.INDOOR_TABLE_NAME),
                 new SensorDataCsv(SensorDataPersistence.INDOOR_SENSOR_CSV_PATH)));

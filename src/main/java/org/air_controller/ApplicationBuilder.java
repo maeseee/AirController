@@ -9,7 +9,7 @@ import org.air_controller.rules.HumidityExchangerRuleBuilder;
 import org.air_controller.rules.Rule;
 import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor.Sensors;
-import org.air_controller.sensor.SensorsBuilder;
+import org.air_controller.sensor.SensorsFactory;
 import org.air_controller.statistics.DailyOnTimeLogger;
 import org.air_controller.statistics.SystemStateLogger;
 import org.air_controller.system_action.SystemActionDbAccessor;
@@ -47,7 +47,7 @@ class ApplicationBuilder {
     }
 
     private static Sensors createSensors() {
-        return new SensorsBuilder().build();
+        return new SensorsFactory().build();
     }
 
     private DailyOnTimeLogger createStatistics() {
