@@ -1,10 +1,7 @@
 package org.air_controller.sensor.qing_ping;
 
 import org.air_controller.sensor_data_persistence.SensorDataPersistence;
-import org.air_controller.sensor_values.Humidity;
-import org.air_controller.sensor_values.InvalidArgumentException;
-import org.air_controller.sensor_values.SensorData;
-import org.air_controller.sensor_values.Temperature;
+import org.air_controller.sensor_values.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -37,10 +34,10 @@ class QingPingSensorTest {
         final AccessToken accessToken = mock(AccessToken.class);
         when(accessToken.readToken()).thenReturn("token");
         final ListDevices listDevices = mock(ListDevices.class);
-        final Temperature temperature = Temperature.createFromCelsius(21.5);
-        final Humidity humidity = Humidity.createFromAbsolute(10.0);
-        final ZonedDateTime time1 = ZonedDateTime.now(ZoneOffset.UTC);
-        final SensorData sensorData = new SensorData(temperature, humidity, Optional.empty(), time1);
+        final SensorData sensorData = new SensorDataBuilder()
+                .setTemperatureCelsius(21.5)
+                .setHumidityAbsolute(10.0)
+                .build();
         when(listDevices.readSensorDataList(any())).thenReturn(List.of(sensorData));
         final QingPingSensor testee = new QingPingSensor(persistence, accessToken, listDevices);
 
