@@ -36,6 +36,9 @@ public class SensorDataBuilder {
     }
 
     public SensorDataBuilder setHumidityRelative(double humRelative) throws InvalidArgumentException {
+        if (temperature == null) {
+            throw new InvalidArgumentException("Temperature must have a value when setting the relativ humidity");
+        }
         this.humidity = Humidity.createFromRelative(humRelative, temperature);
         return this;
     }
