@@ -3,6 +3,7 @@ package org.air_controller.sensor_data_persistence;
 import org.air_controller.persistence.LocalInMemoryDatabase;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.SensorData;
+import org.air_controller.sensor_values.SensorDataBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZoneOffset;
@@ -36,7 +37,12 @@ class CsvToDbTest {
     }
 
     private void persistDataToCsv(ZonedDateTime now) throws InvalidArgumentException {
-        final SensorData sensorData = SensorData.createFromPrimitives(21.0, 10.0, 500.0, now);
+        final SensorData sensorData = new SensorDataBuilder()
+                .setTemperature(21.0)
+                .setAbsoluteHumidity(10.0)
+                .setCo2(500.0)
+                .setTime(now)
+                .build();
         final SensorDataCsv sensorDataCsv = new SensorDataCsv(sensorDataCsvPath);
         sensorDataCsv.persist(sensorData);
     }

@@ -27,11 +27,12 @@ class SensorDataTest {
     @MethodSource("sensorDataImplementations")
     void shouldWriteSensorDataIntoCsvFiles_whenPersist(SensorDataPersistence testee) throws InvalidArgumentException {
         final Random random = new Random();
-        final double celsiusTemperature = random.nextDouble() * 100;
-        final double relativeHumidity = random.nextDouble() * 100;
-        final double co2Ppm = random.nextDouble() * 100000;
-        final ZonedDateTime time = ZonedDateTime.of(LocalDateTime.of(2024, 9, 27, 20, 51, 12), ZoneOffset.UTC);
-        final SensorData inputSensorData = SensorData.createFromPrimitives(celsiusTemperature, relativeHumidity, co2Ppm, time);
+        final SensorData inputSensorData = new SensorDataBuilder()
+                .setTemperature(random.nextDouble() * 100)
+                .setRelativeHumidity(random.nextDouble() * 100)
+                .setCo2(random.nextDouble() * 100000)
+                .setTime(ZonedDateTime.of(LocalDateTime.of(2024, 9, 27, 20, 51, 12), ZoneOffset.UTC))
+                .build();
         final int initialSize = testee.read().size();
 
         testee.persist(inputSensorData);
@@ -48,7 +49,12 @@ class SensorDataTest {
         final double relativeHumidity = random.nextDouble() * 100;
         final double co2Ppm = random.nextDouble() * 100000;
         final ZonedDateTime time = ZonedDateTime.now(ZoneOffset.UTC);
-        final SensorData inputSensorData = SensorData.createFromPrimitivesWithRelativHumidity(celsiusTemperature, relativeHumidity, co2Ppm, time);
+        final SensorData inputSensorData = new SensorDataBuilder()
+                .setTemperature(celsiusTemperature)
+                .setRelativeHumidity(relativeHumidity)
+                .setCo2(co2Ppm)
+                .setTime(time)
+                .build();
 
         testee.persist(inputSensorData);
         final Optional<SensorData> lastSensorData = testee.getMostCurrentSensorData(time.minusMinutes(10));

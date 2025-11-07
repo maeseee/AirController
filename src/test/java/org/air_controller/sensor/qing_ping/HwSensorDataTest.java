@@ -23,8 +23,18 @@ class HwSensorDataTest {
     void shouldBeDifferent(double comparedTemperature, double comparedHumidity, double comparedCo2, int timeOffset, boolean isEquals)
             throws InvalidArgumentException {
         final ZonedDateTime timestamp = ZonedDateTime.now(ZoneOffset.UTC);
-        final SensorData sensorData1 = SensorData.createFromPrimitivesWithRelativHumidity(23.0, 50.0, 500.0, timestamp);
-        final SensorData sensorData2 = createSensorData(comparedTemperature, comparedHumidity, comparedCo2, timestamp.plusSeconds(timeOffset));
+        final SensorData sensorData1 = new SensorDataBuilder()
+                .setTemperature(23.0)
+                .setRelativeHumidity(50.0)
+                .setCo2(500.0)
+                .setTime(timestamp)
+                .build();
+        final SensorData sensorData2 = new SensorDataBuilder()
+                .setTemperature(comparedTemperature)
+                .setRelativeHumidity(comparedHumidity)
+                .setCo2(comparedCo2)
+                .setTime(timestamp.plusSeconds(timeOffset))
+                .build();
 
         if (isEquals) {
             assertThat(sensorData1).isEqualTo(sensorData2);
@@ -32,13 +42,4 @@ class HwSensorDataTest {
             assertThat(sensorData1).isNotEqualTo(sensorData2);
         }
     }
-
-    private SensorData createSensorData(double temperatureValue, double humidityValue, double co2Value, ZonedDateTime timestamp)
-            throws InvalidArgumentException {
-        final Temperature temperature = Temperature.createFromCelsius(temperatureValue);
-        final Humidity humidity = Humidity.createFromRelative(humidityValue, temperature);
-        final CarbonDioxide co2 = CarbonDioxide.createFromPpm(co2Value);
-        return new SensorData(temperature, humidity, Optional.of(co2), timestamp);
-    }
-
 }

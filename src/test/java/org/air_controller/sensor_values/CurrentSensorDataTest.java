@@ -29,7 +29,12 @@ class CurrentSensorDataTest {
 
     @Test
     void shouldReturnValues() throws InvalidArgumentException {
-        final SensorData sensorData = SensorData.createFromPrimitives(20.0, 10.0, 500.0, ZonedDateTime.now(ZoneOffset.UTC));
+        final SensorData sensorData = new SensorDataBuilder()
+                .setTemperature(20.0)
+                .setAbsoluteHumidity(10.0)
+                .setCo2(500.0)
+                .setTime(ZonedDateTime.now(ZoneOffset.UTC))
+                .build();
         when(persistence.getMostCurrentSensorData(any())).thenReturn(Optional.of(sensorData));
         final CurrentSensorData testee = new CurrentSensorData(persistence);
 
