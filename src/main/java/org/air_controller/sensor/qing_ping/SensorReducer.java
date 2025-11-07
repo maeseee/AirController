@@ -6,7 +6,6 @@ import java.time.Duration;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.OptionalDouble;
 
 class SensorReducer {
@@ -19,11 +18,12 @@ class SensorReducer {
         if (currentSensorDataList.isEmpty()) {
             throw new CalculationException("No current indoor data at the moment");
         }
-        final Temperature temperature = getAverageTemperature(currentSensorDataList);
-        final Humidity humidity = getAverageHumidity(currentSensorDataList);
-        final CarbonDioxide co2 = getAverageCo2(currentSensorDataList);
-        final ZonedDateTime time = getNewestTimestamp(currentSensorDataList);
-        return new SensorData(temperature, humidity, Optional.ofNullable(co2), time);
+        return new SensorDataBuilder()
+                .setTemperature(getAverageTemperature(currentSensorDataList))
+                .setHumidity(getAverageHumidity(currentSensorDataList))
+                .setCo2(getAverageCo2(currentSensorDataList))
+                .setTime(getNewestTimestamp(currentSensorDataList))
+                .build();
     }
 
     private Temperature getAverageTemperature(List<SensorData> currentSensorDataList) throws InvalidArgumentException {

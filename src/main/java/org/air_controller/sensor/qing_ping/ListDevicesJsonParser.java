@@ -1,6 +1,8 @@
 package org.air_controller.sensor.qing_ping;
 
-import org.air_controller.sensor_values.*;
+import org.air_controller.sensor_values.InvalidArgumentException;
+import org.air_controller.sensor_values.SensorData;
+import org.air_controller.sensor_values.SensorDataBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -8,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -53,18 +56,16 @@ class ListDevicesJsonParser {
     private SensorData getSensorData(JSONObject deviceData) throws InvalidArgumentException {
         final double temperatureCelsius = getDoubleValue("temperature", deviceData)
                 .orElseThrow(() -> new InvalidArgumentException("Invalid temperature"));
-        final Temperature temperature = Temperature.createFromCelsius(temperatureCelsius);
         final double humidityRelative = getDoubleValue("humidity", deviceData)
                 .orElseThrow(() -> new InvalidArgumentException("Invalid humidity"));
-        final Humidity humidity = Humidity.createFromRelative(humidityRelative, temperature);
         final OptionalDouble co2Optional = getDoubleValue("co2", deviceData);
-        final CarbonDioxide co2 = co2Optional.isPresent() ? CarbonDioxide.createFromPpm(co2Optional.getAsDouble()) : null;
-        final long timeFromEpoch = getTimestamp(deviceData)
-                .orElseThrow(() -> new InvalidArgumentException("Invalid timestamp"));
-        final ZonedDateTime time = ZonedDateTime.ofInstant(
-                Instant.ofEpochSecond(timeFromEpoch),
-                ZoneOffset.UTC);
-        return new SensorData(temperature, humidity, Optional.ofNullable(co2), time);
+        final Double co2Ppm = co2Optional.isPresent() ? co2Optional.getAsDouble() : null;
+        validateTimeStamp(deviceData);
+        return new SensorDataBuilder()
+                .setTemperatureCelsius(temperatureCelsius)
+                .setHumidityRelative(humidityRelative)
+                .setCo2(co2Ppm)
+                .build();
     }
 
     private OptionalDouble getDoubleValue(String attribute, JSONObject deviceData) {
@@ -75,6 +76,20 @@ class ListDevicesJsonParser {
             // Intentionally left empty
         }
         return OptionalDouble.empty();
+    }
+
+    private void validateTimeStamp(JSONObject deviceData) throws InvalidArgumentException {
+        // QingPing sometimes has a strange time. Therefor I just only if it is about the current time
+        final Duration errorTolerance = Duration.ofHours(3);
+        final long timeFromEpoch = getTimestamp(deviceData)
+                .orElseThrow(() -> new InvalidArgumentException("Invalid timestamp"));
+        final ZonedDateTime time = ZonedDateTime.ofInstant(
+                Instant.ofEpochSecond(timeFromEpoch),
+                ZoneOffset.UTC);
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        if (now.plus(errorTolerance).isBefore(time) || now.minus(errorTolerance).isAfter(time)) {
+            throw new InvalidArgumentException("Invalid timestamp");
+        }
     }
 
     private OptionalLong getTimestamp(JSONObject deviceData) {

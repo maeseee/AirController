@@ -21,7 +21,7 @@ public class SensorDataBuilder {
     }
 
     public SensorDataBuilder setTemperatureKelvin(double tempCelsius) throws InvalidArgumentException {
-        this.temperature = Temperature.createFromCelsius(tempCelsius);
+        this.temperature = Temperature.createFromKelvin(tempCelsius);
         return this;
     }
 

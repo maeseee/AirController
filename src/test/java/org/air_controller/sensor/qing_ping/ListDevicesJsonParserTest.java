@@ -3,6 +3,7 @@ package org.air_controller.sensor.qing_ping;
 import org.air_controller.sensor_values.*;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
 import java.util.Optional;
 
 import static org.air_controller.sensor.qing_ping.Devices.MAC_AIR_PRESSURE_DEVICE;
@@ -11,7 +12,53 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ListDevicesJsonParserTest {
 
-    private static final String SAMPLE_DEVICE_LIST_RESPONSE = """
+    @Test
+    void shouldParseSensorDataOfAirPressureDevice() throws InvalidArgumentException {
+        final long epochSecondNow = Instant.now().getEpochSecond();
+        final ListDevicesJsonParser testee = new ListDevicesJsonParser();
+
+        final Optional<SensorData> result = testee.parseDeviceListResponse(getSampleDeviceListResponse(epochSecondNow), MAC_AIR_PRESSURE_DEVICE);
+
+        final Temperature expectedTemperature = Temperature.createFromCelsius(21.5);
+        final Humidity expectedHumidity = Humidity.createFromRelative(54.2, expectedTemperature);
+        assertThat(result).isPresent().hasValueSatisfying(sensorData -> {
+            assertThat(sensorData.temperature()).isEqualTo(expectedTemperature);
+            assertThat(sensorData.humidity()).isEqualTo(expectedHumidity);
+            assertThat(sensorData.co2()).isEmpty();
+            assertThat(sensorData.timestamp().toEpochSecond()).isEqualTo(epochSecondNow);
+        });
+    }
+
+    @Test
+    void shouldParseSensorDataOfCo2Device() throws InvalidArgumentException {
+        final long epochSecondNow = Instant.now().getEpochSecond();
+        final ListDevicesJsonParser testee = new ListDevicesJsonParser();
+
+        final Optional<SensorData> result = testee.parseDeviceListResponse(getSampleDeviceListResponse(epochSecondNow), MAC_CO2_DEVICE_1);
+
+        final Temperature expectedTemperature = Temperature.createFromCelsius(22.3);
+        final Humidity expectedHumidity = Humidity.createFromRelative(47.1, expectedTemperature);
+        final CarbonDioxide expectedCo2 = CarbonDioxide.createFromPpm(400);
+        assertThat(result).isPresent().hasValueSatisfying(sensorData -> {
+            assertThat(sensorData.temperature()).isEqualTo(expectedTemperature);
+            assertThat(sensorData.humidity()).isEqualTo(expectedHumidity);
+            assertThat(sensorData.co2()).isPresent().hasValueSatisfying(co2 ->
+                    assertThat(co2).isEqualTo(expectedCo2));
+            assertThat(sensorData.timestamp().toEpochSecond()).isEqualTo(epochSecondNow);
+        });
+    }
+
+    @Test
+    void shouldReturnOptionalEmpty_whenInvalidMacAddress() {
+        final ListDevicesJsonParser testee = new ListDevicesJsonParser();
+
+        final Optional<SensorData> result = testee.parseDeviceListResponse(getSampleDeviceListResponse(Instant.now().getEpochSecond()), "mac");
+
+        assertThat(result).isEmpty();
+    }
+
+    private String getSampleDeviceListResponse(long epochSecond) {
+        final String SAMPLE_DEVICE_LIST_RESPONSE = """
             {
               "total": 2,
               "devices": [
@@ -41,7 +88,7 @@ class ListDevicesJsonParserTest {
                   },
                   "data": {
                     "timestamp": {
-                      "value": 1704516210
+                      "value": <epoch_timestamp>
                     },
                     "battery": {
                       "value": 86
@@ -86,7 +133,7 @@ class ListDevicesJsonParserTest {
                   },
                   "data": {
                     "timestamp": {
-                      "value": 1704516210
+                      "value": <epoch_timestamp>
                     },
                     "battery": {
                       "value": 100
@@ -108,48 +155,6 @@ class ListDevicesJsonParserTest {
               ]
             }
             """;
-
-    @Test
-    void shouldParseSensorDataOfAirPressureDevice() throws InvalidArgumentException {
-        final ListDevicesJsonParser testee = new ListDevicesJsonParser();
-
-        final Optional<SensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, MAC_AIR_PRESSURE_DEVICE);
-
-        final Temperature expectedTemperature = Temperature.createFromCelsius(21.5);
-        final Humidity expectedHumidity = Humidity.createFromRelative(54.2, expectedTemperature);
-
-        assertThat(result).isPresent().hasValueSatisfying(sensorData -> {
-            assertThat(sensorData.temperature()).isEqualTo(expectedTemperature);
-            assertThat(sensorData.humidity()).isEqualTo(expectedHumidity);
-            assertThat(sensorData.co2()).isEmpty();
-            assertThat(sensorData.timestamp().toEpochSecond()).isEqualTo(1704516210);
-        });
-    }
-
-    @Test
-    void shouldParseSensorDataOfCo2Device() throws InvalidArgumentException {
-        final ListDevicesJsonParser testee = new ListDevicesJsonParser();
-
-        final Optional<SensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, MAC_CO2_DEVICE_1);
-
-        final Temperature expectedTemperature = Temperature.createFromCelsius(22.3);
-        final Humidity expectedHumidity = Humidity.createFromRelative(47.1, expectedTemperature);
-        final CarbonDioxide expectedCo2 = CarbonDioxide.createFromPpm(400);
-        assertThat(result).isPresent().hasValueSatisfying(sensorData -> {
-            assertThat(sensorData.temperature()).isEqualTo(expectedTemperature);
-            assertThat(sensorData.humidity()).isEqualTo(expectedHumidity);
-            assertThat(sensorData.co2()).isPresent().hasValueSatisfying(co2 ->
-                    assertThat(co2).isEqualTo(expectedCo2));
-            assertThat(sensorData.timestamp().toEpochSecond()).isEqualTo(1704516210);
-        });
-    }
-
-    @Test
-    void shouldReturnOptionalEmpty_whenInvalidMacAddress() {
-        final ListDevicesJsonParser testee = new ListDevicesJsonParser();
-
-        final Optional<SensorData> result = testee.parseDeviceListResponse(SAMPLE_DEVICE_LIST_RESPONSE, "mac");
-
-        assertThat(result).isEmpty();
+        return SAMPLE_DEVICE_LIST_RESPONSE.replaceAll("<epoch_timestamp>", String.valueOf(epochSecond));
     }
 }
