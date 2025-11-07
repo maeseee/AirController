@@ -15,7 +15,12 @@ public class SensorDataBuilder {
         return this;
     }
 
-    public SensorDataBuilder setTemperature(double tempCelsius) throws InvalidArgumentException {
+    public SensorDataBuilder setTemperatureCelsius(double tempCelsius) throws InvalidArgumentException {
+        this.temperature = Temperature.createFromCelsius(tempCelsius);
+        return this;
+    }
+
+    public SensorDataBuilder setTemperatureKelvin(double tempCelsius) throws InvalidArgumentException {
         this.temperature = Temperature.createFromCelsius(tempCelsius);
         return this;
     }
@@ -25,12 +30,12 @@ public class SensorDataBuilder {
         return this;
     }
 
-    public SensorDataBuilder setAbsoluteHumidity(double humAbsolute) throws InvalidArgumentException {
+    public SensorDataBuilder setHumidityAbsolute(double humAbsolute) throws InvalidArgumentException {
         this.humidity = Humidity.createFromAbsolute(humAbsolute);
         return this;
     }
 
-    public SensorDataBuilder setRelativeHumidity(double humRelative) throws InvalidArgumentException {
+    public SensorDataBuilder setHumidityRelative(double humRelative) throws InvalidArgumentException {
         this.humidity = Humidity.createFromRelative(humRelative, temperature);
         return this;
     }

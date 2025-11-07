@@ -60,8 +60,8 @@ public class SensorDataDb implements SensorDataPersistence {
     private SensorData createSensorData(ResultSet resultSet) throws SQLException, InvalidArgumentException {
         // Read the object as it can handle null
         return new SensorDataBuilder()
-                .setTemperature(resultSet.getObject("temperature", Double.class))
-                .setAbsoluteHumidity(resultSet.getObject("humidity", Double.class))
+                .setTemperatureCelsius(resultSet.getObject("temperature", Double.class))
+                .setHumidityAbsolute(resultSet.getObject("humidity", Double.class))
                 .setCo2(resultSet.getObject("co2", Double.class))
                 .setTime(ZonedDateTime.of(resultSet.getObject("event_time", LocalDateTime.class), ZoneOffset.UTC))
                 .build();

@@ -39,8 +39,8 @@ class DbToCsvTest {
     private void prepareDB(ZonedDateTime now) throws InvalidArgumentException {
         final SensorDataDb sensorDataDb = new SensorDataDb(new LocalInMemoryDatabase(), sensorDataTableName);
         final SensorData sensorData = new SensorDataBuilder()
-                .setTemperature(21.0)
-                .setAbsoluteHumidity(10.0)
+                .setTemperatureCelsius(21.0)
+                .setHumidityAbsolute(10.0)
                 .setCo2(500.0)
                 .setTime(now)
                 .build();

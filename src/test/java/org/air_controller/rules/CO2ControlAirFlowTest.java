@@ -32,8 +32,8 @@ class CO2ControlAirFlowTest {
     })
     void shouldCalculateCo2Confidence(double co2, double expectedConfidence) throws InvalidArgumentException {
         final SensorData sensorData = new SensorDataBuilder()
-                .setTemperature(21.0)
-                .setRelativeHumidity(50.0)
+                .setTemperatureCelsius(21.0)
+                .setHumidityRelative(50.0)
                 .setCo2(co2)
                 .setTime(ZonedDateTime.now(ZoneOffset.UTC))
                 .build();

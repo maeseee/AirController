@@ -28,8 +28,8 @@ class SensorDataTest {
     void shouldWriteSensorDataIntoCsvFiles_whenPersist(SensorDataPersistence testee) throws InvalidArgumentException {
         final Random random = new Random();
         final SensorData inputSensorData = new SensorDataBuilder()
-                .setTemperature(random.nextDouble() * 100)
-                .setRelativeHumidity(random.nextDouble() * 100)
+                .setTemperatureCelsius(random.nextDouble() * 100)
+                .setHumidityRelative(random.nextDouble() * 100)
                 .setCo2(random.nextDouble() * 100000)
                 .setTime(ZonedDateTime.of(LocalDateTime.of(2024, 9, 27, 20, 51, 12), ZoneOffset.UTC))
                 .build();
@@ -50,8 +50,8 @@ class SensorDataTest {
         final double co2Ppm = random.nextDouble() * 100000;
         final ZonedDateTime time = ZonedDateTime.now(ZoneOffset.UTC);
         final SensorData inputSensorData = new SensorDataBuilder()
-                .setTemperature(celsiusTemperature)
-                .setRelativeHumidity(relativeHumidity)
+                .setTemperatureCelsius(celsiusTemperature)
+                .setHumidityRelative(relativeHumidity)
                 .setCo2(co2Ppm)
                 .setTime(time)
                 .build();

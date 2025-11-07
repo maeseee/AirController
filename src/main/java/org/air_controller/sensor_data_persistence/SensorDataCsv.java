@@ -63,13 +63,12 @@ public class SensorDataCsv implements SensorDataPersistence {
     private SensorData createSensorData(String csvLine) throws InvalidArgumentException {
         final String[] csv = csvLine.split(",");
         assert (csv.length > 2);
-        final ZonedDateTime timestamp = ZonedDateTime.of(LocalDateTime.parse(csv[0], FORMATTER), ZoneOffset.UTC);
-        final double tempCelsius = Double.parseDouble(csv[1]);
-        final Temperature temperature = Temperature.createFromCelsius(tempCelsius);
-        final double humRelative = Double.parseDouble(csv[2]);
-        final Humidity humidity = Humidity.createFromRelative(humRelative, temperature);
-        final CarbonDioxide co2 = csv.length > 3 ? CarbonDioxide.createFromPpm(Double.parseDouble(csv[3])) : null;
-        return new SensorData(temperature, humidity, Optional.ofNullable(co2), timestamp);
+        return new SensorDataBuilder()
+                .setTime(ZonedDateTime.of(LocalDateTime.parse(csv[0], FORMATTER), ZoneOffset.UTC))
+                .setTemperatureCelsius(Double.parseDouble(csv[1]))
+                .setHumidityRelative(Double.parseDouble(csv[2]))
+                .setCo2(csv.length > 3 ? CarbonDioxide.createFromPpm(Double.parseDouble(csv[3])) : null)
+                .build();
     }
 
     private void addDataIfAvailable(List<SensorData> entries, String currentLine) {

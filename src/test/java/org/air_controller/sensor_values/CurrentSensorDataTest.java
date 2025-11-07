@@ -30,8 +30,8 @@ class CurrentSensorDataTest {
     @Test
     void shouldReturnValues() throws InvalidArgumentException {
         final SensorData sensorData = new SensorDataBuilder()
-                .setTemperature(20.0)
-                .setAbsoluteHumidity(10.0)
+                .setTemperatureCelsius(20.0)
+                .setHumidityAbsolute(10.0)
                 .setCo2(500.0)
                 .setTime(ZonedDateTime.now(ZoneOffset.UTC))
                 .build();

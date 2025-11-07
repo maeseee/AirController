@@ -6,7 +6,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,14 +23,14 @@ class HwSensorDataTest {
             throws InvalidArgumentException {
         final ZonedDateTime timestamp = ZonedDateTime.now(ZoneOffset.UTC);
         final SensorData sensorData1 = new SensorDataBuilder()
-                .setTemperature(23.0)
-                .setRelativeHumidity(50.0)
+                .setTemperatureCelsius(23.0)
+                .setHumidityRelative(50.0)
                 .setCo2(500.0)
                 .setTime(timestamp)
                 .build();
         final SensorData sensorData2 = new SensorDataBuilder()
-                .setTemperature(comparedTemperature)
-                .setRelativeHumidity(comparedHumidity)
+                .setTemperatureCelsius(comparedTemperature)
+                .setHumidityRelative(comparedHumidity)
                 .setCo2(comparedCo2)
                 .setTime(timestamp.plusSeconds(timeOffset))
                 .build();
