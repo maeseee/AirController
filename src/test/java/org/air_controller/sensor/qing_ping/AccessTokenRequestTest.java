@@ -3,6 +3,7 @@ package org.air_controller.sensor.qing_ping;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -15,6 +16,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
+@DisabledIfEnvironmentVariable(named = "GITHUB_ACTIONS", matches = "true")
 class AccessTokenRequestTest {
 
     @Test

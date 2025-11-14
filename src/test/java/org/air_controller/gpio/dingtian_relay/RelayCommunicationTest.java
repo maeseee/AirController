@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -32,7 +31,7 @@ class RelayCommunicationTest {
 
     @Test
     void shouldReturnEmptyList_whenResponseEmpty() {
-        when(getRequest.sendRequest(any())).thenReturn(Optional.empty());
+        when(getRequest.sendRequest(any())).thenReturn("");
         final RelayCommunication testee = new RelayCommunication(getRequest, interpreter);
 
         final List<Boolean> relayStates = testee.readStates();
@@ -44,7 +43,7 @@ class RelayCommunicationTest {
 
     @Test
     void shouldInterpretResponse_whenValid() {
-        when(getRequest.sendRequest(any())).thenReturn(Optional.of("RESPONSE"));
+        when(getRequest.sendRequest(any())).thenReturn("RESPONSE");
         final RelayCommunication testee = new RelayCommunication(getRequest, interpreter);
 
         final List<Boolean> relayStates = testee.readStates();
@@ -56,7 +55,7 @@ class RelayCommunicationTest {
 
     @Test
     void shouldSetRelayState() {
-        when(getRequest.sendRequest(any())).thenReturn(Optional.of("RESPONSE"));
+        when(getRequest.sendRequest(any())).thenReturn("RESPONSE");
         final RelayCommunication testee = new RelayCommunication(getRequest, interpreter);
 
         testee.setRelayState(0, true);

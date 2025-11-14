@@ -15,7 +15,6 @@ public class QingPingAdapter extends ClimateSensor {
 
     private static final Logger logger = LogManager.getLogger(QingPingAdapter.class);
 
-    private final QingPingSensor sensor;
     private final SensorReducer sensorReducer;
     private final ListDevicesJsonParser parser;
 
@@ -24,21 +23,9 @@ public class QingPingAdapter extends ClimateSensor {
     }
 
     QingPingAdapter(ClimateDataPointPersistence persistence, QingPingSensor sensor, SensorReducer sensorReducer, ListDevicesJsonParser parser) {
-        super(persistence);
-        this.sensor = sensor;
+        super(persistence, sensor);
         this.sensorReducer = sensorReducer;
         this.parser = parser;
-    }
-
-    @Override
-    public void run() {
-        try {
-            final String response = sensor.readData();
-            Optional<ClimateDataPoint> dataPoint = parseResponse(response);
-            dataPoint.ifPresent(this::persistDataPoint);
-        } catch (Exception exception) {
-            logger.error("Exception in QingPing sensor loop:", exception);
-        }
     }
 
     protected Optional<ClimateDataPoint> parseResponse(String response) {
@@ -54,10 +41,5 @@ public class QingPingAdapter extends ClimateSensor {
             logger.error("No sensor data found in the response: {}", response);
         }
         return climateDataPoints;
-    }
-
-    private void persistDataPoint(ClimateDataPoint dataPoint) {
-        logger.info("New data point: {}", dataPoint);
-        persistence.persist(dataPoint);
     }
 }

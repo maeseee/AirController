@@ -28,7 +28,7 @@ class SensorReducerTest {
             "20, 10, NaN, 60, 40, 15.0, NaN", // Invalid after SENSOR_INVALIDATION_TIME
     })
     void shouldTakeAverageOfSensorValues_whenMultipleSensors(double temperature1, double humidity1, double carbonDioxide1, int minutesYounger,
-            double expectedTemperature, double expectedHumidity, double expectedCo2) throws InvalidArgumentException, CalculationException {
+            double expectedTemperature, double expectedHumidity, double expectedCo2) throws InvalidArgumentException {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final ClimateDataPoint dataPoint1 = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(temperature1)

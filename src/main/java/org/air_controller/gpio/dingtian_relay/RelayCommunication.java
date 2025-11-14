@@ -3,7 +3,6 @@ package org.air_controller.gpio.dingtian_relay;
 import org.air_controller.http.HttpsGetRequest;
 
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 
@@ -22,11 +21,11 @@ class RelayCommunication {
     }
 
     public List<Boolean> readStates() {
-        final Optional<String> response = httpsGetRequest.sendRequest(urlCreator.createGetRelayStatesURL());
+        final String response = httpsGetRequest.sendRequest(urlCreator.createGetRelayStatesURL());
         if (response.isEmpty()) {
             return emptyList();
         }
-        return interpreter.interpretRelayState(response.get());
+        return interpreter.interpretRelayState(response);
     }
 
     public void setRelayState(int relay, boolean setOn) {

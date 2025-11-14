@@ -1,4 +1,4 @@
-package org.air_controller.sensor.open_weather_api;
+package org.air_controller.sensor.open_weather_api_adapter;
 
 import lombok.NoArgsConstructor;
 import org.air_controller.sensor_values.ClimateDataPoint;

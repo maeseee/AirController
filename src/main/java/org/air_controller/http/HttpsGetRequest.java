@@ -9,13 +9,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.util.Optional;
 
 public class HttpsGetRequest {
     private static final Logger logger = LogManager.getLogger(HttpsGetRequest.class);
 
-    public Optional<String> sendRequest(String url) {
-        String responseFromUrl = null;
+    public String sendRequest(String url) {
+        String responseFromUrl = "";
         try {
             final URI uri = new URI(url);
             final HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
@@ -27,9 +26,9 @@ public class HttpsGetRequest {
             }
         } catch (Exception exception) {
             logger.error("HttpsGetRequest failure: ", exception);
-            return Optional.empty();
+            return "";
         }
-        return Optional.ofNullable(responseFromUrl);
+        return responseFromUrl;
     }
 
     private String readResponseFromServer(InputStream inputStream) throws IOException {

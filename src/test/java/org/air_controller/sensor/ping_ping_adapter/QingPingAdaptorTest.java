@@ -1,6 +1,5 @@
 package org.air_controller.sensor.ping_ping_adapter;
 
-import org.air_controller.sensor.qing_ping.CommunicationException;
 import org.air_controller.sensor.qing_ping.QingPingSensor;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.*;
@@ -11,8 +10,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,8 +31,7 @@ class QingPingAdaptorTest {
     private ArgumentCaptor<ClimateDataPoint> indoorDataPointArgumentCaptor;
 
     @Test
-    void shouldPersistDataPoint_whenRun()
-            throws InvalidArgumentException, CommunicationException, IOException, URISyntaxException, CalculationException {
+    void shouldPersistDataPoint_whenRun() throws InvalidArgumentException {
         final ClimateDataPoint dataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(23.0)
                 .setHumidityAbsolute(10.0)
@@ -56,8 +52,8 @@ class QingPingAdaptorTest {
     }
 
     @Test
-    void shouldNotPersistDataPoint_whenInvalidDataPoint() throws CommunicationException, IOException, URISyntaxException {
-        when(sensor.readData()).thenThrow(new IOException("Error"));
+    void shouldNotPersistDataPoint_whenInvalidDataPoint() {
+        when(sensor.readData()).thenReturn("");
         final QingPingAdapter testee = new QingPingAdapter(persistence, sensor);
 
         testee.run();

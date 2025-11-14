@@ -1,6 +1,5 @@
 package org.air_controller.sensor.ping_ping_adapter;
 
-import org.air_controller.sensor.qing_ping.CommunicationException;
 import org.air_controller.sensor.qing_ping.QingPingSensor;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.ClimateDataPoint;
@@ -11,8 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Optional;
 
 import static org.air_controller.sensor.qing_ping.Devices.*;
@@ -33,7 +30,7 @@ class QingPingSensorTest {
     private ListDevicesJsonParser parser;
 
     @Test
-    void shouldParseSensorList() throws CommunicationException, IOException, URISyntaxException, InvalidArgumentException {
+    void shouldParseSensorList() throws InvalidArgumentException {
         final String response = "response";
         when(sensor.readData()).thenReturn(response);
         final ClimateDataPoint dataPoint = new ClimateDataPointBuilder()
@@ -54,7 +51,7 @@ class QingPingSensorTest {
     }
 
     @Test
-    void shouldIgnoreUnknownSensors() throws CommunicationException, IOException, URISyntaxException {
+    void shouldIgnoreUnknownSensors() {
         final String response = "response";
         when(sensor.readData()).thenReturn(response);
         when(parser.parseDeviceListResponse(eq(response), any())).thenReturn(Optional.empty());

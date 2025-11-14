@@ -1,11 +1,16 @@
 package org.air_controller.sensor.qing_ping;
 
+import org.air_controller.sensor.SensorReader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-public class QingPingSensor {
+public class QingPingSensor implements SensorReader {
+    private static final Logger logger = LogManager.getLogger(QingPingSensor.class);
 
     private final AccessToken accessToken;
     private final ListDevicesRequest listDevicesRequest;
@@ -19,9 +24,14 @@ public class QingPingSensor {
         this.listDevicesRequest = listDevicesRequest;
     }
 
-    public String readData() throws CommunicationException, IOException, URISyntaxException {
-        final String token = accessToken.readToken();
-        return listDevicesRequest.sendRequest(token);
+    public String readData() {
+        try {
+            final String token = accessToken.readToken();
+            return listDevicesRequest.sendRequest(token);
+        } catch (CommunicationException | IOException | URISyntaxException e) {
+            logger.error("QingPingSensor readData error", e);
+            return "";
+        }
     }
 
     public static List<String> getDeviceList() {

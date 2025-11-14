@@ -2,17 +2,10 @@ package org.air_controller.sensor.open_weather_api;
 
 import org.air_controller.http.HttpsGetRequest;
 import org.air_controller.secrets.Secret;
-import org.air_controller.sensor.ClimateSensor;
-import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
-import org.air_controller.sensor_values.ClimateDataPoint;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.util.Optional;
+import org.air_controller.sensor.SensorReader;
 
 
-public class OpenWeatherApiSensor extends ClimateSensor {
-    private static final Logger logger = LogManager.getLogger(OpenWeatherApiSensor.class);
+public class OpenWeatherApiSensor implements SensorReader {
     private static final String LAT = "47.127459";
     private static final String LON = "8.245553";
     private static final String ENVIRONMENT_VARIABLE_API_KEY = "weather_api_key";
@@ -20,40 +13,17 @@ public class OpenWeatherApiSensor extends ClimateSensor {
 
     private final HttpsGetRequest httpsGetRequest;
 
-    public OpenWeatherApiSensor(ClimateDataPointPersistence persistence) {
-        this(persistence, new HttpsGetRequest());
+    public OpenWeatherApiSensor() {
+        this(new HttpsGetRequest());
     }
 
-    OpenWeatherApiSensor(ClimateDataPointPersistence persistence, HttpsGetRequest httpsGetRequest) {
-        super(persistence);
+    OpenWeatherApiSensor(HttpsGetRequest httpsGetRequest) {
         this.httpsGetRequest = httpsGetRequest;
     }
 
-    @Override
-    public void run() {
-        try {
-            doRun();
-        } catch (Exception exception) {
-            logger.error("Exception in OutdoorSensor loop:", exception);
-        }
-    }
+    public String readData() {
+        return httpsGetRequest.sendRequest(createHttpsGetUrl());
 
-    @Override
-    protected Optional<ClimateDataPoint> parseResponse(String response) {
-        return Optional.empty();
-    }
-
-    private void doRun() {
-        final Optional<String> request = httpsGetRequest.sendRequest(createHttpsGetUrl());
-        if (request.isEmpty()) {
-            logger.error("Outdoor sensor request failed");
-            return;
-        }
-
-        final Optional<ClimateDataPoint> dataPoint = JsonParser.parse(request.get());
-        dataPoint.ifPresentOrElse(
-                this::persistData,
-                () -> logger.error("Outdoor sensor out of order"));
     }
 
     private String createHttpsGetUrl() {
@@ -63,10 +33,5 @@ public class OpenWeatherApiSensor extends ClimateSensor {
 
     private static String getDecryptedApiKeyForHttpRequest() {
         return Secret.getSecret(ENVIRONMENT_VARIABLE_API_KEY, ENCRYPTED_API_KEY);
-    }
-
-    private void persistData(ClimateDataPoint outdoorClimateDataPoint) {
-        logger.info("New outdoor data point: {}", outdoorClimateDataPoint);
-        persistence.persist(outdoorClimateDataPoint);
     }
 }

@@ -1,9 +1,10 @@
 package org.air_controller.sensor.open_weather_api;
 
 import org.air_controller.http.HttpsGetRequest;
+import org.air_controller.sensor.open_weather_api_adapter.OpenWeatherApiAdapter;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
-import org.air_controller.sensor_values.Humidity;
 import org.air_controller.sensor_values.ClimateDataPoint;
+import org.air_controller.sensor_values.Humidity;
 import org.air_controller.sensor_values.Temperature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,8 +12,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -47,8 +46,9 @@ class OpenWeatherApiSensorTest {
     @Test
     void testWhenMeasureValuesThenPersistData() {
         final HttpsGetRequest httpsGetRequest = mock(HttpsGetRequest.class);
-        when(httpsGetRequest.sendRequest(any())).thenReturn(Optional.of(SAMPLE_HTTP_RESPONSE));
-        final OpenWeatherApiSensor testee = new OpenWeatherApiSensor(persistence, httpsGetRequest);
+        when(httpsGetRequest.sendRequest(any())).thenReturn(SAMPLE_HTTP_RESPONSE);
+        final OpenWeatherApiSensor sensor = new OpenWeatherApiSensor(httpsGetRequest);
+        final OpenWeatherApiAdapter testee = new OpenWeatherApiAdapter(persistence, sensor);
 
         testee.run();
 
@@ -63,8 +63,9 @@ class OpenWeatherApiSensorTest {
     @Test
     void testWhenMeasureValuesEmptyThenDontPersistData() {
         final HttpsGetRequest httpsGetRequest = mock(HttpsGetRequest.class);
-        when(httpsGetRequest.sendRequest(any())).thenReturn(Optional.empty());
-        final OpenWeatherApiSensor testee = new OpenWeatherApiSensor(persistence, httpsGetRequest);
+        when(httpsGetRequest.sendRequest(any())).thenReturn("");
+        final OpenWeatherApiSensor sensor = new OpenWeatherApiSensor(httpsGetRequest);
+        final OpenWeatherApiAdapter testee = new OpenWeatherApiAdapter(persistence, sensor);
 
         testee.run();
 
