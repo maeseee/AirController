@@ -42,7 +42,7 @@ class OpenWeatherApiSensorTest {
     @Mock
     private ClimateDataPointPersistence persistence;
     @Captor
-    private ArgumentCaptor<ClimateDataPoint> outdoorSensorDataArgumentCaptor;
+    private ArgumentCaptor<ClimateDataPoint> outdoorDataPointArgumentCaptor;
 
     @Test
     void testWhenMeasureValuesThenPersistData() {
@@ -52,8 +52,8 @@ class OpenWeatherApiSensorTest {
 
         testee.run();
 
-        verify(persistence).persist(outdoorSensorDataArgumentCaptor.capture());
-        final ClimateDataPoint dataPoint = outdoorSensorDataArgumentCaptor.getValue();
+        verify(persistence).persist(outdoorDataPointArgumentCaptor.capture());
+        final ClimateDataPoint dataPoint = outdoorDataPointArgumentCaptor.getValue();
         final Temperature temperature = dataPoint.temperature();
         assertEquals(10.53, temperature.celsius(), 0.1);
         final Humidity humidity = dataPoint.humidity();

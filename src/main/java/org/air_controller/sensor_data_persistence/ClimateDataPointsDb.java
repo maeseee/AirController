@@ -19,12 +19,12 @@ import java.util.Optional;
 public class ClimateDataPointsDb implements ClimateDataPointPersistence {
     private static final Logger logger = LogManager.getLogger(ClimateDataPointsDb.class);
 
-    private final String sensorDataTableName;
+    private final String dataPointTableName;
     private final DatabaseConnection database;
 
-    public ClimateDataPointsDb(DatabaseConnection database, String sensorDataTableName) {
+    public ClimateDataPointsDb(DatabaseConnection database, String dataPointTableName) {
         this.database = database;
-        this.sensorDataTableName = sensorDataTableName;
+        this.dataPointTableName = dataPointTableName;
         createTableIfNotExists();
     }
 
@@ -33,12 +33,12 @@ public class ClimateDataPointsDb implements ClimateDataPointPersistence {
         final Double temperature = dataPoint.temperature().celsius();
         final Double humidity = dataPoint.humidity().absoluteHumidity();
         final Double co2 = dataPoint.co2().map(CarbonDioxide::ppm).orElse(null);
-        insertSensorData(temperature, humidity, co2, dataPoint.timestamp());
+        insertDataPoint(temperature, humidity, co2, dataPoint.timestamp());
     }
 
     @Override
     public List<ClimateDataPoint> read() {
-        final String sql = "SELECT * FROM " + sensorDataTableName + ";";
+        final String sql = "SELECT * FROM " + dataPointTableName + ";";
         final EntryAdder<ClimateDataPoint> adder = this::addResultIfAvailable;
         return database.executeQuery(sql, adder);
     }
@@ -46,7 +46,7 @@ public class ClimateDataPointsDb implements ClimateDataPointPersistence {
     @Override
     public Optional<ClimateDataPoint> getMostCurrentClimateDataPoint(ZonedDateTime lastValidTimestamp) {
         final String sql =
-                "SELECT * FROM " + sensorDataTableName + " i " +
+                "SELECT * FROM " + dataPointTableName + " i " +
                         "WHERE i.EVENT_TIME > ? " +
                         "ORDER BY i.EVENT_TIME DESC " +
                         "LIMIT 1;";
@@ -57,9 +57,9 @@ public class ClimateDataPointsDb implements ClimateDataPointPersistence {
         return dataPoints.stream().findFirst();
     }
 
-    private ClimateDataPoint createSensorData(ResultSet resultSet) throws SQLException, InvalidArgumentException {
+    private ClimateDataPoint createDataPoint(ResultSet resultSet) throws SQLException, InvalidArgumentException {
         // Read the object as it can handle null
-        return new SensorDataBuilder()
+        return new DataPointBuilder()
                 .setTemperatureCelsius(resultSet.getObject("temperature", Double.class))
                 .setHumidityAbsolute(resultSet.getObject("humidity", Double.class))
                 .setCo2(resultSet.getObject("co2", Double.class))
@@ -69,7 +69,7 @@ public class ClimateDataPointsDb implements ClimateDataPointPersistence {
 
     private void createTableIfNotExists() {
         final String sql =
-                "CREATE TABLE IF NOT EXISTS " + sensorDataTableName + " (\n" +
+                "CREATE TABLE IF NOT EXISTS " + dataPointTableName + " (\n" +
                         "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
                         "temperature DOUBLE,\n" +
                         "humidity DOUBLE,\n" +
@@ -78,8 +78,8 @@ public class ClimateDataPointsDb implements ClimateDataPointPersistence {
         database.executeUpdate(sql);
     }
 
-    private void insertSensorData(Double temperature, Double humidity, Double co2, ZonedDateTime timestamp) {
-        final String sql = "INSERT INTO " + sensorDataTableName + " (temperature, humidity, co2, event_time) VALUES (?, ?, ?, ?)";
+    private void insertDataPoint(Double temperature, Double humidity, Double co2, ZonedDateTime timestamp) {
+        final String sql = "INSERT INTO " + dataPointTableName + " (temperature, humidity, co2, event_time) VALUES (?, ?, ?, ?)";
         final PreparedStatementSetter setter = preparedStatement -> {
             preparedStatement.setObject(1, temperature);
             preparedStatement.setObject(2, humidity);
@@ -91,7 +91,7 @@ public class ClimateDataPointsDb implements ClimateDataPointPersistence {
 
     private void addResultIfAvailable(List<ClimateDataPoint> entries, ResultSet resultSet) {
         try {
-            entries.add(createSensorData(resultSet));
+            entries.add(createDataPoint(resultSet));
         } catch (InvalidArgumentException | SQLException e) {
             logger.error("Next entry could not be loaded! {}", e.getMessage());
         }

@@ -5,7 +5,7 @@ import org.air_controller.gpio.GpioPins;
 import org.air_controller.rules.FreshAirRuleBuilder;
 import org.air_controller.rules.Rule;
 import org.air_controller.sensor.Sensors;
-import org.air_controller.sensor_values.CurrentSensorData;
+import org.air_controller.sensor_values.CurrentClimateDataPoint;
 import org.air_controller.sensor_values.CurrentSensors;
 import org.air_controller.system.ControlledVentilationSystem;
 import org.air_controller.system.VentilationSystem;
@@ -51,9 +51,9 @@ class ApplicationBuilderSharedObjects {
     }
 
     private void createCurrentSensors(Sensors sensors) {
-        final CurrentSensorData currentIndoorSensorData = new CurrentSensorData(sensors.indoor().getPersistence());
-        final CurrentSensorData currentOutdoorSensorData = new CurrentSensorData(sensors.outdoor().getPersistence());
-        currentSensors = new CurrentSensors(currentIndoorSensorData, currentOutdoorSensorData);
+        final CurrentClimateDataPoint currentIndoorDataPoint = new CurrentClimateDataPoint(sensors.indoor().getPersistence());
+        final CurrentClimateDataPoint currentOutdoorDataPoint = new CurrentClimateDataPoint(sensors.outdoor().getPersistence());
+        currentSensors = new CurrentSensors(currentIndoorDataPoint, currentOutdoorDataPoint);
     }
 
     private void createFreshAirRules(Sensors sensors, SystemActionDbAccessor dbAccessor) {

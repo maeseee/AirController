@@ -2,7 +2,7 @@ package org.air_controller.rules;
 
 import lombok.RequiredArgsConstructor;
 import org.air_controller.sensor_values.CarbonDioxide;
-import org.air_controller.sensor_values.CurrentSensorData;
+import org.air_controller.sensor_values.CurrentClimateDataPoint;
 import org.air_controller.sensor_values.ClimateDataPoint;
 
 import java.util.Optional;
@@ -15,7 +15,7 @@ class CO2ControlAirFlow implements Rule {
     private static final double M = 2.0 / (UPPER_LIMIT - LOWER_LIMIT); // y = xm + b
     private static final double B = -1 - (LOWER_LIMIT * M); // y = xm + b
 
-    private final CurrentSensorData currentIndoorSensorData;
+    private final CurrentClimateDataPoint currentIndoorDataPoint;
 
     @Override
     public String name() {
@@ -24,7 +24,7 @@ class CO2ControlAirFlow implements Rule {
 
     @Override
     public Confidence turnOnConfidence() {
-        final Optional<CarbonDioxide> indoorCo2 = currentIndoorSensorData.getCurrentClimateDataPoint().flatMap(ClimateDataPoint::co2);
+        final Optional<CarbonDioxide> indoorCo2 = currentIndoorDataPoint.getCurrentClimateDataPoint().flatMap(ClimateDataPoint::co2);
         if (indoorCo2.isEmpty()) {
             return new Confidence(0.0);
         }

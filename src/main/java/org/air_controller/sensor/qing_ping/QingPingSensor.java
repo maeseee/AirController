@@ -44,7 +44,7 @@ public class QingPingSensor implements Sensor {
 
     private void doRun() throws CommunicationException, IOException, URISyntaxException, InvalidArgumentException, CalculationException {
         final String token = accessToken.readToken();
-        final List<ClimateDataPoint> climateDataPoints = listDevices.readSensorDataList(token);
+        final List<ClimateDataPoint> climateDataPoints = listDevices.readDataPoint(token);
         final ClimateDataPoint dataPoint = sensorReducer.reduce(climateDataPoints);
         notifyObservers(dataPoint);
     }

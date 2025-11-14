@@ -35,7 +35,7 @@ class ListDevicesTest {
         when(parser.parseDeviceListResponse(eq(response), any())).thenReturn(Optional.of(dataPoint));
         final ListDevices testee = new ListDevices(listDevicesRequest, parser);
 
-        final List<ClimateDataPoint> dataPoints = testee.readSensorDataList(token);
+        final List<ClimateDataPoint> dataPoints = testee.readDataPoint(token);
 
         verify(parser).parseDeviceListResponse(response, MAC_AIR_PRESSURE_DEVICE);
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_1);
@@ -52,7 +52,7 @@ class ListDevicesTest {
         when(parser.parseDeviceListResponse(eq(response), any())).thenReturn(Optional.empty());
         final ListDevices testee = new ListDevices(listDevicesRequest, parser);
 
-        final List<ClimateDataPoint> dataPoints = testee.readSensorDataList(token);
+        final List<ClimateDataPoint> dataPoints = testee.readDataPoint(token);
 
         verify(parser).parseDeviceListResponse(response, MAC_AIR_PRESSURE_DEVICE);
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_1);

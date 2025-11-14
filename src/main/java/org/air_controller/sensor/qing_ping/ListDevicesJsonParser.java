@@ -2,7 +2,7 @@ package org.air_controller.sensor.qing_ping;
 
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.ClimateDataPoint;
-import org.air_controller.sensor_values.SensorDataBuilder;
+import org.air_controller.sensor_values.DataPointBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -33,7 +33,7 @@ class ListDevicesJsonParser {
                 logger.info("No device with MAC-Address {} found!", macAddress);
                 return Optional.empty();
             }
-            final ClimateDataPoint dataPoint = getSensorData(deviceData.get());
+            final ClimateDataPoint dataPoint = getDataPoint(deviceData.get());
             return Optional.of(dataPoint);
         } catch (Exception e) {
             return Optional.empty();
@@ -53,7 +53,7 @@ class ListDevicesJsonParser {
         return Optional.empty();
     }
 
-    private ClimateDataPoint getSensorData(JSONObject deviceData) throws InvalidArgumentException {
+    private ClimateDataPoint getDataPoint(JSONObject deviceData) throws InvalidArgumentException {
         final double temperatureCelsius = getDoubleValue("temperature", deviceData)
                 .orElseThrow(() -> new InvalidArgumentException("Invalid temperature"));
         final double humidityRelative = getDoubleValue("humidity", deviceData)
@@ -61,7 +61,7 @@ class ListDevicesJsonParser {
         final OptionalDouble co2Optional = getDoubleValue("co2", deviceData);
         final Double co2Ppm = co2Optional.isPresent() ? co2Optional.getAsDouble() : null;
         validateTimeStamp(deviceData);
-        return new SensorDataBuilder()
+        return new DataPointBuilder()
                 .setTemperatureCelsius(temperatureCelsius)
                 .setHumidityRelative(humidityRelative)
                 .setCo2(co2Ppm)

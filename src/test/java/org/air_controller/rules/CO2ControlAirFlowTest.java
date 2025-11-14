@@ -1,9 +1,9 @@
 package org.air_controller.rules;
 
-import org.air_controller.sensor_values.CurrentSensorData;
+import org.air_controller.sensor_values.CurrentClimateDataPoint;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.ClimateDataPoint;
-import org.air_controller.sensor_values.SensorDataBuilder;
+import org.air_controller.sensor_values.DataPointBuilder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 class CO2ControlAirFlowTest {
 
     @Mock
-    private CurrentSensorData currentIndoorSensorData;
+    private CurrentClimateDataPoint currentIndoorDataPoint;
 
     @ParameterizedTest(name = "{index} => co2 ppm={0}, expectedConfidence={1}")
     @CsvSource({
@@ -31,14 +31,14 @@ class CO2ControlAirFlowTest {
             "700, 0.0"
     })
     void shouldCalculateCo2Confidence(double co2, double expectedConfidence) throws InvalidArgumentException {
-        final ClimateDataPoint dataPoint = new SensorDataBuilder()
+        final ClimateDataPoint dataPoint = new DataPointBuilder()
                 .setTemperatureCelsius(21.0)
                 .setHumidityRelative(50.0)
                 .setCo2(co2)
                 .setTime(ZonedDateTime.now(ZoneOffset.UTC))
                 .build();
-        when(currentIndoorSensorData.getCurrentClimateDataPoint()).thenReturn(Optional.of(dataPoint));
-        final CO2ControlAirFlow testee = new CO2ControlAirFlow(currentIndoorSensorData);
+        when(currentIndoorDataPoint.getCurrentClimateDataPoint()).thenReturn(Optional.of(dataPoint));
+        final CO2ControlAirFlow testee = new CO2ControlAirFlow(currentIndoorDataPoint);
 
         final Confidence result = testee.turnOnConfidence();
 

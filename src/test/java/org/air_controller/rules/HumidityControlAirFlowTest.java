@@ -1,9 +1,9 @@
 package org.air_controller.rules;
 
-import org.air_controller.sensor_values.CurrentSensorData;
+import org.air_controller.sensor_values.CurrentClimateDataPoint;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.ClimateDataPoint;
-import org.air_controller.sensor_values.SensorDataBuilder;
+import org.air_controller.sensor_values.DataPointBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,9 +21,9 @@ import static org.mockito.Mockito.when;
 class HumidityControlAirFlowTest {
 
     @Mock
-    private CurrentSensorData currentIndoorDataPoint;
+    private CurrentClimateDataPoint currentIndoorDataPoint;
     @Mock
-    private CurrentSensorData currentOutdoorDataPoint;
+    private CurrentClimateDataPoint currentOutdoorDataPoint;
 
     @ParameterizedTest(name = "{index} => indoorHumidity={0}%, outdoorHumidity={1}%, expectedResult={2}")
     @CsvSource({
@@ -40,11 +40,11 @@ class HumidityControlAirFlowTest {
     void shouldCalculateHumidityPercentage(double relativeIndoorHumidity, double relativeOutdoorHumidity,
             double expectedResult)
             throws InvalidArgumentException {
-        final ClimateDataPoint indoorClimateDataPoint = new SensorDataBuilder()
+        final ClimateDataPoint indoorClimateDataPoint = new DataPointBuilder()
                 .setTemperatureCelsius(22.5)
                 .setHumidityRelative(relativeIndoorHumidity)
                 .build();
-        final ClimateDataPoint outdoorClimateDataPoint = new SensorDataBuilder()
+        final ClimateDataPoint outdoorClimateDataPoint = new DataPointBuilder()
                 .setTemperatureCelsius(22.5)
                 .setHumidityRelative(relativeOutdoorHumidity)
                 .build();
@@ -58,7 +58,7 @@ class HumidityControlAirFlowTest {
     }
 
     @Test
-    void shouldReturn0_whenCurrentSensorDataNotAvailable() {
+    void shouldReturn0_whenCurrentDataPointNotAvailable() {
         when(currentIndoorDataPoint.getCurrentClimateDataPoint()).thenReturn(Optional.empty());
         final HumidityControlAirFlow testee = new HumidityControlAirFlow(currentIndoorDataPoint, currentOutdoorDataPoint);
 

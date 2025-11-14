@@ -1,9 +1,9 @@
 package org.air_controller.rules;
 
-import org.air_controller.sensor_values.CurrentSensorData;
+import org.air_controller.sensor_values.CurrentClimateDataPoint;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.ClimateDataPoint;
-import org.air_controller.sensor_values.SensorDataBuilder;
+import org.air_controller.sensor_values.DataPointBuilder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -20,9 +20,9 @@ import static org.mockito.Mockito.when;
 class HumidityControlExchangerTest {
 
     @Mock
-    private CurrentSensorData currentIndoorDataPoint;
+    private CurrentClimateDataPoint currentIndoorDataPoint;
     @Mock
-    private CurrentSensorData currentOutdoorDataPoint;
+    private CurrentClimateDataPoint currentOutdoorDataPoint;
 
     @ParameterizedTest(name = "{index} => indoorHumidity={0}%, outdoorHumidity={1}%, expectedResult={2}")
     @CsvSource({
@@ -35,11 +35,11 @@ class HumidityControlExchangerTest {
     })
     void shouldControlHumidityExchanger(double relativeIndoorHumidity, double relativeOutdoorHumidity, double expectedResult)
             throws InvalidArgumentException {
-        final ClimateDataPoint indoorClimateDataPoint = new SensorDataBuilder()
+        final ClimateDataPoint indoorClimateDataPoint = new DataPointBuilder()
                 .setTemperatureCelsius(22.0)
                 .setHumidityRelative(relativeIndoorHumidity)
                 .build();
-        final ClimateDataPoint outdoorClimateDataPoint = new SensorDataBuilder()
+        final ClimateDataPoint outdoorClimateDataPoint = new DataPointBuilder()
                 .setTemperatureCelsius(22.0)
                 .setHumidityRelative(relativeOutdoorHumidity)
                 .build();

@@ -25,7 +25,7 @@ class ListDevices {
         this.parser = parser;
     }
 
-    public List<ClimateDataPoint> readSensorDataList(String token) throws CommunicationException, IOException, URISyntaxException {
+    public List<ClimateDataPoint> readDataPoint(String token) throws CommunicationException, IOException, URISyntaxException {
         final String response = listDevicesRequest.sendRequest(token);
         final List<ClimateDataPoint> climateDataPoints = new ArrayList<>();
         Devices.getDeviceList().forEach(

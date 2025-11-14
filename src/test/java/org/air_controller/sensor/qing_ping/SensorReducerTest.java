@@ -2,7 +2,7 @@ package org.air_controller.sensor.qing_ping;
 
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.ClimateDataPoint;
-import org.air_controller.sensor_values.SensorDataBuilder;
+import org.air_controller.sensor_values.DataPointBuilder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -29,13 +29,13 @@ class SensorReducerTest {
     void shouldTakeAverageOfSensorValues_whenMultipleSensors(double temperature1, double humidity1, double carbonDioxide1, int minutesYounger,
             double expectedTemperature, double expectedHumidity, double expectedCo2) throws InvalidArgumentException, CalculationException {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        final ClimateDataPoint dataPoint1 = new SensorDataBuilder()
+        final ClimateDataPoint dataPoint1 = new DataPointBuilder()
                 .setTemperatureCelsius(temperature1)
                 .setHumidityAbsolute(humidity1)
                 .setCo2(Double.isNaN(carbonDioxide1) ?  null : carbonDioxide1)
                 .setTime(now.minusMinutes(minutesYounger))
                 .build();
-        final ClimateDataPoint dataPoint2 = new SensorDataBuilder()
+        final ClimateDataPoint dataPoint2 = new DataPointBuilder()
                 .setTemperatureCelsius(40.0)
                 .setHumidityAbsolute(15.0)
                 .setTime(now)
@@ -45,7 +45,7 @@ class SensorReducerTest {
 
         final ClimateDataPoint result = testee.reduce(dataPoints);
 
-        final ClimateDataPoint expectedClimateDataPoint = new SensorDataBuilder()
+        final ClimateDataPoint expectedClimateDataPoint = new DataPointBuilder()
                 .setTemperatureCelsius(expectedTemperature)
                 .setHumidityAbsolute(expectedHumidity)
                 .setCo2(Double.isNaN(expectedCo2) ?  null : expectedCo2)

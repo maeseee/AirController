@@ -4,6 +4,7 @@ import org.air_controller.persistence.LocalInMemoryDatabase;
 import org.air_controller.sensor_values.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDateTime;
@@ -20,14 +21,14 @@ import static org.assertj.core.api.Assertions.within;
 
 class ClimateDataPointTest {
 
-    private static final String CSV_FILE_PATH = "log/sensorValueCsvWriterTest.csv";
+    private static final String CSV_FILE_PATH = "log/dataPointCsvWriterTest.csv";
     private static final String TABLE_NAME = "TestSensorTable";
 
     @ParameterizedTest
-    @MethodSource("sensorDataImplementations")
-    void shouldWriteSensorDataIntoCsvFiles_whenPersist(ClimateDataPointPersistence testee) throws InvalidArgumentException {
+    @MethodSource("dataPointPersistenceImplementations")
+    void shouldWriteDataPointIntoCsvFiles_whenPersist(ClimateDataPointPersistence testee) throws InvalidArgumentException {
         final Random random = new Random();
-        final ClimateDataPoint inputClimateDataPoint = new SensorDataBuilder()
+        final ClimateDataPoint inputClimateDataPoint = new DataPointBuilder()
                 .setTemperatureCelsius(random.nextDouble() * 100)
                 .setHumidityRelative(random.nextDouble() * 100)
                 .setCo2(random.nextDouble() * 100000)
@@ -42,14 +43,14 @@ class ClimateDataPointTest {
     }
 
     @ParameterizedTest
-    @MethodSource("sensorDataImplementations")
-    void shouldReadMostCurrentSensorData(ClimateDataPointPersistence testee) throws InvalidArgumentException {
+    @MethodSource("dataPointPersistenceImplementations")
+    void shouldReadMostCurrentDataPoint(ClimateDataPointPersistence testee) throws InvalidArgumentException {
         final Random random = new Random();
         final double celsiusTemperature = random.nextDouble() * 100;
         final double relativeHumidity = random.nextDouble() * 100;
         final double co2Ppm = random.nextDouble() * 100000;
         final ZonedDateTime time = ZonedDateTime.now(ZoneOffset.UTC);
-        final ClimateDataPoint inputClimateDataPoint = new SensorDataBuilder()
+        final ClimateDataPoint inputClimateDataPoint = new DataPointBuilder()
                 .setTemperatureCelsius(celsiusTemperature)
                 .setHumidityRelative(relativeHumidity)
                 .setCo2(co2Ppm)
@@ -57,18 +58,49 @@ class ClimateDataPointTest {
                 .build();
 
         testee.persist(inputClimateDataPoint);
-        final Optional<ClimateDataPoint> lastSensorData = testee.getMostCurrentClimateDataPoint(time.minusMinutes(10));
+        final Optional<ClimateDataPoint> lastDataPoint = testee.getMostCurrentClimateDataPoint(time.minusMinutes(10));
 
-        assertThat(lastSensorData).hasValueSatisfying(sensorData -> {
-            assertThat(sensorData.temperature().celsius()).isCloseTo(celsiusTemperature, within(0.01));
-            assertThat(sensorData.humidity().getRelativeHumidity(sensorData.temperature())).isCloseTo(relativeHumidity, within(0.01));
-            assertThat(sensorData.co2()).isPresent().hasValueSatisfying(
+        assertThat(lastDataPoint).hasValueSatisfying(dataPoint -> {
+            assertThat(dataPoint.temperature().celsius()).isCloseTo(celsiusTemperature, within(0.01));
+            assertThat(dataPoint.humidity().getRelativeHumidity(dataPoint.temperature())).isCloseTo(relativeHumidity, within(0.01));
+            assertThat(dataPoint.co2()).isPresent().hasValueSatisfying(
                     co2 -> assertThat(co2.ppm()).isCloseTo(co2Ppm, within(1.0)));
-            assertThat(sensorData.timestamp()).isCloseTo(time, within(1, ChronoUnit.SECONDS));
+            assertThat(dataPoint.timestamp()).isCloseTo(time, within(1, ChronoUnit.SECONDS));
         });
     }
 
-    private static Stream<Arguments> sensorDataImplementations() {
+    @ParameterizedTest
+    @CsvSource({
+            "23, 50, 500, 0, true",
+            "24, 50, 500, 0, false",
+            "23, 60, 500, 0, false",
+            "23, 50, 600, 0, false",
+            "23, 50, 500, 1, false",
+    })
+    void shouldBeDifferent(double comparedTemperature, double comparedHumidity, double comparedCo2, int timeOffset, boolean isEquals)
+            throws InvalidArgumentException {
+        final ZonedDateTime timestamp = ZonedDateTime.now(ZoneOffset.UTC);
+        final ClimateDataPoint dataPoint1 = new DataPointBuilder()
+                .setTemperatureCelsius(23.0)
+                .setHumidityRelative(50.0)
+                .setCo2(500.0)
+                .setTime(timestamp)
+                .build();
+        final ClimateDataPoint dataPoint2 = new DataPointBuilder()
+                .setTemperatureCelsius(comparedTemperature)
+                .setHumidityRelative(comparedHumidity)
+                .setCo2(comparedCo2)
+                .setTime(timestamp.plusSeconds(timeOffset))
+                .build();
+
+        if (isEquals) {
+            assertThat(dataPoint1).isEqualTo(dataPoint2);
+        } else {
+            assertThat(dataPoint1).isNotEqualTo(dataPoint2);
+        }
+}
+
+    private static Stream<Arguments> dataPointPersistenceImplementations() {
         return Stream.of(
                 Arguments.of(new ClimateDataPointsCsv(CSV_FILE_PATH)),
                 Arguments.of(new ClimateDataPointsDb(new LocalInMemoryDatabase(), TABLE_NAME))

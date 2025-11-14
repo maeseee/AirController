@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class SensorDataCollectionTest {
+class ClimateDataPointsTest {
 
     private final List<ClimateDataPointPersistence> persistenceList = new ArrayList<>();
     @Mock
@@ -61,14 +61,14 @@ class SensorDataCollectionTest {
     }
 
     @Test
-    void shouldReturnMostCurrentSensorDataFromFirstPersistence() {
+    void shouldReturnMostCurrentDataPointFromFirstPersistence() {
         when(persistence1.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.of(dataPoint));
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final ClimateDataPoints testee = new ClimateDataPoints(persistenceList);
 
-        final Optional<ClimateDataPoint> mostCurrentSensorData = testee.getMostCurrentClimateDataPoint(now);
+        final Optional<ClimateDataPoint> mostCurrentDataPoint = testee.getMostCurrentClimateDataPoint(now);
 
-        assertThat(mostCurrentSensorData).contains(dataPoint);
+        assertThat(mostCurrentDataPoint).contains(dataPoint);
         verify(persistence1).getMostCurrentClimateDataPoint(now);
         verifyNoMoreInteractions(persistence1);
         verifyNoInteractions(persistence2);

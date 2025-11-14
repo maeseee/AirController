@@ -69,9 +69,9 @@ class QingPingIntegrationTest {
 
     private ClimateDataPoint runParseListDevices(String listDevicesResponse) {
         final ListDevicesJsonParser parser = new ListDevicesJsonParser();
-        final Optional<ClimateDataPoint> sensorData = parser.parseDeviceListResponse(listDevicesResponse, MAC_AIR_PRESSURE_DEVICE);
+        final Optional<ClimateDataPoint> dataPoint = parser.parseDeviceListResponse(listDevicesResponse, MAC_AIR_PRESSURE_DEVICE);
 
-        assertTrue(sensorData.isPresent());
-        return sensorData.get();
+        assertTrue(dataPoint.isPresent());
+        return dataPoint.get();
     }
 }

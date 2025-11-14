@@ -24,34 +24,34 @@ class QingPingSensorTest {
     private ClimateDataPointPersistence persistence;
 
     @Captor
-    private ArgumentCaptor<ClimateDataPoint> indoorSensorDataArgumentCaptor;
+    private ArgumentCaptor<ClimateDataPoint> indoorDataPointArgumentCaptor;
 
     @Test
     void shouldNotifyObservers_whenRun() throws InvalidArgumentException, CommunicationException, IOException, URISyntaxException {
         final AccessToken accessToken = mock(AccessToken.class);
         when(accessToken.readToken()).thenReturn("token");
         final ListDevices listDevices = mock(ListDevices.class);
-        final ClimateDataPoint dataPoint = new SensorDataBuilder()
+        final ClimateDataPoint dataPoint = new DataPointBuilder()
                 .setTemperatureCelsius(21.5)
                 .setHumidityAbsolute(10.0)
                 .build();
-        when(listDevices.readSensorDataList(any())).thenReturn(List.of(dataPoint));
+        when(listDevices.readDataPoint(any())).thenReturn(List.of(dataPoint));
         final QingPingSensor testee = new QingPingSensor(persistence, accessToken, listDevices);
 
         testee.run();
 
-        verify(persistence).persist(indoorSensorDataArgumentCaptor.capture());
-        final ClimateDataPoint indoorClimateDataPointCapture = indoorSensorDataArgumentCaptor.getValue();
+        verify(persistence).persist(indoorDataPointArgumentCaptor.capture());
+        final ClimateDataPoint indoorClimateDataPointCapture = indoorDataPointArgumentCaptor.getValue();
         assertThat(indoorClimateDataPointCapture.temperature()).isEqualTo(Temperature.createFromCelsius(21.5));
         assertThat(indoorClimateDataPointCapture.humidity()).isEqualTo(Humidity.createFromAbsolute(10.0));
     }
 
     @Test
-    void shouldNotNotifyObservers_whenInvalidSensorData() throws CommunicationException, IOException, URISyntaxException {
+    void shouldNotNotifyObservers_whenInvalidDataPoint() throws CommunicationException, IOException, URISyntaxException {
         final AccessToken accessToken = mock(AccessToken.class);
         when(accessToken.readToken()).thenReturn("token");
         final ListDevices listDevices = mock(ListDevices.class);
-        when(listDevices.readSensorDataList(any())).thenReturn(new ArrayList<>());
+        when(listDevices.readDataPoint(any())).thenReturn(new ArrayList<>());
         final QingPingSensor testee = new QingPingSensor(persistence, accessToken, listDevices);
 
         testee.run();

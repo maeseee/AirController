@@ -3,7 +3,7 @@ package org.air_controller.sensor_data_persistence;
 import org.air_controller.persistence.LocalInMemoryDatabase;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.ClimateDataPoint;
-import org.air_controller.sensor_values.SensorDataBuilder;
+import org.air_controller.sensor_values.DataPointBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZoneOffset;
@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
 class CsvToDbTest {
-    private final String sensorDataCsvPath = "log/sensorDataFromDbTest.csv";
+    private final String dataPointCsvPath = "log/dataPointFromDbTest.csv";
 
     @Test
     void shouldWriteAllDataFromDbToCsvFile() throws InvalidArgumentException {
@@ -24,7 +24,7 @@ class CsvToDbTest {
         final String sensorTableName = "DbToCsvTable";
         final CsvToDb testee = new CsvToDb(new LocalInMemoryDatabase());
 
-        testee.persistToDbFromCsv(sensorDataCsvPath, sensorTableName);
+        testee.persistToDbFromCsv(dataPointCsvPath, sensorTableName);
 
         final ClimateDataPointsDb dataPointsDb = new ClimateDataPointsDb(new LocalInMemoryDatabase(), sensorTableName);
         final List<ClimateDataPoint> dataPoints = dataPointsDb.read();
@@ -37,13 +37,13 @@ class CsvToDbTest {
     }
 
     private void persistDataToCsv(ZonedDateTime now) throws InvalidArgumentException {
-        final ClimateDataPoint dataPoint = new SensorDataBuilder()
+        final ClimateDataPoint dataPoint = new DataPointBuilder()
                 .setTemperatureCelsius(21.0)
                 .setHumidityAbsolute(10.0)
                 .setCo2(500.0)
                 .setTime(now)
                 .build();
-        final ClimateDataPointsCsv dataPointsCsv = new ClimateDataPointsCsv(sensorDataCsvPath);
+        final ClimateDataPointsCsv dataPointsCsv = new ClimateDataPointsCsv(dataPointCsvPath);
         dataPointsCsv.persist(dataPoint);
     }
 }

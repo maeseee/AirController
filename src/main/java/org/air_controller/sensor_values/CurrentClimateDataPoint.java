@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class CurrentSensorData {
+public class CurrentClimateDataPoint {
     private static final Duration SENSOR_INVALIDATION = Duration.ofHours(4);
 
     private final ClimateDataPointPersistence persistence;

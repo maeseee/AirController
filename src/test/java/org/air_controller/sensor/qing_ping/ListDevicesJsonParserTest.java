@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ListDevicesJsonParserTest {
 
     @Test
-    void shouldParseSensorDataOfAirPressureDevice() throws InvalidArgumentException {
+    void shouldParseDataPointFromAirPressureDevice() throws InvalidArgumentException {
         final long epochSecondNow = Instant.now().getEpochSecond();
         final ListDevicesJsonParser testee = new ListDevicesJsonParser();
 
@@ -21,16 +21,16 @@ class ListDevicesJsonParserTest {
 
         final Temperature expectedTemperature = Temperature.createFromCelsius(21.5);
         final Humidity expectedHumidity = Humidity.createFromRelative(54.2, expectedTemperature);
-        assertThat(result).isPresent().hasValueSatisfying(sensorData -> {
-            assertThat(sensorData.temperature()).isEqualTo(expectedTemperature);
-            assertThat(sensorData.humidity()).isEqualTo(expectedHumidity);
-            assertThat(sensorData.co2()).isEmpty();
-            assertThat(sensorData.timestamp().toEpochSecond()).isEqualTo(epochSecondNow);
+        assertThat(result).isPresent().hasValueSatisfying(dataPoint -> {
+            assertThat(dataPoint.temperature()).isEqualTo(expectedTemperature);
+            assertThat(dataPoint.humidity()).isEqualTo(expectedHumidity);
+            assertThat(dataPoint.co2()).isEmpty();
+            assertThat(dataPoint.timestamp().toEpochSecond()).isEqualTo(epochSecondNow);
         });
     }
 
     @Test
-    void shouldParseSensorDataOfCo2Device() throws InvalidArgumentException {
+    void shouldParseDataPointFromCo2Device() throws InvalidArgumentException {
         final long epochSecondNow = Instant.now().getEpochSecond();
         final ListDevicesJsonParser testee = new ListDevicesJsonParser();
 
@@ -39,12 +39,12 @@ class ListDevicesJsonParserTest {
         final Temperature expectedTemperature = Temperature.createFromCelsius(22.3);
         final Humidity expectedHumidity = Humidity.createFromRelative(47.1, expectedTemperature);
         final CarbonDioxide expectedCo2 = CarbonDioxide.createFromPpm(400);
-        assertThat(result).isPresent().hasValueSatisfying(sensorData -> {
-            assertThat(sensorData.temperature()).isEqualTo(expectedTemperature);
-            assertThat(sensorData.humidity()).isEqualTo(expectedHumidity);
-            assertThat(sensorData.co2()).isPresent().hasValueSatisfying(co2 ->
+        assertThat(result).isPresent().hasValueSatisfying(dataPoint -> {
+            assertThat(dataPoint.temperature()).isEqualTo(expectedTemperature);
+            assertThat(dataPoint.humidity()).isEqualTo(expectedHumidity);
+            assertThat(dataPoint.co2()).isPresent().hasValueSatisfying(co2 ->
                     assertThat(co2).isEqualTo(expectedCo2));
-            assertThat(sensorData.timestamp().toEpochSecond()).isEqualTo(epochSecondNow);
+            assertThat(dataPoint.timestamp().toEpochSecond()).isEqualTo(epochSecondNow);
         });
     }
 
