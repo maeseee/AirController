@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.air_controller.http.HttpsGetRequest;
 import org.air_controller.secrets.Secret;
 import org.air_controller.sensor.Sensor;
-import org.air_controller.sensor_data_persistence.SensorDataPersistence;
+import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,14 +20,14 @@ public class OpenWeatherApiSensor implements Sensor {
     private static final String ENCRYPTED_API_KEY = "JWHqsiARWGfnwhAp/qvt7aWlmhsyXvOtnsYN32HH5J2m2/QGb/OnuhnGzooxh1onTK+ynB9f038EMbUnOZMjNw==";
 
     @Getter
-    private final SensorDataPersistence persistence;
+    private final ClimateDataPointPersistence persistence;
     private final HttpsGetRequest httpsGetRequest;
 
-    public OpenWeatherApiSensor(SensorDataPersistence persistence) {
+    public OpenWeatherApiSensor(ClimateDataPointPersistence persistence) {
         this(persistence, new HttpsGetRequest());
     }
 
-    OpenWeatherApiSensor(SensorDataPersistence persistence, HttpsGetRequest httpsGetRequest) {
+    OpenWeatherApiSensor(ClimateDataPointPersistence persistence, HttpsGetRequest httpsGetRequest) {
         this.persistence = persistence;
         this.httpsGetRequest = httpsGetRequest;
     }

@@ -12,8 +12,8 @@ public class CsvToDb {
     private final DatabaseConnection database;
 
     public void persistToDbFromCsv(String csvFilePath, String tableName) {
-        final SensorDataPersistence sensorDataCsv = new SensorDataCsv(csvFilePath);
-        final SensorDataPersistence sensorDataDb = new SensorDataDb(database, tableName);
+        final ClimateDataPointPersistence sensorDataCsv = new ClimateDataPointsCsv(csvFilePath);
+        final ClimateDataPointPersistence sensorDataDb = new ClimateDataPointsDb(database, tableName);
         final List<ClimateDataPoint> dataPoints = sensorDataCsv.read();
         dataPoints.forEach(sensorDataDb::persist);
     }

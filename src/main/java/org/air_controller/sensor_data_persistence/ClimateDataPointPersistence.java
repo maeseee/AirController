@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface SensorDataPersistence {
+public interface ClimateDataPointPersistence {
 
     String INDOOR_SENSOR_CSV_PATH = "log/indoorSensorValuesV2.csv";
     String OUTDOOR_SENSOR_CSV_PATH = "log/outdoorSensorValuesV2.csv";

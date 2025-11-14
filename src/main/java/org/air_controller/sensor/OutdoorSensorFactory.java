@@ -7,14 +7,17 @@ import org.air_controller.sensor_data_persistence.*;
 
 import java.util.List;
 
+import static org.air_controller.sensor_data_persistence.ClimateDataPointPersistence.OUTDOOR_SENSOR_CSV_PATH;
+import static org.air_controller.sensor_data_persistence.ClimateDataPointPersistence.OUTDOOR_TABLE_NAME;
+
 @RequiredArgsConstructor
 public class OutdoorSensorFactory extends SensorFactory {
 
     @Override
     protected Sensor createSensor() {
-        final SensorDataPersistence persistence = new SensorDataCollection(List.of(
-                new SensorDataDb(new MariaDatabase(), SensorDataPersistence.OUTDOOR_TABLE_NAME),
-                new SensorDataCsv(SensorDataPersistence.OUTDOOR_SENSOR_CSV_PATH)));
+        final ClimateDataPointPersistence persistence = new ClimateDataPoints(List.of(
+                new ClimateDataPointsDb(new MariaDatabase(), OUTDOOR_TABLE_NAME),
+                new ClimateDataPointsCsv(OUTDOOR_SENSOR_CSV_PATH)));
         return new OpenWeatherApiSensor(persistence);
     }
 }

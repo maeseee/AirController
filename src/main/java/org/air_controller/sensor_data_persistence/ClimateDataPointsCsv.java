@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class SensorDataCsv implements SensorDataPersistence {
-    private static final Logger logger = LogManager.getLogger(SensorDataCsv.class);
+public class ClimateDataPointsCsv implements ClimateDataPointPersistence {
+    private static final Logger logger = LogManager.getLogger(ClimateDataPointsCsv.class);
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final String filePath;
 
-    public SensorDataCsv(String filePath) {
+    public ClimateDataPointsCsv(String filePath) {
         this.filePath = filePath;
     }
 

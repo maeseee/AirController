@@ -26,8 +26,8 @@ class DbToCsvTest {
 
         testee.persistToCsvFromDb(sensorDataTableName, sensorCsvPath);
 
-        final SensorDataCsv sensorDataCsv = new SensorDataCsv(sensorCsvPath);
-        final List<ClimateDataPoint> dataPoints = sensorDataCsv.read();
+        final ClimateDataPointsCsv dataPointsCsv = new ClimateDataPointsCsv(sensorCsvPath);
+        final List<ClimateDataPoint> dataPoints = dataPointsCsv.read();
         final ClimateDataPoint lastDataPoint = dataPoints.getLast();
         assertThat(lastDataPoint.temperature().celsius()).isCloseTo(21.0, within(0.001));
         assertThat(lastDataPoint.humidity().absoluteHumidity()).isCloseTo(10.0, within(0.001));
@@ -37,13 +37,13 @@ class DbToCsvTest {
     }
 
     private void prepareDB(ZonedDateTime now) throws InvalidArgumentException {
-        final SensorDataDb sensorDataDb = new SensorDataDb(new LocalInMemoryDatabase(), sensorDataTableName);
+        final ClimateDataPointsDb dataPointsDb = new ClimateDataPointsDb(new LocalInMemoryDatabase(), sensorDataTableName);
         final ClimateDataPoint dataPoint = new SensorDataBuilder()
                 .setTemperatureCelsius(21.0)
                 .setHumidityAbsolute(10.0)
                 .setCo2(500.0)
                 .setTime(now)
                 .build();
-        sensorDataDb.persist(dataPoint);
+        dataPointsDb.persist(dataPoint);
     }
 }

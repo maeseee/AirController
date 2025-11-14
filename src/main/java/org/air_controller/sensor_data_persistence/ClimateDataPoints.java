@@ -6,10 +6,10 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public class SensorDataCollection implements SensorDataPersistence {
-    private final List<SensorDataPersistence> persistenceList;
+public class ClimateDataPoints implements ClimateDataPointPersistence {
+    private final List<ClimateDataPointPersistence> persistenceList;
 
-    public SensorDataCollection(List<SensorDataPersistence> persistenceList) {
+    public ClimateDataPoints(List<ClimateDataPointPersistence> persistenceList) {
         this.persistenceList = persistenceList;
     }
 

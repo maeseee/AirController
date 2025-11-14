@@ -1,7 +1,7 @@
 package org.air_controller.sensor.open_weather_api;
 
 import org.air_controller.http.HttpsGetRequest;
-import org.air_controller.sensor_data_persistence.SensorDataPersistence;
+import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.Humidity;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.Temperature;
@@ -40,7 +40,7 @@ class OpenWeatherApiSensorTest {
             """;
 
     @Mock
-    private SensorDataPersistence persistence;
+    private ClimateDataPointPersistence persistence;
     @Captor
     private ArgumentCaptor<ClimateDataPoint> outdoorSensorDataArgumentCaptor;
 

@@ -25,7 +25,7 @@ class ClimateDataPointTest {
 
     @ParameterizedTest
     @MethodSource("sensorDataImplementations")
-    void shouldWriteSensorDataIntoCsvFiles_whenPersist(SensorDataPersistence testee) throws InvalidArgumentException {
+    void shouldWriteSensorDataIntoCsvFiles_whenPersist(ClimateDataPointPersistence testee) throws InvalidArgumentException {
         final Random random = new Random();
         final ClimateDataPoint inputClimateDataPoint = new SensorDataBuilder()
                 .setTemperatureCelsius(random.nextDouble() * 100)
@@ -43,7 +43,7 @@ class ClimateDataPointTest {
 
     @ParameterizedTest
     @MethodSource("sensorDataImplementations")
-    void shouldReadMostCurrentSensorData(SensorDataPersistence testee) throws InvalidArgumentException {
+    void shouldReadMostCurrentSensorData(ClimateDataPointPersistence testee) throws InvalidArgumentException {
         final Random random = new Random();
         final double celsiusTemperature = random.nextDouble() * 100;
         final double relativeHumidity = random.nextDouble() * 100;
@@ -70,8 +70,8 @@ class ClimateDataPointTest {
 
     private static Stream<Arguments> sensorDataImplementations() {
         return Stream.of(
-                Arguments.of(new SensorDataCsv(CSV_FILE_PATH)),
-                Arguments.of(new SensorDataDb(new LocalInMemoryDatabase(), TABLE_NAME))
+                Arguments.of(new ClimateDataPointsCsv(CSV_FILE_PATH)),
+                Arguments.of(new ClimateDataPointsDb(new LocalInMemoryDatabase(), TABLE_NAME))
         );
     }
 }

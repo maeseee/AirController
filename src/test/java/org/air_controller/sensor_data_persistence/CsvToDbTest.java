@@ -26,8 +26,8 @@ class CsvToDbTest {
 
         testee.persistToDbFromCsv(sensorDataCsvPath, sensorTableName);
 
-        final SensorDataDb sensorDataDb = new SensorDataDb(new LocalInMemoryDatabase(), sensorTableName);
-        final List<ClimateDataPoint> dataPoints = sensorDataDb.read();
+        final ClimateDataPointsDb dataPointsDb = new ClimateDataPointsDb(new LocalInMemoryDatabase(), sensorTableName);
+        final List<ClimateDataPoint> dataPoints = dataPointsDb.read();
         final ClimateDataPoint lastClimateDataPoint = dataPoints.getLast();
         assertThat(lastClimateDataPoint.temperature().celsius()).isCloseTo(21.0, within(0.001));
         assertThat(lastClimateDataPoint.humidity().absoluteHumidity()).isCloseTo(10.0, within(0.001));
@@ -43,7 +43,7 @@ class CsvToDbTest {
                 .setCo2(500.0)
                 .setTime(now)
                 .build();
-        final SensorDataCsv sensorDataCsv = new SensorDataCsv(sensorDataCsvPath);
-        sensorDataCsv.persist(dataPoint);
+        final ClimateDataPointsCsv dataPointsCsv = new ClimateDataPointsCsv(sensorDataCsvPath);
+        dataPointsCsv.persist(dataPoint);
     }
 }

@@ -1,6 +1,6 @@
 package org.air_controller.sensor.qing_ping;
 
-import org.air_controller.sensor_data_persistence.SensorDataPersistence;
+import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 class QingPingSensorTest {
 
     @Mock
-    private SensorDataPersistence persistence;
+    private ClimateDataPointPersistence persistence;
 
     @Captor
     private ArgumentCaptor<ClimateDataPoint> indoorSensorDataArgumentCaptor;

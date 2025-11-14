@@ -1,7 +1,7 @@
 package org.air_controller.sensor_values;
 
-import org.air_controller.sensor_data_persistence.SensorDataCollection;
-import org.air_controller.sensor_data_persistence.SensorDataPersistence;
+import org.air_controller.sensor_data_persistence.ClimateDataPoints;
+import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,11 +20,11 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class SensorDataCollectionTest {
 
-    private final List<SensorDataPersistence> persistenceList = new ArrayList<>();
+    private final List<ClimateDataPointPersistence> persistenceList = new ArrayList<>();
     @Mock
-    private SensorDataPersistence persistence1;
+    private ClimateDataPointPersistence persistence1;
     @Mock
-    private SensorDataPersistence persistence2;
+    private ClimateDataPointPersistence persistence2;
     @Mock
     private ClimateDataPoint dataPoint;
 
@@ -37,7 +37,7 @@ class SensorDataCollectionTest {
 
     @Test
     void shouldPersistOnAllPersistenceEntries() {
-        final SensorDataCollection testee = new SensorDataCollection(persistenceList);
+        final ClimateDataPoints testee = new ClimateDataPoints(persistenceList);
 
         testee.persist(dataPoint);
 
@@ -50,7 +50,7 @@ class SensorDataCollectionTest {
     @Test
     void shouldReadFromFirstPersistence() {
         when(persistence1.read()).thenReturn(List.of(dataPoint));
-        final SensorDataCollection testee = new SensorDataCollection(persistenceList);
+        final ClimateDataPoints testee = new ClimateDataPoints(persistenceList);
 
         final List<ClimateDataPoint> climateDataPointResult = testee.read();
 
@@ -64,7 +64,7 @@ class SensorDataCollectionTest {
     void shouldReturnMostCurrentSensorDataFromFirstPersistence() {
         when(persistence1.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.of(dataPoint));
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        final SensorDataCollection testee = new SensorDataCollection(persistenceList);
+        final ClimateDataPoints testee = new ClimateDataPoints(persistenceList);
 
         final Optional<ClimateDataPoint> mostCurrentSensorData = testee.getMostCurrentClimateDataPoint(now);
 
