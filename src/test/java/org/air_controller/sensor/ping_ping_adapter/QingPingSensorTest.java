@@ -33,7 +33,7 @@ class QingPingSensorTest {
     private ListDevicesJsonParser parser;
 
     @Test
-    void shouldParseSensorList() throws CommunicationException, IOException, URISyntaxException, InvalidArgumentException, CalculationException {
+    void shouldParseSensorList() throws CommunicationException, IOException, URISyntaxException, InvalidArgumentException {
         final String response = "response";
         when(sensor.readData()).thenReturn(response);
         final ClimateDataPoint dataPoint = new ClimateDataPointBuilder()
@@ -41,7 +41,7 @@ class QingPingSensorTest {
                 .setHumidityRelative(40.0)
                 .build();
         when(parser.parseDeviceListResponse(eq(response), any())).thenReturn(Optional.of(dataPoint));
-        when(reducer.reduce(any())).thenReturn(dataPoint);
+        when(reducer.reduce(any())).thenReturn(Optional.of(dataPoint));
         final QingPingAdapter testee = new QingPingAdapter(persistence, sensor, reducer, parser);
 
         testee.run();

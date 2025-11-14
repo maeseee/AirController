@@ -42,7 +42,7 @@ class QingPingAdaptorTest {
                 .build();
         when(sensor.readData()).thenReturn("Response");
         when(parser.parseDeviceListResponse(any(), any())).thenReturn(Optional.of(dataPoint));
-        when(reducer.reduce(any())).thenReturn(dataPoint);
+        when(reducer.reduce(any())).thenReturn(Optional.of(dataPoint));
 
         final QingPingAdapter testee = new QingPingAdapter(persistence, sensor, reducer, parser);
 

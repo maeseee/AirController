@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,7 +44,7 @@ class SensorReducerTest {
         final List<ClimateDataPoint> dataPoints = List.of(dataPoint1, dataPoint2);
         final SensorReducer testee = new SensorReducer();
 
-        final ClimateDataPoint result = testee.reduce(dataPoints);
+        final Optional<ClimateDataPoint> result = testee.reduce(dataPoints);
 
         final ClimateDataPoint expectedClimateDataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(expectedTemperature)
@@ -51,6 +52,7 @@ class SensorReducerTest {
                 .setCo2(Double.isNaN(expectedCo2) ?  null : expectedCo2)
                 .setTime(now)
                 .build();
-        assertThat(result).isEqualTo(expectedClimateDataPoint);
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(expectedClimateDataPoint);
     }
 }

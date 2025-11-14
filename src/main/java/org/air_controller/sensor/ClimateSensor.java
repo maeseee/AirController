@@ -19,6 +19,8 @@ public abstract class ClimateSensor implements Runnable {
         return persistence.getMostCurrentClimateDataPoint(getLastValidTimestamp());
     }
 
+    protected abstract Optional<ClimateDataPoint> parseResponse(String response);
+
 //    public abstract Optional<ClimateDataPoint> readDataPoint();
 
     protected ZonedDateTime getLastValidTimestamp() {

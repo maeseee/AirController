@@ -38,6 +38,11 @@ public class OpenWeatherApiSensor extends ClimateSensor {
         }
     }
 
+    @Override
+    protected Optional<ClimateDataPoint> parseResponse(String response) {
+        return Optional.empty();
+    }
+
     private void doRun() {
         final Optional<String> request = httpsGetRequest.sendRequest(createHttpsGetUrl());
         if (request.isEmpty()) {

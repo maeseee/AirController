@@ -9,22 +9,23 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class QingPingAdapter extends ClimateSensor {
 
     private static final Logger logger = LogManager.getLogger(QingPingAdapter.class);
 
-    private final QingPingSensor qingPingSensor;
+    private final QingPingSensor sensor;
     private final SensorReducer sensorReducer;
     private final ListDevicesJsonParser parser;
 
-    public QingPingAdapter(ClimateDataPointPersistence persistence, QingPingSensor qingPingSensor) {
-        this(persistence, qingPingSensor, new SensorReducer(), new ListDevicesJsonParser());
+    public QingPingAdapter(ClimateDataPointPersistence persistence, QingPingSensor sensor) {
+        this(persistence, sensor, new SensorReducer(), new ListDevicesJsonParser());
     }
 
-    QingPingAdapter(ClimateDataPointPersistence persistence, QingPingSensor qingPingSensor, SensorReducer sensorReducer, ListDevicesJsonParser parser) {
+    QingPingAdapter(ClimateDataPointPersistence persistence, QingPingSensor sensor, SensorReducer sensorReducer, ListDevicesJsonParser parser) {
         super(persistence);
-        this.qingPingSensor = qingPingSensor;
+        this.sensor = sensor;
         this.sensorReducer = sensorReducer;
         this.parser = parser;
     }
@@ -32,16 +33,20 @@ public class QingPingAdapter extends ClimateSensor {
     @Override
     public void run() {
         try {
-            final String response = qingPingSensor.readData();
-            final List<ClimateDataPoint> climateDataPoints = parseResponse(response);
-            final ClimateDataPoint dataPoint = sensorReducer.reduce(climateDataPoints);
-            persistDataPoint(dataPoint);
+            final String response = sensor.readData();
+            Optional<ClimateDataPoint> dataPoint = parseResponse(response);
+            dataPoint.ifPresent(this::persistDataPoint);
         } catch (Exception exception) {
             logger.error("Exception in QingPing sensor loop:", exception);
         }
     }
 
-    private List<ClimateDataPoint> parseResponse(String response) {
+    protected Optional<ClimateDataPoint> parseResponse(String response) {
+        final List<ClimateDataPoint> climateDataPoints = parse(response);
+        return sensorReducer.reduce(climateDataPoints);
+    }
+
+    private List<ClimateDataPoint> parse(String response) {
         final List<ClimateDataPoint> climateDataPoints = new ArrayList<>();
         QingPingSensor.getDeviceList().forEach(
                 mac -> parser.parseDeviceListResponse(response, mac).ifPresent(climateDataPoints::add));
@@ -50,12 +55,6 @@ public class QingPingAdapter extends ClimateSensor {
         }
         return climateDataPoints;
     }
-
-//    @Override
-//    public Optional<ClimateDataPoint> readDataPoint() {
-//        final String sensorValues = qingPingSensor.readSensor();
-//        return Optional.empty();
-//    }
 
     private void persistDataPoint(ClimateDataPoint dataPoint) {
         logger.info("New data point: {}", dataPoint);
