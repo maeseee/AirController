@@ -36,7 +36,7 @@ class QingPingAdaptorTest {
     @Test
     void shouldPersistDataPoint_whenRun()
             throws InvalidArgumentException, CommunicationException, IOException, URISyntaxException, CalculationException {
-        final ClimateDataPoint dataPoint = new DataPointBuilder()
+        final ClimateDataPoint dataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(23.0)
                 .setHumidityAbsolute(10.0)
                 .build();
@@ -56,8 +56,7 @@ class QingPingAdaptorTest {
     }
 
     @Test
-    void shouldNotPersistDataPoint_whenInvalidDataPoint()
-            throws CommunicationException, IOException, URISyntaxException, InvalidArgumentException, CalculationException {
+    void shouldNotPersistDataPoint_whenInvalidDataPoint() throws CommunicationException, IOException, URISyntaxException {
         when(sensor.readData()).thenThrow(new IOException("Error"));
         final QingPingAdapter testee = new QingPingAdapter(persistence, sensor);
 

@@ -18,7 +18,7 @@ class SensorReducer {
         if (currentDataPoints.isEmpty()) {
             throw new CalculationException("No current indoor data at the moment");
         }
-        return new DataPointBuilder()
+        return new ClimateDataPointBuilder()
                 .setTemperature(getAverageTemperature(currentDataPoints))
                 .setHumidity(getAverageHumidity(currentDataPoints))
                 .setCo2(getAverageCo2(currentDataPoints))

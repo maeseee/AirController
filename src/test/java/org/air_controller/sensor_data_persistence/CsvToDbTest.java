@@ -3,7 +3,7 @@ package org.air_controller.sensor_data_persistence;
 import org.air_controller.persistence.LocalInMemoryDatabase;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.ClimateDataPoint;
-import org.air_controller.sensor_values.DataPointBuilder;
+import org.air_controller.sensor_values.ClimateDataPointBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZoneOffset;
@@ -37,7 +37,7 @@ class CsvToDbTest {
     }
 
     private void persistDataToCsv(ZonedDateTime now) throws InvalidArgumentException {
-        final ClimateDataPoint dataPoint = new DataPointBuilder()
+        final ClimateDataPoint dataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(21.0)
                 .setHumidityAbsolute(10.0)
                 .setCo2(500.0)

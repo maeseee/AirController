@@ -3,7 +3,7 @@ package org.air_controller.rules;
 import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.ClimateSensors;
-import org.air_controller.sensor_values.DataPointBuilder;
+import org.air_controller.sensor_values.ClimateDataPointBuilder;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,11 +41,11 @@ class HumidityControlAirFlowTest {
     void shouldCalculateHumidityPercentage(double relativeIndoorHumidity, double relativeOutdoorHumidity,
             double expectedResult)
             throws InvalidArgumentException {
-        final ClimateDataPoint indoorClimateDataPoint = new DataPointBuilder()
+        final ClimateDataPoint indoorClimateDataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(22.5)
                 .setHumidityRelative(relativeIndoorHumidity)
                 .build();
-        final ClimateDataPoint outdoorClimateDataPoint = new DataPointBuilder()
+        final ClimateDataPoint outdoorClimateDataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(22.5)
                 .setHumidityRelative(relativeOutdoorHumidity)
                 .build();

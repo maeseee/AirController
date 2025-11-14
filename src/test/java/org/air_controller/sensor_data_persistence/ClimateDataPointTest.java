@@ -28,7 +28,7 @@ class ClimateDataPointTest {
     @MethodSource("dataPointPersistenceImplementations")
     void shouldWriteDataPointIntoCsvFiles_whenPersist(ClimateDataPointPersistence testee) throws InvalidArgumentException {
         final Random random = new Random();
-        final ClimateDataPoint inputClimateDataPoint = new DataPointBuilder()
+        final ClimateDataPoint inputClimateDataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(random.nextDouble() * 100)
                 .setHumidityRelative(random.nextDouble() * 100)
                 .setCo2(random.nextDouble() * 100000)
@@ -50,7 +50,7 @@ class ClimateDataPointTest {
         final double relativeHumidity = random.nextDouble() * 100;
         final double co2Ppm = random.nextDouble() * 100000;
         final ZonedDateTime time = ZonedDateTime.now(ZoneOffset.UTC);
-        final ClimateDataPoint inputClimateDataPoint = new DataPointBuilder()
+        final ClimateDataPoint inputClimateDataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(celsiusTemperature)
                 .setHumidityRelative(relativeHumidity)
                 .setCo2(co2Ppm)
@@ -80,13 +80,13 @@ class ClimateDataPointTest {
     void shouldBeDifferent(double comparedTemperature, double comparedHumidity, double comparedCo2, int timeOffset, boolean isEquals)
             throws InvalidArgumentException {
         final ZonedDateTime timestamp = ZonedDateTime.now(ZoneOffset.UTC);
-        final ClimateDataPoint dataPoint1 = new DataPointBuilder()
+        final ClimateDataPoint dataPoint1 = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(23.0)
                 .setHumidityRelative(50.0)
                 .setCo2(500.0)
                 .setTime(timestamp)
                 .build();
-        final ClimateDataPoint dataPoint2 = new DataPointBuilder()
+        final ClimateDataPoint dataPoint2 = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(comparedTemperature)
                 .setHumidityRelative(comparedHumidity)
                 .setCo2(comparedCo2)

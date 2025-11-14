@@ -4,7 +4,7 @@ import org.air_controller.sensor.qing_ping.CommunicationException;
 import org.air_controller.sensor.qing_ping.QingPingSensor;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.ClimateDataPoint;
-import org.air_controller.sensor_values.DataPointBuilder;
+import org.air_controller.sensor_values.ClimateDataPointBuilder;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +36,7 @@ class QingPingSensorTest {
     void shouldParseSensorList() throws CommunicationException, IOException, URISyntaxException, InvalidArgumentException, CalculationException {
         final String response = "response";
         when(sensor.readData()).thenReturn(response);
-        final ClimateDataPoint dataPoint = new DataPointBuilder()
+        final ClimateDataPoint dataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(21.0)
                 .setHumidityRelative(40.0)
                 .build();

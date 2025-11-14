@@ -2,7 +2,7 @@ package org.air_controller.sensor.ping_ping_adapter;
 
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.ClimateDataPoint;
-import org.air_controller.sensor_values.DataPointBuilder;
+import org.air_controller.sensor_values.ClimateDataPointBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -61,7 +61,7 @@ class ListDevicesJsonParser {
         final OptionalDouble co2Optional = getDoubleValue("co2", deviceData);
         final Double co2Ppm = co2Optional.isPresent() ? co2Optional.getAsDouble() : null;
         validateTimeStamp(deviceData);
-        return new DataPointBuilder()
+        return new ClimateDataPointBuilder()
                 .setTemperatureCelsius(temperatureCelsius)
                 .setHumidityRelative(humidityRelative)
                 .setCo2(co2Ppm)

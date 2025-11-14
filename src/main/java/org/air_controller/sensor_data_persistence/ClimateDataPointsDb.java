@@ -59,7 +59,7 @@ public class ClimateDataPointsDb implements ClimateDataPointPersistence {
 
     private ClimateDataPoint createDataPoint(ResultSet resultSet) throws SQLException, InvalidArgumentException {
         // Read the object as it can handle null
-        return new DataPointBuilder()
+        return new ClimateDataPointBuilder()
                 .setTemperatureCelsius(resultSet.getObject("temperature", Double.class))
                 .setHumidityAbsolute(resultSet.getObject("humidity", Double.class))
                 .setCo2(resultSet.getObject("co2", Double.class))

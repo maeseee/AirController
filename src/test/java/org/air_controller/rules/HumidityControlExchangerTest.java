@@ -33,11 +33,11 @@ class HumidityControlExchangerTest {
     })
     void shouldControlHumidityExchanger(double relativeIndoorHumidity, double relativeOutdoorHumidity, double expectedResult)
             throws InvalidArgumentException {
-        final ClimateDataPoint indoorClimateDataPoint = new DataPointBuilder()
+        final ClimateDataPoint indoorClimateDataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(22.0)
                 .setHumidityRelative(relativeIndoorHumidity)
                 .build();
-        final ClimateDataPoint outdoorClimateDataPoint = new DataPointBuilder()
+        final ClimateDataPoint outdoorClimateDataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(22.0)
                 .setHumidityRelative(relativeOutdoorHumidity)
                 .build();

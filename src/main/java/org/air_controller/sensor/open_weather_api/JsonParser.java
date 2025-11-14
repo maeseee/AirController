@@ -2,7 +2,7 @@ package org.air_controller.sensor.open_weather_api;
 
 import lombok.NoArgsConstructor;
 import org.air_controller.sensor_values.ClimateDataPoint;
-import org.air_controller.sensor_values.DataPointBuilder;
+import org.air_controller.sensor_values.ClimateDataPointBuilder;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -16,7 +16,7 @@ class JsonParser {
             final JSONTokener tokener = new JSONTokener(jsonString);
             final JSONObject jsonObject = new JSONObject(tokener);
             final JSONObject main = jsonObject.getJSONObject("main");
-            final ClimateDataPoint dataPoint = new DataPointBuilder()
+            final ClimateDataPoint dataPoint = new ClimateDataPointBuilder()
                     .setTemperatureKelvin(main.getDouble("temp"))
                     .setHumidityRelative(main.getDouble("humidity"))
                     .build();

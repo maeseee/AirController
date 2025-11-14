@@ -2,7 +2,7 @@ package org.air_controller.rules;
 
 import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor_values.ClimateDataPoint;
-import org.air_controller.sensor_values.DataPointBuilder;
+import org.air_controller.sensor_values.ClimateDataPointBuilder;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,7 +31,7 @@ class CO2ControlAirFlowTest {
             "700, 0.0"
     })
     void shouldCalculateCo2Confidence(double co2, double expectedConfidence) throws InvalidArgumentException {
-        final ClimateDataPoint dataPoint = new DataPointBuilder()
+        final ClimateDataPoint dataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(21.0)
                 .setHumidityRelative(50.0)
                 .setCo2(co2)

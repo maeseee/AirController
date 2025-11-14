@@ -29,7 +29,7 @@ class CurrentClimateDataPointTest {
 
     @Test
     void shouldReturnValues() throws InvalidArgumentException {
-        final ClimateDataPoint dataPoint = new DataPointBuilder()
+        final ClimateDataPoint dataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(20.0)
                 .setHumidityAbsolute(10.0)
                 .setCo2(500.0)

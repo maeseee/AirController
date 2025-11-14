@@ -3,40 +3,39 @@ package org.air_controller.sensor_values;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
-// TODO rename ClimateDataPointBuilder
-public class DataPointBuilder {
+public class ClimateDataPointBuilder {
 
     private Temperature temperature;
     private Humidity humidity;
     private CarbonDioxide co2;
     private ZonedDateTime time;
 
-    public DataPointBuilder setTemperature(Temperature temperature) {
+    public ClimateDataPointBuilder setTemperature(Temperature temperature) {
         this.temperature = temperature;
         return this;
     }
 
-    public DataPointBuilder setTemperatureCelsius(double tempCelsius) throws InvalidArgumentException {
+    public ClimateDataPointBuilder setTemperatureCelsius(double tempCelsius) throws InvalidArgumentException {
         this.temperature = Temperature.createFromCelsius(tempCelsius);
         return this;
     }
 
-    public DataPointBuilder setTemperatureKelvin(double tempCelsius) throws InvalidArgumentException {
+    public ClimateDataPointBuilder setTemperatureKelvin(double tempCelsius) throws InvalidArgumentException {
         this.temperature = Temperature.createFromKelvin(tempCelsius);
         return this;
     }
 
-    public DataPointBuilder setHumidity(Humidity humidity) {
+    public ClimateDataPointBuilder setHumidity(Humidity humidity) {
         this.humidity = humidity;
         return this;
     }
 
-    public DataPointBuilder setHumidityAbsolute(double humAbsolute) throws InvalidArgumentException {
+    public ClimateDataPointBuilder setHumidityAbsolute(double humAbsolute) throws InvalidArgumentException {
         this.humidity = Humidity.createFromAbsolute(humAbsolute);
         return this;
     }
 
-    public DataPointBuilder setHumidityRelative(double humRelative) throws InvalidArgumentException {
+    public ClimateDataPointBuilder setHumidityRelative(double humRelative) throws InvalidArgumentException {
         if (temperature == null) {
             throw new InvalidArgumentException("Temperature must have a value when setting the relativ humidity");
         }
@@ -44,17 +43,17 @@ public class DataPointBuilder {
         return this;
     }
 
-    public DataPointBuilder setCo2(CarbonDioxide co2) {
+    public ClimateDataPointBuilder setCo2(CarbonDioxide co2) {
         this.co2 = co2;
         return this;
     }
 
-    public DataPointBuilder setCo2(Double co2Ppm) throws InvalidArgumentException {
+    public ClimateDataPointBuilder setCo2(Double co2Ppm) throws InvalidArgumentException {
         this.co2 = co2Ppm != null ? CarbonDioxide.createFromPpm(co2Ppm) : null;
         return this;
     }
 
-    public DataPointBuilder setTime(ZonedDateTime time) {
+    public ClimateDataPointBuilder setTime(ZonedDateTime time) {
         this.time = time;
         return this;
     }

@@ -63,7 +63,7 @@ public class ClimateDataPointsCsv implements ClimateDataPointPersistence {
     private ClimateDataPoint createClimateDataPoint(String csvLine) throws InvalidArgumentException {
         final String[] csv = csvLine.split(",");
         assert (csv.length > 2);
-        return new DataPointBuilder()
+        return new ClimateDataPointBuilder()
                 .setTime(ZonedDateTime.of(LocalDateTime.parse(csv[0], FORMATTER), ZoneOffset.UTC))
                 .setTemperatureCelsius(Double.parseDouble(csv[1]))
                 .setHumidityRelative(Double.parseDouble(csv[2]))
