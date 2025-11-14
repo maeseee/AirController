@@ -7,6 +7,7 @@ import org.air_controller.sensor_values.ClimateDataPoint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QingPingAdapter extends ClimateSensor {
@@ -14,22 +15,40 @@ public class QingPingAdapter extends ClimateSensor {
     private static final Logger logger = LogManager.getLogger(QingPingAdapter.class);
 
     private final QingPingSensor qingPingSensor;
-    private final SensorReducer sensorReducer = new SensorReducer();
+    private final SensorReducer sensorReducer;
+    private final ListDevicesJsonParser parser;
 
     public QingPingAdapter(ClimateDataPointPersistence persistence, QingPingSensor qingPingSensor) {
+        this(persistence, qingPingSensor, new SensorReducer(), new ListDevicesJsonParser());
+    }
+
+    QingPingAdapter(ClimateDataPointPersistence persistence, QingPingSensor qingPingSensor, SensorReducer sensorReducer, ListDevicesJsonParser parser) {
         super(persistence);
         this.qingPingSensor = qingPingSensor;
+        this.sensorReducer = sensorReducer;
+        this.parser = parser;
     }
 
     @Override
     public void run() {
         try {
-            final List<ClimateDataPoint> climateDataPoints = qingPingSensor.readData();
+            final String response = qingPingSensor.readData();
+            final List<ClimateDataPoint> climateDataPoints = parseResponse(response);
             final ClimateDataPoint dataPoint = sensorReducer.reduce(climateDataPoints);
             persistDataPoint(dataPoint);
         } catch (Exception exception) {
             logger.error("Exception in QingPing sensor loop:", exception);
         }
+    }
+
+    private List<ClimateDataPoint> parseResponse(String response) {
+        final List<ClimateDataPoint> climateDataPoints = new ArrayList<>();
+        QingPingSensor.getDeviceList().forEach(
+                mac -> parser.parseDeviceListResponse(response, mac).ifPresent(climateDataPoints::add));
+        if (climateDataPoints.isEmpty()) {
+            logger.error("No sensor data found in the response: {}", response);
+        }
+        return climateDataPoints;
     }
 
 //    @Override

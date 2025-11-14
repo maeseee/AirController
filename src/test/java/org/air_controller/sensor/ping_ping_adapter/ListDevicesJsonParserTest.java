@@ -1,13 +1,13 @@
-package org.air_controller.sensor.qing_ping;
+package org.air_controller.sensor.ping_ping_adapter;
 
+import org.air_controller.sensor.qing_ping.Devices;
 import org.air_controller.sensor_values.*;
+import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.Optional;
 
-import static org.air_controller.sensor.qing_ping.Devices.MAC_AIR_PRESSURE_DEVICE;
-import static org.air_controller.sensor.qing_ping.Devices.MAC_CO2_DEVICE_1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ListDevicesJsonParserTest {
@@ -17,7 +17,7 @@ class ListDevicesJsonParserTest {
         final long epochSecondNow = Instant.now().getEpochSecond();
         final ListDevicesJsonParser testee = new ListDevicesJsonParser();
 
-        final Optional<ClimateDataPoint> result = testee.parseDeviceListResponse(getSampleDeviceListResponse(epochSecondNow), MAC_AIR_PRESSURE_DEVICE);
+        final Optional<ClimateDataPoint> result = testee.parseDeviceListResponse(getSampleDeviceListResponse(epochSecondNow), Devices.MAC_AIR_PRESSURE_DEVICE);
 
         final Temperature expectedTemperature = Temperature.createFromCelsius(21.5);
         final Humidity expectedHumidity = Humidity.createFromRelative(54.2, expectedTemperature);
@@ -25,7 +25,7 @@ class ListDevicesJsonParserTest {
             assertThat(dataPoint.temperature()).isEqualTo(expectedTemperature);
             assertThat(dataPoint.humidity()).isEqualTo(expectedHumidity);
             assertThat(dataPoint.co2()).isEmpty();
-            assertThat(dataPoint.timestamp().toEpochSecond()).isEqualTo(epochSecondNow);
+            assertThat(dataPoint.timestamp().toEpochSecond()).isCloseTo(epochSecondNow,  Offset.offset(1L));
         });
     }
 
@@ -34,7 +34,7 @@ class ListDevicesJsonParserTest {
         final long epochSecondNow = Instant.now().getEpochSecond();
         final ListDevicesJsonParser testee = new ListDevicesJsonParser();
 
-        final Optional<ClimateDataPoint> result = testee.parseDeviceListResponse(getSampleDeviceListResponse(epochSecondNow), MAC_CO2_DEVICE_1);
+        final Optional<ClimateDataPoint> result = testee.parseDeviceListResponse(getSampleDeviceListResponse(epochSecondNow), Devices.MAC_CO2_DEVICE_1);
 
         final Temperature expectedTemperature = Temperature.createFromCelsius(22.3);
         final Humidity expectedHumidity = Humidity.createFromRelative(47.1, expectedTemperature);

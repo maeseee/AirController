@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -25,6 +25,10 @@ class QingPingAdaptorTest {
     private ClimateDataPointPersistence persistence;
     @Mock
     private QingPingSensor sensor;
+    @Mock
+    private SensorReducer reducer;
+    @Mock
+    private ListDevicesJsonParser parser;
 
     @Captor
     private ArgumentCaptor<ClimateDataPoint> indoorDataPointArgumentCaptor;
@@ -36,8 +40,11 @@ class QingPingAdaptorTest {
                 .setTemperatureCelsius(23.0)
                 .setHumidityAbsolute(10.0)
                 .build();
-        when(sensor.readData()).thenReturn(List.of(dataPoint));
-        final QingPingAdapter testee = new QingPingAdapter(persistence, sensor);
+        when(sensor.readData()).thenReturn("Response");
+        when(parser.parseDeviceListResponse(any(), any())).thenReturn(Optional.of(dataPoint));
+        when(reducer.reduce(any())).thenReturn(dataPoint);
+
+        final QingPingAdapter testee = new QingPingAdapter(persistence, sensor, reducer, parser);
 
         testee.run();
 
