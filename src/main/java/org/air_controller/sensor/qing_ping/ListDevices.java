@@ -36,7 +36,6 @@ class ListDevices {
         return climateDataPoints;
     }
 
-
     private static ListDevicesRequest createListDevicesRequest() throws URISyntaxException {
         final String urlString = "https://apis.cleargrass.com/v1/apis/devices";
         final URI uri = new URI(urlString);
