@@ -188,7 +188,7 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>org.air_controller.sensor.Sensor</mainClass>
+                            <mainClass>org.air_controller.sensor.ClimateSensor</mainClass>
                         </configuration>
                     </execution>
                 </executions>

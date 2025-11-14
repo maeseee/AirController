@@ -2,9 +2,9 @@ package org.air_controller.sensor;
 
 public abstract class SensorFactory {
 
-    public Sensor build() {
+    public ClimateSensor build() {
         return createSensor();
     }
 
-    protected abstract Sensor createSensor();
+    protected abstract ClimateSensor createSensor();
 }

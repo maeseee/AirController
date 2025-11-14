@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public abstract class Sensor implements  Runnable {
+public abstract class ClimateSensor implements  Runnable {
     private static final Duration SENSOR_INVALIDATION = Duration.ofHours(4);
     protected final ClimateDataPointPersistence persistence;
 

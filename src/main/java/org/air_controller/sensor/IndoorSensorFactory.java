@@ -18,7 +18,7 @@ import static org.air_controller.sensor_data_persistence.ClimateDataPointPersist
 public class IndoorSensorFactory extends SensorFactory {
 
     @Override
-    protected Sensor createSensor() {
+    protected ClimateSensor createSensor() {
         final ClimateDataPointPersistence persistence = new ClimateDataPoints(List.of(
                 new ClimateDataPointsDb(new MariaDatabase(), INDOOR_TABLE_NAME),
                 new ClimateDataPointsCsv(INDOOR_SENSOR_CSV_PATH)));

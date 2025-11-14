@@ -1,6 +1,6 @@
 package org.air_controller.sensor.qing_ping;
 
-import org.air_controller.sensor.Sensor;
+import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.InvalidArgumentException;
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
-public class QingPingSensor extends Sensor {
+public class QingPingSensor extends ClimateSensor {
 
     private static final Logger logger = LogManager.getLogger(QingPingSensor.class);
 

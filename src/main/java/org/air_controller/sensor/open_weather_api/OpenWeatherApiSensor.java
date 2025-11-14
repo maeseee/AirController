@@ -2,7 +2,7 @@ package org.air_controller.sensor.open_weather_api;
 
 import org.air_controller.http.HttpsGetRequest;
 import org.air_controller.secrets.Secret;
-import org.air_controller.sensor.Sensor;
+import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.apache.logging.log4j.LogManager;
@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Optional;
 
 
-public class OpenWeatherApiSensor extends Sensor {
+public class OpenWeatherApiSensor extends ClimateSensor {
     private static final Logger logger = LogManager.getLogger(OpenWeatherApiSensor.class);
     private static final String LAT = "47.127459";
     private static final String LON = "8.245553";

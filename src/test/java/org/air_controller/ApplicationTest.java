@@ -1,7 +1,7 @@
 package org.air_controller;
 
 import org.air_controller.rules.RuleApplier;
-import org.air_controller.sensor.Sensor;
+import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor.Sensors;
 import org.air_controller.statistics.DailyOnTimeLogger;
 import org.air_controller.statistics.SystemStateLogger;
@@ -24,9 +24,9 @@ class ApplicationTest {
     private Sensors sensors;
 
     @Mock
-    private Sensor outdoorSensor;
+    private ClimateSensor outdoorSensor;
     @Mock
-    private Sensor indoorSensor;
+    private ClimateSensor indoorSensor;
     @Mock
     private RuleApplier ruleApplier;
     @Mock
