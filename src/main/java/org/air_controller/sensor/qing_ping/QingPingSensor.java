@@ -1,7 +1,6 @@
 package org.air_controller.sensor.qing_ping;
 
 import org.air_controller.sensor_values.ClimateDataPoint;
-import org.air_controller.sensor_values.InvalidArgumentException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,7 +14,6 @@ public class QingPingSensor {
 
     private final AccessToken accessToken;
     private final ListDevices listDevices;
-    private final SensorReducer sensorReducer = new SensorReducer();
 
     public QingPingSensor() throws URISyntaxException {
         this(new AccessToken(), new ListDevices());
@@ -27,9 +25,8 @@ public class QingPingSensor {
         this.listDevices = listDevices;
     }
 
-    public ClimateDataPoint readData() throws CommunicationException, IOException, URISyntaxException, InvalidArgumentException, CalculationException {
+    public List<ClimateDataPoint> readData() throws CommunicationException, IOException, URISyntaxException {
         final String token = accessToken.readToken();
-        final List<ClimateDataPoint> climateDataPoints = listDevices.readDataPoint(token);
-        return sensorReducer.reduce(climateDataPoints);
+        return listDevices.readDataPoint(token);
     }
 }

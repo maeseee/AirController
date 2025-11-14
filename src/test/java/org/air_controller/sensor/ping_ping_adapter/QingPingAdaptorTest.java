@@ -1,6 +1,7 @@
-package org.air_controller.sensor.qing_ping;
+package org.air_controller.sensor.ping_ping_adapter;
 
-import org.air_controller.sensor.ping_ping_adapter.QingPingAdapter;
+import org.air_controller.sensor.qing_ping.CommunicationException;
+import org.air_controller.sensor.qing_ping.QingPingSensor;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.*;
 import org.junit.jupiter.api.Test;
@@ -12,9 +13,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,7 +36,7 @@ class QingPingAdaptorTest {
                 .setTemperatureCelsius(23.0)
                 .setHumidityAbsolute(10.0)
                 .build();
-        when(sensor.readData()).thenReturn(dataPoint);
+        when(sensor.readData()).thenReturn(List.of(dataPoint));
         final QingPingAdapter testee = new QingPingAdapter(persistence, sensor);
 
         testee.run();

@@ -7,11 +7,14 @@ import org.air_controller.sensor_values.ClimateDataPoint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
+
 public class QingPingAdapter extends ClimateSensor {
 
     private static final Logger logger = LogManager.getLogger(QingPingAdapter.class);
 
     private final QingPingSensor qingPingSensor;
+    private final SensorReducer sensorReducer = new SensorReducer();
 
     public QingPingAdapter(ClimateDataPointPersistence persistence, QingPingSensor qingPingSensor) {
         super(persistence);
@@ -21,7 +24,8 @@ public class QingPingAdapter extends ClimateSensor {
     @Override
     public void run() {
         try {
-            final ClimateDataPoint dataPoint = qingPingSensor.readData();
+            final List<ClimateDataPoint> climateDataPoints = qingPingSensor.readData();
+            final ClimateDataPoint dataPoint = sensorReducer.reduce(climateDataPoints);
             persistDataPoint(dataPoint);
         } catch (Exception exception) {
             logger.error("Exception in QingPing sensor loop:", exception);

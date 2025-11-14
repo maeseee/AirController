@@ -1,4 +1,4 @@
-package org.air_controller.sensor.qing_ping;
+package org.air_controller.sensor.ping_ping_adapter;
 
 import org.air_controller.sensor_values.*;
 
