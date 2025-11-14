@@ -43,10 +43,10 @@ public class QingPingSensor extends ClimateSensor {
         final String token = accessToken.readToken();
         final List<ClimateDataPoint> climateDataPoints = listDevices.readDataPoint(token);
         final ClimateDataPoint dataPoint = sensorReducer.reduce(climateDataPoints);
-        notifyObservers(dataPoint);
+        persistDataPoint(dataPoint);
     }
 
-    private void notifyObservers(ClimateDataPoint dataPoint) {
+    private void persistDataPoint(ClimateDataPoint dataPoint) {
         logger.info("New indoor data point: {}", dataPoint);
         persistence.persist(dataPoint);
     }

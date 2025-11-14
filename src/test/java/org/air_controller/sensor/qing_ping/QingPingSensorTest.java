@@ -27,7 +27,7 @@ class QingPingSensorTest {
     private ArgumentCaptor<ClimateDataPoint> indoorDataPointArgumentCaptor;
 
     @Test
-    void shouldNotifyObservers_whenRun() throws InvalidArgumentException, CommunicationException, IOException, URISyntaxException {
+    void shouldPersistDataPoint_whenRun() throws InvalidArgumentException, CommunicationException, IOException, URISyntaxException {
         final AccessToken accessToken = mock(AccessToken.class);
         when(accessToken.readToken()).thenReturn("token");
         final ListDevices listDevices = mock(ListDevices.class);
@@ -47,7 +47,7 @@ class QingPingSensorTest {
     }
 
     @Test
-    void shouldNotNotifyObservers_whenInvalidDataPoint() throws CommunicationException, IOException, URISyntaxException {
+    void shouldNotPersistDataPoint_whenInvalidDataPoint() throws CommunicationException, IOException, URISyntaxException {
         final AccessToken accessToken = mock(AccessToken.class);
         when(accessToken.readToken()).thenReturn("token");
         final ListDevices listDevices = mock(ListDevices.class);
