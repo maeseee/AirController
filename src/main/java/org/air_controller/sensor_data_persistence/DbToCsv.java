@@ -2,7 +2,7 @@ package org.air_controller.sensor_data_persistence;
 
 import lombok.RequiredArgsConstructor;
 import org.air_controller.persistence.DatabaseConnection;
-import org.air_controller.sensor_values.SensorData;
+import org.air_controller.sensor_values.ClimateDataPoint;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class DbToCsv {
     public void persistToCsvFromDb(String tableName, String csvFilePath) {
         final SensorDataPersistence sensorDataDb = new SensorDataDb(database, tableName);
         final SensorDataPersistence sensorDataCsv = new SensorDataCsv(csvFilePath);
-        final List<SensorData> sensorData = sensorDataDb.read();
-        sensorData.forEach(sensorDataCsv::persist);
+        final List<ClimateDataPoint> dataPoints = sensorDataDb.read();
+        dataPoints.forEach(sensorDataCsv::persist);
     }
 }

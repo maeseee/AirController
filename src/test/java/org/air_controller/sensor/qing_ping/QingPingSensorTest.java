@@ -24,26 +24,26 @@ class QingPingSensorTest {
     private SensorDataPersistence persistence;
 
     @Captor
-    private ArgumentCaptor<SensorData> indoorSensorDataArgumentCaptor;
+    private ArgumentCaptor<ClimateDataPoint> indoorSensorDataArgumentCaptor;
 
     @Test
     void shouldNotifyObservers_whenRun() throws InvalidArgumentException, CommunicationException, IOException, URISyntaxException {
         final AccessToken accessToken = mock(AccessToken.class);
         when(accessToken.readToken()).thenReturn("token");
         final ListDevices listDevices = mock(ListDevices.class);
-        final SensorData sensorData = new SensorDataBuilder()
+        final ClimateDataPoint dataPoint = new SensorDataBuilder()
                 .setTemperatureCelsius(21.5)
                 .setHumidityAbsolute(10.0)
                 .build();
-        when(listDevices.readSensorDataList(any())).thenReturn(List.of(sensorData));
+        when(listDevices.readSensorDataList(any())).thenReturn(List.of(dataPoint));
         final QingPingSensor testee = new QingPingSensor(persistence, accessToken, listDevices);
 
         testee.run();
 
         verify(persistence).persist(indoorSensorDataArgumentCaptor.capture());
-        final SensorData indoorSensorDataCapture = indoorSensorDataArgumentCaptor.getValue();
-        assertThat(indoorSensorDataCapture.temperature()).isEqualTo(Temperature.createFromCelsius(21.5));
-        assertThat(indoorSensorDataCapture.humidity()).isEqualTo(Humidity.createFromAbsolute(10.0));
+        final ClimateDataPoint indoorClimateDataPointCapture = indoorSensorDataArgumentCaptor.getValue();
+        assertThat(indoorClimateDataPointCapture.temperature()).isEqualTo(Temperature.createFromCelsius(21.5));
+        assertThat(indoorClimateDataPointCapture.humidity()).isEqualTo(Humidity.createFromAbsolute(10.0));
     }
 
     @Test

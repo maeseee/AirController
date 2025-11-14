@@ -5,7 +5,7 @@ import org.air_controller.http.HttpsGetRequest;
 import org.air_controller.secrets.Secret;
 import org.air_controller.sensor.Sensor;
 import org.air_controller.sensor_data_persistence.SensorDataPersistence;
-import org.air_controller.sensor_values.SensorData;
+import org.air_controller.sensor_values.ClimateDataPoint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,8 +48,8 @@ public class OpenWeatherApiSensor implements Sensor {
             return;
         }
 
-        final Optional<SensorData> sensorData = JsonParser.parse(request.get());
-        sensorData.ifPresentOrElse(
+        final Optional<ClimateDataPoint> dataPoint = JsonParser.parse(request.get());
+        dataPoint.ifPresentOrElse(
                 this::persistData,
                 () -> logger.error("Outdoor sensor out of order"));
     }
@@ -63,8 +63,8 @@ public class OpenWeatherApiSensor implements Sensor {
         return Secret.getSecret(ENVIRONMENT_VARIABLE_API_KEY, ENCRYPTED_API_KEY);
     }
 
-    private void persistData(SensorData outdoorSensorData) {
-        logger.info("New outdoor sensor data: {}", outdoorSensorData);
-        persistence.persist(outdoorSensorData);
+    private void persistData(ClimateDataPoint outdoorClimateDataPoint) {
+        logger.info("New outdoor data point: {}", outdoorClimateDataPoint);
+        persistence.persist(outdoorClimateDataPoint);
     }
 }

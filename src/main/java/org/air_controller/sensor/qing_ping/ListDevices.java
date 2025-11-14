@@ -1,6 +1,6 @@
 package org.air_controller.sensor.qing_ping;
 
-import org.air_controller.sensor_values.SensorData;
+import org.air_controller.sensor_values.ClimateDataPoint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,15 +25,15 @@ class ListDevices {
         this.parser = parser;
     }
 
-    public List<SensorData> readSensorDataList(String token) throws CommunicationException, IOException, URISyntaxException {
+    public List<ClimateDataPoint> readSensorDataList(String token) throws CommunicationException, IOException, URISyntaxException {
         final String response = listDevicesRequest.sendRequest(token);
-        final List<SensorData> sensorDataList = new ArrayList<>();
+        final List<ClimateDataPoint> climateDataPoints = new ArrayList<>();
         Devices.getDeviceList().forEach(
-                mac -> parser.parseDeviceListResponse(response, mac).ifPresent(sensorDataList::add));
-        if (sensorDataList.isEmpty()) {
+                mac -> parser.parseDeviceListResponse(response, mac).ifPresent(climateDataPoints::add));
+        if (climateDataPoints.isEmpty()) {
             logger.error("No sensor data found in the response: {}", response);
         }
-        return sensorDataList;
+        return climateDataPoints;
     }
 
 

@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
-class SensorDataTest {
+class ClimateDataPointTest {
 
     private static final String CSV_FILE_PATH = "log/sensorValueCsvWriterTest.csv";
     private static final String TABLE_NAME = "TestSensorTable";
@@ -27,7 +27,7 @@ class SensorDataTest {
     @MethodSource("sensorDataImplementations")
     void shouldWriteSensorDataIntoCsvFiles_whenPersist(SensorDataPersistence testee) throws InvalidArgumentException {
         final Random random = new Random();
-        final SensorData inputSensorData = new SensorDataBuilder()
+        final ClimateDataPoint inputClimateDataPoint = new SensorDataBuilder()
                 .setTemperatureCelsius(random.nextDouble() * 100)
                 .setHumidityRelative(random.nextDouble() * 100)
                 .setCo2(random.nextDouble() * 100000)
@@ -35,10 +35,10 @@ class SensorDataTest {
                 .build();
         final int initialSize = testee.read().size();
 
-        testee.persist(inputSensorData);
-        final List<SensorData> sensorData = testee.read();
+        testee.persist(inputClimateDataPoint);
+        final List<ClimateDataPoint> DataPoints = testee.read();
 
-        assertThat(sensorData).size().isEqualTo(initialSize + 1);
+        assertThat(DataPoints).size().isEqualTo(initialSize + 1);
     }
 
     @ParameterizedTest
@@ -49,15 +49,15 @@ class SensorDataTest {
         final double relativeHumidity = random.nextDouble() * 100;
         final double co2Ppm = random.nextDouble() * 100000;
         final ZonedDateTime time = ZonedDateTime.now(ZoneOffset.UTC);
-        final SensorData inputSensorData = new SensorDataBuilder()
+        final ClimateDataPoint inputClimateDataPoint = new SensorDataBuilder()
                 .setTemperatureCelsius(celsiusTemperature)
                 .setHumidityRelative(relativeHumidity)
                 .setCo2(co2Ppm)
                 .setTime(time)
                 .build();
 
-        testee.persist(inputSensorData);
-        final Optional<SensorData> lastSensorData = testee.getMostCurrentSensorData(time.minusMinutes(10));
+        testee.persist(inputClimateDataPoint);
+        final Optional<ClimateDataPoint> lastSensorData = testee.getMostCurrentClimateDataPoint(time.minusMinutes(10));
 
         assertThat(lastSensorData).hasValueSatisfying(sensorData -> {
             assertThat(sensorData.temperature().celsius()).isCloseTo(celsiusTemperature, within(0.01));

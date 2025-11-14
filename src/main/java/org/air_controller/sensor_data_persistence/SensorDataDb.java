@@ -29,22 +29,22 @@ public class SensorDataDb implements SensorDataPersistence {
     }
 
     @Override
-    public void persist(SensorData sensorData) {
-        final Double temperature = sensorData.temperature().celsius();
-        final Double humidity = sensorData.humidity().absoluteHumidity();
-        final Double co2 = sensorData.co2().map(CarbonDioxide::ppm).orElse(null);
-        insertSensorData(temperature, humidity, co2, sensorData.timestamp());
+    public void persist(ClimateDataPoint dataPoint) {
+        final Double temperature = dataPoint.temperature().celsius();
+        final Double humidity = dataPoint.humidity().absoluteHumidity();
+        final Double co2 = dataPoint.co2().map(CarbonDioxide::ppm).orElse(null);
+        insertSensorData(temperature, humidity, co2, dataPoint.timestamp());
     }
 
     @Override
-    public List<SensorData> read() {
+    public List<ClimateDataPoint> read() {
         final String sql = "SELECT * FROM " + sensorDataTableName + ";";
-        final EntryAdder<SensorData> adder = this::addResultIfAvailable;
+        final EntryAdder<ClimateDataPoint> adder = this::addResultIfAvailable;
         return database.executeQuery(sql, adder);
     }
 
     @Override
-    public Optional<SensorData> getMostCurrentSensorData(ZonedDateTime lastValidTimestamp) {
+    public Optional<ClimateDataPoint> getMostCurrentClimateDataPoint(ZonedDateTime lastValidTimestamp) {
         final String sql =
                 "SELECT * FROM " + sensorDataTableName + " i " +
                         "WHERE i.EVENT_TIME > ? " +
@@ -52,12 +52,12 @@ public class SensorDataDb implements SensorDataPersistence {
                         "LIMIT 1;";
         final PreparedStatementSetter setter =
                 preparedStatement -> preparedStatement.setTimestamp(1, Timestamp.valueOf(lastValidTimestamp.toLocalDateTime()));
-        final EntryAdder<SensorData> adder = this::addResultIfAvailable;
-        final List<SensorData> sensorData = database.executeQuery(sql, adder, setter);
-        return sensorData.stream().findFirst();
+        final EntryAdder<ClimateDataPoint> adder = this::addResultIfAvailable;
+        final List<ClimateDataPoint> dataPoints = database.executeQuery(sql, adder, setter);
+        return dataPoints.stream().findFirst();
     }
 
-    private SensorData createSensorData(ResultSet resultSet) throws SQLException, InvalidArgumentException {
+    private ClimateDataPoint createSensorData(ResultSet resultSet) throws SQLException, InvalidArgumentException {
         // Read the object as it can handle null
         return new SensorDataBuilder()
                 .setTemperatureCelsius(resultSet.getObject("temperature", Double.class))
@@ -89,7 +89,7 @@ public class SensorDataDb implements SensorDataPersistence {
         database.executeUpdate(sql, setter);
     }
 
-    private void addResultIfAvailable(List<SensorData> entries, ResultSet resultSet) {
+    private void addResultIfAvailable(List<ClimateDataPoint> entries, ResultSet resultSet) {
         try {
             entries.add(createSensorData(resultSet));
         } catch (InvalidArgumentException | SQLException e) {

@@ -17,7 +17,7 @@ class ListDevicesJsonParserTest {
         final long epochSecondNow = Instant.now().getEpochSecond();
         final ListDevicesJsonParser testee = new ListDevicesJsonParser();
 
-        final Optional<SensorData> result = testee.parseDeviceListResponse(getSampleDeviceListResponse(epochSecondNow), MAC_AIR_PRESSURE_DEVICE);
+        final Optional<ClimateDataPoint> result = testee.parseDeviceListResponse(getSampleDeviceListResponse(epochSecondNow), MAC_AIR_PRESSURE_DEVICE);
 
         final Temperature expectedTemperature = Temperature.createFromCelsius(21.5);
         final Humidity expectedHumidity = Humidity.createFromRelative(54.2, expectedTemperature);
@@ -34,7 +34,7 @@ class ListDevicesJsonParserTest {
         final long epochSecondNow = Instant.now().getEpochSecond();
         final ListDevicesJsonParser testee = new ListDevicesJsonParser();
 
-        final Optional<SensorData> result = testee.parseDeviceListResponse(getSampleDeviceListResponse(epochSecondNow), MAC_CO2_DEVICE_1);
+        final Optional<ClimateDataPoint> result = testee.parseDeviceListResponse(getSampleDeviceListResponse(epochSecondNow), MAC_CO2_DEVICE_1);
 
         final Temperature expectedTemperature = Temperature.createFromCelsius(22.3);
         final Humidity expectedHumidity = Humidity.createFromRelative(47.1, expectedTemperature);
@@ -52,7 +52,7 @@ class ListDevicesJsonParserTest {
     void shouldReturnOptionalEmpty_whenInvalidMacAddress() {
         final ListDevicesJsonParser testee = new ListDevicesJsonParser();
 
-        final Optional<SensorData> result = testee.parseDeviceListResponse(getSampleDeviceListResponse(Instant.now().getEpochSecond()), "mac");
+        final Optional<ClimateDataPoint> result = testee.parseDeviceListResponse(getSampleDeviceListResponse(Instant.now().getEpochSecond()), "mac");
 
         assertThat(result).isEmpty();
     }

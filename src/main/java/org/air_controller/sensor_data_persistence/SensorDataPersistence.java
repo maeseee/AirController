@@ -1,6 +1,6 @@
 package org.air_controller.sensor_data_persistence;
 
-import org.air_controller.sensor_values.SensorData;
+import org.air_controller.sensor_values.ClimateDataPoint;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -13,9 +13,9 @@ public interface SensorDataPersistence {
     String INDOOR_TABLE_NAME = "indoorSensor";
     String OUTDOOR_TABLE_NAME = "outdoorSensor";
 
-    void persist(SensorData sensorData);
+    void persist(ClimateDataPoint dataPoint);
 
-    List<SensorData> read();
+    List<ClimateDataPoint> read();
 
-    Optional<SensorData> getMostCurrentSensorData(ZonedDateTime lastValidTimestamp);
+    Optional<ClimateDataPoint> getMostCurrentClimateDataPoint(ZonedDateTime lastValidTimestamp);
 }

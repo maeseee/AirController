@@ -2,7 +2,7 @@ package org.air_controller.rules;
 
 import org.air_controller.sensor_values.CurrentSensorData;
 import org.air_controller.sensor_values.InvalidArgumentException;
-import org.air_controller.sensor_values.SensorData;
+import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.SensorDataBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,9 +21,9 @@ import static org.mockito.Mockito.when;
 class HumidityControlAirFlowTest {
 
     @Mock
-    private CurrentSensorData currentIndoorSensorData;
+    private CurrentSensorData currentIndoorDataPoint;
     @Mock
-    private CurrentSensorData currentOutdoorSensorData;
+    private CurrentSensorData currentOutdoorDataPoint;
 
     @ParameterizedTest(name = "{index} => indoorHumidity={0}%, outdoorHumidity={1}%, expectedResult={2}")
     @CsvSource({
@@ -40,17 +40,17 @@ class HumidityControlAirFlowTest {
     void shouldCalculateHumidityPercentage(double relativeIndoorHumidity, double relativeOutdoorHumidity,
             double expectedResult)
             throws InvalidArgumentException {
-        final SensorData indoorSensorData = new SensorDataBuilder()
+        final ClimateDataPoint indoorClimateDataPoint = new SensorDataBuilder()
                 .setTemperatureCelsius(22.5)
                 .setHumidityRelative(relativeIndoorHumidity)
                 .build();
-        final SensorData outdoorSensorData = new SensorDataBuilder()
+        final ClimateDataPoint outdoorClimateDataPoint = new SensorDataBuilder()
                 .setTemperatureCelsius(22.5)
                 .setHumidityRelative(relativeOutdoorHumidity)
                 .build();
-        when(currentIndoorSensorData.getCurrentSensorData()).thenReturn(Optional.of(indoorSensorData));
-        when(currentOutdoorSensorData.getCurrentSensorData()).thenReturn(Optional.of(outdoorSensorData));
-        final HumidityControlAirFlow testee = new HumidityControlAirFlow(currentIndoorSensorData, currentOutdoorSensorData);
+        when(currentIndoorDataPoint.getCurrentClimateDataPoint()).thenReturn(Optional.of(indoorClimateDataPoint));
+        when(currentOutdoorDataPoint.getCurrentClimateDataPoint()).thenReturn(Optional.of(outdoorClimateDataPoint));
+        final HumidityControlAirFlow testee = new HumidityControlAirFlow(currentIndoorDataPoint, currentOutdoorDataPoint);
 
         final Confidence result = testee.turnOnConfidence();
 
@@ -59,8 +59,8 @@ class HumidityControlAirFlowTest {
 
     @Test
     void shouldReturn0_whenCurrentSensorDataNotAvailable() {
-        when(currentIndoorSensorData.getCurrentSensorData()).thenReturn(Optional.empty());
-        final HumidityControlAirFlow testee = new HumidityControlAirFlow(currentIndoorSensorData, currentOutdoorSensorData);
+        when(currentIndoorDataPoint.getCurrentClimateDataPoint()).thenReturn(Optional.empty());
+        final HumidityControlAirFlow testee = new HumidityControlAirFlow(currentIndoorDataPoint, currentOutdoorDataPoint);
 
         final Confidence result = testee.turnOnConfidence();
 

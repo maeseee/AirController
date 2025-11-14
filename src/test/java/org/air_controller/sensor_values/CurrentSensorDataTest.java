@@ -21,24 +21,24 @@ class CurrentSensorDataTest {
 
     @Test
     void shouldReturnEmpty_whenValuesMissing() {
-        when(persistence.getMostCurrentSensorData(any())).thenReturn(Optional.empty());
+        when(persistence.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.empty());
         final CurrentSensorData testee = new CurrentSensorData(persistence);
 
-        assertThat(testee.getCurrentSensorData()).isNotPresent();
+        assertThat(testee.getCurrentClimateDataPoint()).isNotPresent();
     }
 
     @Test
     void shouldReturnValues() throws InvalidArgumentException {
-        final SensorData sensorData = new SensorDataBuilder()
+        final ClimateDataPoint dataPoint = new SensorDataBuilder()
                 .setTemperatureCelsius(20.0)
                 .setHumidityAbsolute(10.0)
                 .setCo2(500.0)
                 .setTime(ZonedDateTime.now(ZoneOffset.UTC))
                 .build();
-        when(persistence.getMostCurrentSensorData(any())).thenReturn(Optional.of(sensorData));
+        when(persistence.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.of(dataPoint));
         final CurrentSensorData testee = new CurrentSensorData(persistence);
 
-        final Optional<SensorData> currentSensorData = testee.getCurrentSensorData();
+        final Optional<ClimateDataPoint> currentSensorData = testee.getCurrentClimateDataPoint();
 
         assertThat(currentSensorData).isPresent();
         assertThat(currentSensorData.get().temperature().celsius()).isEqualTo(20.0);

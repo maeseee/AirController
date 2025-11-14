@@ -26,7 +26,7 @@ class SensorDataCollectionTest {
     @Mock
     private SensorDataPersistence persistence2;
     @Mock
-    private SensorData sensorData;
+    private ClimateDataPoint dataPoint;
 
     @BeforeEach
     void setUp() {
@@ -39,22 +39,22 @@ class SensorDataCollectionTest {
     void shouldPersistOnAllPersistenceEntries() {
         final SensorDataCollection testee = new SensorDataCollection(persistenceList);
 
-        testee.persist(sensorData);
+        testee.persist(dataPoint);
 
-        verify(persistence1).persist(sensorData);
-        verify(persistence2).persist(sensorData);
+        verify(persistence1).persist(dataPoint);
+        verify(persistence2).persist(dataPoint);
         verifyNoMoreInteractions(persistence1);
         verifyNoMoreInteractions(persistence2);
     }
 
     @Test
     void shouldReadFromFirstPersistence() {
-        when(persistence1.read()).thenReturn(List.of(sensorData));
+        when(persistence1.read()).thenReturn(List.of(dataPoint));
         final SensorDataCollection testee = new SensorDataCollection(persistenceList);
 
-        final List<SensorData> sensorDataResult = testee.read();
+        final List<ClimateDataPoint> climateDataPointResult = testee.read();
 
-        assertThat(sensorDataResult).contains(sensorData);
+        assertThat(climateDataPointResult).contains(dataPoint);
         verify(persistence1).read();
         verifyNoMoreInteractions(persistence1);
         verifyNoInteractions(persistence2);
@@ -62,14 +62,14 @@ class SensorDataCollectionTest {
 
     @Test
     void shouldReturnMostCurrentSensorDataFromFirstPersistence() {
-        when(persistence1.getMostCurrentSensorData(any())).thenReturn(Optional.of(sensorData));
+        when(persistence1.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.of(dataPoint));
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final SensorDataCollection testee = new SensorDataCollection(persistenceList);
 
-        final Optional<SensorData> mostCurrentSensorData = testee.getMostCurrentSensorData(now);
+        final Optional<ClimateDataPoint> mostCurrentSensorData = testee.getMostCurrentClimateDataPoint(now);
 
-        assertThat(mostCurrentSensorData).contains(sensorData);
-        verify(persistence1).getMostCurrentSensorData(now);
+        assertThat(mostCurrentSensorData).contains(dataPoint);
+        verify(persistence1).getMostCurrentClimateDataPoint(now);
         verifyNoMoreInteractions(persistence1);
         verifyNoInteractions(persistence2);
     }

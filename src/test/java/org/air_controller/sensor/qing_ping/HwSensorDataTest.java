@@ -22,13 +22,13 @@ class HwSensorDataTest {
     void shouldBeDifferent(double comparedTemperature, double comparedHumidity, double comparedCo2, int timeOffset, boolean isEquals)
             throws InvalidArgumentException {
         final ZonedDateTime timestamp = ZonedDateTime.now(ZoneOffset.UTC);
-        final SensorData sensorData1 = new SensorDataBuilder()
+        final ClimateDataPoint dataPoint1 = new SensorDataBuilder()
                 .setTemperatureCelsius(23.0)
                 .setHumidityRelative(50.0)
                 .setCo2(500.0)
                 .setTime(timestamp)
                 .build();
-        final SensorData sensorData2 = new SensorDataBuilder()
+        final ClimateDataPoint dataPoint2 = new SensorDataBuilder()
                 .setTemperatureCelsius(comparedTemperature)
                 .setHumidityRelative(comparedHumidity)
                 .setCo2(comparedCo2)
@@ -36,9 +36,9 @@ class HwSensorDataTest {
                 .build();
 
         if (isEquals) {
-            assertThat(sensorData1).isEqualTo(sensorData2);
+            assertThat(dataPoint1).isEqualTo(dataPoint2);
         } else {
-            assertThat(sensorData1).isNotEqualTo(sensorData2);
+            assertThat(dataPoint1).isNotEqualTo(dataPoint2);
         }
     }
 }

@@ -15,8 +15,8 @@ class HumidityControlAirFlow implements Rule {
     private static final double UPPER_RELATIV_HUMIDITY = 65.0;
     private static final double IDEAL_RELATIV_HUMIDITY = 52.5;
 
-    private final CurrentSensorData currentIndoorSensorData;
-    private final CurrentSensorData currentOutdoorSensorData;
+    private final CurrentSensorData currentIndoorDataPoint;
+    private final CurrentSensorData currentOutdoorDataPoint;
 
     @Override
     public String name() {
@@ -25,32 +25,33 @@ class HumidityControlAirFlow implements Rule {
 
     @Override
     public Confidence turnOnConfidence() {
-        final Optional<SensorData> indoorSensorData = currentIndoorSensorData.getCurrentSensorData();
-        final Optional<SensorData> outdoorSensorData = currentOutdoorSensorData.getCurrentSensorData();
+        final Optional<ClimateDataPoint> indoorSensorData = currentIndoorDataPoint.getCurrentClimateDataPoint();
+        final Optional<ClimateDataPoint> outdoorSensorData = currentOutdoorDataPoint.getCurrentClimateDataPoint();
         if (indoorSensorData.isEmpty() || outdoorSensorData.isEmpty()) {
             return new Confidence(0.0);
         }
         return getConfidence(indoorSensorData.get(), outdoorSensorData.get());
     }
 
-    private Confidence getConfidence(SensorData indoorSensorData, SensorData outdoorSensorData) {
-        final double indoorToIdealDiff = indoorSensorData.humidity().absoluteHumidity() - absoluteHumidityFrom(IDEAL_RELATIV_HUMIDITY,
-                indoorSensorData);
-        final double indoorToOutdoorDiff = indoorSensorData.humidity().absoluteHumidity() - outdoorSensorData.humidity().absoluteHumidity();
-        return calculateConfidence(indoorToIdealDiff, indoorToOutdoorDiff, indoorSensorData);
+    private Confidence getConfidence(ClimateDataPoint indoorClimateDataPoint, ClimateDataPoint outdoorClimateDataPoint) {
+        final double indoorToIdealDiff = indoorClimateDataPoint.humidity().absoluteHumidity() - absoluteHumidityFrom(IDEAL_RELATIV_HUMIDITY,
+                indoorClimateDataPoint);
+        final double indoorToOutdoorDiff =
+                indoorClimateDataPoint.humidity().absoluteHumidity() - outdoorClimateDataPoint.humidity().absoluteHumidity();
+        return calculateConfidence(indoorToIdealDiff, indoorToOutdoorDiff, indoorClimateDataPoint);
     }
 
-    private Confidence calculateConfidence(double indoorToIdealDiff, double indoorToOutdoorDiff, SensorData indoorSensorData) {
-        final double confidenceBase =
-                absoluteHumidityFrom(UPPER_RELATIV_HUMIDITY, indoorSensorData) - absoluteHumidityFrom(IDEAL_RELATIV_HUMIDITY, indoorSensorData);
+    private Confidence calculateConfidence(double indoorToIdealDiff, double indoorToOutdoorDiff, ClimateDataPoint indoorClimateDataPoint) {
+        final double confidenceBase = absoluteHumidityFrom(UPPER_RELATIV_HUMIDITY, indoorClimateDataPoint) -
+                absoluteHumidityFrom(IDEAL_RELATIV_HUMIDITY, indoorClimateDataPoint);
         final double indoorConfidence = indoorToIdealDiff / confidenceBase;
         final double outdoorCorrectionFactor = indoorToOutdoorDiff / confidenceBase;
         return new Confidence(indoorConfidence * outdoorCorrectionFactor);
     }
 
-    private double absoluteHumidityFrom(double relativeHumidity, SensorData indoorSensorData) {
+    private double absoluteHumidityFrom(double relativeHumidity, ClimateDataPoint indoorClimateDataPoint) {
         try {
-            final Temperature currentIndoorTemperature = indoorSensorData.temperature();
+            final Temperature currentIndoorTemperature = indoorClimateDataPoint.temperature();
             return Humidity.createFromRelative(relativeHumidity, currentIndoorTemperature).absoluteHumidity();
         } catch (InvalidArgumentException e) {
             logger.error("Ideal humidity could not be created", e);

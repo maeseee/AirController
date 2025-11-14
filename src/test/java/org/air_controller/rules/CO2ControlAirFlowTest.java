@@ -2,7 +2,7 @@ package org.air_controller.rules;
 
 import org.air_controller.sensor_values.CurrentSensorData;
 import org.air_controller.sensor_values.InvalidArgumentException;
-import org.air_controller.sensor_values.SensorData;
+import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.SensorDataBuilder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,13 +31,13 @@ class CO2ControlAirFlowTest {
             "700, 0.0"
     })
     void shouldCalculateCo2Confidence(double co2, double expectedConfidence) throws InvalidArgumentException {
-        final SensorData sensorData = new SensorDataBuilder()
+        final ClimateDataPoint dataPoint = new SensorDataBuilder()
                 .setTemperatureCelsius(21.0)
                 .setHumidityRelative(50.0)
                 .setCo2(co2)
                 .setTime(ZonedDateTime.now(ZoneOffset.UTC))
                 .build();
-        when(currentIndoorSensorData.getCurrentSensorData()).thenReturn(Optional.of(sensorData));
+        when(currentIndoorSensorData.getCurrentClimateDataPoint()).thenReturn(Optional.of(dataPoint));
         final CO2ControlAirFlow testee = new CO2ControlAirFlow(currentIndoorSensorData);
 
         final Confidence result = testee.turnOnConfidence();

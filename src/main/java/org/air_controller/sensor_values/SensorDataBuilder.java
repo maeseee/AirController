@@ -58,13 +58,13 @@ public class SensorDataBuilder {
         return this;
     }
 
-    public SensorData build() {
+    public ClimateDataPoint build() {
         validateNecessaryFieldSet();
         if (this.time == null) {
             // TODO set time in constructor instead of reading it from the external sources!
             this.time = ZonedDateTime.now();
         }
-        return new SensorData(temperature, humidity, Optional.ofNullable(co2), time);
+        return new ClimateDataPoint(temperature, humidity, Optional.ofNullable(co2), time);
     }
 
     private void validateNecessaryFieldSet() {

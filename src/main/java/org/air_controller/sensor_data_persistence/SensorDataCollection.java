@@ -1,6 +1,6 @@
 package org.air_controller.sensor_data_persistence;
 
-import org.air_controller.sensor_values.SensorData;
+import org.air_controller.sensor_values.ClimateDataPoint;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -14,17 +14,17 @@ public class SensorDataCollection implements SensorDataPersistence {
     }
 
     @Override
-    public void persist(SensorData sensorData) {
-        persistenceList.forEach(persistence -> persistence.persist(sensorData));
+    public void persist(ClimateDataPoint dataPoint) {
+        persistenceList.forEach(persistence -> persistence.persist(dataPoint));
     }
 
     @Override
-    public List<SensorData> read() {
+    public List<ClimateDataPoint> read() {
         return persistenceList.getFirst().read();
     }
 
     @Override
-    public Optional<SensorData> getMostCurrentSensorData(ZonedDateTime lastValidTimestamp) {
-        return persistenceList.getFirst().getMostCurrentSensorData(lastValidTimestamp);
+    public Optional<ClimateDataPoint> getMostCurrentClimateDataPoint(ZonedDateTime lastValidTimestamp) {
+        return persistenceList.getFirst().getMostCurrentClimateDataPoint(lastValidTimestamp);
     }
 }

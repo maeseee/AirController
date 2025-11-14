@@ -1,7 +1,7 @@
 package org.air_controller.sensor.qing_ping;
 
 import org.air_controller.sensor_values.InvalidArgumentException;
-import org.air_controller.sensor_values.SensorData;
+import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.SensorDataBuilder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -29,28 +29,28 @@ class SensorReducerTest {
     void shouldTakeAverageOfSensorValues_whenMultipleSensors(double temperature1, double humidity1, double carbonDioxide1, int minutesYounger,
             double expectedTemperature, double expectedHumidity, double expectedCo2) throws InvalidArgumentException, CalculationException {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        final SensorData sensorData1 = new SensorDataBuilder()
+        final ClimateDataPoint dataPoint1 = new SensorDataBuilder()
                 .setTemperatureCelsius(temperature1)
                 .setHumidityAbsolute(humidity1)
                 .setCo2(Double.isNaN(carbonDioxide1) ?  null : carbonDioxide1)
                 .setTime(now.minusMinutes(minutesYounger))
                 .build();
-        final SensorData sensorData2 = new SensorDataBuilder()
+        final ClimateDataPoint dataPoint2 = new SensorDataBuilder()
                 .setTemperatureCelsius(40.0)
                 .setHumidityAbsolute(15.0)
                 .setTime(now)
                 .build();
-        final List<SensorData> sensorData = List.of(sensorData1, sensorData2);
+        final List<ClimateDataPoint> dataPoints = List.of(dataPoint1, dataPoint2);
         final SensorReducer testee = new SensorReducer();
 
-        final SensorData result = testee.reduce(sensorData);
+        final ClimateDataPoint result = testee.reduce(dataPoints);
 
-        final SensorData expectedSensorData = new SensorDataBuilder()
+        final ClimateDataPoint expectedClimateDataPoint = new SensorDataBuilder()
                 .setTemperatureCelsius(expectedTemperature)
                 .setHumidityAbsolute(expectedHumidity)
                 .setCo2(Double.isNaN(expectedCo2) ?  null : expectedCo2)
                 .setTime(now)
                 .build();
-        assertThat(result).isEqualTo(expectedSensorData);
+        assertThat(result).isEqualTo(expectedClimateDataPoint);
     }
 }

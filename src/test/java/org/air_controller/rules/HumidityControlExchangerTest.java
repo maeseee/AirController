@@ -2,7 +2,7 @@ package org.air_controller.rules;
 
 import org.air_controller.sensor_values.CurrentSensorData;
 import org.air_controller.sensor_values.InvalidArgumentException;
-import org.air_controller.sensor_values.SensorData;
+import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.SensorDataBuilder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,9 +20,9 @@ import static org.mockito.Mockito.when;
 class HumidityControlExchangerTest {
 
     @Mock
-    private CurrentSensorData currentIndoorSensorData;
+    private CurrentSensorData currentIndoorDataPoint;
     @Mock
-    private CurrentSensorData currentOutdoorSensorData;
+    private CurrentSensorData currentOutdoorDataPoint;
 
     @ParameterizedTest(name = "{index} => indoorHumidity={0}%, outdoorHumidity={1}%, expectedResult={2}")
     @CsvSource({
@@ -35,17 +35,17 @@ class HumidityControlExchangerTest {
     })
     void shouldControlHumidityExchanger(double relativeIndoorHumidity, double relativeOutdoorHumidity, double expectedResult)
             throws InvalidArgumentException {
-        final SensorData indoorSensorData = new SensorDataBuilder()
+        final ClimateDataPoint indoorClimateDataPoint = new SensorDataBuilder()
                 .setTemperatureCelsius(22.0)
                 .setHumidityRelative(relativeIndoorHumidity)
                 .build();
-        final SensorData outdoorSensorData = new SensorDataBuilder()
+        final ClimateDataPoint outdoorClimateDataPoint = new SensorDataBuilder()
                 .setTemperatureCelsius(22.0)
                 .setHumidityRelative(relativeOutdoorHumidity)
                 .build();
-        when(currentIndoorSensorData.getCurrentSensorData()).thenReturn(Optional.of(indoorSensorData));
-        when(currentOutdoorSensorData.getCurrentSensorData()).thenReturn(Optional.of(outdoorSensorData));
-        final HumidityControlExchanger testee = new HumidityControlExchanger(currentIndoorSensorData, currentOutdoorSensorData);
+        when(currentIndoorDataPoint.getCurrentClimateDataPoint()).thenReturn(Optional.of(indoorClimateDataPoint));
+        when(currentOutdoorDataPoint.getCurrentClimateDataPoint()).thenReturn(Optional.of(outdoorClimateDataPoint));
+        final HumidityControlExchanger testee = new HumidityControlExchanger(currentIndoorDataPoint, currentOutdoorDataPoint);
 
         final Confidence result = testee.turnOnConfidence();
 

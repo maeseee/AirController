@@ -24,11 +24,11 @@ public class SensorDataCsv implements SensorDataPersistence {
     }
 
     @Override
-    public void persist(SensorData sensorData) {
-        final String formattedTime = sensorData.timestamp().format(FORMATTER);
-        final String formattedTemperature = String.format("%.2f", sensorData.temperature().celsius());
-        final String formattedHumidity = String.format("%.2f", sensorData.humidity().getRelativeHumidity(sensorData.temperature()));
-        final String formattedCo2 = sensorData.co2()
+    public void persist(ClimateDataPoint dataPoint) {
+        final String formattedTime = dataPoint.timestamp().format(FORMATTER);
+        final String formattedTemperature = String.format("%.2f", dataPoint.temperature().celsius());
+        final String formattedHumidity = String.format("%.2f", dataPoint.humidity().getRelativeHumidity(dataPoint.temperature()));
+        final String formattedCo2 = dataPoint.co2()
                 .map(co2 -> String.format("%.0f", co2.ppm()))
                 .orElse("");
         final String csvLine = String.format("%s,%s,%s,%s", formattedTime, formattedTemperature, formattedHumidity, formattedCo2);
@@ -41,7 +41,7 @@ public class SensorDataCsv implements SensorDataPersistence {
     }
 
     @Override
-    public List<SensorData> read() {
+    public List<ClimateDataPoint> read() {
         try {
             final File file = new File(filePath);
             final boolean newlyCreated = file.createNewFile();
@@ -55,12 +55,12 @@ public class SensorDataCsv implements SensorDataPersistence {
     }
 
     @Override
-    public Optional<SensorData> getMostCurrentSensorData(ZonedDateTime lastValidTimestamp) {
-        final List<SensorData> data = read();
+    public Optional<ClimateDataPoint> getMostCurrentClimateDataPoint(ZonedDateTime lastValidTimestamp) {
+        final List<ClimateDataPoint> data = read();
         return data.isEmpty() ? Optional.empty() : Optional.of(data.getLast());
     }
 
-    private SensorData createSensorData(String csvLine) throws InvalidArgumentException {
+    private ClimateDataPoint createClimateDataPoint(String csvLine) throws InvalidArgumentException {
         final String[] csv = csvLine.split(",");
         assert (csv.length > 2);
         return new SensorDataBuilder()
@@ -71,21 +71,17 @@ public class SensorDataCsv implements SensorDataPersistence {
                 .build();
     }
 
-    private void addDataIfAvailable(List<SensorData> entries, String currentLine) {
+    private void addDataIfAvailable(List<ClimateDataPoint> entries, String currentLine) {
         try {
-            final SensorData sensorData = getSensorData(currentLine);
-            entries.add(sensorData);
+            final ClimateDataPoint climateDataPoint = createClimateDataPoint(currentLine);
+            entries.add(climateDataPoint);
         } catch (InvalidArgumentException e) {
             logger.error(e.getMessage());
         }
     }
 
-    private SensorData getSensorData(String currentLine) throws InvalidArgumentException {
-        return createSensorData(currentLine);
-    }
-
-    private List<SensorData> readCsvFile(File file) throws IOException {
-        final List<SensorData> entries = new ArrayList<>();
+    private List<ClimateDataPoint> readCsvFile(File file) throws IOException {
+        final List<ClimateDataPoint> entries = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String currentLine;
             while ((currentLine = reader.readLine()) != null) {

@@ -11,46 +11,46 @@ import java.util.OptionalDouble;
 class SensorReducer {
     private static final Duration SENSOR_INVALIDATION_TIME = Duration.ofHours(1);
 
-    public SensorData reduce(List<SensorData> sensorDataList) throws CalculationException, InvalidArgumentException {
-        final List<SensorData> currentSensorDataList = sensorDataList.stream()
+    public ClimateDataPoint reduce(List<ClimateDataPoint> dataPoints) throws CalculationException, InvalidArgumentException {
+        final List<ClimateDataPoint> currentDataPoints = dataPoints.stream()
                 .filter(sensorData -> sensorData.timestamp().isAfter(ZonedDateTime.now(ZoneOffset.UTC).minus(SENSOR_INVALIDATION_TIME)))
                 .toList();
-        if (currentSensorDataList.isEmpty()) {
+        if (currentDataPoints.isEmpty()) {
             throw new CalculationException("No current indoor data at the moment");
         }
         return new SensorDataBuilder()
-                .setTemperature(getAverageTemperature(currentSensorDataList))
-                .setHumidity(getAverageHumidity(currentSensorDataList))
-                .setCo2(getAverageCo2(currentSensorDataList))
-                .setTime(getNewestTimestamp(currentSensorDataList))
+                .setTemperature(getAverageTemperature(currentDataPoints))
+                .setHumidity(getAverageHumidity(currentDataPoints))
+                .setCo2(getAverageCo2(currentDataPoints))
+                .setTime(getNewestTimestamp(currentDataPoints))
                 .build();
     }
 
-    private Temperature getAverageTemperature(List<SensorData> currentSensorDataList) throws InvalidArgumentException {
-        final OptionalDouble averageTemperature = currentSensorDataList.stream()
+    private Temperature getAverageTemperature(List<ClimateDataPoint> currentDataPoints) throws InvalidArgumentException {
+        final OptionalDouble averageTemperature = currentDataPoints.stream()
                 .mapToDouble(value -> value.temperature().celsius())
                 .average();
         return averageTemperature.isPresent() ? Temperature.createFromCelsius(averageTemperature.getAsDouble()) : null;
     }
 
-    private Humidity getAverageHumidity(List<SensorData> currentSensorDataList) throws InvalidArgumentException {
-        final OptionalDouble averageHumidity = currentSensorDataList.stream()
+    private Humidity getAverageHumidity(List<ClimateDataPoint> currentDataPoints) throws InvalidArgumentException {
+        final OptionalDouble averageHumidity = currentDataPoints.stream()
                 .mapToDouble(sensorData -> sensorData.humidity().absoluteHumidity())
                 .average();
         return averageHumidity.isPresent() ? Humidity.createFromAbsolute(averageHumidity.getAsDouble()) : null;
     }
 
-    private CarbonDioxide getAverageCo2(List<SensorData> currentSensorDataList) throws InvalidArgumentException {
-        final OptionalDouble averageCo2 = currentSensorDataList.stream()
+    private CarbonDioxide getAverageCo2(List<ClimateDataPoint> currentDataPoints) throws InvalidArgumentException {
+        final OptionalDouble averageCo2 = currentDataPoints.stream()
                 .filter(sensorData -> sensorData.co2().isPresent())
                 .mapToDouble(value -> value.co2().get().ppm())
                 .average();
         return averageCo2.isPresent() ? CarbonDioxide.createFromPpm(averageCo2.getAsDouble()) : null;
     }
 
-    private ZonedDateTime getNewestTimestamp(List<SensorData> currentSensorDataList) {
-        return currentSensorDataList.stream()
-                .map(SensorData::timestamp)
+    private ZonedDateTime getNewestTimestamp(List<ClimateDataPoint> currentDataPoints) {
+        return currentDataPoints.stream()
+                .map(ClimateDataPoint::timestamp)
                 .max(ZonedDateTime::compareTo).orElse(ZonedDateTime.now(ZoneOffset.UTC));
     }
 }

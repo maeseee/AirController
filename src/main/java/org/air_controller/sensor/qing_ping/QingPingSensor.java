@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.air_controller.sensor.Sensor;
 import org.air_controller.sensor_data_persistence.SensorDataPersistence;
 import org.air_controller.sensor_values.InvalidArgumentException;
-import org.air_controller.sensor_values.SensorData;
+import org.air_controller.sensor_values.ClimateDataPoint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,14 +44,14 @@ public class QingPingSensor implements Sensor {
 
     private void doRun() throws CommunicationException, IOException, URISyntaxException, InvalidArgumentException, CalculationException {
         final String token = accessToken.readToken();
-        final List<SensorData> sensorDataList = listDevices.readSensorDataList(token);
-        final SensorData sensorData = sensorReducer.reduce(sensorDataList);
-        notifyObservers(sensorData);
+        final List<ClimateDataPoint> climateDataPoints = listDevices.readSensorDataList(token);
+        final ClimateDataPoint dataPoint = sensorReducer.reduce(climateDataPoints);
+        notifyObservers(dataPoint);
     }
 
-    private void notifyObservers(SensorData sensorData) {
-        logger.info("New indoor sensor data: {}", sensorData);
-        persistence.persist(sensorData);
+    private void notifyObservers(ClimateDataPoint dataPoint) {
+        logger.info("New indoor data point: {}", dataPoint);
+        persistence.persist(dataPoint);
     }
 
 }

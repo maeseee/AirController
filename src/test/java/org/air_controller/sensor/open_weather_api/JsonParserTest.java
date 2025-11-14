@@ -1,7 +1,7 @@
 package org.air_controller.sensor.open_weather_api;
 
 import org.air_controller.sensor_values.Humidity;
-import org.air_controller.sensor_values.SensorData;
+import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.Temperature;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +33,7 @@ class JsonParserTest {
                 }
                 """;
 
-        final Optional<SensorData> result = JsonParser.parse(sampleHttpResponse);
+        final Optional<ClimateDataPoint> result = JsonParser.parse(sampleHttpResponse);
 
         assertThat(result).isPresent();
         final Temperature temperature = result.get().temperature();
@@ -62,7 +62,7 @@ class JsonParserTest {
                 }
                 """;
 
-        final Optional<SensorData> result = JsonParser.parse(sampleHttpResponse);
+        final Optional<ClimateDataPoint> result = JsonParser.parse(sampleHttpResponse);
 
         assertThat(result).isEmpty();
     }
@@ -88,7 +88,7 @@ class JsonParserTest {
                 }
                 """;
 
-        final Optional<SensorData> result = JsonParser.parse(sampleHttpResponse);
+        final Optional<ClimateDataPoint> result = JsonParser.parse(sampleHttpResponse);
 
         assertThat(result).isEmpty();
     }

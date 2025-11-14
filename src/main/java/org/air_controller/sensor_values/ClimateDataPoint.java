@@ -5,11 +5,11 @@ import org.jetbrains.annotations.NotNull;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
-public record SensorData(Temperature temperature, Humidity humidity, Optional<CarbonDioxide> co2, ZonedDateTime timestamp) {
+public record ClimateDataPoint(Temperature temperature, Humidity humidity, Optional<CarbonDioxide> co2, ZonedDateTime timestamp) {
 
     @Override
     public @NotNull String toString() {
-        return "SensorData{" +
+        return "ClimateDataPoint{" +
                 "temperature=" + temperature +
                 ", humidity=" + humidity +
                 ", timestamp=" + timestamp +

@@ -14,8 +14,8 @@ public class CurrentSensorData {
 
     private final SensorDataPersistence persistence;
 
-    public Optional<SensorData> getCurrentSensorData() {
-        return persistence.getMostCurrentSensorData(getLastValidTimestamp());
+    public Optional<ClimateDataPoint> getCurrentClimateDataPoint() {
+        return persistence.getMostCurrentClimateDataPoint(getLastValidTimestamp());
     }
 
     private ZonedDateTime getLastValidTimestamp() {

@@ -3,7 +3,7 @@ package org.air_controller.sensor.open_weather_api;
 import org.air_controller.http.HttpsGetRequest;
 import org.air_controller.sensor_data_persistence.SensorDataPersistence;
 import org.air_controller.sensor_values.Humidity;
-import org.air_controller.sensor_values.SensorData;
+import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.Temperature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +42,7 @@ class OpenWeatherApiSensorTest {
     @Mock
     private SensorDataPersistence persistence;
     @Captor
-    private ArgumentCaptor<SensorData> outdoorSensorDataArgumentCaptor;
+    private ArgumentCaptor<ClimateDataPoint> outdoorSensorDataArgumentCaptor;
 
     @Test
     void testWhenMeasureValuesThenPersistData() {
@@ -53,10 +53,10 @@ class OpenWeatherApiSensorTest {
         testee.run();
 
         verify(persistence).persist(outdoorSensorDataArgumentCaptor.capture());
-        final SensorData sensorData = outdoorSensorDataArgumentCaptor.getValue();
-        final Temperature temperature = sensorData.temperature();
+        final ClimateDataPoint dataPoint = outdoorSensorDataArgumentCaptor.getValue();
+        final Temperature temperature = dataPoint.temperature();
         assertEquals(10.53, temperature.celsius(), 0.1);
-        final Humidity humidity = sensorData.humidity();
+        final Humidity humidity = dataPoint.humidity();
         assertEquals(87.0, humidity.getRelativeHumidity(temperature), 0.1);
     }
 
