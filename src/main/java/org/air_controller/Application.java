@@ -1,7 +1,7 @@
 package org.air_controller;
 
 import org.air_controller.rules.RuleApplier;
-import org.air_controller.sensor.Sensors;
+import org.air_controller.sensor_values.ClimateSensors;
 import org.air_controller.statistics.DailyOnTimeLogger;
 import org.air_controller.statistics.SystemStateLogger;
 import org.apache.logging.log4j.LogManager;
@@ -18,14 +18,14 @@ class Application {
     private static final Duration RULE_APPLIER_PERIOD = Duration.ofMinutes(1);
     private static final Duration LOG_PERIOD = Duration.ofHours(1);
 
-    private final Sensors sensors;
+    private final ClimateSensors sensors;
     private final RuleApplier ruleApplier;
     private final DailyOnTimeLogger statistics;
     private final ScheduledExecutorService executor;
     private final ExecutorService worker = Executors.newCachedThreadPool();
     private final SystemStateLogger systemStateLogger;
 
-    Application(Sensors sensors, RuleApplier ruleApplier, DailyOnTimeLogger statistics, SystemStateLogger systemStateLogger,
+    Application(ClimateSensors sensors, RuleApplier ruleApplier, DailyOnTimeLogger statistics, SystemStateLogger systemStateLogger,
             ScheduledExecutorService executor) {
         this.sensors = sensors;
         this.ruleApplier = ruleApplier;

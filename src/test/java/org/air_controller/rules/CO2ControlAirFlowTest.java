@@ -1,9 +1,9 @@
 package org.air_controller.rules;
 
-import org.air_controller.sensor_values.CurrentClimateDataPoint;
-import org.air_controller.sensor_values.InvalidArgumentException;
+import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.DataPointBuilder;
+import org.air_controller.sensor_values.InvalidArgumentException;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 class CO2ControlAirFlowTest {
 
     @Mock
-    private CurrentClimateDataPoint currentIndoorDataPoint;
+    private ClimateSensor indoor;
 
     @ParameterizedTest(name = "{index} => co2 ppm={0}, expectedConfidence={1}")
     @CsvSource({
@@ -37,8 +37,8 @@ class CO2ControlAirFlowTest {
                 .setCo2(co2)
                 .setTime(ZonedDateTime.now(ZoneOffset.UTC))
                 .build();
-        when(currentIndoorDataPoint.getCurrentClimateDataPoint()).thenReturn(Optional.of(dataPoint));
-        final CO2ControlAirFlow testee = new CO2ControlAirFlow(currentIndoorDataPoint);
+        when(indoor.getCurrentDataPoint()).thenReturn(Optional.of(dataPoint));
+        final CO2ControlAirFlow testee = new CO2ControlAirFlow(indoor);
 
         final Confidence result = testee.turnOnConfidence();
 

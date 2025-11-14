@@ -8,8 +8,8 @@ import org.air_controller.persistence.MariaDatabase;
 import org.air_controller.rules.HumidityExchangerRuleBuilder;
 import org.air_controller.rules.Rule;
 import org.air_controller.rules.RuleApplier;
-import org.air_controller.sensor.Sensors;
-import org.air_controller.sensor.SensorsFactory;
+import org.air_controller.sensor.ClimateSensorsFactory;
+import org.air_controller.sensor_values.ClimateSensors;
 import org.air_controller.statistics.DailyOnTimeLogger;
 import org.air_controller.statistics.SystemStateLogger;
 import org.air_controller.system_action.SystemActionDbAccessor;
@@ -22,7 +22,7 @@ import java.util.concurrent.Executors;
 @Setter
 class ApplicationBuilder {
     private final ApplicationBuilderSharedObjects sharedObjects;
-    private final Sensors sensors;
+    private final ClimateSensors sensors;
     private final DailyOnTimeLogger statistics;
     private final RuleApplier ruleApplier;
     private final SystemStateLogger systemStateLogger;
@@ -46,8 +46,8 @@ class ApplicationBuilder {
         return new ApplicationBuilder(sharedObjects);
     }
 
-    private static Sensors createSensors() {
-        return new SensorsFactory().build();
+    private static ClimateSensors createSensors() {
+        return new ClimateSensorsFactory().build();
     }
 
     private DailyOnTimeLogger createStatistics() {
@@ -57,7 +57,7 @@ class ApplicationBuilder {
     private RuleApplier createRuleApplier() {
         final List<Rule> freshAirRules = sharedObjects.getOrCreateFreshAirRules(sensors);
         final List<Rule> humidityExchangeRules =
-                new HumidityExchangerRuleBuilder().getHumidityExchangeRules(sharedObjects.getOrCreateCurrentSensors(sensors));
+                new HumidityExchangerRuleBuilder().getHumidityExchangeRules(sensors);
         return new RuleApplier(sharedObjects.getVentilationSystems(), freshAirRules, humidityExchangeRules);
     }
 

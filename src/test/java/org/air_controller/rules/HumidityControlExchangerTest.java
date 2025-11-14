@@ -1,9 +1,7 @@
 package org.air_controller.rules;
 
-import org.air_controller.sensor_values.CurrentClimateDataPoint;
-import org.air_controller.sensor_values.InvalidArgumentException;
-import org.air_controller.sensor_values.ClimateDataPoint;
-import org.air_controller.sensor_values.DataPointBuilder;
+import org.air_controller.sensor.ClimateSensor;
+import org.air_controller.sensor_values.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -20,9 +18,9 @@ import static org.mockito.Mockito.when;
 class HumidityControlExchangerTest {
 
     @Mock
-    private CurrentClimateDataPoint currentIndoorDataPoint;
+    private ClimateSensor indoor;
     @Mock
-    private CurrentClimateDataPoint currentOutdoorDataPoint;
+    private ClimateSensor outdoor;
 
     @ParameterizedTest(name = "{index} => indoorHumidity={0}%, outdoorHumidity={1}%, expectedResult={2}")
     @CsvSource({
@@ -43,9 +41,10 @@ class HumidityControlExchangerTest {
                 .setTemperatureCelsius(22.0)
                 .setHumidityRelative(relativeOutdoorHumidity)
                 .build();
-        when(currentIndoorDataPoint.getCurrentClimateDataPoint()).thenReturn(Optional.of(indoorClimateDataPoint));
-        when(currentOutdoorDataPoint.getCurrentClimateDataPoint()).thenReturn(Optional.of(outdoorClimateDataPoint));
-        final HumidityControlExchanger testee = new HumidityControlExchanger(currentIndoorDataPoint, currentOutdoorDataPoint);
+        when(indoor.getCurrentDataPoint()).thenReturn(Optional.of(indoorClimateDataPoint));
+        when(outdoor.getCurrentDataPoint()).thenReturn(Optional.of(outdoorClimateDataPoint));
+        final ClimateSensors sensors = new ClimateSensors(indoor, outdoor);
+        final HumidityControlExchanger testee = new HumidityControlExchanger(sensors);
 
         final Confidence result = testee.turnOnConfidence();
 

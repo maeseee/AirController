@@ -18,10 +18,6 @@ public abstract class ClimateSensor implements  Runnable {
         return persistence.getMostCurrentClimateDataPoint(getLastValidTimestamp());
     }
 
-    public ClimateDataPointPersistence getPersistence() {
-        return persistence;
-    }
-
     protected ZonedDateTime getLastValidTimestamp() {
         return ZonedDateTime.now(ZoneOffset.UTC).minus(SENSOR_INVALIDATION);
     }

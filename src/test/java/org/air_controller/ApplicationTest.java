@@ -2,7 +2,7 @@ package org.air_controller;
 
 import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor.ClimateSensor;
-import org.air_controller.sensor.Sensors;
+import org.air_controller.sensor_values.ClimateSensors;
 import org.air_controller.statistics.DailyOnTimeLogger;
 import org.air_controller.statistics.SystemStateLogger;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class ApplicationTest {
 
-    private Sensors sensors;
+    private ClimateSensors sensors;
 
     @Mock
     private ClimateSensor outdoorSensor;
@@ -38,7 +38,7 @@ class ApplicationTest {
 
     @BeforeEach
     void setUp() {
-        sensors = new Sensors(indoorSensor, outdoorSensor);
+        sensors = new ClimateSensors(indoorSensor, outdoorSensor);
     }
 
     @Test

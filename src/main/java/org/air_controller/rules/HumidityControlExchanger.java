@@ -1,13 +1,13 @@
 package org.air_controller.rules;
 
-import org.air_controller.sensor_values.CurrentClimateDataPoint;
+import org.air_controller.sensor_values.ClimateSensors;
 
 class HumidityControlExchanger implements Rule {
 
     private final HumidityControlAirFlow humidityControlAirFlow;
 
-    public HumidityControlExchanger(CurrentClimateDataPoint currentIndoorDataPoint, CurrentClimateDataPoint currentOutdoorDataPoint) {
-        humidityControlAirFlow = new HumidityControlAirFlow(currentIndoorDataPoint, currentOutdoorDataPoint);
+    public HumidityControlExchanger(ClimateSensors sensors) {
+        this.humidityControlAirFlow = new HumidityControlAirFlow(sensors);
     }
 
     @Override

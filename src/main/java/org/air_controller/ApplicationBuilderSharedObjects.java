@@ -4,9 +4,7 @@ import lombok.Getter;
 import org.air_controller.gpio.GpioPins;
 import org.air_controller.rules.FreshAirRuleBuilder;
 import org.air_controller.rules.Rule;
-import org.air_controller.sensor.Sensors;
-import org.air_controller.sensor_values.CurrentClimateDataPoint;
-import org.air_controller.sensor_values.CurrentSensors;
+import org.air_controller.sensor_values.ClimateSensors;
 import org.air_controller.system.ControlledVentilationSystem;
 import org.air_controller.system.VentilationSystem;
 import org.air_controller.system_action.SystemActionDbAccessor;
@@ -21,7 +19,6 @@ class ApplicationBuilderSharedObjects {
     private final SystemActionDbAccessors systemActionDbAccessors;
     @Getter
     private final List<VentilationSystem> ventilationSystems;
-    private CurrentSensors currentSensors;
     private List<Rule> freshAirRules;
 
     public ApplicationBuilderSharedObjects(GpioPins gpioPins, SystemActionDbAccessors systemActionDbAccessors) {
@@ -30,14 +27,7 @@ class ApplicationBuilderSharedObjects {
         this.ventilationSystems = createVentilationSystems();
     }
 
-    public CurrentSensors getOrCreateCurrentSensors(Sensors sensors) {
-        if (currentSensors == null) {
-            createCurrentSensors(sensors);
-        }
-        return currentSensors;
-    }
-
-    public List<Rule> getOrCreateFreshAirRules(Sensors sensors) {
+    public List<Rule> getOrCreateFreshAirRules(ClimateSensors sensors) {
         if (freshAirRules == null) {
             createFreshAirRules(sensors, systemActionDbAccessors.airFlow());
         }
@@ -50,13 +40,7 @@ class ApplicationBuilderSharedObjects {
         return List.of(ventilationSystem, systemActionPersistence);
     }
 
-    private void createCurrentSensors(Sensors sensors) {
-        final CurrentClimateDataPoint currentIndoorDataPoint = new CurrentClimateDataPoint(sensors.indoor().getPersistence());
-        final CurrentClimateDataPoint currentOutdoorDataPoint = new CurrentClimateDataPoint(sensors.outdoor().getPersistence());
-        currentSensors = new CurrentSensors(currentIndoorDataPoint, currentOutdoorDataPoint);
-    }
-
-    private void createFreshAirRules(Sensors sensors, SystemActionDbAccessor dbAccessor) {
-        freshAirRules = new FreshAirRuleBuilder().build(getOrCreateCurrentSensors(sensors), dbAccessor);
+    private void createFreshAirRules(ClimateSensors sensors, SystemActionDbAccessor dbAccessor) {
+        freshAirRules = new FreshAirRuleBuilder().build(sensors, dbAccessor);
     }
 }

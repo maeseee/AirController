@@ -15,8 +15,7 @@ class HumidityControlAirFlow implements Rule {
     private static final double UPPER_RELATIV_HUMIDITY = 65.0;
     private static final double IDEAL_RELATIV_HUMIDITY = 52.5;
 
-    private final CurrentClimateDataPoint currentIndoorDataPoint;
-    private final CurrentClimateDataPoint currentOutdoorDataPoint;
+    private final ClimateSensors sensors;
 
     @Override
     public String name() {
@@ -25,8 +24,8 @@ class HumidityControlAirFlow implements Rule {
 
     @Override
     public Confidence turnOnConfidence() {
-        final Optional<ClimateDataPoint> indoorDataPoint = currentIndoorDataPoint.getCurrentClimateDataPoint();
-        final Optional<ClimateDataPoint> outdoorDataPoint = currentOutdoorDataPoint.getCurrentClimateDataPoint();
+        final Optional<ClimateDataPoint> indoorDataPoint = sensors.indoor().getCurrentDataPoint();
+        final Optional<ClimateDataPoint> outdoorDataPoint = sensors.outdoor().getCurrentDataPoint();
         if (indoorDataPoint.isEmpty() || outdoorDataPoint.isEmpty()) {
             return new Confidence(0.0);
         }
