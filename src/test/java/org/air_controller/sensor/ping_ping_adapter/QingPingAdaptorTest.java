@@ -51,7 +51,7 @@ class QingPingAdaptorTest {
     @Test
     void shouldNotPersistDataPoint_whenInvalidDataPoint()
             throws CommunicationException, IOException, URISyntaxException, InvalidArgumentException, CalculationException {
-        when(sensor.readData()).thenThrow(new CalculationException("Error"));
+        when(sensor.readData()).thenThrow(new IOException("Error"));
         final QingPingAdapter testee = new QingPingAdapter(persistence, sensor);
 
         testee.run();

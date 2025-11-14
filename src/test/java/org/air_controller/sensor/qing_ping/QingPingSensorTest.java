@@ -19,7 +19,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ListDevicesTest {
+class QingPingSensorTest {
+    @Mock
+    private AccessToken accessToken;
     @Mock
     private ListDevicesRequest listDevicesRequest;
     @Mock
@@ -30,12 +32,13 @@ class ListDevicesTest {
     @Test
     void shouldParseSensorList() throws CommunicationException, IOException, URISyntaxException {
         final String token = "token";
+        when(accessToken.readToken()).thenReturn(token);
         final String response = "response";
         when(listDevicesRequest.sendRequest(token)).thenReturn(response);
         when(parser.parseDeviceListResponse(eq(response), any())).thenReturn(Optional.of(dataPoint));
-        final ListDevices testee = new ListDevices(listDevicesRequest, parser);
+        final QingPingSensor testee = new QingPingSensor(accessToken, listDevicesRequest, parser);
 
-        final List<ClimateDataPoint> dataPoints = testee.readDataPoint(token);
+        final List<ClimateDataPoint> dataPoints = testee.readData();
 
         verify(parser).parseDeviceListResponse(response, MAC_AIR_PRESSURE_DEVICE);
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_1);
@@ -47,12 +50,13 @@ class ListDevicesTest {
     @Test
     void shouldIgnoreUnknownSensors() throws CommunicationException, IOException, URISyntaxException {
         final String token = "token";
+        when(accessToken.readToken()).thenReturn(token);
         final String response = "response";
         when(listDevicesRequest.sendRequest(token)).thenReturn(response);
         when(parser.parseDeviceListResponse(eq(response), any())).thenReturn(Optional.empty());
-        final ListDevices testee = new ListDevices(listDevicesRequest, parser);
+        final QingPingSensor testee = new QingPingSensor(accessToken, listDevicesRequest, parser);
 
-        final List<ClimateDataPoint> dataPoints = testee.readDataPoint(token);
+        final List<ClimateDataPoint> dataPoints = testee.readData();
 
         verify(parser).parseDeviceListResponse(response, MAC_AIR_PRESSURE_DEVICE);
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_1);
