@@ -4,14 +4,12 @@ import org.air_controller.persistence.LocalInMemoryDatabase;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.ClimateDataPointBuilder;
 import org.air_controller.sensor_values.InvalidArgumentException;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -117,8 +115,7 @@ class ClimateDataPointTest {
 
         final String dataPointString = dataPoint.toString();
 
-        final String timestampString = timestamp.toString();
-        final String expectedString = "ClimateDataPoint{temperature=12.30\u00B0C, humidity=45.60g/m3, co2=789ppm, timestamp=" + timestampString + "}";
+        final String expectedString = "ClimateDataPoint{temperature=12.30\u00B0C, humidity=45.60g/m3, co2=789ppm" + "}";
         assertThat(dataPointString).isEqualTo(expectedString);
     }
 
@@ -133,8 +130,7 @@ class ClimateDataPointTest {
 
         final String dataPointString = dataPoint.toString();
 
-        final String timestampString = timestamp.toString();
-        final String expectedString = "ClimateDataPoint{temperature=12.30\u00B0C, humidity=45.60g/m3, timestamp=" + timestampString + "}";
+        final String expectedString = "ClimateDataPoint{temperature=12.30\u00B0C, humidity=45.60g/m3" + "}";
         assertThat(dataPointString).isEqualTo(expectedString);
     }
 

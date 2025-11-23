@@ -13,7 +13,6 @@ public record ClimateDataPoint(Temperature temperature, Humidity humidity, Optio
                 "temperature=" + temperature +
                 ", humidity=" + humidity +
                 co2.map(carbonDioxide -> ", co2=" + carbonDioxide).orElse("") +
-                ", timestamp=" + timestamp +
                 '}';
     }
 }
