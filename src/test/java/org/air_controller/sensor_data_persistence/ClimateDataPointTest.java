@@ -1,12 +1,17 @@
 package org.air_controller.sensor_data_persistence;
 
 import org.air_controller.persistence.LocalInMemoryDatabase;
-import org.air_controller.sensor_values.*;
+import org.air_controller.sensor_values.ClimateDataPoint;
+import org.air_controller.sensor_values.ClimateDataPointBuilder;
+import org.air_controller.sensor_values.InvalidArgumentException;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -98,7 +103,40 @@ class ClimateDataPointTest {
         } else {
             assertThat(dataPoint1).isNotEqualTo(dataPoint2);
         }
-}
+    }
+
+    @Test
+    void shouldConvertToString() throws InvalidArgumentException {
+        final ZonedDateTime timestamp = ZonedDateTime.now(ZoneOffset.UTC);
+        final ClimateDataPoint dataPoint = new ClimateDataPointBuilder()
+                .setTemperatureCelsius(12.3)
+                .setHumidityAbsolute(45.6)
+                .setCo2(789.0)
+                .setTime(timestamp)
+                .build();
+
+        final String dataPointString = dataPoint.toString();
+
+        final String timestampString = timestamp.toString();
+        final String expectedString = "ClimateDataPoint{temperature=12.30\u00B0C, humidity=45.60g/m3, co2=789ppm, timestamp=" + timestampString + "}";
+        assertThat(dataPointString).isEqualTo(expectedString);
+    }
+
+    @Test
+    void shouldConvertToStringWithoutCo2() throws InvalidArgumentException {
+        final ZonedDateTime timestamp = ZonedDateTime.now(ZoneOffset.UTC);
+        final ClimateDataPoint dataPoint = new ClimateDataPointBuilder()
+                .setTemperatureCelsius(12.3)
+                .setHumidityAbsolute(45.6)
+                .setTime(timestamp)
+                .build();
+
+        final String dataPointString = dataPoint.toString();
+
+        final String timestampString = timestamp.toString();
+        final String expectedString = "ClimateDataPoint{temperature=12.30\u00B0C, humidity=45.60g/m3, timestamp=" + timestampString + "}";
+        assertThat(dataPointString).isEqualTo(expectedString);
+    }
 
     private static Stream<Arguments> dataPointPersistenceImplementations() {
         return Stream.of(

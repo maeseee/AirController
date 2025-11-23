@@ -12,6 +12,7 @@ public record ClimateDataPoint(Temperature temperature, Humidity humidity, Optio
         return "ClimateDataPoint{" +
                 "temperature=" + temperature +
                 ", humidity=" + humidity +
+                co2.map(carbonDioxide -> ", co2=" + carbonDioxide).orElse("") +
                 ", timestamp=" + timestamp +
                 '}';
     }
