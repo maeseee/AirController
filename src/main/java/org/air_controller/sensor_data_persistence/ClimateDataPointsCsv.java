@@ -73,8 +73,8 @@ public class ClimateDataPointsCsv implements ClimateDataPointPersistence {
 
     private void addDataIfAvailable(List<ClimateDataPoint> entries, String currentLine) {
         try {
-            final ClimateDataPoint climateDataPoint = createClimateDataPoint(currentLine);
-            entries.add(climateDataPoint);
+            final ClimateDataPoint dataPoint = createClimateDataPoint(currentLine);
+            entries.add(dataPoint);
         } catch (InvalidArgumentException e) {
             logger.error(e.getMessage());
         }

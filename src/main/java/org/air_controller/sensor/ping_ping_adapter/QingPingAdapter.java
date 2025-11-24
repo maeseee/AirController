@@ -30,8 +30,8 @@ public class QingPingAdapter extends ClimateSensor {
 
     @Override
     protected Optional<ClimateDataPoint> parseResponse(String response) {
-        final List<ClimateDataPoint> climateDataPoints = parse(response);
-        return sensorReducer.reduce(climateDataPoints);
+        final List<ClimateDataPoint> dataPoints = parse(response);
+        return sensorReducer.reduce(dataPoints);
     }
 
     @Override
@@ -40,12 +40,12 @@ public class QingPingAdapter extends ClimateSensor {
     }
 
     private List<ClimateDataPoint> parse(String response) {
-        final List<ClimateDataPoint> climateDataPoints = new ArrayList<>();
+        final List<ClimateDataPoint> dataPoints = new ArrayList<>();
         QingPingSensor.getDeviceList().forEach(
-                mac -> parser.parseDeviceListResponse(response, mac).ifPresent(climateDataPoints::add));
-        if (climateDataPoints.isEmpty()) {
+                mac -> parser.parseDeviceListResponse(response, mac).ifPresent(dataPoints::add));
+        if (dataPoints.isEmpty()) {
             logger.error("No sensor data found in the response: {}", response);
         }
-        return climateDataPoints;
+        return dataPoints;
     }
 }

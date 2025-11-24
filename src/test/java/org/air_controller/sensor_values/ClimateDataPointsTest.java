@@ -52,9 +52,9 @@ class ClimateDataPointsTest {
         when(persistence1.read()).thenReturn(List.of(dataPoint));
         final ClimateDataPoints testee = new ClimateDataPoints(persistenceList);
 
-        final List<ClimateDataPoint> climateDataPointResult = testee.read();
+        final List<ClimateDataPoint> dataPoints = testee.read();
 
-        assertThat(climateDataPointResult).contains(dataPoint);
+        assertThat(dataPoints).contains(dataPoint);
         verify(persistence1).read();
         verifyNoMoreInteractions(persistence1);
         verifyNoInteractions(persistence2);
