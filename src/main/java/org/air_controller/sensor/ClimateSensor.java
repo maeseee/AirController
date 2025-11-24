@@ -37,8 +37,10 @@ public abstract class ClimateSensor implements Runnable {
 
     protected abstract Optional<ClimateDataPoint> parseResponse(String response);
 
+    protected abstract String sensorType();
+
     private void persistDataPoint(ClimateDataPoint dataPoint) {
-        logger.info("New data point: {}", dataPoint);
+        logger.info("Data point on {}: {}", sensorType(), dataPoint);
         persistence.persist(dataPoint);
     }
 

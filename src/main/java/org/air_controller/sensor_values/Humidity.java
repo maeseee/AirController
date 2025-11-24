@@ -23,6 +23,11 @@ public record Humidity(double absoluteHumidity) {
         return String.format("%.2fg/m3", absoluteHumidity);
     }
 
+    public String toRelativeHumidity(Temperature temperature) {
+        final double relativeHumidity = getRelativeHumidity(temperature);
+        return String.format("%.1f%%", relativeHumidity);
+    }
+
     public static Humidity createFromRelative(double relativeHumidity, Temperature temperature) throws InvalidArgumentException {
         if (relativeHumidity < 0.0 || relativeHumidity > 100.0) {
             throw new InvalidArgumentException("Given humidity of " + relativeHumidity + "% is out of range!");

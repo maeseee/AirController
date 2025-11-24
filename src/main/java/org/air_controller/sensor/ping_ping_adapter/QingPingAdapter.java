@@ -28,9 +28,15 @@ public class QingPingAdapter extends ClimateSensor {
         this.parser = parser;
     }
 
+    @Override
     protected Optional<ClimateDataPoint> parseResponse(String response) {
         final List<ClimateDataPoint> climateDataPoints = parse(response);
         return sensorReducer.reduce(climateDataPoints);
+    }
+
+    @Override
+    protected String sensorType() {
+        return "QingPing";
     }
 
     private List<ClimateDataPoint> parse(String response) {

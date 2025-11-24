@@ -11,7 +11,7 @@ public record ClimateDataPoint(Temperature temperature, Humidity humidity, Optio
     public @NotNull String toString() {
         return "ClimateDataPoint{" +
                 "temperature=" + temperature +
-                ", humidity=" + humidity +
+                ", humidity=" + humidity.toRelativeHumidity(temperature) +
                 co2.map(carbonDioxide -> ", co2=" + carbonDioxide).orElse("") +
                 '}';
     }

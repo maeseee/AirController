@@ -17,11 +17,17 @@ public class OpenWeatherApiAdapter extends ClimateSensor {
         super(persistence, sensor);
     }
 
+    @Override
     protected Optional<ClimateDataPoint> parseResponse(String response) {
         if (response.isEmpty()) {
             logger.error("Outdoor sensor request failed");
             return Optional.empty();
         }
         return JsonParser.parse(response);
+    }
+
+    @Override
+    protected String sensorType() {
+        return "OpenWeatherApi";
     }
 }

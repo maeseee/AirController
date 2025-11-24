@@ -108,14 +108,14 @@ class ClimateDataPointTest {
         final ZonedDateTime timestamp = ZonedDateTime.now(ZoneOffset.UTC);
         final ClimateDataPoint dataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(12.3)
-                .setHumidityAbsolute(45.6)
+                .setHumidityRelative(45.6)
                 .setCo2(789.0)
                 .setTime(timestamp)
                 .build();
 
         final String dataPointString = dataPoint.toString();
 
-        final String expectedString = "ClimateDataPoint{temperature=12.30\u00B0C, humidity=45.60g/m3, co2=789ppm" + "}";
+        final String expectedString = "ClimateDataPoint{temperature=12.30\u00B0C, humidity=45.6%, co2=789ppm" + "}";
         assertThat(dataPointString).isEqualTo(expectedString);
     }
 
@@ -124,13 +124,13 @@ class ClimateDataPointTest {
         final ZonedDateTime timestamp = ZonedDateTime.now(ZoneOffset.UTC);
         final ClimateDataPoint dataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(12.3)
-                .setHumidityAbsolute(45.6)
+                .setHumidityRelative(45.6)
                 .setTime(timestamp)
                 .build();
 
         final String dataPointString = dataPoint.toString();
 
-        final String expectedString = "ClimateDataPoint{temperature=12.30\u00B0C, humidity=45.60g/m3" + "}";
+        final String expectedString = "ClimateDataPoint{temperature=12.30\u00B0C, humidity=45.6%" + "}";
         assertThat(dataPointString).isEqualTo(expectedString);
     }
 
