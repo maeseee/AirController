@@ -28,15 +28,15 @@ class HumidityControlAirFlowTest {
 
     @ParameterizedTest(name = "{index} => indoorHumidity={0}%, outdoorHumidity={1}%, expectedResult={2}")
     @CsvSource({
-            "52.5, 52.5, 0.0",
-            "52.5, 65.0, 0.0",
+            "52.0, 52.0, 0.0",
+            "52.0, 65.0, 0.0",
             "65.0, 65.0, 0.0",
-            "65.0, 52.5, 1.0",
-            "70.0, 52.5, 1.0",
-            "40.0, 52.5, 1.0",
-            "40.0, 65.0, 1.0",
-            "40.0, 27.5, -1.0",
-            "65.0, 77.5, -1.0",
+            "65.0, 52.0, 1.0",
+            "70.0, 52.0, 1.0",
+            "39.0, 52.0, 1.0",
+            "39.0, 65.0, 1.0",
+            "39.0, 26.0, -1.0",
+            "65.0, 78.0, -1.0",
     })
     void shouldCalculateHumidityPercentage(double relativeIndoorHumidity, double relativeOutdoorHumidity,
             double expectedResult)

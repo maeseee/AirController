@@ -13,7 +13,7 @@ class HumidityControlAirFlow implements Rule {
     private static final Logger logger = LogManager.getLogger(HumidityControlAirFlow.class);
 
     private static final double UPPER_RELATIV_HUMIDITY = 65.0;
-    private static final double IDEAL_RELATIV_HUMIDITY = 52.5;
+    private static final double IDEAL_RELATIV_HUMIDITY = 52.0;
 
     private final ClimateSensors sensors;
 
