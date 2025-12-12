@@ -12,3 +12,12 @@
 8. Go to `Installed`/`Container Manager`
 9. Go to `Container` and choose `air-controller`
 10. Press `Action`/`Restart`
+
+## Create Docker container on Synology NAS
+
+1. Update the container name in the [compose](compose.yaml) file
+2. Create the docker folder (e.g. \\DS224P\docker\air_controller_java25)
+3. On Synology Container Manager, create a new Project
+4. Give it a unique name (e.g. air-controller-with-java-25)
+5. No web-portal is needed
+6. Build and run the new docker in parallel 

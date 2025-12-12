@@ -1,15 +1,15 @@
 version: '3.8'
 
 services:
-  air-controller-app:
+  air-controller-with-java-25-app:
     build: .
-    container_name: air-controller
+    container_name: air-controller-java25
     environment:
       - weather_api_key=${weather_api_key}
       - qingping_app_secret=${qingping_app_secret}
       - mariaDdPassword=${mariaDdPassword}
     volumes:
-      - ./AirController-1.0-SNAPSHOT-jar-with-dependencies.jar:/app/AirController.jar
+      - ./AirController-1.1-SNAPSHOT-jar-with-dependencies.jar:/app/AirController.jar
       - ./log:/app/log
     networks:
       - default
