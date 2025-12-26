@@ -70,7 +70,6 @@ class RuleApplierTest {
         when(rule.turnOnConfidence()).thenReturn(new Confidence(-1.0));
         freshAirRules.add(rule);
         final Rule humidityRule = mock(Rule.class);
-        when(humidityRule.turnOnConfidence()).thenReturn(new Confidence(1.0));
         exchangeHumidityRules.add(humidityRule);
         final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
 

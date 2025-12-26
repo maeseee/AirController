@@ -12,16 +12,23 @@ public class RuleApplierSystem {
     private static final double HYSTERESIS = 0.05;
 
     @Getter
-    private OutputState currentState = OutputState.INITIALIZING; // The system for fresh air should be on by default
+    private OutputState currentState = OutputState.INITIALIZING;
     private final List<Rule> rules;
     private final Consumer<OutputState> updateAction;
 
-    void updateSystemIfNecessary() {
-        final Hysteresis hysteresis = new Hysteresis(HYSTERESIS);
+    void updateSystemIfNecessary(boolean activated) {
+        if (activated) {
+            updateSystemIfNecessary();
+        } else {
+            updateSystem(OutputState.OFF);
+        }
+    }
 
-        final double confidenceForFreshAir = getTotalConfidence(rules);
-        boolean nextAirFlowStateOn = hysteresis.changeStateWithHysteresis(confidenceForFreshAir, currentState.isOn());
-        updateSystem(OutputState.fromIsOnState(nextAirFlowStateOn));
+    private void updateSystemIfNecessary() {
+        final Hysteresis hysteresis = new Hysteresis(HYSTERESIS);
+        final double confidence = getTotalConfidence(rules);
+        boolean nextStateOn = hysteresis.changeStateWithHysteresis(confidence, currentState.isOn());
+        updateSystem(OutputState.fromIsOnState(nextStateOn));
     }
 
     private double getTotalConfidence(List<Rule> rules) {
@@ -30,10 +37,10 @@ public class RuleApplierSystem {
                 .sum();
     }
 
-    private void updateSystem(OutputState nextAirFlowState) {
-        if (currentState != nextAirFlowState) {
-            updateAction.accept(nextAirFlowState);
-            currentState = nextAirFlowState;
+    private void updateSystem(OutputState nextState) {
+        if (currentState != nextState) {
+            updateAction.accept(nextState);
+            currentState = nextState;
         }
     }
 }
