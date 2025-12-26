@@ -14,4 +14,7 @@ public enum OutputState {
         this.isOn = isOn;
     }
 
+    public static OutputState fromIsOnState(boolean isOn) {
+        return isOn ? ON : OFF;
+    }
 }

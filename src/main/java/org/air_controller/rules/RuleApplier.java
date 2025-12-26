@@ -12,7 +12,6 @@ import java.util.List;
 public class RuleApplier implements Runnable {
     private static final Logger logger = LogManager.getLogger(RuleApplier.class);
     private static final double HYSTERESIS = 0.05;
-    private static final double ON_CONFIDENCE = 0.1;
 
     private final List<VentilationSystem> ventilationSystem;
     private final List<Rule> freshAirRules;
@@ -34,11 +33,11 @@ public class RuleApplier implements Runnable {
 
         final double confidenceForFreshAir = getTotalConfidence(freshAirRules);
         boolean nextAirFlowStateOn = hysteresis.changeStateWithHysteresis(confidenceForFreshAir, airFlowState.isOn());
-        updateAirFlow(nextAirFlowStateOn ? OutputState.ON : OutputState.OFF);
+        updateAirFlow(OutputState.fromIsOnState(nextAirFlowStateOn));
 
         final double confidenceForHumidityExchange = getTotalConfidence(exchangeHumidityRules);
         boolean nextHumidityExchangerStateOn = hysteresis.changeStateWithHysteresis(confidenceForHumidityExchange, humidityExchangerState.isOn());
-        final OutputState nextHumidityExchangerState = nextAirFlowStateOn && nextHumidityExchangerStateOn ? OutputState.ON : OutputState.OFF;
+        final OutputState nextHumidityExchangerState = OutputState.fromIsOnState(nextAirFlowStateOn && nextHumidityExchangerStateOn);
         updateHumidityExchanger(nextHumidityExchangerState);
     }
 

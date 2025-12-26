@@ -20,6 +20,6 @@ public class ControlledVentilationSystem implements VentilationSystem {
 
     @Override
     public OutputState isAirFlowOn() {
-        return gpioPins.airFlow().getGpioState() ? OutputState.ON : OutputState.OFF;
+        return OutputState.fromIsOnState(gpioPins.airFlow().getGpioState());
     }
 }
