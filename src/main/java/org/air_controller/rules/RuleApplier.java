@@ -30,13 +30,15 @@ public class RuleApplier implements Runnable {
     }
 
     private void doRun() {
+        final Hysteresis hysteresis = new Hysteresis(HYSTERESIS);
+
         final double confidenceForFreshAir = getTotalConfidence(freshAirRules);
-        final OutputState nextAirFlowState = nextStateWithHysteresis(confidenceForFreshAir, airFlowState);
-        updateAirFlow(nextAirFlowState);
+        boolean nextAirFlowStateOn = hysteresis.changeStateWithHysteresis(confidenceForFreshAir, airFlowState.isOn());
+        updateAirFlow(nextAirFlowStateOn ? OutputState.ON : OutputState.OFF);
 
         final double confidenceForHumidityExchange = getTotalConfidence(exchangeHumidityRules);
-        final OutputState nextHumidityExchangerState =
-                nextAirFlowState.isOn() ? nextStateWithHysteresis(confidenceForHumidityExchange, humidityExchangerState) : OutputState.OFF;
+        boolean nextHumidityExchangerStateOn = hysteresis.changeStateWithHysteresis(confidenceForHumidityExchange, humidityExchangerState.isOn());
+        final OutputState nextHumidityExchangerState = nextAirFlowStateOn && nextHumidityExchangerStateOn ? OutputState.ON : OutputState.OFF;
         updateHumidityExchanger(nextHumidityExchangerState);
     }
 
@@ -45,12 +47,6 @@ public class RuleApplier implements Runnable {
                 .mapToDouble(rule -> rule.turnOnConfidence().getWeightedConfidenceValue())
                 .sum();
     }
-
-    private OutputState nextStateWithHysteresis(double confidence, OutputState currentState) {
-        confidence += (currentState.isOn()) ? HYSTERESIS : -HYSTERESIS;
-        return confidence >= ON_CONFIDENCE ? OutputState.ON : OutputState.OFF;
-    }
-
 
     private void updateAirFlow(OutputState nextAirFlowState) {
         if (airFlowState != nextAirFlowState) {
