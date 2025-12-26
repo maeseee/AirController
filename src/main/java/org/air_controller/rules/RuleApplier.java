@@ -1,23 +1,34 @@
 package org.air_controller.rules;
 
-import lombok.RequiredArgsConstructor;
 import org.air_controller.system.OutputState;
 import org.air_controller.system.VentilationSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-@RequiredArgsConstructor
 public class RuleApplier implements Runnable {
     private static final Logger logger = LogManager.getLogger(RuleApplier.class);
     private static final double HYSTERESIS = 0.05;
 
-    private final List<VentilationSystem> ventilationSystem;
     private final List<Rule> freshAirRules;
-    private final List<Rule> exchangeHumidityRules;
     private OutputState airFlowState = OutputState.INITIALIZING; // The system for fresh air should be on by default
+    private final Consumer<OutputState> airFlowUpdateAction;
+
+    private final List<Rule> humidityExchangerRules;
     private OutputState humidityExchangerState = OutputState.INITIALIZING; // The system to exchange humidity should be off by default
+    private final Consumer<OutputState> humidityExchangerAction;
+
+    public RuleApplier(List<VentilationSystem> ventilationSystems, List<Rule> freshAirRules, List<Rule> humidityExchangerRules) {
+        this.freshAirRules = freshAirRules;
+        this.airFlowUpdateAction =
+                (OutputState nextState) -> ventilationSystems.forEach(ventilationSystem -> ventilationSystem.setAirFlowOn(nextState));
+
+        this.humidityExchangerRules = humidityExchangerRules;
+        this.humidityExchangerAction =
+                (OutputState nextState) -> ventilationSystems.forEach(ventilationSystem -> ventilationSystem.setHumidityExchangerOn(nextState));
+    }
 
     @Override
     public void run() {
@@ -35,7 +46,7 @@ public class RuleApplier implements Runnable {
         boolean nextAirFlowStateOn = hysteresis.changeStateWithHysteresis(confidenceForFreshAir, airFlowState.isOn());
         updateAirFlow(OutputState.fromIsOnState(nextAirFlowStateOn));
 
-        final double confidenceForHumidityExchange = getTotalConfidence(exchangeHumidityRules);
+        final double confidenceForHumidityExchange = getTotalConfidence(humidityExchangerRules);
         boolean nextHumidityExchangerStateOn = hysteresis.changeStateWithHysteresis(confidenceForHumidityExchange, humidityExchangerState.isOn());
         final OutputState nextHumidityExchangerState = OutputState.fromIsOnState(nextAirFlowStateOn && nextHumidityExchangerStateOn);
         updateHumidityExchanger(nextHumidityExchangerState);
@@ -49,14 +60,14 @@ public class RuleApplier implements Runnable {
 
     private void updateAirFlow(OutputState nextAirFlowState) {
         if (airFlowState != nextAirFlowState) {
-            ventilationSystem.forEach(system -> system.setAirFlowOn(nextAirFlowState));
+            airFlowUpdateAction.accept(nextAirFlowState);
             airFlowState = nextAirFlowState;
         }
     }
 
     private void updateHumidityExchanger(OutputState nextHumidityExchangerState) {
         if (humidityExchangerState != nextHumidityExchangerState) {
-            ventilationSystem.forEach(system -> system.setHumidityExchangerOn(nextHumidityExchangerState));
+            humidityExchangerAction.accept(nextHumidityExchangerState);
             humidityExchangerState = nextHumidityExchangerState;
         }
     }
