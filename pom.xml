@@ -172,7 +172,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.air_controller.Main</mainClass>
+                            <mainClass>org.air_controller.AirControllerApplication</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -201,16 +201,7 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>org.air_controller.Main</mainClass>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>run-gpio-test</id>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>org.air_controller.gpio.raspberry.GpioHwPin</mainClass>
+                            <mainClass>org.air_controller.AirControllerApplication</mainClass>
                         </configuration>
                     </execution>
                     <execution>
