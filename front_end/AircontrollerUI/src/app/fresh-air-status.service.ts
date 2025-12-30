@@ -5,7 +5,7 @@ import {Observable} from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class FreashAirStatus {
+export class FreshAirStatus {
   private readonly API_URL = 'http://localhost:8080/currentState/freshAir';
 
   constructor(private http: HttpClient) {}

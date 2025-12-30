@@ -1,0 +1,14 @@
+.status-display {
+  font-size: 30px;
+  font-weight: bold;
+  padding: 20px;
+  margin: 20px auto;
+  width: 200px;
+  border-radius: 10px;
+  background-color: #eee;
+}
+
+.status-on { color: white; background-color: green; }
+.status-off { color: white; background-color: red; }
+
+button { padding: 10px 20px; cursor: pointer; }
