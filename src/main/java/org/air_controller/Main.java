@@ -1,10 +1,8 @@
 package org.air_controller;
 
-import java.sql.SQLException;
-
 public class Main {
 
-    public static void main(String[] args) throws InterruptedException, SQLException {
+    static void main() throws InterruptedException {
         final Application application = createApplication();
         application.run();
         Thread.currentThread().join();
