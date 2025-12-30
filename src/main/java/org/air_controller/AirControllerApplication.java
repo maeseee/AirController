@@ -1,4 +1,4 @@
-package org.air_controller.web_access;
+package org.air_controller;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
