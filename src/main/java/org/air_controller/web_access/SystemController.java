@@ -2,6 +2,7 @@ package org.air_controller.web_access;
 
 import org.air_controller.system.OutputState;
 import org.air_controller.system_action.SystemAction;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,11 +13,12 @@ import java.util.Optional;
 @RestController
 public class SystemController {
 
-    private final AirControllerRepository airControllerRepository = new AirControllerRepository();
+    @Autowired
+    private AirControllerService airControllerService;
 
     @GetMapping("/currentState/freshAir")
     public ResponseEntity<OutputState> getCurrentStateForFreshAir() {
-        final Optional<SystemAction> lastAction = airControllerRepository.getCurrentStateForFreshAir();
+        final Optional<SystemAction> lastAction = airControllerService.getCurrentStateForFreshAir();
         return lastAction
                 .map(systemAction -> new ResponseEntity<>(systemAction.outputState(), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
