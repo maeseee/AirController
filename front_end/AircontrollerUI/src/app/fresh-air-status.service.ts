@@ -6,7 +6,8 @@ import {Observable} from 'rxjs';
   providedIn: 'root',
 })
 export class FreshAirStatus {
-  private readonly API_URL = 'http://localhost:8080/currentState/freshAir';
+  // Different containers: 'http://192.168.50.12:8080/currentState/freshAir'
+  private readonly API_URL = '/api/currentState/freshAir'; // With Nginx-bridge (proxy)
 
   constructor(private http: HttpClient) {}
 

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
+// TODO make more restrict
 @CrossOrigin(origins = "*")
 @RestController
 public class SystemController {

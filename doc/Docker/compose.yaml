@@ -1,16 +1,26 @@
 version: '3.8'
 
 services:
-  air-controller-with-java-25-app:
+  air-controller-backend:
     build: .
-    container_name: air-controller-java25
+    container_name: air-controller-java25-backend
     environment:
       - weather_api_key=${weather_api_key}
       - qingping_app_secret=${qingping_app_secret}
       - mariaDdPassword=${mariaDdPassword}
     volumes:
-      - ./AirController-1.1-SNAPSHOT-jar-with-dependencies.jar:/app/AirController.jar
+      - ./AirController-1.2-SNAPSHOT-jar-with-dependencies.jar:/app/AirController.jar
       - ./log:/app/log
     networks:
       - default
-    restart: unless-stopped  # Automatically restart the container unless manually stopped
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+  air-controller-frontend:
+    build: .
+    image: air-controller-frontend:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - air-controller-java25-backend
+    restart: unless-stopped
