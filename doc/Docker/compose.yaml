@@ -2,25 +2,34 @@ version: '3.8'
 
 services:
   air-controller-backend:
-    build: .
+    build:
+      context: ./air-controller-backend
+      dockerfile: Dockerfile
     container_name: air-controller-java25-backend
     environment:
       - weather_api_key=${weather_api_key}
       - qingping_app_secret=${qingping_app_secret}
       - mariaDdPassword=${mariaDdPassword}
     volumes:
-      - ./AirController-1.2-SNAPSHOT-jar-with-dependencies.jar:/app/AirController.jar
-      - ./log:/app/log
+      - ./air-controller-backend/AirController-1.2-SNAPSHOT-jar-with-dependencies.jar:/app/AirController.jar
+      - ./air-controller-backend/log:/app/log
     networks:
-      - default
-    ports:
-      - "8080:8080"
+      - aircontroller-network
     restart: unless-stopped
   air-controller-frontend:
-    build: .
+    build:
+      context: ./air-controller-frontend
+      dockerfile: Dockerfile
     image: air-controller-frontend:latest
+    container_name: air-controller-ui
     ports:
-      - "80:80"
+      - "8085:80"
+    networks:
+      - aircontroller-network
     depends_on:
-      - air-controller-java25-backend
+      - air-controller-backend
     restart: unless-stopped
+
+networks:
+  aircontroller-network:
+    driver: bridge

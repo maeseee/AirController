@@ -20,4 +20,7 @@
 3. On Synology Container Manager, create a new Project
 4. Give it a unique name (e.g. air-controller-with-java-25)
 5. No web-portal is needed
-6. Build and run the new docker in parallel 
+6. Build and run the new docker in parallel
+
+// TODO create powershell script to update the right docker files
+- condition about environment variables
