@@ -5,7 +5,8 @@ services:
     build:
       context: ./air-controller-backend
       dockerfile: Dockerfile
-    container_name: air-controller-java25-backend
+    image: air-controller-backend-java25:latest
+    container_name: air-controller-backend
     environment:
       - weather_api_key=${weather_api_key}
       - qingping_app_secret=${qingping_app_secret}
@@ -15,13 +16,15 @@ services:
       - ./air-controller-backend/log:/app/log
     networks:
       - aircontroller-network
+    ports:
+      - "8080:8080"
     restart: unless-stopped
   air-controller-frontend:
     build:
       context: ./air-controller-frontend
       dockerfile: Dockerfile
     image: air-controller-frontend:latest
-    container_name: air-controller-ui
+    container_name: air-controller-frontend
     ports:
       - "8085:80"
     networks:

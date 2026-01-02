@@ -3,8 +3,6 @@ FROM node:22-alpine AS build-stage
 WORKDIR /app
 
 COPY package*.json ./
-#RUN npm install -g npm@latest
-#RUN npm install -g @angular/cli
 RUN npm install
 COPY . .
 RUN npx ng build --configuration=production
