@@ -1,3 +1,5 @@
+# Execute with powershell -ExecutionPolicy Bypass -File .\update_docker.ps1
+
 # --- KONFIGURATION ---
 $SSHUser = "cloudy"
 $SSHHost = "192.168.50.12"
@@ -16,9 +18,6 @@ $ProjectMap = @{
     "doc\Docker\.env" = ""
     "doc\Docker\compose.yaml" = ""
 }
-
-# Remote-Pfade auf der Synology (Linux-Format)
-$SynologyRoot = "/volume1/Backup/Deploy"
 
 # --- DEPLOYMENT LOGIK ---
 
@@ -54,8 +53,10 @@ $LogDir = Join-Path -Path $NetworkShareBase -ChildPath "air-controller-backend\l
 New-Item -Path $LogDir -ItemType Directory -Force | Out-Null
 
 # --- DOCKER UPDATE (FRONTEND & BACKEND) ---
+$SSHPass = "" # TODO read password from terminal
 Write-Host "`n>>> Aktualisiere Docker Container via SSH..." -ForegroundColor Cyan
-$SSHCommand = "echo '$SSHPass' | sudo -S sh -c 'cd $SynologyRoot && docker-compose up -d --build'"
-ssh "$SSHUser@$SSHHost" "$SSHCommand"
+$InnerCommand = "cd $SynologyRoot && /usr/local/bin/docker-compose down --remove-orphans && /usr/local/bin/docker-compose up -d --build"
+$FullSSHCommand = "echo '$SSHPass' | sudo -S sh -c '$InnerCommand'"
 
+ssh "$SSHUser@$SSHHost" "$FullSSHCommand"
 Write-Host "`n>>> Frontend und Backend wurden erfolgreich aktualisiert!" -ForegroundColor Green
