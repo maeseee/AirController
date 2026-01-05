@@ -1,6 +1,6 @@
 # Docker
 
-## Update Docker on Synology NAS
+## Update Docker on Synology NAS (old way, use [update_docker](../../scripts/update_docker.ps1))
 
 1. Compile and create jar file with `mvn clean install -DskipTests`
 2. Open Browser and login (https://192.168.50.12:5001)
@@ -21,6 +21,3 @@
 4. Give it a unique name (e.g. air-controller-with-java-25)
 5. No web-portal is needed
 6. Build and run the new docker in parallel
-
-// TODO create powershell script to update the right docker files
-- condition about environment variables

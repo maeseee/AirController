@@ -153,31 +153,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.4</version>
             </plugin>
-            <!-- Assembly a fat jar with all the dependencies -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.7.1</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.air_controller.AirControllerApplication</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <!-- Exec -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

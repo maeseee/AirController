@@ -59,4 +59,4 @@ $InnerCommand = "cd $SynologyRoot && /usr/local/bin/docker-compose down --remove
 $FullSSHCommand = "echo '$SSHPass' | sudo -S sh -c '$InnerCommand'"
 
 ssh "$SSHUser@$SSHHost" "$FullSSHCommand"
-Write-Host "`n>>> Frontend und Backend wurden erfolgreich aktualisiert!" -ForegroundColor Green
+Write-Host "`n>>> Frontend und Backend wurden aktualisiert!" -ForegroundColor Green
