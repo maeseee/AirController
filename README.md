@@ -17,26 +17,21 @@ Following some requirements:
 - For the indoor temperature and humidity sensor connected to the raspberry pi with I2C can be used.
 - Indoor- and outdoor sensor values must be logged at least each 30 minutes.
 - Humidity should be controlled to get as close as possible to 50%. As it is a passive system, this will not always be
-  possible. 
+  possible.
 
-## Update Docker on Synology NAS (old way, use [update_docker](../../scripts/update_docker.ps1))
+## Update Docker on Synology NAS
 
-1. Compile and create jar file with `mvn clean install -DskipTests`
+1. Run [update_docker_sources.ps1](update_docker_sources.ps1)
 2. Open Browser and login (https://192.168.50.12:5001)
-3. Open `File Station`
-4. Go to docker/air_controller
-5. `Upload - Override`
-6. Choose `AirController-1.0-SNAPSHOT-jar-with-dependencies.jar`
-7. Open `Package Center`
-8. Go to `Installed`/`Container Manager`
-9. Go to `Container` and choose `air-controller`
-10. Press `Action`/`Restart`
+3. Open `Container Manager`
+4. Go to `ProjectContainer/air-controller-app`
+5. Stop project (stops all container from project)
+6. Build project
 
 ## Create Docker container on Synology NAS
 
-1. Update the container name in the [compose](../../compose.yaml) file
-2. Create the docker folder (e.g. \\DS224P\docker\air_controller_java25)
-3. On Synology Container Manager, create a new Project
-4. Give it a unique name (e.g. air-controller-with-java-25)
-5. No web-portal is needed
-6. Build and run the new docker in parallel
+1. Update the container name in the [compose](compose.yaml) file
+2. Create the docker folder (e.g. \\MyCloud77\docker\air_controller_app)
+3. On Synology `Container Manager`, create a new Project
+4. Give it a unique name (e.g. `air_controller_app`)
+5. Build and run the new docker
