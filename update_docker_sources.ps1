@@ -15,9 +15,14 @@ $ProjectMap = @{
 foreach ($SourceFolder in $ProjectMap.Keys)
 {
     $Source = Join-Path -Path $ProjectBase $SourceFolder
-    $Destination = Join-Path -Path $NetworkShareBase -ChildPath $ProjectMap[$SourceFolder]
+    if (!(Test-Path -Path $Source))
+    {
+        Write-Host "ERROR: Source not found at $Source" -ForegroundColor Red
+        continue
+    }
 
-    Write-Host "Kopiere $Source nach $Destination!" -ForegroundColor Gray
+    $Destination = Join-Path -Path $NetworkShareBase -ChildPath $ProjectMap[$SourceFolder]
+    Write-Host "Copy $Source to $Destination!" -ForegroundColor Gray
 
     if (!(Test-Path $Destination))
     {
