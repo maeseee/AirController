@@ -18,8 +18,3 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
-
-# TODO Reverse Proxy auf dem Synology
-# unter Systemsteuerung > Anmeldeportal
-# Quelle: http://aircontroller.synology.me (Port 80/443)
-# Ziel: http://localhost:8085
