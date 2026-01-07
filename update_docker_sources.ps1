@@ -4,13 +4,15 @@ $ProjectBase = "C:\Users\maese\Documents\Repos\AirController"
 $NetworkShareBase = "\\MyCloud77\docker\air_controller_app"
 $ExcludeList = ".angular", ".idea", ".vscode", "node_modules", ".git", "bin", "obj", ".gitignore"
 $ProjectMap = @{
-    "src" = "air-controller-backend\src"
-    "pom.xml" = "air-controller-backend"
     "Dockerfile" = "air-controller-backend"
     "front_end" = "air-controller-frontend"
-    ".env" = ""
     "compose.yaml" = ""
+#    ".env" = ""
+    "target\AirController-1.2-SNAPSHOT-jar-with-dependencies.jar" = "air-controller-backend"
 }
+
+cd $ProjectBase
+mvn clean install -DskipTest
 
 foreach ($SourceFolder in $ProjectMap.Keys)
 {
