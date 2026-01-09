@@ -12,7 +12,7 @@ $ProjectMap = @{
 }
 
 cd $ProjectBase
-mvn clean install -DskipTest
+mvn clean install -DskipTests
 
 foreach ($SourceFolder in $ProjectMap.Keys)
 {

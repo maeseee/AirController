@@ -6,7 +6,7 @@ import {Observable} from 'rxjs';
   providedIn: 'root',
 })
 export class FreshAirStatus {
-  private readonly API_URL = 'http://192.168.50.12:8080/currentState/freshAir';
+  private readonly API_URL = 'http://192.168.50.12:9090/currentState/freshAir';
 
   constructor(private http: HttpClient) {}
 
