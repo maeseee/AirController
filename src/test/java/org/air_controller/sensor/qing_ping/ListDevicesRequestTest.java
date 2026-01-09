@@ -1,5 +1,6 @@
 package org.air_controller.sensor.qing_ping;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ class ListDevicesRequestTest {
     }
 
     @Test
-    void shouldResponseToToken_whenSendingToAnything() throws URISyntaxException, CommunicationException, IOException {
+    void shouldResponseToToken_whenSendingToAnything() throws URISyntaxException, CommunicationException, IOException, JSONException {
         final String url = "https://httpbin.org/anything";
         final URI uri = new URI(url);
         final String accessToken = "accessToken";

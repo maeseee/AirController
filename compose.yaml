@@ -12,7 +12,7 @@ services:
       - qingping_app_secret=${qingping_app_secret}
       - mariaDdPassword=${mariaDdPassword}
     volumes:
-      - ./air-controller-backend/AirController-1.2-SNAPSHOT-jar-with-dependencies.jar:/app/AirController.jar
+      - ./air-controller-backend/AirController-1.2-SNAPSHOT.jar:/app/AirController.jar
       - ./air-controller-backend/log:/app/log
     networks:
       - aircontroller-network

@@ -8,7 +8,7 @@ $ProjectMap = @{
     "front_end" = "air-controller-frontend"
     "compose.yaml" = ""
 #    ".env" = ""
-    "target\AirController-1.2-SNAPSHOT-jar-with-dependencies.jar" = "air-controller-backend"
+    "target\AirController-1.2-SNAPSHOT.jar" = "air-controller-backend"
 }
 
 cd $ProjectBase

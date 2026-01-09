@@ -1,5 +1,6 @@
 package org.air_controller.sensor.qing_ping;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class AccessTokenRequestTest {
 
     @Test
-    void shouldHaveRequestInResponse_whenSendingPostRequest() throws URISyntaxException {
+    void shouldHaveRequestInResponse_whenSendingPostRequest() throws URISyntaxException, JSONException {
         final String credentials = "just a secret";
         final String base64Credentials = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
         final String url = "https://httpbin.org/anything";
