@@ -27,10 +27,11 @@ class RuleApplierTest {
 
     private final List<Rule> freshAirRules = new ArrayList<>();
     private final List<Rule> exchangeHumidityRules = new ArrayList<>();
+    private static final double CONFIDENCE_WEIGHT = 1.0;
 
     @Test
     void shouldTurnAirFlowOn_whenPositivConfidence() {
-        when(rule.turnOnConfidence()).thenReturn(new Confidence(1.0));
+        when(rule.turnOnConfidence()).thenReturn(new Confidence(1.0, CONFIDENCE_WEIGHT));
         freshAirRules.add(rule);
         final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
 
@@ -42,7 +43,7 @@ class RuleApplierTest {
 
     @Test
     void shouldNotTurnAirFlowOn_whenNegativConfidence() {
-        when(rule.turnOnConfidence()).thenReturn(new Confidence(-1.0));
+        when(rule.turnOnConfidence()).thenReturn(new Confidence(-1.0, CONFIDENCE_WEIGHT));
         freshAirRules.add(rule);
         final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
 
@@ -54,7 +55,7 @@ class RuleApplierTest {
 
     @Test
     void shouldTurnHumidityExchangerOn_whenPositivConfidenceForHumidityAndAirFlow() {
-        when(rule.turnOnConfidence()).thenReturn(new Confidence(1.0));
+        when(rule.turnOnConfidence()).thenReturn(new Confidence(1.0, CONFIDENCE_WEIGHT));
         freshAirRules.add(rule);
         exchangeHumidityRules.add(rule);
         final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
@@ -67,7 +68,7 @@ class RuleApplierTest {
 
     @Test
     void shouldNotTurnHumidityExchangerOn_whenAirFlowOff() {
-        when(rule.turnOnConfidence()).thenReturn(new Confidence(-1.0));
+        when(rule.turnOnConfidence()).thenReturn(new Confidence(-1.0, CONFIDENCE_WEIGHT));
         freshAirRules.add(rule);
         final Rule humidityRule = mock(Rule.class);
         exchangeHumidityRules.add(humidityRule);
@@ -82,8 +83,8 @@ class RuleApplierTest {
     @Test
     void shouldNotTurnOff_whenAirFlowInHysteresis() {
         when(rule.turnOnConfidence())
-                .thenReturn(new Confidence(1.0)) // on
-                .thenReturn(new Confidence(-0.04)); // in hysteresis
+                .thenReturn(new Confidence(1.0, CONFIDENCE_WEIGHT)) // on
+                .thenReturn(new Confidence(-0.04, CONFIDENCE_WEIGHT)); // in hysteresis
         freshAirRules.add(rule);
         final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
 
@@ -97,8 +98,8 @@ class RuleApplierTest {
     @Test
     void shouldTurnOff_whenAirFlowOutOfHysteresis() {
         when(rule.turnOnConfidence())
-                .thenReturn(new Confidence(1.0)) // on
-                .thenReturn(new Confidence(-0.06)); // out of hysteresis
+                .thenReturn(new Confidence(1.0, CONFIDENCE_WEIGHT)) // on
+                .thenReturn(new Confidence(-0.06, CONFIDENCE_WEIGHT)); // out of hysteresis
         freshAirRules.add(rule);
         final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
 

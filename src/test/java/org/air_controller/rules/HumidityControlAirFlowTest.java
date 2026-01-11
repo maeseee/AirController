@@ -31,12 +31,12 @@ class HumidityControlAirFlowTest {
             "52.0, 52.0, 0.0",
             "52.0, 65.0, 0.0",
             "65.0, 65.0, 0.0",
-            "65.0, 52.0, 1.0",
-            "70.0, 52.0, 1.0",
-            "39.0, 52.0, 1.0",
-            "39.0, 65.0, 1.0",
-            "39.0, 26.0, -1.0",
-            "65.0, 78.0, -1.0",
+            "65.0, 52.0, 0.8",
+            "70.0, 52.0, 0.8",
+            "39.0, 52.0, 0.8",
+            "39.0, 65.0, 0.8",
+            "39.0, 26.0, -0.8",
+            "65.0, 78.0, -0.8",
     })
     void shouldCalculateHumidityPercentage(double relativeIndoorHumidity, double relativeOutdoorHumidity,
             double expectedResult)

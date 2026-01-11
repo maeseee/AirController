@@ -9,6 +9,7 @@ class DailyAirFlow implements Rule {
     private static final MonthDay SUMMER_TIME_END = MonthDay.of(9, 21);
     private static final Duration transitionalSeason = Duration.ofDays(20);
     private static final LocalTime HEAT_PEAK_TIME_UTC = LocalTime.of(2, 0, 0);
+    private static final double CONFIDENCE_WEIGHT = 0.6;
 
     @Override
     public String name() {
@@ -20,7 +21,7 @@ class DailyAirFlow implements Rule {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final double seasonFactor = calculateSeasonFactor(MonthDay.from(now));
         final double confidence = getCosinus(now.toLocalTime());
-        return new Confidence(confidence * seasonFactor, 0.6);
+        return new Confidence(confidence * seasonFactor, CONFIDENCE_WEIGHT);
     }
 
     private double calculateSeasonFactor(MonthDay dateNow) {

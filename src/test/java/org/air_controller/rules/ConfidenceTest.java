@@ -15,7 +15,7 @@ class ConfidenceTest {
             "10.0, 1.0",
     })
     void shouldLimitValue_whenAboveExpectation(double confidenceValue, double expectedValue) {
-        final Confidence testee = new Confidence(confidenceValue);
+        final Confidence testee = new Confidence(confidenceValue, 1.0);
 
         final double weightedConfidenceValue = testee.getWeightedConfidenceValue();
 
