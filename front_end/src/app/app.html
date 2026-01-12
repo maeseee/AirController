@@ -8,9 +8,9 @@
   @if (dataPoint) {
     <div class="sensor-card">
       <h3>Environment Readings</h3>
-      <p>Temperature: <strong>{{ dataPoint.temperatureInCelsius }}°C</strong></p>
-      <p>Humidity: <strong>{{ dataPoint.relativeHumidity }}%</strong></p>
-      <p>CO2: <strong>{{ dataPoint.co2InPpm }}%</strong></p>
+      <p>Temperature: <strong>{{ dataPoint.temperatureInCelsius | number:'1.1-1' }}Â°C</strong></p>
+      <p>Humidity: <strong>{{ dataPoint.relativeHumidity | number:'2.1-1' }}%</strong></p>
+      <p>CO2: <strong>{{ dataPoint.co2InPpm | number:'2.0-0' }}ppm</strong></p>
     </div>
   } @else {
     <div class="loader">
