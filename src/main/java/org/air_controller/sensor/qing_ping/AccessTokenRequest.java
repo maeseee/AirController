@@ -1,7 +1,6 @@
 package org.air_controller.sensor.qing_ping;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -10,9 +9,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
+@Slf4j
 class AccessTokenRequest {
-    private static final Logger logger = LogManager.getLogger(AccessTokenRequest.class);
-
     private final URI uri;
     private final String credentials;
 
@@ -30,11 +28,11 @@ class AccessTokenRequest {
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 responseFromUrl = readResponseFromServer(connection.getInputStream());
             } else {
-                logger.error("Wrong response code! responseCode={} responseMessage={}", responseCode, connection.getResponseMessage());
+                log.error("Wrong response code! responseCode={} responseMessage={}", responseCode, connection.getResponseMessage());
             }
             connection.disconnect();
         } catch (IOException e) {
-            logger.error("QingPingAccessTokenRequest failed! {}", e.getMessage());
+            log.error("QingPingAccessTokenRequest failed! {}", e.getMessage());
         }
         return Optional.ofNullable(responseFromUrl);
     }

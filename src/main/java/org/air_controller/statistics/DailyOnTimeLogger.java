@@ -1,19 +1,17 @@
 package org.air_controller.statistics;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.air_controller.system_action.DurationCalculator;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.time.*;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Slf4j
 public class DailyOnTimeLogger implements Runnable {
-    private static final Logger logger = LogManager.getLogger(DailyOnTimeLogger.class);
-
     private final SystemActionDbAccessor dbAccessor;
 
     @Override
@@ -22,10 +20,10 @@ public class DailyOnTimeLogger implements Runnable {
             final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
             final LocalDate yesterday = now.toLocalDate().minusDays(1);
             final Duration totalAirFlowYesterday = getTotalFromDay(yesterday);
-            logger.info("The daily switch-on time of {} was {} minutes ({} %)", yesterday, totalAirFlowYesterday.toMinutes(),
+            log.info("The daily switch-on time of {} was {} minutes ({} %)", yesterday, totalAirFlowYesterday.toMinutes(),
                     getOnPercentage(totalAirFlowYesterday));
         } catch (Exception e) {
-            logger.error("Exception occurred while running VentilationSystemTimeKeeper! ", e);
+            log.error("Exception occurred while running VentilationSystemTimeKeeper! ", e);
         }
     }
 

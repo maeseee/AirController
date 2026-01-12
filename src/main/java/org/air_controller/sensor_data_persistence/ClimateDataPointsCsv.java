@@ -1,8 +1,10 @@
 package org.air_controller.sensor_data_persistence;
 
-import org.air_controller.sensor_values.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
+import org.air_controller.sensor_values.CarbonDioxide;
+import org.air_controller.sensor_values.ClimateDataPoint;
+import org.air_controller.sensor_values.ClimateDataPointBuilder;
+import org.air_controller.sensor_values.InvalidArgumentException;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -13,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 public class ClimateDataPointsCsv implements ClimateDataPointPersistence {
-    private static final Logger logger = LogManager.getLogger(ClimateDataPointsCsv.class);
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final String filePath;
@@ -36,7 +38,7 @@ public class ClimateDataPointsCsv implements ClimateDataPointPersistence {
             writer.write(csvLine);
             writer.newLine();
         } catch (IOException e) {
-            logger.error("CSV could not be written! {}", e.getMessage());
+            log.error("CSV could not be written! {}", e.getMessage());
         }
     }
 
@@ -46,7 +48,7 @@ public class ClimateDataPointsCsv implements ClimateDataPointPersistence {
             final File file = new File(filePath);
             final boolean newlyCreated = file.createNewFile();
             if (newlyCreated) {
-                logger.info("File {} has been created", filePath);
+                log.info("File {} has been created", filePath);
             }
             return readCsvFile(file);
         } catch (IOException e) {
@@ -76,7 +78,7 @@ public class ClimateDataPointsCsv implements ClimateDataPointPersistence {
             final ClimateDataPoint dataPoint = createClimateDataPoint(currentLine);
             entries.add(dataPoint);
         } catch (InvalidArgumentException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 

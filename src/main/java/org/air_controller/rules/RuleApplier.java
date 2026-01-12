@@ -1,16 +1,14 @@
 package org.air_controller.rules;
 
+import lombok.extern.slf4j.Slf4j;
 import org.air_controller.system.OutputState;
 import org.air_controller.system.VentilationSystem;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.function.Consumer;
 
+@Slf4j
 public class RuleApplier implements Runnable {
-    private static final Logger logger = LogManager.getLogger(RuleApplier.class);
-
     private final RuleApplierSystem airFlowSystem;
     private final RuleApplierSystem humidityExchangerSystem;
 
@@ -29,7 +27,7 @@ public class RuleApplier implements Runnable {
         try {
             doRun();
         } catch (Exception exception) {
-            logger.error("Exception in AirController loop:", exception);
+            log.error("Exception in AirController loop:", exception);
         }
     }
 

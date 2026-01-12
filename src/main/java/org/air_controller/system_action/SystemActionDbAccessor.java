@@ -1,11 +1,10 @@
 package org.air_controller.system_action;
 
+import lombok.extern.slf4j.Slf4j;
 import org.air_controller.persistence.DatabaseConnection;
 import org.air_controller.persistence.EntryAdder;
 import org.air_controller.persistence.PreparedStatementSetter;
 import org.air_controller.system.OutputState;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,9 +15,8 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 public class SystemActionDbAccessor {
-    private static final Logger logger = LogManager.getLogger(SystemActionDbAccessor.class);
-
     private final DatabaseConnection database;
     private final SystemPart systemPart;
 
@@ -81,7 +79,7 @@ public class SystemActionDbAccessor {
         try {
             entries.add(createSystemAction(resultSet));
         } catch (SQLException e) {
-            logger.error("Next entry could not be loaded! {}", e.getMessage());
+            log.error("Next entry could not be loaded! {}", e.getMessage());
         }
     }
 }

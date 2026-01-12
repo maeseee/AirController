@@ -1,19 +1,17 @@
 package org.air_controller.statistics;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.air_controller.rules.Rule;
 import org.air_controller.system.OutputState;
 import org.air_controller.system.VentilationSystem;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Slf4j
 public class SystemStateLogger implements Runnable {
-    private static final Logger logger = LogManager.getLogger(SystemStateLogger.class);
-
     private final VentilationSystem ventilationSystem;
     private final List<Rule> freshAirRules;
 
@@ -22,7 +20,7 @@ public class SystemStateLogger implements Runnable {
         try {
             doRun();
         } catch (Exception exception) {
-            logger.error("Exception in AirController loop:", exception);
+            log.error("Exception in AirController loop:", exception);
         }
     }
 
@@ -37,6 +35,6 @@ public class SystemStateLogger implements Runnable {
         final String message =
                 String.format("Fresh air state changed to %s because of the confidence score %.2f\n%s", state, confidenceScore,
                         ruleValues);
-        logger.info(message);
+        log.info(message);
     }
 }

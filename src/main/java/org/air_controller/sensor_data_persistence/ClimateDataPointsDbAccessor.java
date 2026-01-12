@@ -1,11 +1,13 @@
 package org.air_controller.sensor_data_persistence;
 
+import lombok.extern.slf4j.Slf4j;
 import org.air_controller.persistence.DatabaseConnection;
 import org.air_controller.persistence.EntryAdder;
 import org.air_controller.persistence.PreparedStatementSetter;
-import org.air_controller.sensor_values.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.air_controller.sensor_values.CarbonDioxide;
+import org.air_controller.sensor_values.ClimateDataPoint;
+import org.air_controller.sensor_values.ClimateDataPointBuilder;
+import org.air_controller.sensor_values.InvalidArgumentException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,9 +18,8 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 public class ClimateDataPointsDbAccessor implements ClimateDataPointPersistence {
-    private static final Logger logger = LogManager.getLogger(ClimateDataPointsDbAccessor.class);
-
     private final String dataPointTableName;
     private final DatabaseConnection database;
 
@@ -93,7 +94,7 @@ public class ClimateDataPointsDbAccessor implements ClimateDataPointPersistence 
         try {
             entries.add(createDataPoint(resultSet));
         } catch (InvalidArgumentException | SQLException e) {
-            logger.error("Next entry could not be loaded! {}", e.getMessage());
+            log.error("Next entry could not be loaded! {}", e.getMessage());
         }
     }
 }

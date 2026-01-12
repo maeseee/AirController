@@ -1,14 +1,12 @@
 package org.air_controller.gpio.dingtian_relay;
 
+import lombok.extern.slf4j.Slf4j;
 import org.air_controller.gpio.GpioPin;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
+@Slf4j
 public class DingtianPin implements GpioPin {
-    private static final Logger logger = LogManager.getLogger(DingtianPin.class);
-
     private final String name;
     private final DingtianRelay relay;
     private final RelayCommunication communication;
@@ -21,14 +19,14 @@ public class DingtianPin implements GpioPin {
         this.name = relay.name();
         this.relay = relay;
         this.communication = communication;
-        logger.info("{} set initial to {}", name, initialHigh ? "on" : "off");
+        log.info("{} set initial to {}", name, initialHigh ? "on" : "off");
         setGpioState(initialHigh);
     }
 
     @Override
     public void setGpioState(boolean stateOn) {
         if (getGpioState() != stateOn) {
-            logger.info("{} set to {}", name, stateOn ? "on" : "off");
+            log.info("{} set to {}", name, stateOn ? "on" : "off");
             communication.setRelayState(relay.getRelayIndex(), stateOn);
         }
     }
@@ -39,7 +37,7 @@ public class DingtianPin implements GpioPin {
         if (relay.getRelayIndex() < states.size()) {
             return states.get(relay.getRelayIndex());
         }
-        logger.error("Could not read the gpio state of {}", name);
+        log.error("Could not read the gpio state of {}", name);
         return false;
     }
 }

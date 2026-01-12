@@ -1,20 +1,17 @@
 package org.air_controller.sensor.ping_ping_adapter;
 
+import lombok.extern.slf4j.Slf4j;
 import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor.qing_ping.QingPingSensor;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.ClimateDataPoint;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 public class QingPingAdapter extends ClimateSensor {
-
-    private static final Logger logger = LogManager.getLogger(QingPingAdapter.class);
-
     private final SensorReducer sensorReducer;
     private final ListDevicesJsonParser parser;
 
@@ -44,7 +41,7 @@ public class QingPingAdapter extends ClimateSensor {
         QingPingSensor.getDeviceList().forEach(
                 mac -> parser.parseDeviceListResponse(response, mac).ifPresent(dataPoints::add));
         if (dataPoints.isEmpty()) {
-            logger.error("No sensor data found in the response: {}", response);
+            log.error("No sensor data found in the response: {}", response);
         }
         return dataPoints;
     }

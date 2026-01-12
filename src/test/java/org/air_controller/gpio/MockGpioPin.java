@@ -1,11 +1,9 @@
 package org.air_controller.gpio;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class MockGpioPin implements GpioPin {
-    private static final Logger logger = LogManager.getLogger(MockGpioPin.class);
-
     private final String name;
     private boolean gpioState;
 
@@ -17,7 +15,7 @@ public class MockGpioPin implements GpioPin {
     @Override
     public void setGpioState(boolean stateOn) {
         if (getGpioState() != stateOn) {
-            logger.info("{} set to {}", name, stateOn ? "on" : "off");
+            log.info("{} set to {}", name, stateOn ? "on" : "off");
             gpioState = stateOn;
         }
     }

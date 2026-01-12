@@ -1,8 +1,7 @@
 package org.air_controller.sensor.ping_ping_adapter;
 
+import lombok.extern.slf4j.Slf4j;
 import org.air_controller.sensor_values.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.time.Duration;
 import java.time.ZoneOffset;
@@ -11,9 +10,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
 
+@Slf4j
 class SensorReducer {
-    private static final Logger logger = LogManager.getLogger(SensorReducer.class);
-
     private static final Duration SENSOR_INVALIDATION_TIME = Duration.ofHours(1);
 
     public Optional<ClimateDataPoint> reduce(List<ClimateDataPoint> dataPoints) {
@@ -21,7 +19,7 @@ class SensorReducer {
                 .filter(dataPoint -> dataPoint.timestamp().isAfter(ZonedDateTime.now(ZoneOffset.UTC).minus(SENSOR_INVALIDATION_TIME)))
                 .toList();
         if (currentDataPoints.isEmpty()) {
-            logger.warn("No current indoor data at the moment");
+            log.warn("No current indoor data at the moment");
             return Optional.empty();
         }
         try {
@@ -33,7 +31,7 @@ class SensorReducer {
                     .build();
             return Optional.of(dataPoint);
         } catch (InvalidArgumentException e) {
-            logger.warn("Invalid sensor data point");
+            log.warn("Invalid sensor data point");
             return Optional.empty();
         }
     }

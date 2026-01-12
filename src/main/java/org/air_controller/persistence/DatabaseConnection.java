@@ -1,7 +1,6 @@
 package org.air_controller.persistence;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,11 +9,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public abstract class DatabaseConnection {
-    private static final Logger logger = LogManager.getLogger(DatabaseConnection.class);
-
     public void executeUpdate(String sql) {
-        final PreparedStatementSetter setter = preparedStatement -> {
+        final PreparedStatementSetter setter = _ -> {
         };
         executeUpdate(sql, setter);
     }
@@ -26,12 +24,12 @@ public abstract class DatabaseConnection {
             setter.setParameters(preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            logger.error("SQL Exception on executeUpdate! {}", e.getMessage());
+            log.error("SQL Exception on executeUpdate! {}", e.getMessage());
         }
     }
 
     public <R> List<R> executeQuery(String sql, EntryAdder<R> adder) {
-        final PreparedStatementSetter setter = preparedStatement -> {
+        final PreparedStatementSetter setter = _ -> {
         };
         return executeQuery(sql, adder, setter);
     }
@@ -48,7 +46,7 @@ public abstract class DatabaseConnection {
                 }
             }
         } catch (SQLException e) {
-            logger.error("SQL Exception on executeQuery! {}", e.getMessage());
+            log.error("SQL Exception on executeQuery! {}", e.getMessage());
         }
         return entries;
     }

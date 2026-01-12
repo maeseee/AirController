@@ -1,7 +1,6 @@
 package org.air_controller.http;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,9 +9,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 
+@Slf4j
 public class HttpsGetRequest {
-    private static final Logger logger = LogManager.getLogger(HttpsGetRequest.class);
-
     public String sendRequest(String url) {
         String responseFromUrl = "";
         try {
@@ -25,7 +23,7 @@ public class HttpsGetRequest {
                 responseFromUrl = readResponseFromServer(connection.getInputStream());
             }
         } catch (Exception exception) {
-            logger.error("HttpsGetRequest failure: ", exception);
+            log.error("HttpsGetRequest failure: ", exception);
             return "";
         }
         return responseFromUrl;

@@ -1,10 +1,9 @@
 package org.air_controller.sensor;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.ClimateDataPoint;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.time.Duration;
 import java.time.ZoneOffset;
@@ -12,9 +11,8 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 
 @RequiredArgsConstructor
+@Slf4j
 public abstract class ClimateSensor implements Runnable {
-    private static final Logger logger = LogManager.getLogger(ClimateSensor.class);
-
     private static final Duration SENSOR_INVALIDATION = Duration.ofHours(4);
 
     protected final ClimateDataPointPersistence persistence;
@@ -27,7 +25,7 @@ public abstract class ClimateSensor implements Runnable {
             Optional<ClimateDataPoint> dataPoint = parseResponse(response);
             dataPoint.ifPresent(this::persistDataPoint);
         } catch (Exception exception) {
-            logger.error("Exception in Climate Sensor loop:", exception);
+            log.error("Exception in Climate Sensor loop:", exception);
         }
     }
 
@@ -40,7 +38,7 @@ public abstract class ClimateSensor implements Runnable {
     protected abstract String sensorType();
 
     private void persistDataPoint(ClimateDataPoint dataPoint) {
-        logger.info("Data point on {}: {}", sensorType(), dataPoint);
+        log.info("Data point on {}: {}", sensorType(), dataPoint);
         persistence.persist(dataPoint);
     }
 

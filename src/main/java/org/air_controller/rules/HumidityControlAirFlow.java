@@ -1,17 +1,15 @@
 package org.air_controller.rules;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.air_controller.sensor.SensorException;
 import org.air_controller.sensor_values.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.Optional;
 
 @RequiredArgsConstructor
+@Slf4j
 class HumidityControlAirFlow implements Rule {
-    private static final Logger logger = LogManager.getLogger(HumidityControlAirFlow.class);
-
     private static final double UPPER_RELATIV_HUMIDITY = 65.0;
     private static final double IDEAL_RELATIV_HUMIDITY = 52.0;
     private static final double CONFIDENCE_WEIGHT = 0.8;
@@ -54,7 +52,7 @@ class HumidityControlAirFlow implements Rule {
             final Temperature currentIndoorTemperature = indoorDataPoint.temperature();
             return Humidity.createFromRelative(relativeHumidity, currentIndoorTemperature).absoluteHumidity();
         } catch (InvalidArgumentException e) {
-            logger.error("Ideal humidity could not be created", e);
+            log.error("Ideal humidity could not be created", e);
             throw new SensorException("Invalid sensor values", e.getCause());
         }
     }

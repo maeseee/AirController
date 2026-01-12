@@ -1,17 +1,15 @@
 package org.air_controller.sensor.qing_ping;
 
+import lombok.extern.slf4j.Slf4j;
 import org.air_controller.sensor.SensorReader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+@Slf4j
 public class QingPingSensor implements SensorReader {
-    private static final Logger logger = LogManager.getLogger(QingPingSensor.class);
-
     private final AccessToken accessToken;
     private final ListDevicesRequest listDevicesRequest;
 
@@ -29,7 +27,7 @@ public class QingPingSensor implements SensorReader {
             final String token = accessToken.readToken();
             return listDevicesRequest.sendRequest(token);
         } catch (CommunicationException | IOException | URISyntaxException e) {
-            logger.error("QingPingSensor readData error", e);
+            log.error("QingPingSensor readData error", e);
             return "";
         }
     }

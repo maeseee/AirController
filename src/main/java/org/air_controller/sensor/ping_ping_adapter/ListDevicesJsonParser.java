@@ -1,10 +1,9 @@
 package org.air_controller.sensor.ping_ping_adapter;
 
-import org.air_controller.sensor_values.InvalidArgumentException;
+import lombok.extern.slf4j.Slf4j;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.ClimateDataPointBuilder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.air_controller.sensor_values.InvalidArgumentException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,9 +18,8 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalLong;
 
+@Slf4j
 class ListDevicesJsonParser {
-    private static final Logger logger = LogManager.getLogger(ListDevicesJsonParser.class);
-
     public Optional<ClimateDataPoint> parseDeviceListResponse(String jsonString, String macAddress) {
         // https://developer.qingping.co/main/openApi
         try {
@@ -30,7 +28,7 @@ class ListDevicesJsonParser {
             final JSONArray devices = jsonObject.getJSONArray("devices");
             final Optional<JSONObject> deviceData = getDevicesData(devices, macAddress);
             if (deviceData.isEmpty()) {
-                logger.info("No device with MAC-Address {} found!", macAddress);
+                log.info("No device with MAC-Address {} found!", macAddress);
                 return Optional.empty();
             }
             final ClimateDataPoint dataPoint = getDataPoint(deviceData.get());
