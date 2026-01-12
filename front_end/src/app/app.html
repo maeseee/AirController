@@ -5,6 +5,17 @@
        class="status-display">
     {{ airStatus }}
   </div>
-
+  @if (dataPoint) {
+    <div class="sensor-card">
+      <h3>Environment Readings</h3>
+      <p>Temperature: <strong>{{ dataPoint.temperatureInCelsius }}°C</strong></p>
+      <p>Humidity: <strong>{{ dataPoint.relativeHumidity }}%</strong></p>
+      <p>CO2: <strong>{{ dataPoint.co2InPpm }}%</strong></p>
+    </div>
+  } @else {
+    <div class="loader">
+      <p>Fetching data from server...</p>
+    </div>
+  }
   <button (click)="refresh()">Update Status</button>
 </div>

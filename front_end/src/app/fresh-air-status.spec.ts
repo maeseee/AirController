@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { FreshAirStatus } from './fresh-air-status.service';
+import { freshAirStatus } from './fresh-air-status.service';
 
 describe('FreashAirStatus', () => {
-  let service: FreshAirStatus;
+  let service: freshAirStatus;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(FreshAirStatus);
+    service = TestBed.inject(freshAirStatus);
   });
 
   it('should be created', () => {
