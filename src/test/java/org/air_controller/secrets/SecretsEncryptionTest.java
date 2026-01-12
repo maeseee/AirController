@@ -1,5 +1,6 @@
 package org.air_controller.secrets;
 
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,7 +45,7 @@ class SecretsEncryptionTest {
 
     static class SecretsEncryptionArgumentProvider implements ArgumentsProvider {
         @Override
-        public Stream<? extends Arguments> provideArguments(ParameterDeclarations parameters, ExtensionContext context) {
+        public @NonNull Stream<? extends Arguments> provideArguments(@NonNull ParameterDeclarations parameters, @NonNull ExtensionContext context) {
             return Stream.of(
                     Arguments.of("Hello world"),
                     Arguments.of("123345"),
@@ -67,7 +68,7 @@ class SecretsEncryptionTest {
         assertNull(decryptedSecret);
     }
 
-    public static void main(String[] args) throws Exception {
+    static void main() throws Exception {
         System.out.println("Add secret that should be encrypted:");
         final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         final String secret = reader.readLine();
