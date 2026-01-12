@@ -7,7 +7,7 @@ import org.air_controller.sensor.qing_ping.QingPingSensor;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_data_persistence.ClimateDataPoints;
 import org.air_controller.sensor_data_persistence.ClimateDataPointsCsv;
-import org.air_controller.sensor_data_persistence.ClimateDataPointsDb;
+import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -21,7 +21,7 @@ public class IndoorSensorFactory extends SensorFactory {
     @Override
     protected ClimateSensor createSensor() {
         final ClimateDataPointPersistence persistence = new ClimateDataPoints(List.of(
-                new ClimateDataPointsDb(new MariaDatabase(), INDOOR_TABLE_NAME),
+                new ClimateDataPointsDbAccessor(new MariaDatabase(), INDOOR_TABLE_NAME),
                 new ClimateDataPointsCsv(INDOOR_SENSOR_CSV_PATH)));
         try {
             final QingPingSensor sensor = new QingPingSensor();

@@ -37,13 +37,13 @@ class DbToCsvTest {
     }
 
     private void prepareDB(ZonedDateTime now) throws InvalidArgumentException {
-        final ClimateDataPointsDb dataPointsDb = new ClimateDataPointsDb(new LocalInMemoryDatabase(), dataPointTableName);
+        final ClimateDataPointsDbAccessor dbAccessor = new ClimateDataPointsDbAccessor(new LocalInMemoryDatabase(), dataPointTableName);
         final ClimateDataPoint dataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(21.0)
                 .setHumidityAbsolute(10.0)
                 .setCo2(500.0)
                 .setTime(now)
                 .build();
-        dataPointsDb.persist(dataPoint);
+        dbAccessor.persist(dataPoint);
     }
 }

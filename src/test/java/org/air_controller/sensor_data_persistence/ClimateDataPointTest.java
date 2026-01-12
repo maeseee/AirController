@@ -137,7 +137,7 @@ class ClimateDataPointTest {
     private static Stream<Arguments> dataPointPersistenceImplementations() {
         return Stream.of(
                 Arguments.of(new ClimateDataPointsCsv(CSV_FILE_PATH)),
-                Arguments.of(new ClimateDataPointsDb(new LocalInMemoryDatabase(), TABLE_NAME))
+                Arguments.of(new ClimateDataPointsDbAccessor(new LocalInMemoryDatabase(), TABLE_NAME))
         );
     }
 }

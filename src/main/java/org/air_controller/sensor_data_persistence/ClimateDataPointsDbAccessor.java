@@ -16,13 +16,13 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public class ClimateDataPointsDb implements ClimateDataPointPersistence {
-    private static final Logger logger = LogManager.getLogger(ClimateDataPointsDb.class);
+public class ClimateDataPointsDbAccessor implements ClimateDataPointPersistence {
+    private static final Logger logger = LogManager.getLogger(ClimateDataPointsDbAccessor.class);
 
     private final String dataPointTableName;
     private final DatabaseConnection database;
 
-    public ClimateDataPointsDb(DatabaseConnection database, String dataPointTableName) {
+    public ClimateDataPointsDbAccessor(DatabaseConnection database, String dataPointTableName) {
         this.database = database;
         this.dataPointTableName = dataPointTableName;
         createTableIfNotExists();

@@ -17,7 +17,7 @@ public class OutdoorSensorFactory extends SensorFactory {
     @Override
     protected ClimateSensor createSensor() {
         final ClimateDataPointPersistence persistence = new ClimateDataPoints(List.of(
-                new ClimateDataPointsDb(new MariaDatabase(), OUTDOOR_TABLE_NAME),
+                new ClimateDataPointsDbAccessor(new MariaDatabase(), OUTDOOR_TABLE_NAME),
                 new ClimateDataPointsCsv(OUTDOOR_SENSOR_CSV_PATH)));
         final OpenWeatherApiSensor sensor = new OpenWeatherApiSensor();
         return new OpenWeatherApiAdapter(persistence, sensor);

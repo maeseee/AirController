@@ -13,7 +13,7 @@ public class CsvToDb {
 
     public void persistToDbFromCsv(String csvFilePath, String tableName) {
         final ClimateDataPointPersistence dataPointsCsv = new ClimateDataPointsCsv(csvFilePath);
-        final ClimateDataPointPersistence dataPointsDb = new ClimateDataPointsDb(database, tableName);
+        final ClimateDataPointPersistence dataPointsDb = new ClimateDataPointsDbAccessor(database, tableName);
         final List<ClimateDataPoint> dataPoints = dataPointsCsv.read();
         dataPoints.forEach(dataPointsDb::persist);
     }
