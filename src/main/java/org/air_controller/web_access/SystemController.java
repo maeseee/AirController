@@ -23,4 +23,12 @@ public class SystemController {
                 .map(systemAction -> new ResponseEntity<>(systemAction.outputState(), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
+
+    @GetMapping("/currentState/climateDataPoint")
+    public ResponseEntity<ClimateDataPointDTO> getCurrentClimateDataPoint() {
+        final Optional<ClimateDataPointDTO> currentClimateDataPoint = airControllerService.getCurrentClimateDataPoint();
+        return currentClimateDataPoint
+                .map(dataPoint -> new ResponseEntity<>(dataPoint, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+    }
 }
