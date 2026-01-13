@@ -6,9 +6,7 @@ import org.air_controller.sensor_values.ClimateDataPointBuilder;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -17,19 +15,16 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
 class ClimateDataPointTest {
 
-    private static final String CSV_FILE_PATH = "log/dataPointCsvWriterTest.csv";
     private static final String TABLE_NAME = "TestSensorTable";
 
-    @ParameterizedTest
-    @MethodSource("dataPointPersistenceImplementations")
-    void shouldWriteDataPointIntoCsvFiles_whenPersist(ClimateDataPointPersistence testee) throws InvalidArgumentException {
+    @Test
+    void shouldWriteDataPointIntoDb_whenPersist() throws InvalidArgumentException {
         final Random random = new Random();
         final ClimateDataPoint inputClimateDataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(random.nextDouble() * 100)
@@ -37,6 +32,7 @@ class ClimateDataPointTest {
                 .setCo2(random.nextDouble() * 100000)
                 .setTime(ZonedDateTime.of(LocalDateTime.of(2024, 9, 27, 20, 51, 12), ZoneOffset.UTC))
                 .build();
+        final ClimateDataPointPersistence testee = new ClimateDataPointsDbAccessor(new LocalInMemoryDatabase(), TABLE_NAME);
         final int initialSize = testee.read().size();
 
         testee.persist(inputClimateDataPoint);
@@ -45,9 +41,8 @@ class ClimateDataPointTest {
         assertThat(DataPoints).size().isEqualTo(initialSize + 1);
     }
 
-    @ParameterizedTest
-    @MethodSource("dataPointPersistenceImplementations")
-    void shouldReadMostCurrentDataPoint(ClimateDataPointPersistence testee) throws InvalidArgumentException {
+    @Test
+    void shouldReadMostCurrentDataPoint() throws InvalidArgumentException {
         final Random random = new Random();
         final double celsiusTemperature = random.nextDouble() * 100;
         final double relativeHumidity = random.nextDouble() * 100;
@@ -59,6 +54,7 @@ class ClimateDataPointTest {
                 .setCo2(co2Ppm)
                 .setTime(time)
                 .build();
+        final ClimateDataPointPersistence testee = new ClimateDataPointsDbAccessor(new LocalInMemoryDatabase(), TABLE_NAME);
 
         testee.persist(inputClimateDataPoint);
         final Optional<ClimateDataPoint> lastDataPoint = testee.getMostCurrentClimateDataPoint(time.minusMinutes(10));
@@ -132,12 +128,5 @@ class ClimateDataPointTest {
 
         final String expectedString = "ClimateDataPoint{temperature=12.30\u00B0C, humidity=45.6%" + "}";
         assertThat(dataPointString).isEqualTo(expectedString);
-    }
-
-    private static Stream<Arguments> dataPointPersistenceImplementations() {
-        return Stream.of(
-                Arguments.of(new ClimateDataPointsCsv(CSV_FILE_PATH)),
-                Arguments.of(new ClimateDataPointsDbAccessor(new LocalInMemoryDatabase(), TABLE_NAME))
-        );
     }
 }

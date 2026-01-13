@@ -42,6 +42,7 @@ class ApplicationBuilder {
     public static ApplicationBuilder createBuilder() {
         final GpioPins gpios = createDingtianPins();
         final SystemActionDbAccessors dbAccessors = createSystemActionDbAccessors();
+
         final ApplicationBuilderSharedObjects sharedObjects = new ApplicationBuilderSharedObjects(gpios, dbAccessors);
         return new ApplicationBuilder(sharedObjects);
     }
