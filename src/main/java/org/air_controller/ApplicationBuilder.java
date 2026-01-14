@@ -4,7 +4,7 @@ import lombok.Setter;
 import org.air_controller.gpio.GpioPins;
 import org.air_controller.gpio.dingtian_relay.DingtianPin;
 import org.air_controller.gpio.dingtian_relay.DingtianRelay;
-import org.air_controller.persistence.MariaDatabase;
+import org.air_controller.rules.FreshAirRuleBuilder;
 import org.air_controller.rules.HumidityExchangerRuleBuilder;
 import org.air_controller.rules.Rule;
 import org.air_controller.rules.RuleApplier;
@@ -12,24 +12,34 @@ import org.air_controller.sensor.ClimateSensorsFactory;
 import org.air_controller.sensor_values.ClimateSensors;
 import org.air_controller.statistics.DailyOnTimeLogger;
 import org.air_controller.statistics.SystemStateLogger;
-import org.air_controller.system_action.SystemActionDbAccessor;
-import org.air_controller.system_action.SystemActionDbAccessors;
-import org.air_controller.system_action.SystemPart;
+import org.air_controller.system.ControlledVentilationSystem;
+import org.air_controller.system.VentilationSystem;
+import org.air_controller.system_action.SystemActionPersistence;
 
 import java.util.List;
 import java.util.concurrent.Executors;
 
 @Setter
 class ApplicationBuilder {
-    private final ApplicationBuilderSharedObjects sharedObjects;
+    private final ApplicationPersistence persistence;
+    private final GpioPins gpios;
     private final ClimateSensors sensors;
+    private final List<VentilationSystem> ventilationSystems;
+    private final List<Rule> freshAirRules;
     private final DailyOnTimeLogger statistics;
     private final RuleApplier ruleApplier;
     private final SystemStateLogger systemStateLogger;
 
-    ApplicationBuilder(ApplicationBuilderSharedObjects sharedObjects) {
-        this.sharedObjects = sharedObjects;
+    ApplicationBuilder() {
+        this(createDingtianPins(), new ApplicationPersistence());
+    }
+
+    ApplicationBuilder(GpioPins gpioPins, ApplicationPersistence persistence) {
+        this.persistence = persistence;
+        this.gpios = gpioPins;
         this.sensors = createSensors();
+        this.ventilationSystems = createVentilationSystems();
+        this.freshAirRules = createFreshAirRules();
         this.statistics = createStatistics();
         this.ruleApplier = createRuleApplier();
         this.systemStateLogger = createSystemStateLogger();
@@ -39,43 +49,35 @@ class ApplicationBuilder {
         return new Application(sensors, ruleApplier, statistics, systemStateLogger, Executors.newScheduledThreadPool(1));
     }
 
-    public static ApplicationBuilder createBuilder() {
-        final GpioPins gpios = createDingtianPins();
-        final SystemActionDbAccessors dbAccessors = createSystemActionDbAccessors();
-
-        final ApplicationBuilderSharedObjects sharedObjects = new ApplicationBuilderSharedObjects(gpios, dbAccessors);
-        return new ApplicationBuilder(sharedObjects);
-    }
-
-    private static ClimateSensors createSensors() {
-        return new ClimateSensorsFactory().build();
+    private ClimateSensors createSensors() {
+        return new ClimateSensorsFactory().build(persistence);
     }
 
     private DailyOnTimeLogger createStatistics() {
-        return new DailyOnTimeLogger(sharedObjects.getSystemActionDbAccessors().airFlow());
+        return new DailyOnTimeLogger(persistence.getSystemActionDbAccessors().airFlow());
+    }
+
+    private List<VentilationSystem> createVentilationSystems() {
+        final VentilationSystem ventilationSystem = new ControlledVentilationSystem(gpios);
+        final SystemActionPersistence systemActionPersistence = new SystemActionPersistence(persistence.getSystemActionDbAccessors());
+        return List.of(ventilationSystem, systemActionPersistence);
     }
 
     private RuleApplier createRuleApplier() {
-        final List<Rule> freshAirRules = sharedObjects.getOrCreateFreshAirRules(sensors);
         final List<Rule> humidityExchangeRules =
                 new HumidityExchangerRuleBuilder().getHumidityExchangeRules(sensors);
-        return new RuleApplier(sharedObjects.getVentilationSystems(), freshAirRules, humidityExchangeRules);
+        return new RuleApplier(ventilationSystems, freshAirRules, humidityExchangeRules);
     }
 
     private SystemStateLogger createSystemStateLogger() {
-        final List<Rule> freshAirRules = sharedObjects.getOrCreateFreshAirRules(sensors);
-        return new SystemStateLogger(sharedObjects.getVentilationSystems().getFirst(), freshAirRules);
+        return new SystemStateLogger(ventilationSystems.getFirst(), freshAirRules);
     }
 
     private static GpioPins createDingtianPins() {
         return new GpioPins(new DingtianPin(DingtianRelay.AIR_FLOW, true), new DingtianPin(DingtianRelay.HUMIDITY_EXCHANGER, false));
     }
 
-    private static SystemActionDbAccessors createSystemActionDbAccessors() {
-        return new SystemActionDbAccessors(createDbAccessor(SystemPart.AIR_FLOW), createDbAccessor(SystemPart.HUMIDITY));
-    }
-
-    private static SystemActionDbAccessor createDbAccessor(SystemPart systemPart) {
-        return new SystemActionDbAccessor(new MariaDatabase(), systemPart);
+    private List<Rule> createFreshAirRules() {
+        return new FreshAirRuleBuilder().build(sensors, persistence.getSystemActionDbAccessors().airFlow());
     }
 }

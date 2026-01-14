@@ -16,7 +16,7 @@ public class AirControllerApplication {
     }
 
     private static Application createApplication() {
-        final ApplicationBuilder builder = ApplicationBuilder.createBuilder();
+        final ApplicationBuilder builder = new ApplicationBuilder();
         return builder.build();
     }
 }

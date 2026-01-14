@@ -10,13 +10,13 @@ import org.air_controller.system_action.SystemPart;
 
 class MainMock {
 
-    public static void main(String[] args) throws InterruptedException {
+    static void main() throws InterruptedException {
         final GpioPin airFlow = new MockGpioPin("AIR_FLOW", true);
         final GpioPin humidityExchanger = new MockGpioPin("HUMIDITY_EXCHANGER", true);
         final GpioPins gpioPins = new GpioPins(airFlow, humidityExchanger);
         final SystemActionDbAccessors dbAccessors = createSystemActionDbAccessors();
-        final ApplicationBuilderSharedObjects sharedObjects = new ApplicationBuilderSharedObjects(gpioPins, dbAccessors);
-        final ApplicationBuilder builder = new ApplicationBuilder(sharedObjects);
+        final ApplicationPersistence persistence = new ApplicationPersistence(dbAccessors);
+        final ApplicationBuilder builder = new ApplicationBuilder(gpioPins, persistence);
         final Application application = builder.build();
         application.run();
         Thread.currentThread().join();
