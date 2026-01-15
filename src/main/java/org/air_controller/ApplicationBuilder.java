@@ -24,7 +24,8 @@ class ApplicationBuilder {
     private final ApplicationPersistence persistence;
     private final GpioPins gpios;
     private final ClimateSensors sensors;
-    private final List<VentilationSystem> ventilationSystems;
+    private final VentilationSystem ventilationSystem;
+    private final VentilationSystem ventilationSystemPersistence;
     private final List<Rule> freshAirRules;
     private final DailyOnTimeLogger statistics;
     private final RuleApplier ruleApplier;
@@ -38,7 +39,8 @@ class ApplicationBuilder {
         this.persistence = persistence;
         this.gpios = gpioPins;
         this.sensors = createSensors();
-        this.ventilationSystems = createVentilationSystems();
+        this.ventilationSystem = createVentilationSystem();
+        this.ventilationSystemPersistence = createVentilationSystemPersistence();
         this.freshAirRules = createFreshAirRules();
         this.statistics = createStatistics();
         this.ruleApplier = createRuleApplier();
@@ -57,20 +59,22 @@ class ApplicationBuilder {
         return new DailyOnTimeLogger(persistence.getVentilationSystemDbAccessors().airFlow());
     }
 
-    private List<VentilationSystem> createVentilationSystems() {
-        final VentilationSystem ventilationSystem = new ControlledVentilationSystem(gpios);
-        final VentilationSystemPersistence ventilationSystemPersistence = new VentilationSystemPersistence(persistence.getVentilationSystemDbAccessors());
-        return List.of(ventilationSystem, ventilationSystemPersistence);
+    private VentilationSystem createVentilationSystem() {
+        return new ControlledVentilationSystem(gpios);
+    }
+
+    private VentilationSystem createVentilationSystemPersistence() {
+        return new VentilationSystemPersistence(persistence.getVentilationSystemDbAccessors());
     }
 
     private RuleApplier createRuleApplier() {
         final List<Rule> humidityExchangeRules =
                 new HumidityExchangerRuleBuilder().getHumidityExchangeRules(sensors);
-        return new RuleApplier(ventilationSystems, freshAirRules, humidityExchangeRules);
+        return new RuleApplier(ventilationSystem, ventilationSystemPersistence, freshAirRules, humidityExchangeRules);
     }
 
     private SystemStateLogger createSystemStateLogger() {
-        return new SystemStateLogger(ventilationSystems.getFirst(), freshAirRules);
+        return new SystemStateLogger(ventilationSystem, freshAirRules);
     }
 
     private static GpioPins createDingtianPins() {

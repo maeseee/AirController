@@ -15,6 +15,7 @@ public class RuleApplierSystem {
     private OutputState currentState = OutputState.INITIALIZING;
     private final List<Rule> rules;
     private final Consumer<OutputState> updateAction;
+    private final Consumer<OutputState> updatePersistence;
 
     void updateSystemIfNecessary(boolean activated) {
         if (activated) {
@@ -40,6 +41,7 @@ public class RuleApplierSystem {
     private void updateSystem(OutputState nextState) {
         if (currentState != nextState) {
             updateAction.accept(nextState);
+            updatePersistence.accept(nextState);
             currentState = nextState;
         }
     }

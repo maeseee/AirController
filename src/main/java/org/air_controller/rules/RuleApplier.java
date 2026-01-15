@@ -12,14 +12,15 @@ public class RuleApplier implements Runnable {
     private final RuleApplierSystem airFlowSystem;
     private final RuleApplierSystem humidityExchangerSystem;
 
-    public RuleApplier(List<VentilationSystem> ventilationSystems, List<Rule> freshAirRules, List<Rule> humidityExchangerRules) {
-        final Consumer<OutputState> airFlowUpdateAction =
-                (OutputState nextState) -> ventilationSystems.forEach(ventilationSystem -> ventilationSystem.setAirFlowOn(nextState));
-        this.airFlowSystem = new RuleApplierSystem(freshAirRules, airFlowUpdateAction);
+    public RuleApplier(VentilationSystem ventilationSystem, VentilationSystem ventilationSystemPersistence, List<Rule> freshAirRules,
+            List<Rule> humidityExchangerRules) {
+        final Consumer<OutputState> airFlowUpdateAction = ventilationSystem::setAirFlowOn;
+        final Consumer<OutputState> airFlowSystemPersistence = ventilationSystemPersistence::setAirFlowOn;
+        this.airFlowSystem = new RuleApplierSystem(freshAirRules, airFlowUpdateAction, airFlowSystemPersistence);
 
-        final Consumer<OutputState> humidityExchangerAction =
-                (OutputState nextState) -> ventilationSystems.forEach(ventilationSystem -> ventilationSystem.setHumidityExchangerOn(nextState));
-        this.humidityExchangerSystem = new RuleApplierSystem(humidityExchangerRules, humidityExchangerAction);
+        final Consumer<OutputState> humidityExchangerAction = ventilationSystem::setHumidityExchangerOn;
+        final Consumer<OutputState> humidityExchangerSystemPersistence = ventilationSystemPersistence::setHumidityExchangerOn;
+        this.humidityExchangerSystem = new RuleApplierSystem(humidityExchangerRules, humidityExchangerAction, humidityExchangerSystemPersistence);
     }
 
     @Override

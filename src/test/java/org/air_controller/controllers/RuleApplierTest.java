@@ -13,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -21,7 +20,8 @@ class RuleApplierTest {
 
     @Mock
     private VentilationSystem ventilationSystem;
-
+    @Mock
+    private VentilationSystem ventilationSystemPersistence;
     @Mock
     private Rule rule;
 
@@ -33,24 +33,28 @@ class RuleApplierTest {
     void shouldTurnAirFlowOn_whenPositivConfidence() {
         when(rule.turnOnConfidence()).thenReturn(new Confidence(1.0, CONFIDENCE_WEIGHT));
         freshAirRules.add(rule);
-        final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
+        final RuleApplier testee = new RuleApplier(ventilationSystem, ventilationSystemPersistence, freshAirRules, exchangeHumidityRules);
 
         testee.run();
 
         verify(ventilationSystem).setAirFlowOn(OutputState.ON);
+        verify(ventilationSystemPersistence).setAirFlowOn(OutputState.ON);
         verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
+        verify(ventilationSystemPersistence).setHumidityExchangerOn(OutputState.OFF);
     }
 
     @Test
     void shouldNotTurnAirFlowOn_whenNegativConfidence() {
         when(rule.turnOnConfidence()).thenReturn(new Confidence(-1.0, CONFIDENCE_WEIGHT));
         freshAirRules.add(rule);
-        final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
+        final RuleApplier testee = new RuleApplier(ventilationSystem, ventilationSystemPersistence, freshAirRules, exchangeHumidityRules);
 
         testee.run();
 
         verify(ventilationSystem).setAirFlowOn(OutputState.OFF);
+        verify(ventilationSystemPersistence).setAirFlowOn(OutputState.OFF);
         verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
+        verify(ventilationSystemPersistence).setHumidityExchangerOn(OutputState.OFF);
     }
 
     @Test
@@ -58,12 +62,14 @@ class RuleApplierTest {
         when(rule.turnOnConfidence()).thenReturn(new Confidence(1.0, CONFIDENCE_WEIGHT));
         freshAirRules.add(rule);
         exchangeHumidityRules.add(rule);
-        final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
+        final RuleApplier testee = new RuleApplier(ventilationSystem, ventilationSystemPersistence, freshAirRules, exchangeHumidityRules);
 
         testee.run();
 
         verify(ventilationSystem).setAirFlowOn(OutputState.ON);
+        verify(ventilationSystemPersistence).setAirFlowOn(OutputState.ON);
         verify(ventilationSystem).setHumidityExchangerOn(OutputState.ON);
+        verify(ventilationSystemPersistence).setHumidityExchangerOn(OutputState.ON);
     }
 
     @Test
@@ -72,12 +78,14 @@ class RuleApplierTest {
         freshAirRules.add(rule);
         final Rule humidityRule = mock(Rule.class);
         exchangeHumidityRules.add(humidityRule);
-        final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
+        final RuleApplier testee = new RuleApplier(ventilationSystem, ventilationSystemPersistence, freshAirRules, exchangeHumidityRules);
 
         testee.run();
 
         verify(ventilationSystem).setAirFlowOn(OutputState.OFF);
+        verify(ventilationSystemPersistence).setAirFlowOn(OutputState.OFF);
         verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
+        verify(ventilationSystemPersistence).setHumidityExchangerOn(OutputState.OFF);
     }
 
     @Test
@@ -86,13 +94,15 @@ class RuleApplierTest {
                 .thenReturn(new Confidence(1.0, CONFIDENCE_WEIGHT)) // on
                 .thenReturn(new Confidence(-0.04, CONFIDENCE_WEIGHT)); // in hysteresis
         freshAirRules.add(rule);
-        final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
+        final RuleApplier testee = new RuleApplier(ventilationSystem, ventilationSystemPersistence, freshAirRules, exchangeHumidityRules);
 
         testee.run(); // on
         testee.run(); // nothing
 
         verify(ventilationSystem).setAirFlowOn(OutputState.ON);
+        verify(ventilationSystemPersistence).setAirFlowOn(OutputState.ON);
         verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
+        verify(ventilationSystemPersistence).setHumidityExchangerOn(OutputState.OFF);
     }
 
     @Test
@@ -101,13 +111,16 @@ class RuleApplierTest {
                 .thenReturn(new Confidence(1.0, CONFIDENCE_WEIGHT)) // on
                 .thenReturn(new Confidence(-0.06, CONFIDENCE_WEIGHT)); // out of hysteresis
         freshAirRules.add(rule);
-        final RuleApplier testee = new RuleApplier(singletonList(ventilationSystem), freshAirRules, exchangeHumidityRules);
+        final RuleApplier testee = new RuleApplier(ventilationSystem, ventilationSystemPersistence, freshAirRules, exchangeHumidityRules);
 
         testee.run(); // on
         testee.run(); // off
 
         verify(ventilationSystem).setAirFlowOn(OutputState.ON);
+        verify(ventilationSystemPersistence).setAirFlowOn(OutputState.ON);
         verify(ventilationSystem).setAirFlowOn(OutputState.OFF);
+        verify(ventilationSystemPersistence).setAirFlowOn(OutputState.OFF);
         verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
+        verify(ventilationSystemPersistence).setHumidityExchangerOn(OutputState.OFF);
     }
 }
