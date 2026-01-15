@@ -6,12 +6,12 @@ import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.air_controller.sensor_data_persistence.ClimateSensorAccessors;
 import org.air_controller.system_action.SystemActionDbAccessor;
-import org.air_controller.system_action.SystemActionDbAccessors;
+import org.air_controller.system_action.VentilationSystemDbAccessors;
 import org.air_controller.system_action.SystemPart;
 
 public class ApplicationPersistence {
     @Getter
-    private final SystemActionDbAccessors systemActionDbAccessors;
+    private final VentilationSystemDbAccessors ventilationSystemDbAccessors;
     @Getter
     private final ClimateSensorAccessors climateSensorAccessors = createClimateSensorAccessors();
 
@@ -20,12 +20,12 @@ public class ApplicationPersistence {
         this(createSystemActionDbAccessors());
     }
 
-    ApplicationPersistence(SystemActionDbAccessors systemActionDbAccessors) {
-        this.systemActionDbAccessors = systemActionDbAccessors;
+    ApplicationPersistence(VentilationSystemDbAccessors ventilationSystemDbAccessors) {
+        this.ventilationSystemDbAccessors = ventilationSystemDbAccessors;
     }
 
-    private static SystemActionDbAccessors createSystemActionDbAccessors() {
-        return new SystemActionDbAccessors(
+    private static VentilationSystemDbAccessors createSystemActionDbAccessors() {
+        return new VentilationSystemDbAccessors(
                 createSystemActionDbAccessor(SystemPart.AIR_FLOW),
                 createSystemActionDbAccessor(SystemPart.HUMIDITY));
     }

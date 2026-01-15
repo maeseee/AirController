@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class SystemActionMariaDatabaseTest {
 
-    private SystemActionDbAccessors dbAccessors;
+    private VentilationSystemDbAccessors dbAccessors;
 
     @Mock
     private SystemActionDbAccessor airFlowDbAccessor;
@@ -25,7 +25,7 @@ class SystemActionMariaDatabaseTest {
 
     @BeforeEach
     void setUpDbAccessors() {
-        dbAccessors = new SystemActionDbAccessors(airFlowDbAccessor, humidityExchangerDbAccessor);
+        dbAccessors = new VentilationSystemDbAccessors(airFlowDbAccessor, humidityExchangerDbAccessor);
     }
 
     @Test
@@ -33,7 +33,7 @@ class SystemActionMariaDatabaseTest {
         final ZonedDateTime startTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(1);
         final SystemAction mostCurrentAction = new SystemAction(startTime, OutputState.OFF);
         when(airFlowDbAccessor.getMostCurrentState()).thenReturn(Optional.of(mostCurrentAction));
-        final SystemActionPersistence testee = new SystemActionPersistence(dbAccessors);
+        final VentilationSystemPersistence testee = new VentilationSystemPersistence(dbAccessors);
 
         testee.setAirFlowOn(OutputState.ON);
 
@@ -47,7 +47,7 @@ class SystemActionMariaDatabaseTest {
         final ZonedDateTime startTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(1);
         final SystemAction mostCurrentAction = new SystemAction(startTime, OutputState.ON);
         when(airFlowDbAccessor.getMostCurrentState()).thenReturn(Optional.of(mostCurrentAction));
-        final SystemActionPersistence testee = new SystemActionPersistence(dbAccessors);
+        final VentilationSystemPersistence testee = new VentilationSystemPersistence(dbAccessors);
 
         testee.setAirFlowOn(OutputState.ON);
 

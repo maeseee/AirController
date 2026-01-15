@@ -9,8 +9,8 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class SystemActionPersistence implements VentilationSystem {
-    private final SystemActionDbAccessors dbAccessors;
+public class VentilationSystemPersistence implements VentilationSystem {
+    private final VentilationSystemDbAccessors dbAccessors;
 
     @Override
     public void setAirFlowOn(OutputState state) {

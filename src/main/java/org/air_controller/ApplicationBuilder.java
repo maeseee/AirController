@@ -14,7 +14,7 @@ import org.air_controller.statistics.DailyOnTimeLogger;
 import org.air_controller.statistics.SystemStateLogger;
 import org.air_controller.system.ControlledVentilationSystem;
 import org.air_controller.system.VentilationSystem;
-import org.air_controller.system_action.SystemActionPersistence;
+import org.air_controller.system_action.VentilationSystemPersistence;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -54,13 +54,13 @@ class ApplicationBuilder {
     }
 
     private DailyOnTimeLogger createStatistics() {
-        return new DailyOnTimeLogger(persistence.getSystemActionDbAccessors().airFlow());
+        return new DailyOnTimeLogger(persistence.getVentilationSystemDbAccessors().airFlow());
     }
 
     private List<VentilationSystem> createVentilationSystems() {
         final VentilationSystem ventilationSystem = new ControlledVentilationSystem(gpios);
-        final SystemActionPersistence systemActionPersistence = new SystemActionPersistence(persistence.getSystemActionDbAccessors());
-        return List.of(ventilationSystem, systemActionPersistence);
+        final VentilationSystemPersistence ventilationSystemPersistence = new VentilationSystemPersistence(persistence.getVentilationSystemDbAccessors());
+        return List.of(ventilationSystem, ventilationSystemPersistence);
     }
 
     private RuleApplier createRuleApplier() {
@@ -78,6 +78,6 @@ class ApplicationBuilder {
     }
 
     private List<Rule> createFreshAirRules() {
-        return new FreshAirRuleBuilder().build(sensors, persistence.getSystemActionDbAccessors().airFlow());
+        return new FreshAirRuleBuilder().build(sensors, persistence.getVentilationSystemDbAccessors().airFlow());
     }
 }

@@ -5,7 +5,7 @@ import org.air_controller.gpio.GpioPins;
 import org.air_controller.gpio.MockGpioPin;
 import org.air_controller.persistence.LocalInMemoryDatabase;
 import org.air_controller.system_action.SystemActionDbAccessor;
-import org.air_controller.system_action.SystemActionDbAccessors;
+import org.air_controller.system_action.VentilationSystemDbAccessors;
 import org.air_controller.system_action.SystemPart;
 
 class MainMock {
@@ -14,7 +14,7 @@ class MainMock {
         final GpioPin airFlow = new MockGpioPin("AIR_FLOW", true);
         final GpioPin humidityExchanger = new MockGpioPin("HUMIDITY_EXCHANGER", true);
         final GpioPins gpioPins = new GpioPins(airFlow, humidityExchanger);
-        final SystemActionDbAccessors dbAccessors = createSystemActionDbAccessors();
+        final VentilationSystemDbAccessors dbAccessors = createSystemActionDbAccessors();
         final ApplicationPersistence persistence = new ApplicationPersistence(dbAccessors);
         final ApplicationBuilder builder = new ApplicationBuilder(gpioPins, persistence);
         final Application application = builder.build();
@@ -22,8 +22,8 @@ class MainMock {
         Thread.currentThread().join();
     }
 
-    private static SystemActionDbAccessors createSystemActionDbAccessors() {
-        return new SystemActionDbAccessors(
+    private static VentilationSystemDbAccessors createSystemActionDbAccessors() {
+        return new VentilationSystemDbAccessors(
                 createSystemActionDbAccessorWithLocalDb(SystemPart.AIR_FLOW),
                 createSystemActionDbAccessorWithLocalDb(SystemPart.HUMIDITY));
     }
