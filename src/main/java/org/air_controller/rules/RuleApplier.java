@@ -3,6 +3,8 @@ package org.air_controller.rules;
 import lombok.extern.slf4j.Slf4j;
 import org.air_controller.system.OutputState;
 import org.air_controller.system.VentilationSystem;
+import org.air_controller.system_action.VentilationSystemPersistence;
+import org.air_controller.system_action.VentilationSystemPersistenceData;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -12,14 +14,14 @@ public class RuleApplier implements Runnable {
     private final RuleApplierSystem airFlowSystem;
     private final RuleApplierSystem humidityExchangerSystem;
 
-    public RuleApplier(VentilationSystem ventilationSystem, VentilationSystem ventilationSystemPersistence, List<Rule> freshAirRules,
+    public RuleApplier(VentilationSystem ventilationSystem, VentilationSystemPersistence ventilationSystemPersistence, List<Rule> freshAirRules,
             List<Rule> humidityExchangerRules) {
         final Consumer<OutputState> airFlowUpdateAction = ventilationSystem::setAirFlowOn;
-        final Consumer<OutputState> airFlowSystemPersistence = ventilationSystemPersistence::setAirFlowOn;
+        final Consumer<VentilationSystemPersistenceData> airFlowSystemPersistence = ventilationSystemPersistence::persistAirFlowData;
         this.airFlowSystem = new RuleApplierSystem(freshAirRules, airFlowUpdateAction, airFlowSystemPersistence);
 
         final Consumer<OutputState> humidityExchangerAction = ventilationSystem::setHumidityExchangerOn;
-        final Consumer<OutputState> humidityExchangerSystemPersistence = ventilationSystemPersistence::setHumidityExchangerOn;
+        final Consumer<VentilationSystemPersistenceData> humidityExchangerSystemPersistence = ventilationSystemPersistence::persistHumidityExchangerData;
         this.humidityExchangerSystem = new RuleApplierSystem(humidityExchangerRules, humidityExchangerAction, humidityExchangerSystemPersistence);
     }
 

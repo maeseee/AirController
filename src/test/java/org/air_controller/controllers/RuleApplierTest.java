@@ -5,6 +5,7 @@ import org.air_controller.rules.Rule;
 import org.air_controller.rules.RuleApplier;
 import org.air_controller.system.OutputState;
 import org.air_controller.system.VentilationSystem;
+import org.air_controller.system_action.VentilationSystemPersistence;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -21,7 +22,7 @@ class RuleApplierTest {
     @Mock
     private VentilationSystem ventilationSystem;
     @Mock
-    private VentilationSystem ventilationSystemPersistence;
+    private VentilationSystemPersistence ventilationSystemPersistence;
     @Mock
     private Rule rule;
 
@@ -38,9 +39,9 @@ class RuleApplierTest {
         testee.run();
 
         verify(ventilationSystem).setAirFlowOn(OutputState.ON);
-        verify(ventilationSystemPersistence).setAirFlowOn(OutputState.ON);
+        verify(ventilationSystemPersistence).persistAirFlowData(any());
         verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
-        verify(ventilationSystemPersistence).setHumidityExchangerOn(OutputState.OFF);
+        verify(ventilationSystemPersistence).persistHumidityExchangerData(any());
     }
 
     @Test
@@ -52,9 +53,9 @@ class RuleApplierTest {
         testee.run();
 
         verify(ventilationSystem).setAirFlowOn(OutputState.OFF);
-        verify(ventilationSystemPersistence).setAirFlowOn(OutputState.OFF);
+        verify(ventilationSystemPersistence).persistAirFlowData(any());
         verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
-        verify(ventilationSystemPersistence).setHumidityExchangerOn(OutputState.OFF);
+        verify(ventilationSystemPersistence).persistHumidityExchangerData(any());
     }
 
     @Test
@@ -67,9 +68,9 @@ class RuleApplierTest {
         testee.run();
 
         verify(ventilationSystem).setAirFlowOn(OutputState.ON);
-        verify(ventilationSystemPersistence).setAirFlowOn(OutputState.ON);
+        verify(ventilationSystemPersistence).persistAirFlowData(any());
         verify(ventilationSystem).setHumidityExchangerOn(OutputState.ON);
-        verify(ventilationSystemPersistence).setHumidityExchangerOn(OutputState.ON);
+        verify(ventilationSystemPersistence).persistHumidityExchangerData(any());
     }
 
     @Test
@@ -83,9 +84,9 @@ class RuleApplierTest {
         testee.run();
 
         verify(ventilationSystem).setAirFlowOn(OutputState.OFF);
-        verify(ventilationSystemPersistence).setAirFlowOn(OutputState.OFF);
+        verify(ventilationSystemPersistence).persistAirFlowData(any());
         verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
-        verify(ventilationSystemPersistence).setHumidityExchangerOn(OutputState.OFF);
+        verify(ventilationSystemPersistence).persistHumidityExchangerData(any());
     }
 
     @Test
@@ -100,9 +101,9 @@ class RuleApplierTest {
         testee.run(); // nothing
 
         verify(ventilationSystem).setAirFlowOn(OutputState.ON);
-        verify(ventilationSystemPersistence).setAirFlowOn(OutputState.ON);
+        verify(ventilationSystemPersistence, times(2)).persistAirFlowData(any());
         verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
-        verify(ventilationSystemPersistence).setHumidityExchangerOn(OutputState.OFF);
+        verify(ventilationSystemPersistence, times(2)).persistHumidityExchangerData(any());
     }
 
     @Test
@@ -117,10 +118,9 @@ class RuleApplierTest {
         testee.run(); // off
 
         verify(ventilationSystem).setAirFlowOn(OutputState.ON);
-        verify(ventilationSystemPersistence).setAirFlowOn(OutputState.ON);
         verify(ventilationSystem).setAirFlowOn(OutputState.OFF);
-        verify(ventilationSystemPersistence).setAirFlowOn(OutputState.OFF);
+        verify(ventilationSystemPersistence, times(2)).persistAirFlowData(any());
         verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
-        verify(ventilationSystemPersistence).setHumidityExchangerOn(OutputState.OFF);
+        verify(ventilationSystemPersistence, times(2)).persistHumidityExchangerData(any());
     }
 }

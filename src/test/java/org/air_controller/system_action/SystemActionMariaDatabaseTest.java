@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -35,7 +36,7 @@ class SystemActionMariaDatabaseTest {
         when(airFlowDbAccessor.getMostCurrentState()).thenReturn(Optional.of(mostCurrentAction));
         final VentilationSystemPersistence testee = new VentilationSystemPersistence(dbAccessors);
 
-        testee.setAirFlowOn(OutputState.ON);
+        testee.persistAirFlowData(new VentilationSystemPersistenceData(OutputState.ON, 0.0, Collections.emptyMap()));
 
         verify(airFlowDbAccessor).getMostCurrentState();
         verify(airFlowDbAccessor).insertAction(eq(OutputState.ON), any());
@@ -49,7 +50,7 @@ class SystemActionMariaDatabaseTest {
         when(airFlowDbAccessor.getMostCurrentState()).thenReturn(Optional.of(mostCurrentAction));
         final VentilationSystemPersistence testee = new VentilationSystemPersistence(dbAccessors);
 
-        testee.setAirFlowOn(OutputState.ON);
+        testee.persistAirFlowData(new VentilationSystemPersistenceData(OutputState.ON, 0.0, Collections.emptyMap()));
 
         verify(airFlowDbAccessor).getMostCurrentState();
         verifyNoMoreInteractions(airFlowDbAccessor);

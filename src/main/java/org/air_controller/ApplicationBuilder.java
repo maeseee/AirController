@@ -25,7 +25,7 @@ class ApplicationBuilder {
     private final GpioPins gpios;
     private final ClimateSensors sensors;
     private final VentilationSystem ventilationSystem;
-    private final VentilationSystem ventilationSystemPersistence;
+    private final VentilationSystemPersistence ventilationSystemPersistence;
     private final List<Rule> freshAirRules;
     private final DailyOnTimeLogger statistics;
     private final RuleApplier ruleApplier;
@@ -63,7 +63,7 @@ class ApplicationBuilder {
         return new ControlledVentilationSystem(gpios);
     }
 
-    private VentilationSystem createVentilationSystemPersistence() {
+    private VentilationSystemPersistence createVentilationSystemPersistence() {
         return new VentilationSystemPersistence(persistence.getVentilationSystemDbAccessors());
     }
 
