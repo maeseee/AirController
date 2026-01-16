@@ -28,12 +28,12 @@ class SystemActionMariaDatabaseTest {
 
     @Test
     void shouldSetTheState() {
-        final VentilationSystemPersistenceData data = new VentilationSystemPersistenceData(OutputState.ON, 0.0, Collections.emptyMap());
+        final VentilationSystemPersistenceData data = VentilationSystemPersistenceData.create(OutputState.ON, 0.0, Collections.emptyMap());
         final VentilationSystemPersistence testee = new VentilationSystemPersistence(dbAccessors);
 
         testee.persistAirFlowData(data);
 
-        verify(airFlowDbAccessor).insertAction(eq(data), any());
+        verify(airFlowDbAccessor).insertAction(eq(data));
         verifyNoMoreInteractions(airFlowDbAccessor);
     }
 }

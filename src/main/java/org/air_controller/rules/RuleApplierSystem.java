@@ -27,7 +27,7 @@ public class RuleApplierSystem {
             updateSystemIfNecessary();
         } else {
             updateSystem(OutputState.OFF);
-            persistState(new VentilationSystemPersistenceData(OutputState.OFF, Double.NaN, emptyMap()));
+            persistState(VentilationSystemPersistenceData.create(OutputState.OFF, Double.NaN, emptyMap()));
         }
     }
 
@@ -38,7 +38,7 @@ public class RuleApplierSystem {
         final boolean nextStateOn = hysteresis.changeStateWithHysteresis(confidence, currentState.isOn());
         final OutputState action = OutputState.fromIsOnState(nextStateOn);
         updateSystem(action);
-        persistState(new VentilationSystemPersistenceData(action, confidence, confidences));
+        persistState(VentilationSystemPersistenceData.create(action, confidence, confidences));
     }
 
     private Map<String, Confidence> getEachConfidence() {

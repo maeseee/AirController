@@ -48,12 +48,12 @@ public class SystemActionDbAccessor {
         return systemActions.stream().findFirst();
     }
 
-    public void insertAction(VentilationSystemPersistenceData data, ZonedDateTime timestamp) {
+    public void insertAction(VentilationSystemPersistenceData data) {
         final String sql = "INSERT INTO " + systemPart.getTableName() + " (system_part, status, action_time) " + "VALUES (?, ?, ?)";
         final PreparedStatementSetter preparedStatementSetter = preparedStatement -> {
             preparedStatement.setString(1, systemPart.name());
             preparedStatement.setObject(2, data.action().name());
-            preparedStatement.setObject(3, timestamp.toLocalDateTime());
+            preparedStatement.setObject(3, data.timestamp().toLocalDateTime());
         };
         database.executeUpdate(sql, preparedStatementSetter);
     }
