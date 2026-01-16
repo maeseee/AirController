@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,9 +30,11 @@ class SystemActionDbAccessorTest {
     void shouldReturnTheMostCurrentState() {
         final SystemActionDbAccessor testee = new SystemActionDbAccessor(database, SYSTEM_PART);
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        testee.insertAction(OutputState.ON, now.minusHours(1));
-        testee.insertAction(OutputState.OFF, now);
-        testee.insertAction(OutputState.ON, now.minusHours(2));
+        final VentilationSystemPersistenceData dataOn = new VentilationSystemPersistenceData(OutputState.ON, 0.0, Collections.emptyMap());
+        final VentilationSystemPersistenceData dataOff = new VentilationSystemPersistenceData(OutputState.OFF, 0.0, Collections.emptyMap());
+        testee.insertAction(dataOn, now.minusHours(1));
+        testee.insertAction(dataOff, now);
+        testee.insertAction(dataOn, now.minusHours(2));
 
         final Optional<SystemAction> result = testee.getMostCurrentState();
 
@@ -44,10 +47,12 @@ class SystemActionDbAccessorTest {
     void shouldReturnActionsInTimeRange() {
         final SystemActionDbAccessor testee = new SystemActionDbAccessor(database, SYSTEM_PART);
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        testee.insertAction(OutputState.ON, now.minusHours(1));
-        testee.insertAction(OutputState.OFF, now.minusMinutes(1));
-        testee.insertAction(OutputState.ON, now.minusHours(4));
-        testee.insertAction(OutputState.OFF, now.minusHours(2));
+        final VentilationSystemPersistenceData dataOn = new VentilationSystemPersistenceData(OutputState.ON, 0.0, Collections.emptyMap());
+        final VentilationSystemPersistenceData dataOff = new VentilationSystemPersistenceData(OutputState.OFF, 0.0, Collections.emptyMap());
+        testee.insertAction(dataOn, now.minusHours(1));
+        testee.insertAction(dataOff, now.minusMinutes(1));
+        testee.insertAction(dataOn, now.minusHours(4));
+        testee.insertAction(dataOff, now.minusHours(2));
 
         final List<SystemAction> actionsFromTimeToNow = testee.getActionsFromTimeToNow(now.minusHours(3));
 

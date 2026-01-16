@@ -62,6 +62,6 @@ public class RuleApplierSystem {
     }
 
     private void persistState(VentilationSystemPersistenceData data) {
-        updatePersistence.accept(data);
+            updatePersistence.accept(data);
     }
 }

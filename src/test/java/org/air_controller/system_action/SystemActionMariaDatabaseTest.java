@@ -7,10 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.Collections;
-import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
@@ -31,28 +28,12 @@ class SystemActionMariaDatabaseTest {
 
     @Test
     void shouldSetTheState() {
-        final ZonedDateTime startTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(1);
-        final SystemAction mostCurrentAction = new SystemAction(startTime, OutputState.OFF);
-        when(airFlowDbAccessor.getMostCurrentState()).thenReturn(Optional.of(mostCurrentAction));
+        final VentilationSystemPersistenceData data = new VentilationSystemPersistenceData(OutputState.ON, 0.0, Collections.emptyMap());
         final VentilationSystemPersistence testee = new VentilationSystemPersistence(dbAccessors);
 
-        testee.persistAirFlowData(new VentilationSystemPersistenceData(OutputState.ON, 0.0, Collections.emptyMap()));
+        testee.persistAirFlowData(data);
 
-        verify(airFlowDbAccessor).getMostCurrentState();
-        verify(airFlowDbAccessor).insertAction(eq(OutputState.ON), any());
-        verifyNoMoreInteractions(airFlowDbAccessor);
-    }
-
-    @Test
-    void shouldIgnoreSettingTheSameStateTwice() {
-        final ZonedDateTime startTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(1);
-        final SystemAction mostCurrentAction = new SystemAction(startTime, OutputState.ON);
-        when(airFlowDbAccessor.getMostCurrentState()).thenReturn(Optional.of(mostCurrentAction));
-        final VentilationSystemPersistence testee = new VentilationSystemPersistence(dbAccessors);
-
-        testee.persistAirFlowData(new VentilationSystemPersistenceData(OutputState.ON, 0.0, Collections.emptyMap()));
-
-        verify(airFlowDbAccessor).getMostCurrentState();
+        verify(airFlowDbAccessor).insertAction(eq(data), any());
         verifyNoMoreInteractions(airFlowDbAccessor);
     }
 }
