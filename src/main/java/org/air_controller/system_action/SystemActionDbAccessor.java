@@ -49,11 +49,13 @@ public class SystemActionDbAccessor {
     }
 
     public void insertAction(VentilationSystemPersistenceData data) {
-        final String sql = "INSERT INTO " + systemPart.getTableName() + " (system_part, status, action_time) " + "VALUES (?, ?, ?)";
+        final String sql = "INSERT INTO " + systemPart.getTableName() + " (system_part, status, action_time, total_confidence, confidences) " + "VALUES (?, ?, ?, ?, ?)";
         final PreparedStatementSetter preparedStatementSetter = preparedStatement -> {
             preparedStatement.setString(1, systemPart.name());
             preparedStatement.setObject(2, data.action().name());
             preparedStatement.setObject(3, data.timestamp().toLocalDateTime());
+            preparedStatement.setDouble(4, data.totalConfidence());
+            preparedStatement.setString(5, data.getConfidencesText());
         };
         database.executeUpdate(sql, preparedStatementSetter);
     }
@@ -64,7 +66,9 @@ public class SystemActionDbAccessor {
                         "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
                         "system_part VARCHAR(20),\n" +
                         "status VARCHAR(20),\n" +
-                        "action_time TIMESTAMP);";
+                        "action_time TIMESTAMP,\n" +
+                        "total_confidence DOUBLE,\n" +
+                        "confidences VARCHAR(200));";
         database.executeUpdate(sql);
     }
 
