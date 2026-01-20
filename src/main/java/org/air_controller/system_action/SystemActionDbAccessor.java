@@ -29,11 +29,9 @@ public class SystemActionDbAccessor {
     public List<SystemAction> getActionsFromTimeToNow(ZonedDateTime startDateTime) {
         final String sql = "SELECT * FROM " + systemPart.getTableName() + " i " +
                 "WHERE i.action_time > ? " +
-                "AND i.system_part = ? " +
                 "ORDER BY i.action_time;";
         final PreparedStatementSetter setter = preparedStatement -> {
             preparedStatement.setTimestamp(1, Timestamp.valueOf(startDateTime.toLocalDateTime()));
-            preparedStatement.setString(2, systemPart.name());
         };
         final EntryAdder<SystemAction> adder = this::addResultIfAvailable;
         return database.executeQuery(sql, adder, setter);
@@ -49,13 +47,12 @@ public class SystemActionDbAccessor {
     }
 
     public void insertAction(VentilationSystemPersistenceData data) {
-        final String sql = "INSERT INTO " + systemPart.getTableName() + " (system_part, status, action_time, total_confidence, confidences) " + "VALUES (?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO " + systemPart.getTableName() + " (status, action_time, total_confidence, confidences) " + "VALUES (?, ?, ?, ?, ?)";
         final PreparedStatementSetter preparedStatementSetter = preparedStatement -> {
-            preparedStatement.setString(1, systemPart.name());
-            preparedStatement.setObject(2, data.action().name());
-            preparedStatement.setObject(3, data.timestamp().toLocalDateTime());
-            preparedStatement.setDouble(4, data.totalConfidence());
-            preparedStatement.setString(5, data.getConfidencesText());
+            preparedStatement.setObject(1, data.action().name());
+            preparedStatement.setObject(2, data.timestamp().toLocalDateTime());
+            preparedStatement.setDouble(3, data.totalConfidence());
+            preparedStatement.setString(4, data.getConfidencesText());
         };
         database.executeUpdate(sql, preparedStatementSetter);
     }
