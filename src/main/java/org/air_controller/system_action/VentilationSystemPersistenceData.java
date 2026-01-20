@@ -15,7 +15,7 @@ public record VentilationSystemPersistenceData(OutputState action, double totalC
 
     public String getConfidencesText() {
         return confidences.entrySet().stream()
-                .map(confidence -> confidence.getKey() + ": " + confidence.getValue().getWeightedConfidenceValue())
+                .map(confidence -> confidence.getKey() + ": " + confidence.getValue().getWeightedConfidenceValueString())
                 .collect(Collectors.joining(",  "));
     }
 }
