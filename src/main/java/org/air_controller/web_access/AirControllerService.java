@@ -8,6 +8,7 @@ import org.air_controller.sensor_values.CurrentClimateDataPoint;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemPart;
+import org.air_controller.system_action.VentilationSystemPersistenceData;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -26,6 +27,10 @@ public class AirControllerService {
         final CurrentClimateDataPoint currentClimateDataPoint = new CurrentClimateDataPoint(dataPointsAccessor);
         final Optional<ClimateDataPoint> dataPointOptional = currentClimateDataPoint.getCurrentClimateDataPoint();
         return mapToClimateDataPointDTO(dataPointOptional);
+    }
+
+    public Optional<Double> getCurrentTotalConfidence() {
+        return airFlowDbAccessor.getMostCurrentPersistenceData().map(VentilationSystemPersistenceData::totalConfidence);
     }
 
     private Optional<ClimateDataPointDTO> mapToClimateDataPointDTO(Optional<ClimateDataPoint> dataPointOptional) {

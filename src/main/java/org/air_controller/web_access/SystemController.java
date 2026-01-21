@@ -31,4 +31,12 @@ public class SystemController {
                 .map(dataPoint -> new ResponseEntity<>(dataPoint, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
+
+    @GetMapping("/currentState/total_confidence")
+    public ResponseEntity<Double> getCurrentTotalConfidence() {
+        final Optional<Double> currentTotalConfidence = airControllerService.getCurrentTotalConfidence();
+        return currentTotalConfidence
+                .map(confidence -> new ResponseEntity<>(confidence, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+    }
 }

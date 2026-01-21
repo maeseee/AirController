@@ -30,9 +30,7 @@ public class SystemActionDbAccessor {
         final String sql = "SELECT status, action_time FROM " + systemPart.getTableName() + " i " +
                 "WHERE i.action_time > ? " +
                 "ORDER BY i.action_time;";
-        final PreparedStatementSetter setter = preparedStatement -> {
-            preparedStatement.setTimestamp(1, Timestamp.valueOf(startDateTime.toLocalDateTime()));
-        };
+        final PreparedStatementSetter setter = preparedStatement -> preparedStatement.setTimestamp(1, Timestamp.valueOf(startDateTime.toLocalDateTime()));
         final EntryAdder<SystemAction> adder = this::addSystemActionResultIfAvailable;
         return database.executeQuery(sql, adder, setter);
     }
