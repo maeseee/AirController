@@ -15,8 +15,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.air_controller.system_action.VentilationSystemPersistenceData.toConfidencesMap;
-
 @Slf4j
 public class SystemActionDbAccessor {
     private final DatabaseConnection database;
@@ -110,6 +108,6 @@ public class SystemActionDbAccessor {
         final ZonedDateTime actionTime = ZonedDateTime.of(resultSet.getObject("action_time", LocalDateTime.class), ZoneOffset.UTC);
         final double totalConfidence = resultSet.getDouble("total_confidence");
         final String confidencesString = resultSet.getString("confidences");
-        return new VentilationSystemPersistenceData(outputState, totalConfidence, toConfidencesMap(confidencesString), actionTime);
+        return VentilationSystemPersistenceData.create(outputState, totalConfidence, confidencesString, actionTime);
     }
 }

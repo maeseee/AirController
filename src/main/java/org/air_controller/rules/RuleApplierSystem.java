@@ -33,7 +33,7 @@ public class RuleApplierSystem {
 
     private void updateSystemIfNecessary() {
         final Hysteresis hysteresis = new Hysteresis(HYSTERESIS);
-        final Map<String, Confidence> confidences = getEachConfidence();
+        final Map<String, Double> confidences = getEachConfidence();
         final double confidence = getTotalConfidence(confidences);
         final boolean nextStateOn = hysteresis.changeStateWithHysteresis(confidence, currentState.isOn());
         final OutputState action = OutputState.fromIsOnState(nextStateOn);
@@ -41,16 +41,16 @@ public class RuleApplierSystem {
         persistState(VentilationSystemPersistenceData.create(action, confidence, confidences));
     }
 
-    private Map<String, Confidence> getEachConfidence() {
+    private Map<String, Double> getEachConfidence() {
         return rules.stream().collect(
                 Collectors.toMap(
                         Rule::name,
-                        Rule::turnOnConfidence));
+                        rule -> rule.turnOnConfidence().getWeightedConfidenceValue()));
     }
 
-    private double getTotalConfidence(Map<String, Confidence> confidences) {
+    private double getTotalConfidence(Map<String, Double> confidences) {
         return confidences.values().stream()
-                .mapToDouble(Confidence::getWeightedConfidenceValue)
+                .mapToDouble(value ->  value)
                 .sum();
     }
 
