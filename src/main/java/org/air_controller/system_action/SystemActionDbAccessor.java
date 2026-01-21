@@ -57,7 +57,7 @@ public class SystemActionDbAccessor {
 
     public void insertAction(VentilationSystemPersistenceData data) {
         final String sql =
-                "INSERT INTO " + systemPart.getTableName() + " (status, action_time, total_confidence, confidences) " + "VALUES (?, ?, ?, ?, ?)";
+                "INSERT INTO " + systemPart.getTableName() + " (status, action_time, total_confidence, confidences) " + "VALUES (?, ?, ?, ?)";
         final PreparedStatementSetter preparedStatementSetter = preparedStatement -> {
             preparedStatement.setObject(1, data.action().name());
             preparedStatement.setObject(2, data.timestamp().toLocalDateTime());
@@ -71,7 +71,6 @@ public class SystemActionDbAccessor {
         final String sql =
                 "CREATE TABLE IF NOT EXISTS " + systemPart.getTableName() + " (\n" +
                         "id INT PRIMARY KEY AUTO_INCREMENT,\n" +
-                        "system_part VARCHAR(20),\n" +
                         "status VARCHAR(20),\n" +
                         "action_time TIMESTAMP,\n" +
                         "total_confidence DOUBLE,\n" +
