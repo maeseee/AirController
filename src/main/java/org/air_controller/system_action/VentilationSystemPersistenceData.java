@@ -19,10 +19,10 @@ public record VentilationSystemPersistenceData(OutputState action, double totalC
             throw new IllegalArgumentException("confidencesString cannot be null or empty");
         }
 
-        final Map<String, Double> confidences = Arrays.stream(confidencesString.split(",\\s{2}"))
+        final Map<String, Double> confidences = Arrays.stream(confidencesString.split(","))
                 .map(String::trim)
                 .filter(pair -> !pair.isEmpty())
-                .map(pair -> pair.split(":\\s", 2))
+                .map(pair -> pair.split(":"))
                 .filter(parts -> parts.length == 2)
                 .collect(Collectors.toMap(
                         parts -> parts[0],

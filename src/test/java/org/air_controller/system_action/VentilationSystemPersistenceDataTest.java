@@ -1,6 +1,5 @@
 package org.air_controller.system_action;
 
-import org.air_controller.rules.Confidence;
 import org.air_controller.system.OutputState;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
@@ -44,15 +43,28 @@ public class VentilationSystemPersistenceDataTest {
     }
 
     @Test
-    void shouldConvertToConfidenceMap() {
+    void shouldConvertToConfidenceMap_withHappyCase() {
         final String confidencesString = "MyConfidence: 0.2,  Con2: 0.4";
+
         final VentilationSystemPersistenceData testee =
                 VentilationSystemPersistenceData.create(OutputState.ON, 0.8, confidencesString, ZonedDateTime.now());
-
         final Map<String, Double> confidences = testee.confidences();
 
         assertThat(confidences).hasSize(2);
         assertThat(confidences.get("MyConfidence")).isCloseTo(0.2, Offset.offset(0.01));
         assertThat(confidences.get("Con2")).isCloseTo(0.4, Offset.offset(0.01));
+    }
+
+    @Test
+    void shouldConvertToConfidenceMap_withOutSpaces() {
+        final String confidencesString = "MyConfidence:0.3,Con2:0.5";
+
+        final VentilationSystemPersistenceData testee =
+                VentilationSystemPersistenceData.create(OutputState.ON, 0.8, confidencesString, ZonedDateTime.now());
+        final Map<String, Double> confidences = testee.confidences();
+
+        assertThat(confidences).hasSize(2);
+        assertThat(confidences.get("MyConfidence")).isCloseTo(0.3, Offset.offset(0.01));
+        assertThat(confidences.get("Con2")).isCloseTo(0.5, Offset.offset(0.01));
     }
 }
