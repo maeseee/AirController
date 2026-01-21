@@ -29,7 +29,7 @@ public class VentilationSystemPersistenceDataTest {
     }
 
     @Test
-    void shouldReturnConfidenceString_whenHavingMultipleEnties() {
+    void shouldReturnConfidenceString_whenHavingMultipleEntries() {
         final OutputState outputState = OutputState.ON;
         final Map<String, Confidence> confidences = new HashMap<>();
         confidences.put("MyConfidence", new Confidence(0.5, 0.5));
@@ -40,5 +40,16 @@ public class VentilationSystemPersistenceDataTest {
         final String confidencesText = testee.getConfidencesText();
 
         assertThat(confidencesText).isEqualTo("MyConfidence: 0.25,  Con2: 0.04");
+    }
+
+    @Test
+    void shouldConvertToConfidenceMap() {
+        final String confidencesString = "MyConfidence: 0.25,  Con2: 0.04";
+
+        final Map<String, Confidence> confidencesMap = VentilationSystemPersistenceData.toConfidencesMap(confidencesString);
+
+        assertThat(confidencesMap).hasSize(2);
+        assertThat(confidencesMap.get("MyConfidence")).isEqualTo(new Confidence(0.25, 1.0));
+        assertThat(confidencesMap.get("Con2")).isEqualTo(new Confidence(0.04, 1.0));
     }
 }

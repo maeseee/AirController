@@ -15,6 +15,8 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.air_controller.system_action.VentilationSystemPersistenceData.toConfidencesMap;
+
 @Slf4j
 public class SystemActionDbAccessor {
     private final DatabaseConnection database;
@@ -27,27 +29,37 @@ public class SystemActionDbAccessor {
     }
 
     public List<SystemAction> getActionsFromTimeToNow(ZonedDateTime startDateTime) {
-        final String sql = "SELECT * FROM " + systemPart.getTableName() + " i " +
+        final String sql = "SELECT status, action_time FROM " + systemPart.getTableName() + " i " +
                 "WHERE i.action_time > ? " +
                 "ORDER BY i.action_time;";
         final PreparedStatementSetter setter = preparedStatement -> {
             preparedStatement.setTimestamp(1, Timestamp.valueOf(startDateTime.toLocalDateTime()));
         };
-        final EntryAdder<SystemAction> adder = this::addResultIfAvailable;
+        final EntryAdder<SystemAction> adder = this::addSystemActionResultIfAvailable;
         return database.executeQuery(sql, adder, setter);
     }
 
-    public Optional<SystemAction> getMostCurrentState() {
-        final String sql = "SELECT * FROM " + systemPart.getTableName() + " i " +
+    public Optional<SystemAction> getMostCurrentSystemAction() {
+        final String sql = "SELECT status, action_time FROM " + systemPart.getTableName() + " i " +
                 "ORDER BY i.action_time DESC " +
                 "LIMIT 1;";
-        final EntryAdder<SystemAction> adder = this::addResultIfAvailable;
+        final EntryAdder<SystemAction> adder = this::addSystemActionResultIfAvailable;
         final List<SystemAction> systemActions = database.executeQuery(sql, adder);
         return systemActions.stream().findFirst();
     }
 
+    public Optional<VentilationSystemPersistenceData> getMostCurrentPersistenceData() {
+        final String sql = "SELECT * FROM " + systemPart.getTableName() + " i " +
+                "ORDER BY i.action_time DESC " +
+                "LIMIT 1;";
+        final EntryAdder<VentilationSystemPersistenceData> adder = this::addPersistenceDataResultIfAvailable;
+        final List<VentilationSystemPersistenceData> systemActions = database.executeQuery(sql, adder);
+        return systemActions.stream().findFirst();
+    }
+
     public void insertAction(VentilationSystemPersistenceData data) {
-        final String sql = "INSERT INTO " + systemPart.getTableName() + " (status, action_time, total_confidence, confidences) " + "VALUES (?, ?, ?, ?, ?)";
+        final String sql =
+                "INSERT INTO " + systemPart.getTableName() + " (status, action_time, total_confidence, confidences) " + "VALUES (?, ?, ?, ?, ?)";
         final PreparedStatementSetter preparedStatementSetter = preparedStatement -> {
             preparedStatement.setObject(1, data.action().name());
             preparedStatement.setObject(2, data.timestamp().toLocalDateTime());
@@ -69,6 +81,14 @@ public class SystemActionDbAccessor {
         database.executeUpdate(sql);
     }
 
+    private void addSystemActionResultIfAvailable(List<SystemAction> entries, ResultSet resultSet) {
+        try {
+            entries.add(createSystemAction(resultSet));
+        } catch (SQLException e) {
+            log.error("System action entry could not be loaded! {}", e.getMessage());
+        }
+    }
+
     private SystemAction createSystemAction(ResultSet resultSet) throws SQLException {
         final String statusString = resultSet.getString("status");
         final OutputState outputState = OutputState.valueOf(statusString);
@@ -76,11 +96,20 @@ public class SystemActionDbAccessor {
         return new SystemAction(actionTime, outputState);
     }
 
-    private void addResultIfAvailable(List<SystemAction> entries, ResultSet resultSet) {
+    private void addPersistenceDataResultIfAvailable(List<VentilationSystemPersistenceData> entries, ResultSet resultSet) {
         try {
-            entries.add(createSystemAction(resultSet));
+            entries.add(createSystemPersistenceData(resultSet));
         } catch (SQLException e) {
-            log.error("Next entry could not be loaded! {}", e.getMessage());
+            log.error("Persistence data entry could not be loaded! {}", e.getMessage());
         }
+    }
+
+    private VentilationSystemPersistenceData createSystemPersistenceData(ResultSet resultSet) throws SQLException {
+        final String statusString = resultSet.getString("status");
+        final OutputState outputState = OutputState.valueOf(statusString);
+        final ZonedDateTime actionTime = ZonedDateTime.of(resultSet.getObject("action_time", LocalDateTime.class), ZoneOffset.UTC);
+        final double totalConfidence = resultSet.getDouble("total_confidence");
+        final String confidencesString = resultSet.getString("confidences");
+        return new VentilationSystemPersistenceData(outputState, totalConfidence, toConfidencesMap(confidencesString), actionTime);
     }
 }

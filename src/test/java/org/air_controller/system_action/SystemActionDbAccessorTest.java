@@ -34,7 +34,7 @@ class SystemActionDbAccessorTest {
         testee.insertAction(new VentilationSystemPersistenceData(OutputState.OFF, 0.0, Collections.emptyMap(), now));
         testee.insertAction(new VentilationSystemPersistenceData(OutputState.ON, 0.0, Collections.emptyMap(), now.minusHours(2)));
 
-        final Optional<SystemAction> result = testee.getMostCurrentState();
+        final Optional<SystemAction> result = testee.getMostCurrentSystemAction();
 
         assertThat(result).isPresent();
         assertThat(result.get().outputState()).isEqualTo(OutputState.OFF);

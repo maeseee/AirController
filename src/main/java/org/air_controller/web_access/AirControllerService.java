@@ -19,7 +19,7 @@ public class AirControllerService {
     private final ClimateDataPointsDbAccessor dataPointsAccessor = new ClimateDataPointsDbAccessor(new MariaDatabase(), "indoorSensor"); // TODO magic constant
 
     public Optional<SystemAction> getCurrentStateForFreshAir() {
-        return airFlowDbAccessor.getMostCurrentState();
+        return airFlowDbAccessor.getMostCurrentSystemAction();
     }
 
     public Optional<ClimateDataPointDTO> getCurrentClimateDataPoint() {
