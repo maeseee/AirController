@@ -22,7 +22,7 @@
       <h3>The total confidence for on is {{ totalConfidence | number:'1.1-2' }}:</h3>
       @for (key of Object.keys(confidences); track key) {
         <div>
-          {{ key }}: {{ confidences[key] }}
+          {{ key }}: {{ confidences[key] | number:'1.1-2' }}
         </div>
       } @empty {
         <p>No confidence data available.</p>
