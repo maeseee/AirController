@@ -33,6 +33,10 @@ public class AirControllerService {
         return airFlowDbAccessor.getMostCurrentPersistenceData().map(VentilationSystemPersistenceData::totalConfidence);
     }
 
+    public Optional<String> getCurrentConfidences() {
+        return airFlowDbAccessor.getMostCurrentPersistenceData().map(VentilationSystemPersistenceData::getConfidencesText);
+    }
+
     private Optional<ClimateDataPointDTO> mapToClimateDataPointDTO(Optional<ClimateDataPoint> dataPointOptional) {
         return dataPointOptional.map(dataPoint -> {
             final double celsius = dataPoint.temperature().celsius();

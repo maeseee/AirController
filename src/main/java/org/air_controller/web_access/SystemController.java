@@ -18,25 +18,31 @@ public class SystemController {
 
     @GetMapping("/currentState/freshAir")
     public ResponseEntity<OutputState> getCurrentStateForFreshAir() {
-        final Optional<SystemAction> lastAction = airControllerService.getCurrentStateForFreshAir();
-        return lastAction
-                .map(systemAction -> new ResponseEntity<>(systemAction.outputState(), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+        final Optional<OutputState> currentOutputState = airControllerService.getCurrentStateForFreshAir()
+                .map(SystemAction::outputState);
+        return generateResponse(currentOutputState);
     }
 
     @GetMapping("/currentState/climateDataPoint")
     public ResponseEntity<ClimateDataPointDTO> getCurrentClimateDataPoint() {
         final Optional<ClimateDataPointDTO> currentClimateDataPoint = airControllerService.getCurrentClimateDataPoint();
-        return currentClimateDataPoint
-                .map(dataPoint -> new ResponseEntity<>(dataPoint, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+        return generateResponse(currentClimateDataPoint);
     }
 
     @GetMapping("/currentState/total_confidence")
     public ResponseEntity<Double> getCurrentTotalConfidence() {
         final Optional<Double> currentTotalConfidence = airControllerService.getCurrentTotalConfidence();
-        return currentTotalConfidence
-                .map(confidence -> new ResponseEntity<>(confidence, HttpStatus.OK))
+        return generateResponse(currentTotalConfidence);
+    }
+
+    @GetMapping("/currentState/confidences")
+    public ResponseEntity<String> getCurrentConfidences() {
+        final Optional<String> currentConfidences = airControllerService.getCurrentConfidences();
+        return generateResponse(currentConfidences);
+    }
+
+    private <T> ResponseEntity<T> generateResponse(Optional<T> resultOptional) {
+        return resultOptional.map(result -> new  ResponseEntity<>(result, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 }
