@@ -27,7 +27,7 @@ public class RuleApplierSystem {
             updateSystemIfNecessary();
         } else {
             updateSystem(OutputState.OFF);
-            persistState(VentilationSystemPersistenceData.create(OutputState.OFF, Double.NaN, emptyMap()));
+            persistState(VentilationSystemPersistenceData.create(OutputState.OFF, 0.0, emptyMap()));
         }
     }
 
