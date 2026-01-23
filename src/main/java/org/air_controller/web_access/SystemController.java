@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -36,8 +37,8 @@ public class SystemController {
     }
 
     @GetMapping("/currentState/confidences")
-    public ResponseEntity<String> getCurrentConfidences() {
-        final Optional<String> currentConfidences = airControllerService.getCurrentConfidences();
+    public ResponseEntity<Map<String, Double>> getCurrentConfidences() {
+        final Optional<Map<String, Double>> currentConfidences = airControllerService.getCurrentConfidences();
         return generateResponse(currentConfidences);
     }
 

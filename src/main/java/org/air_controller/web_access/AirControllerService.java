@@ -11,6 +11,7 @@ import org.air_controller.system_action.SystemPart;
 import org.air_controller.system_action.VentilationSystemPersistenceData;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -33,8 +34,8 @@ public class AirControllerService {
         return airFlowDbAccessor.getMostCurrentPersistenceData().map(VentilationSystemPersistenceData::totalConfidence);
     }
 
-    public Optional<String> getCurrentConfidences() {
-        return airFlowDbAccessor.getMostCurrentPersistenceData().map(VentilationSystemPersistenceData::getConfidencesText);
+    public Optional<Map<String, Double>> getCurrentConfidences() {
+        return airFlowDbAccessor.getMostCurrentPersistenceData().map(VentilationSystemPersistenceData::confidences);
     }
 
     private Optional<ClimateDataPointDTO> mapToClimateDataPointDTO(Optional<ClimateDataPoint> dataPointOptional) {
