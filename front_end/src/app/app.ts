@@ -20,7 +20,11 @@ export class App implements OnInit {
   totalConfidence?: number;
   confidences: ConfidenceMap = {};
 
-  constructor(private airService: freshAirStatus, private climateDataPoint: CurrentClimateDataPointService, private freshAirTotalConfidence: CurrentTotalConfidence, private freshAirConfidences: FreshAirConfidences) {
+  constructor(
+    private airService: freshAirStatus,
+    private climateDataPoint: CurrentClimateDataPointService,
+    private freshAirTotalConfidence: CurrentTotalConfidence,
+    private freshAirConfidences: FreshAirConfidences) {
   }
 
   ngOnInit() {
@@ -45,5 +49,6 @@ export class App implements OnInit {
       error: (err) => console.error('Connection failed', err)
     });
   }
+
   protected readonly Object = Object;
 }
