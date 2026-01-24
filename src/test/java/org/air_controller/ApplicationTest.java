@@ -4,7 +4,6 @@ import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor_values.ClimateSensors;
 import org.air_controller.statistics.DailyOnTimeLogger;
-import org.air_controller.statistics.SystemStateLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,8 +32,6 @@ class ApplicationTest {
     private DailyOnTimeLogger statistics;
     @Mock
     private ScheduledExecutorService executor;
-    @Mock
-    private SystemStateLogger systemStateLogger;
 
     @BeforeEach
     void setUp() {
@@ -43,13 +40,12 @@ class ApplicationTest {
 
     @Test
     void testWhenCreateApplicationThenScheduleExecutor() {
-        final Application testee = new Application(sensors, ruleApplier, statistics, systemStateLogger, executor);
+        final Application testee = new Application(sensors, ruleApplier, statistics, executor);
 
         testee.run();
 
         verify(executor, times(2)).scheduleAtFixedRate(any(), eq(0L), eq(600L), eq(TimeUnit.SECONDS)); // outdoorSensor + indoorSensor
         verify(executor).scheduleAtFixedRate(any(), eq(0L), eq(60L), eq(TimeUnit.SECONDS)); // ruleApplier
-        verify(executor).scheduleAtFixedRate(any(), eq(5 * 60L), eq(60 * 60L), eq(TimeUnit.SECONDS)); // systemStateLogger
         verify(executor).scheduleAtFixedRate(any(), anyLong(), eq(86400L), eq(TimeUnit.SECONDS)); // statistics
     }
 }

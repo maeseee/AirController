@@ -11,7 +11,6 @@ import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor.ClimateSensorsFactory;
 import org.air_controller.sensor_values.ClimateSensors;
 import org.air_controller.statistics.DailyOnTimeLogger;
-import org.air_controller.statistics.SystemStateLogger;
 import org.air_controller.system.ControlledVentilationSystem;
 import org.air_controller.system.VentilationSystem;
 import org.air_controller.system_action.VentilationSystemPersistence;
@@ -29,7 +28,6 @@ class ApplicationBuilder {
     private final List<Rule> freshAirRules;
     private final DailyOnTimeLogger statistics;
     private final RuleApplier ruleApplier;
-    private final SystemStateLogger systemStateLogger;
 
     ApplicationBuilder() {
         this(createDingtianPins(), new ApplicationPersistence());
@@ -44,11 +42,10 @@ class ApplicationBuilder {
         this.freshAirRules = createFreshAirRules();
         this.statistics = createStatistics();
         this.ruleApplier = createRuleApplier();
-        this.systemStateLogger = createSystemStateLogger();
     }
 
     public Application build() {
-        return new Application(sensors, ruleApplier, statistics, systemStateLogger, Executors.newScheduledThreadPool(1));
+        return new Application(sensors, ruleApplier, statistics, Executors.newScheduledThreadPool(1));
     }
 
     private ClimateSensors createSensors() {
@@ -71,10 +68,6 @@ class ApplicationBuilder {
         final List<Rule> humidityExchangeRules =
                 new HumidityExchangerRuleBuilder().getHumidityExchangeRules(sensors);
         return new RuleApplier(ventilationSystem, ventilationSystemPersistence, freshAirRules, humidityExchangeRules);
-    }
-
-    private SystemStateLogger createSystemStateLogger() {
-        return new SystemStateLogger(ventilationSystem, freshAirRules);
     }
 
     private static GpioPins createDingtianPins() {

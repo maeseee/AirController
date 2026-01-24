@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor_values.ClimateSensors;
 import org.air_controller.statistics.DailyOnTimeLogger;
-import org.air_controller.statistics.SystemStateLogger;
 
 import java.time.Duration;
 import java.time.ZoneOffset;
@@ -15,29 +14,24 @@ import java.util.concurrent.*;
 class Application {
     private static final Duration SENSOR_READ_PERIOD = Duration.ofMinutes(10);
     private static final Duration RULE_APPLIER_PERIOD = Duration.ofMinutes(1);
-    private static final Duration LOG_PERIOD = Duration.ofHours(1);
 
     private final ClimateSensors sensors;
     private final RuleApplier ruleApplier;
     private final DailyOnTimeLogger statistics;
     private final ScheduledExecutorService executor;
     private final ExecutorService worker = Executors.newCachedThreadPool();
-    private final SystemStateLogger systemStateLogger;
 
-    Application(ClimateSensors sensors, RuleApplier ruleApplier, DailyOnTimeLogger statistics, SystemStateLogger systemStateLogger,
-            ScheduledExecutorService executor) {
+    Application(ClimateSensors sensors, RuleApplier ruleApplier, DailyOnTimeLogger statistics, ScheduledExecutorService executor) {
         this.sensors = sensors;
         this.ruleApplier = ruleApplier;
         this.statistics = statistics;
         this.executor = executor;
-        this.systemStateLogger = systemStateLogger;
     }
 
     public void run() {
         addThreadExecutorWithTimeout("Outdoorsensor", sensors.outdoor(), Duration.ZERO, SENSOR_READ_PERIOD);
         addThreadExecutorWithTimeout("Indoorsensor", sensors.indoor(), Duration.ZERO, SENSOR_READ_PERIOD);
         addThreadExecutorWithTimeout("RuleApplier", ruleApplier, Duration.ZERO, RULE_APPLIER_PERIOD);
-        addThreadExecutorWithTimeout("SystemStateLogger", systemStateLogger, SENSOR_READ_PERIOD.dividedBy(2), LOG_PERIOD);
 
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final ZonedDateTime midnight = ZonedDateTime.of(now.toLocalDate().atStartOfDay().plusDays(1), ZoneOffset.UTC);
