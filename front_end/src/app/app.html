@@ -1,13 +1,15 @@
 <div class="dashboard-container">
   <header>
     <h1>Fresh Air System</h1>
-    <div [ngClass]="airStatus === 'ON' ? 'status-on' : 'status-off'" class="status-badge">
-      <span class="pulse-dot"></span>
-      System {{ airStatus }}
-    </div>
   </header>
 
+  <h3>System state</h3>
+  <div [ngClass]="airStatus === 'ON' ? 'status-on' : 'status-off'" class="status-badge">
+    <span class="pulse-dot"></span> System {{ airStatus }}
+  </div>
+
   @if (dataPoint) {
+    <h3>Sensors</h3>
     <section class="card-grid">
       <div class="card">
         <span class="label">Temperature</span>
@@ -29,9 +31,10 @@
     </div>
   }
 
-  @if (confidences) {
-    <section class="confidence-box">
-      <h3>Analysis Confidence: <strong>{{ totalConfidence | number:'1.1-2' }}</strong></h3>
+  <h3>Confidence</h3>
+  <section class="confidence-box">
+    @if (confidences) {
+      <h3>Confidence : {{ totalConfidence | number:'1.1-2' }}</h3>
       <div class="confidence-list">
         @for (key of Object.keys(confidences); track key) {
           <div class="conf-item">
@@ -40,8 +43,8 @@
           </div>
         }
       </div>
-    </section>
-  }
+    }
+  </section>
 
   <button class="refresh-btn" (click)="refresh()">
     Update Status
