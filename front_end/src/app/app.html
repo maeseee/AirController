@@ -32,8 +32,9 @@
   }
 
   <h3>Confidence</h3>
-  <section class="confidence-box">
-    @if (confidences) {
+
+  @if (confidences) {
+    <section class="confidence-box">
       <h3>Confidence : {{ totalConfidence | number:'1.1-2' }}</h3>
       <div class="confidence-list">
         @for (key of Object.keys(confidences); track key) {
@@ -43,8 +44,9 @@
           </div>
         }
       </div>
-    }
-  </section>
+    </section>
+  }
+
 
   <button class="refresh-btn" (click)="refresh()">
     Update Status
