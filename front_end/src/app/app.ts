@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {freshAirStatus} from './fresh-air-status.service';
 import {ClimateDataPoint} from './climate-data-point';
 import {CurrentClimateDataPointService} from './current-climate-data-point.service';
@@ -11,7 +11,7 @@ import {catchError, forkJoin, Observable, of} from 'rxjs';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgOptimizedImage],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
