@@ -1,37 +1,163 @@
-<div style="text-align: center; margin-top: 50px; font-family: sans-serif;">
-  <h1>Fresh Air System</h1>
+<div class="dashboard-container">
+  <header>
+    <h1>Fresh Air System</h1>
+    <div [ngClass]="airStatus === 'ON' ? 'status-on' : 'status-off'" class="status-badge">
+      <span class="pulse-dot"></span>
+      System {{ airStatus }}
+    </div>
+  </header>
 
-  <div [ngClass]="{'status-on': airStatus === 'ON', 'status-off': airStatus === 'OFF'}"
-       class="status-display">
-    {{ airStatus }}
-  </div>
   @if (dataPoint) {
-    <div class="sensor-values">
-      <h3>Environment Readings</h3>
-      <p>Temperature: <strong>{{ dataPoint.temperatureInCelsius | number:'1.1-1' }}°C</strong></p>
-      <p>Humidity: <strong>{{ dataPoint.relativeHumidity | number:'2.1-1' }}%</strong></p>
-      <p>CO2: <strong>{{ dataPoint.co2InPpm | number:'2.0-0' }}ppm</strong></p>
-    </div>
+    <section class="card-grid">
+      <div class="card">
+        <span class="label">Temperature</span>
+        <div class="value">{{ dataPoint.temperatureInCelsius | number:'1.1-1' }}°C</div>
+      </div>
+      <div class="card">
+        <span class="label">Humidity</span>
+        <div class="value">{{ dataPoint.relativeHumidity | number:'2.1-1' }}%</div>
+      </div>
+      <div class="card">
+        <span class="label">CO2 Level</span>
+        <div class="value">{{ dataPoint.co2InPpm | number:'2.0-0' }}<small>ppm</small></div>
+      </div>
+    </section>
   } @else {
-    <div class="loader">
-      <p>Fetching data from server...</p>
+    <div class="loader-container">
+      <div class="spinner"></div>
+      <p>Syncing environment data...</p>
     </div>
   }
+
   @if (confidences) {
-    <div class="confidences">
-      <h3>The total confidence for on is {{ totalConfidence | number:'1.1-2' }}:</h3>
-      @for (key of Object.keys(confidences); track key) {
-        <div>
-          {{ key }}: {{ confidences[key] | number:'1.1-2' }}
-        </div>
-      } @empty {
-        <p>No confidence data available.</p>
-      }
-    </div>
-  } @else {
-    <div class="loader">
-      <p>Fetching data from server...</p>
-    </div>
+    <section class="confidence-box">
+      <h3>Analysis Confidence: <strong>{{ totalConfidence | number:'1.1-2' }}</strong></h3>
+      <div class="confidence-list">
+        @for (key of Object.keys(confidences); track key) {
+          <div class="conf-item">
+            <span class="conf-key">{{ key }}: </span>
+            <span class="conf-val">{{ confidences[key] | number:'1.1-2' }}</span>
+          </div>
+        }
+      </div>
+    </section>
   }
-  <button (click)="refresh()">Update Status</button>
+
+  <button class="refresh-btn" (click)="refresh()">
+    Update Status
+  </button>
 </div>
+
+<style>
+  .dashboard-container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 24px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    text-align: center;
+  }
+
+  header h1 {
+    color: #1a1a1a;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+
+  /* Status Badge Styling */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+  }
+
+  .status-on {
+    background: #e6f7ed;
+    color: #1db954;
+  }
+
+  .status-off {
+    background: #fee2e2;
+    color: #ef4444;
+  }
+
+  /* Card Grid */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .card {
+    background: #f8fafc;
+    padding: 16px 8px;
+    border-radius: 16px;
+    border: 1px solid #f1f5f9;
+  }
+
+  .card .label {
+    font-size: 0.75rem;
+    color: #64748b;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .card .value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1e293b;
+  }
+
+  /* Confidence Section */
+  .confidence-box {
+    background: #f1f5f9;
+    padding: 16px;
+    border-radius: 16px;
+    text-align: left;
+    margin-bottom: 24px;
+  }
+
+  .confidence-box h3 {
+    font-size: 0.9rem;
+    margin-top: 0;
+    color: #475569;
+  }
+
+  .confidence-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .conf-item {
+    font-size: 0.8rem;
+    background: #fff;
+    padding: 4px 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Button Styling */
+  .refresh-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: #007aff;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+  }
+
+  .refresh-btn:active {
+    transform: scale(0.98);
+  }
+</style>
