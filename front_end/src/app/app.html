@@ -3,46 +3,43 @@
     <h1>Fresh Air System</h1>
   </header>
 
-  <div [ngClass]="airStatus === 'ON' ? 'status-on' : 'status-off'" class="status-badge">
-    <span class="pulse-dot"></span> System {{ airStatus }}
-  </div>
-
-  @if (dataPoint) {
+  @if (viewModel$ | async; as data) {
+    <!-- status -->
+    <div [ngClass]="data.status === 'ON' ? 'status-on' : 'status-off'" class="status-badge">
+      <span class="pulse-dot"></span> System {{ data.status }}
+    </div>
+    <!-- sensors -->
     <h3>Sensors</h3>
     <section class="card-grid">
       <div class="card">
         <span class="label">Temperature</span>
-        <div class="value">{{ dataPoint.temperatureInCelsius | number:'1.1-1' }}°C</div>
+        <div class="value">{{ data.dataPoint.temperatureInCelsius | number:'1.1-1' }}°C</div>
       </div>
       <div class="card">
         <span class="label">Humidity</span>
-        <div class="value">{{ dataPoint.relativeHumidity | number:'2.1-1' }}%</div>
+        <div class="value">{{ data.dataPoint.relativeHumidity | number:'2.1-1' }}%</div>
       </div>
       <div class="card">
         <span class="label">CO2 Level</span>
-        <div class="value">{{ dataPoint.co2InPpm | number:'2.0-0' }}<small>ppm</small></div>
+        <div class="value">{{ data.dataPoint.co2InPpm | number:'2.0-0' }}<small>ppm</small></div>
       </div>
     </section>
-  } @else {
-    <div class="loader-container">
-      <div class="spinner"></div>
-      <p>Syncing environment data...</p>
-    </div>
-  }
-
-  <h3>Confidence is {{ totalConfidence | number:'1.1-2' }}</h3>
-  @if (confidences) {
+    <!-- confidence -->
+    <h3>Confidence is {{ data.totalConfidence | number:'1.1-2' }}</h3>
     <section class="card-grid">
-      @for (key of Object.keys(confidences); track key) {
+      @for (key of Object.keys(data.confidences); track key) {
         <div class="card">
           <span class="label">{{ key }}</span>
-          <span class="value">{{ confidences[key] | number:'1.1-2' }}</span>
+          <span class="value">{{ data.confidences[key] | number:'1.1-2' }}</span>
         </div>
       }
     </section>
+  } @else {
+    <div class="loader">
+      <p>Fetching climate data... Please wait.</p>
+    </div>
   }
-
-
+  <!-- button -->
   <button class="refresh-btn" (click)="refresh()">
     Update Status
   </button>
@@ -78,13 +75,13 @@
   }
 
   .status-on {
-    background: #e6f7ed;
-    color: #1db954;
+    background: #f1f5f9;
+    color: #009c37;
   }
 
   .status-off {
-    background: #fee2e2;
-    color: #ef4444;
+    background: #f1f5f9;
+    color: #880000;
   }
 
   /* Card Grid */

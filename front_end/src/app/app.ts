@@ -6,6 +6,7 @@ import {CurrentClimateDataPointService} from './current-climate-data-point.servi
 import {FreshAirConfidences} from './fresh-air-confidences';
 import {CurrentTotalConfidence} from './current-total-confidence';
 import {ConfidenceMap} from './confidence-map';
+import {catchError, forkJoin, Observable, of} from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -15,10 +16,12 @@ import {ConfidenceMap} from './confidence-map';
   styleUrl: './app.css'
 })
 export class App implements OnInit {
-  airStatus: string = 'LOADING...';
-  dataPoint?: ClimateDataPoint;
-  totalConfidence?: number;
-  confidences: ConfidenceMap = {};
+  viewModel$?: Observable<{
+    status: string;
+    dataPoint: ClimateDataPoint;
+    totalConfidence: number;
+    confidences: ConfidenceMap;
+  }>;
 
   constructor(
     private airService: freshAirStatus,
@@ -32,22 +35,17 @@ export class App implements OnInit {
   }
 
   refresh() {
-    this.airService.getStatus().subscribe({
-      next: (val) => this.airStatus = val,
-      error: () => this.airStatus = 'ERROR (Check Java/CORS)'
-    });
-    this.climateDataPoint.getDataPoint().subscribe({
-      next: (dataPoint) => this.dataPoint = dataPoint,
-      error: (err) => console.error('Connection failed', err)
-    });
-    this.freshAirTotalConfidence.getTotalConfidence().subscribe({
-      next: (totalConfidence) => this.totalConfidence = totalConfidence,
-      error: (err) => console.error('Connection failed', err)
-    });
-    this.freshAirConfidences.getConfidences().subscribe({
-      next: (confidences) => this.confidences = confidences,
-      error: (err) => console.error('Connection failed', err)
-    });
+    this.viewModel$ = forkJoin({
+      status: this.airService.getStatus().pipe(catchError(() => of('ERROR (Check Java/CORS)'))),
+      dataPoint: this.climateDataPoint.getDataPoint(),
+      totalConfidence: this.freshAirTotalConfidence.getTotalConfidence(),
+      confidences: this.freshAirConfidences.getConfidences()
+    }).pipe(
+      catchError(err => {
+        console.error('Batch update failed', err);
+        throw err;
+      })
+    );
   }
 
   protected readonly Object = Object;
