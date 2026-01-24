@@ -3,7 +3,6 @@
     <h1>Fresh Air System</h1>
   </header>
 
-  <h3>System state</h3>
   <div [ngClass]="airStatus === 'ON' ? 'status-on' : 'status-off'" class="status-badge">
     <span class="pulse-dot"></span> System {{ airStatus }}
   </div>
@@ -31,19 +30,15 @@
     </div>
   }
 
-  <h3>Confidence</h3>
-
+  <h3>Confidence is {{ totalConfidence | number:'1.1-2' }}</h3>
   @if (confidences) {
-    <section class="confidence-box">
-      <h3>Confidence : {{ totalConfidence | number:'1.1-2' }}</h3>
-      <div class="confidence-list">
-        @for (key of Object.keys(confidences); track key) {
-          <div class="conf-item">
-            <span class="conf-key">{{ key }}: </span>
-            <span class="conf-val">{{ confidences[key] | number:'1.1-2' }}</span>
-          </div>
-        }
-      </div>
+    <section class="card-grid">
+      @for (key of Object.keys(confidences); track key) {
+        <div class="card">
+          <span class="label">{{ key }}</span>
+          <span class="value">{{ confidences[key] | number:'1.1-2' }}</span>
+        </div>
+      }
     </section>
   }
 
@@ -120,33 +115,10 @@
     color: #1e293b;
   }
 
-  /* Confidence Section */
-  .confidence-box {
-    background: #f1f5f9;
-    padding: 16px;
-    border-radius: 16px;
-    text-align: left;
-    margin-bottom: 24px;
-  }
-
   .confidence-box h3 {
     font-size: 0.9rem;
     margin-top: 0;
     color: #475569;
-  }
-
-  .confidence-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .conf-item {
-    font-size: 0.8rem;
-    background: #fff;
-    padding: 4px 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
   }
 
   /* Button Styling */
