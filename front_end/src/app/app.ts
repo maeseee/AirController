@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {freshAirStatus} from './fresh-air-status.service';
 import {ClimateDataPoint} from './climate-data-point';
-import {CurrentClimateDataPointService} from './current-climate-data-point.service';
+import {CurrentIndoorClimateDataPointService} from './current-indoor-climate-data-point.service';
 import {FreshAirConfidences} from './fresh-air-confidences';
 import {CurrentTotalConfidence} from './current-total-confidence';
 import {ConfidenceMap} from './confidence-map';
@@ -25,7 +25,7 @@ export class App implements OnInit {
 
   constructor(
     private airService: freshAirStatus,
-    private climateDataPoint: CurrentClimateDataPointService,
+    private climateDataPoint: CurrentIndoorClimateDataPointService,
     private freshAirTotalConfidence: CurrentTotalConfidence,
     private freshAirConfidences: FreshAirConfidences) {
   }

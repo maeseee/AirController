@@ -26,7 +26,7 @@ public class AirControllerService {
         return airFlowDbAccessor.getMostCurrentSystemAction();
     }
 
-    public Optional<ClimateDataPointDTO> getCurrentClimateDataPoint() {
+    public Optional<ClimateDataPointDTO> getCurrentIndoorClimateDataPoint() {
         final CurrentClimateDataPoint currentClimateDataPoint = new CurrentClimateDataPoint(dataPointsAccessor);
         final Optional<ClimateDataPoint> dataPointOptional = currentClimateDataPoint.getCurrentClimateDataPoint();
         return mapToClimateDataPointDTO(dataPointOptional);

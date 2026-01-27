@@ -24,9 +24,9 @@ public class SystemController {
         return generateResponse(currentOutputState);
     }
 
-    @GetMapping("/currentState/climateDataPoint")
-    public ResponseEntity<ClimateDataPointDTO> getCurrentClimateDataPoint() {
-        final Optional<ClimateDataPointDTO> currentClimateDataPoint = airControllerService.getCurrentClimateDataPoint();
+    @GetMapping("/currentState/indoorClimateDataPoint")
+    public ResponseEntity<ClimateDataPointDTO> getCurrentIndoorClimateDataPoint() {
+        final Optional<ClimateDataPointDTO> currentClimateDataPoint = airControllerService.getCurrentIndoorClimateDataPoint();
         return generateResponse(currentClimateDataPoint);
     }
 
