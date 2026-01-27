@@ -14,11 +14,13 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.air_controller.sensor_data_persistence.ClimateDataPointPersistence.INDOOR_TABLE_NAME;
+
 @Service
 public class AirControllerService {
 
     private final SystemActionDbAccessor airFlowDbAccessor = new SystemActionDbAccessor(new MariaDatabase(), SystemPart.AIR_FLOW);
-    private final ClimateDataPointsDbAccessor dataPointsAccessor = new ClimateDataPointsDbAccessor(new MariaDatabase(), "indoorSensor"); // TODO magic constant
+    private final ClimateDataPointsDbAccessor dataPointsAccessor = new ClimateDataPointsDbAccessor(new MariaDatabase(), INDOOR_TABLE_NAME);
 
     public Optional<SystemAction> getCurrentStateForFreshAir() {
         return airFlowDbAccessor.getMostCurrentSystemAction();
