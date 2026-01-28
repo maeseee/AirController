@@ -8,7 +8,7 @@ import {CurrentIndoorClimateDataPointService} from './current-indoor-climate-dat
 import {CurrentOutdoorClimateDataPointService} from './current-outdoor-climate-data-point.service';
 import {CurrentTotalConfidence} from './current-total-confidence';
 import {FreshAirConfidences} from './fresh-air-confidences';
-import {MetricCardComponent} from './card-metric-card';
+import {MetricCardComponent} from './components/metric-card/metric-card';
 
 @Component({
   selector: 'app-root',
