@@ -4,8 +4,7 @@ import {toSignal} from '@angular/core/rxjs-interop';
 import {BehaviorSubject, catchError, forkJoin, of, switchMap} from 'rxjs';
 
 import {freshAirStatus} from './fresh-air-status.service';
-import {CurrentIndoorClimateDataPointService} from './current-indoor-climate-data-point.service';
-import {CurrentOutdoorClimateDataPointService} from './current-outdoor-climate-data-point.service';
+import {CurrentClimateDataPointService} from './current-climate-data-point.service';
 import {CurrentTotalConfidence} from './current-total-confidence';
 import {FreshAirConfidences} from './fresh-air-confidences';
 import {MetricCardComponent} from './components/metric-card/metric-card';
@@ -19,8 +18,7 @@ import {MetricCardComponent} from './components/metric-card/metric-card';
 })
 export class App {
   private airService = inject(freshAirStatus);
-  private indoorService = inject(CurrentIndoorClimateDataPointService);
-  private outdoorService = inject(CurrentOutdoorClimateDataPointService);
+  private dataPointService = inject(CurrentClimateDataPointService);
   private totalConfService = inject(CurrentTotalConfidence);
   private confidencesService = inject(FreshAirConfidences);
 
@@ -29,8 +27,8 @@ export class App {
   private data$ = this.refresh$.pipe(
     switchMap(() => forkJoin({
       status: this.airService.getStatus().pipe(catchError(() => of('ERROR'))),
-      indoorDataPoint: this.indoorService.getDataPoint(),
-      outdoorDataPoint: this.outdoorService.getDataPoint(),
+      indoorDataPoint: this.dataPointService.getDataPoint('indoor'),
+      outdoorDataPoint: this.dataPointService.getDataPoint('outdoor'),
       totalConfidence: this.totalConfService.getTotalConfidence(),
       confidences: this.confidencesService.getConfidences()
     })),
