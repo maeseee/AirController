@@ -3,6 +3,7 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {freshAirStatus} from './fresh-air-status.service';
 import {ClimateDataPoint} from './climate-data-point';
 import {CurrentIndoorClimateDataPointService} from './current-indoor-climate-data-point.service';
+import {CurrentOutdoorClimateDataPointService} from './current-outdoor-climate-data-point.service';
 import {FreshAirConfidences} from './fresh-air-confidences';
 import {CurrentTotalConfidence} from './current-total-confidence';
 import {ConfidenceMap} from './confidence-map';
@@ -18,14 +19,16 @@ import {catchError, forkJoin, Observable, of} from 'rxjs';
 export class App implements OnInit {
   viewModel$?: Observable<{
     status: string;
-    dataPoint: ClimateDataPoint;
+    indoorDataPoint: ClimateDataPoint;
+    outdoorDataPoint: ClimateDataPoint;
     totalConfidence: number;
     confidences: ConfidenceMap;
   }>;
 
   constructor(
     private airService: freshAirStatus,
-    private climateDataPoint: CurrentIndoorClimateDataPointService,
+    private indoorClimateDataPoint: CurrentIndoorClimateDataPointService,
+    private outdoorClimateDataPoint: CurrentOutdoorClimateDataPointService,
     private freshAirTotalConfidence: CurrentTotalConfidence,
     private freshAirConfidences: FreshAirConfidences) {
   }
@@ -37,7 +40,8 @@ export class App implements OnInit {
   refresh() {
     this.viewModel$ = forkJoin({
       status: this.airService.getStatus().pipe(catchError(() => of('ERROR (Check Java/CORS)'))),
-      dataPoint: this.climateDataPoint.getDataPoint(),
+      indoorDataPoint: this.indoorClimateDataPoint.getDataPoint(),
+      outdoorDataPoint: this.outdoorClimateDataPoint.getDataPoint(),
       totalConfidence: this.freshAirTotalConfidence.getTotalConfidence(),
       confidences: this.freshAirConfidences.getConfidences()
     }).pipe(

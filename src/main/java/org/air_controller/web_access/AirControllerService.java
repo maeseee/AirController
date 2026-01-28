@@ -15,19 +15,28 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.air_controller.sensor_data_persistence.ClimateDataPointPersistence.INDOOR_TABLE_NAME;
+import static org.air_controller.sensor_data_persistence.ClimateDataPointPersistence.OUTDOOR_TABLE_NAME;
 
 @Service
 public class AirControllerService {
 
     private final SystemActionDbAccessor airFlowDbAccessor = new SystemActionDbAccessor(new MariaDatabase(), SystemPart.AIR_FLOW);
-    private final ClimateDataPointsDbAccessor dataPointsAccessor = new ClimateDataPointsDbAccessor(new MariaDatabase(), INDOOR_TABLE_NAME);
+    private final ClimateDataPointsDbAccessor indoorDataPointsAccessor = new ClimateDataPointsDbAccessor(new MariaDatabase(), INDOOR_TABLE_NAME);
+    private final ClimateDataPointsDbAccessor outdoorDataPointsAccessor = new ClimateDataPointsDbAccessor(new MariaDatabase(), OUTDOOR_TABLE_NAME);
 
     public Optional<SystemAction> getCurrentStateForFreshAir() {
         return airFlowDbAccessor.getMostCurrentSystemAction();
     }
 
     public Optional<ClimateDataPointDTO> getCurrentIndoorClimateDataPoint() {
-        final CurrentClimateDataPoint currentClimateDataPoint = new CurrentClimateDataPoint(dataPointsAccessor);
+        final CurrentClimateDataPoint currentClimateDataPoint = new CurrentClimateDataPoint(indoorDataPointsAccessor);
+        final Optional<ClimateDataPoint> dataPointOptional = currentClimateDataPoint.getCurrentClimateDataPoint();
+        return mapToClimateDataPointDTO(dataPointOptional);
+    }
+
+    public Optional<ClimateDataPointDTO> getCurrentOutdoorClimateDataPoint() {
+        // TODO extract function
+        final CurrentClimateDataPoint currentClimateDataPoint = new CurrentClimateDataPoint(outdoorDataPointsAccessor);
         final Optional<ClimateDataPoint> dataPointOptional = currentClimateDataPoint.getCurrentClimateDataPoint();
         return mapToClimateDataPointDTO(dataPointOptional);
     }

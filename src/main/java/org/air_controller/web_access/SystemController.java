@@ -30,6 +30,12 @@ public class SystemController {
         return generateResponse(currentClimateDataPoint);
     }
 
+    @GetMapping("/currentState/outdoorClimateDataPoint")
+    public ResponseEntity<ClimateDataPointDTO> getCurrentOutdoorClimateDataPoint() {
+        final Optional<ClimateDataPointDTO> currentClimateDataPoint = airControllerService.getCurrentOutdoorClimateDataPoint();
+        return generateResponse(currentClimateDataPoint);
+    }
+
     @GetMapping("/currentState/total_confidence")
     public ResponseEntity<Double> getCurrentTotalConfidence() {
         final Optional<Double> currentTotalConfidence = airControllerService.getCurrentTotalConfidence();

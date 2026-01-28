@@ -14,15 +14,27 @@
     <section class="card-grid">
       <div class="card">
         <span class="label">Temperature</span>
-        <div class="value">{{ data.dataPoint.temperatureInCelsius | number:'1.1-1' }}°C</div>
+        <div class="value">{{ data.indoorDataPoint.temperatureInCelsius | number:'1.1-1' }}°C</div>
       </div>
       <div class="card">
         <span class="label">Humidity</span>
-        <div class="value">{{ data.dataPoint.relativeHumidity | number:'2.1-1' }}%</div>
+        <div class="value">{{ data.indoorDataPoint.relativeHumidity | number:'2.1-1' }}%</div>
       </div>
       <div class="card">
         <span class="label">CO2 Level</span>
-        <div class="value">{{ data.dataPoint.co2InPpm | number:'2.0-0' }}<small>ppm</small></div>
+        <div class="value">{{ data.indoorDataPoint.co2InPpm | number:'2.0-0' }}<small>ppm</small></div>
+      </div>
+    </section>
+    <!-- outdoor sensors -->
+    <h3>Outdoor Sensors</h3>
+    <section class="card-grid">
+      <div class="card">
+        <span class="label">Temperature</span>
+        <div class="value">{{ data.outdoorDataPoint.temperatureInCelsius | number:'1.1-1' }}°C</div>
+      </div>
+      <div class="card">
+        <span class="label">Humidity</span>
+        <div class="value">{{ data.outdoorDataPoint.relativeHumidity | number:'2.1-1' }}%</div>
       </div>
     </section>
     <!-- confidence -->
