@@ -1,56 +1,54 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, computed, inject} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {BehaviorSubject, catchError, forkJoin, of, switchMap} from 'rxjs';
+
 import {freshAirStatus} from './fresh-air-status.service';
-import {ClimateDataPoint} from './climate-data-point';
 import {CurrentIndoorClimateDataPointService} from './current-indoor-climate-data-point.service';
 import {CurrentOutdoorClimateDataPointService} from './current-outdoor-climate-data-point.service';
-import {FreshAirConfidences} from './fresh-air-confidences';
 import {CurrentTotalConfidence} from './current-total-confidence';
-import {ConfidenceMap} from './confidence-map';
-import {catchError, forkJoin, Observable, of} from 'rxjs';
+import {FreshAirConfidences} from './fresh-air-confidences';
+import {MetricCardComponent} from './card-metric-card';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage],
+  imports: [CommonModule, NgOptimizedImage, MetricCardComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App implements OnInit {
-  viewModel$?: Observable<{
-    status: string;
-    indoorDataPoint: ClimateDataPoint;
-    outdoorDataPoint: ClimateDataPoint;
-    totalConfidence: number;
-    confidences: ConfidenceMap;
-  }>;
+export class App {
+  private airService = inject(freshAirStatus);
+  private indoorService = inject(CurrentIndoorClimateDataPointService);
+  private outdoorService = inject(CurrentOutdoorClimateDataPointService);
+  private totalConfService = inject(CurrentTotalConfidence);
+  private confidencesService = inject(FreshAirConfidences);
 
-  constructor(
-    private airService: freshAirStatus,
-    private indoorClimateDataPoint: CurrentIndoorClimateDataPointService,
-    private outdoorClimateDataPoint: CurrentOutdoorClimateDataPointService,
-    private freshAirTotalConfidence: CurrentTotalConfidence,
-    private freshAirConfidences: FreshAirConfidences) {
-  }
+  private refresh$ = new BehaviorSubject<void>(void 0);
 
-  ngOnInit() {
-    this.refresh();
-  }
+  private data$ = this.refresh$.pipe(
+    switchMap(() => forkJoin({
+      status: this.airService.getStatus().pipe(catchError(() => of('ERROR'))),
+      indoorDataPoint: this.indoorService.getDataPoint(),
+      outdoorDataPoint: this.outdoorService.getDataPoint(),
+      totalConfidence: this.totalConfService.getTotalConfidence(),
+      confidences: this.confidencesService.getConfidences()
+    })),
+    catchError(err => {
+      console.error('Batch update failed', err);
+      return of(null); // Return null on total failure
+    })
+  );
+
+  viewModel = toSignal(this.data$, {initialValue: null});
+
+  confidencesArray = computed(() => {
+    const data = this.viewModel();
+    if (!data?.confidences) return [];
+    return Object.entries(data.confidences).map(([key, value]) => ({key, value}));
+  });
 
   refresh() {
-    this.viewModel$ = forkJoin({
-      status: this.airService.getStatus().pipe(catchError(() => of('ERROR (Check Java/CORS)'))),
-      indoorDataPoint: this.indoorClimateDataPoint.getDataPoint(),
-      outdoorDataPoint: this.outdoorClimateDataPoint.getDataPoint(),
-      totalConfidence: this.freshAirTotalConfidence.getTotalConfidence(),
-      confidences: this.freshAirConfidences.getConfidences()
-    }).pipe(
-      catchError(err => {
-        console.error('Batch update failed', err);
-        throw err;
-      })
-    );
+    this.refresh$.next();
   }
-
-  protected readonly Object = Object;
 }

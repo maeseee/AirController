@@ -4,47 +4,28 @@
     <h1>Fresh Air System</h1>
   </header>
 
-  @if (viewModel$ | async; as data) {
-    <!-- status -->
+  @if (viewModel(); as data) {
     <div [ngClass]="data.status === 'ON' ? 'status-on' : 'status-off'" class="status-badge">
       <span class="pulse-dot"></span> System {{ data.status }}
     </div>
-    <!-- indoor sensors -->
+
     <h3>Indoor Sensors</h3>
     <section class="card-grid">
-      <div class="card">
-        <span class="label">Temperature</span>
-        <div class="value">{{ data.indoorDataPoint.temperatureInCelsius | number:'1.1-1' }}°C</div>
-      </div>
-      <div class="card">
-        <span class="label">Humidity</span>
-        <div class="value">{{ data.indoorDataPoint.relativeHumidity | number:'2.1-1' }}%</div>
-      </div>
-      <div class="card">
-        <span class="label">CO2 Level</span>
-        <div class="value">{{ data.indoorDataPoint.co2InPpm | number:'2.0-0' }}<small>ppm</small></div>
-      </div>
+      <app-metric-card label="Temperature" [value]="data.indoorDataPoint.temperatureInCelsius | number:'1.1-1'" unit="°C" />
+      <app-metric-card label="Humidity" [value]="data.indoorDataPoint.relativeHumidity | number:'2.1-1'" unit="%" />
+      <app-metric-card label="CO2 Level" [value]="data.indoorDataPoint.co2InPpm | number:'2.0-0'" unit="ppm" />
     </section>
-    <!-- outdoor sensors -->
+
     <h3>Outdoor Sensors</h3>
     <section class="card-grid">
-      <div class="card">
-        <span class="label">Temperature</span>
-        <div class="value">{{ data.outdoorDataPoint.temperatureInCelsius | number:'1.1-1' }}°C</div>
-      </div>
-      <div class="card">
-        <span class="label">Humidity</span>
-        <div class="value">{{ data.outdoorDataPoint.relativeHumidity | number:'2.1-1' }}%</div>
-      </div>
+      <app-metric-card label="Temperature" [value]="data.outdoorDataPoint.temperatureInCelsius | number:'1.1-1'" unit="°C" />
+      <app-metric-card label="Humidity" [value]="data.outdoorDataPoint.relativeHumidity | number:'2.1-1'" unit="%" />
     </section>
-    <!-- confidence -->
+
     <h3>Confidence is {{ data.totalConfidence | number:'1.1-2' }}</h3>
     <section class="card-grid">
-      @for (key of Object.keys(data.confidences); track key) {
-        <div class="card">
-          <span class="label">{{ key }}</span>
-          <span class="value">{{ data.confidences[key] | number:'1.1-2' }}</span>
-        </div>
+      @for (conf of confidencesArray(); track conf.key) {
+        <app-metric-card [label]="conf.key" [value]="conf.value | number:'1.1-2'" />
       }
     </section>
   } @else {
@@ -52,10 +33,8 @@
       <p>Fetching climate data... Please wait.</p>
     </div>
   }
-  <!-- button -->
-  <button class="refresh-btn" (click)="refresh()">
-    Update Status
-  </button>
+
+  <button class="refresh-btn" (click)="refresh()">Update Status</button>
 </div>
 
 <style>
@@ -117,26 +96,6 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
     margin-bottom: 24px;
-  }
-
-  .card {
-    background: #f8fafc;
-    padding: 16px 8px;
-    border-radius: 16px;
-    border: 1px solid #f1f5f9;
-  }
-
-  .card .label {
-    font-size: 0.75rem;
-    color: #64748b;
-    display: block;
-    margin-bottom: 4px;
-  }
-
-  .card .value {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #1e293b;
   }
 
   .confidence-box h3 {
