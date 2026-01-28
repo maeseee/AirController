@@ -29,16 +29,11 @@ public class AirControllerService {
     }
 
     public Optional<ClimateDataPointDTO> getCurrentIndoorClimateDataPoint() {
-        final CurrentClimateDataPoint currentClimateDataPoint = new CurrentClimateDataPoint(indoorDataPointsAccessor);
-        final Optional<ClimateDataPoint> dataPointOptional = currentClimateDataPoint.getCurrentClimateDataPoint();
-        return mapToClimateDataPointDTO(dataPointOptional);
+        return getCurrentClimateDataPoint(indoorDataPointsAccessor);
     }
 
     public Optional<ClimateDataPointDTO> getCurrentOutdoorClimateDataPoint() {
-        // TODO extract function
-        final CurrentClimateDataPoint currentClimateDataPoint = new CurrentClimateDataPoint(outdoorDataPointsAccessor);
-        final Optional<ClimateDataPoint> dataPointOptional = currentClimateDataPoint.getCurrentClimateDataPoint();
-        return mapToClimateDataPointDTO(dataPointOptional);
+        return getCurrentClimateDataPoint(outdoorDataPointsAccessor);
     }
 
     public Optional<Double> getCurrentTotalConfidence() {
@@ -47,6 +42,12 @@ public class AirControllerService {
 
     public Optional<Map<String, Double>> getCurrentConfidences() {
         return airFlowDbAccessor.getMostCurrentPersistenceData().map(VentilationSystemPersistenceData::confidences);
+    }
+
+    private Optional<ClimateDataPointDTO> getCurrentClimateDataPoint(ClimateDataPointsDbAccessor outdoorDataPointsAccessor) {
+        final CurrentClimateDataPoint currentClimateDataPoint = new CurrentClimateDataPoint(outdoorDataPointsAccessor);
+        final Optional<ClimateDataPoint> dataPointOptional = currentClimateDataPoint.getCurrentClimateDataPoint();
+        return mapToClimateDataPointDTO(dataPointOptional);
     }
 
     private Optional<ClimateDataPointDTO> mapToClimateDataPointDTO(Optional<ClimateDataPoint> dataPointOptional) {
