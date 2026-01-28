@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CurrentClimateDataPointService } from './current-climate-data-point.service';
+import { CurrentClimateDataPoint } from './current-climate-data-point';
 
 describe('CurrentClimateDataPoint', () => {
-  let service: CurrentClimateDataPointService;
+  let service: CurrentClimateDataPoint;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(CurrentClimateDataPointService);
+    service = TestBed.inject(CurrentClimateDataPoint);
   });
 
   it('should be created', () => {

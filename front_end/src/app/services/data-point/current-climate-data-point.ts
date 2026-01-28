@@ -6,7 +6,7 @@ import {ClimateDataPoint} from './climate-data-point';
 @Injectable({
   providedIn: 'root',
 })
-export class CurrentClimateDataPointService {
+export class CurrentClimateDataPoint {
   private http = inject(HttpClient);
   private readonly BASE_URL = 'http://192.168.50.12:9090/currentState';
 

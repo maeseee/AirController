@@ -3,8 +3,8 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {BehaviorSubject, catchError, forkJoin, of, switchMap} from 'rxjs';
 
-import {freshAirStatus} from './services/system-status/fresh-air-status.service';
-import {CurrentClimateDataPointService} from './services/data-point/current-climate-data-point.service';
+import {freshAirStatus} from './services/system-status/fresh-air-status';
+import {CurrentClimateDataPoint} from './services/data-point/current-climate-data-point';
 import {CurrentTotalConfidence} from './services/conficence/current-total-confidence';
 import {FreshAirConfidences} from './services/conficence/fresh-air-confidences';
 import {MetricCardComponent} from './components/metric-card/metric-card';
@@ -18,7 +18,7 @@ import {MetricCardComponent} from './components/metric-card/metric-card';
 })
 export class App {
   private airService = inject(freshAirStatus);
-  private dataPointService = inject(CurrentClimateDataPointService);
+  private dataPointService = inject(CurrentClimateDataPoint);
   private totalConfService = inject(CurrentTotalConfidence);
   private confidencesService = inject(FreshAirConfidences);
 

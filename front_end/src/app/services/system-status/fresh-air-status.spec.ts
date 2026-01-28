@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { freshAirStatus } from './fresh-air-status.service';
+import { freshAirStatus } from './fresh-air-status';
 
 describe('FreashAirStatus', () => {
   let service: freshAirStatus;
