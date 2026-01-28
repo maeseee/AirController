@@ -3,7 +3,7 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {BehaviorSubject, catchError, forkJoin, of, switchMap} from 'rxjs';
 
-import {freshAirStatus} from './fresh-air-status.service';
+import {freshAirStatus} from './services/system-status/fresh-air-status.service';
 import {CurrentClimateDataPointService} from './services/data-point/current-climate-data-point.service';
 import {CurrentTotalConfidence} from './services/conficence/current-total-confidence';
 import {FreshAirConfidences} from './services/conficence/fresh-air-confidences';
