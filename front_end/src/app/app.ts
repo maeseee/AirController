@@ -5,8 +5,8 @@ import {BehaviorSubject, catchError, forkJoin, of, switchMap} from 'rxjs';
 
 import {freshAirStatus} from './fresh-air-status.service';
 import {CurrentClimateDataPointService} from './services/data-point/current-climate-data-point.service';
-import {CurrentTotalConfidence} from './current-total-confidence';
-import {FreshAirConfidences} from './fresh-air-confidences';
+import {CurrentTotalConfidence} from './services/conficence/current-total-confidence';
+import {FreshAirConfidences} from './services/conficence/fresh-air-confidences';
 import {MetricCardComponent} from './components/metric-card/metric-card';
 
 @Component({
