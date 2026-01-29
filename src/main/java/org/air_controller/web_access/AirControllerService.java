@@ -1,12 +1,13 @@
 package org.air_controller.web_access;
 
-import org.air_controller.persistence.MariaDatabase;
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.air_controller.sensor_values.CarbonDioxide;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.CurrentClimateDataPoint;
-import org.air_controller.system_action.*;
-import org.jspecify.annotations.NonNull;
+import org.air_controller.system_action.DurationCalculator;
+import org.air_controller.system_action.SystemAction;
+import org.air_controller.system_action.SystemActionDbAccessor;
+import org.air_controller.system_action.VentilationSystemPersistenceData;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -16,15 +17,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.air_controller.sensor_data_persistence.ClimateDataPointPersistence.INDOOR_TABLE_NAME;
-import static org.air_controller.sensor_data_persistence.ClimateDataPointPersistence.OUTDOOR_TABLE_NAME;
-
 @Service
 public class AirControllerService {
 
-    private final SystemActionDbAccessor airFlowDbAccessor = new SystemActionDbAccessor(new MariaDatabase(), SystemPart.AIR_FLOW);
-    private final ClimateDataPointsDbAccessor indoorDataPointsAccessor = new ClimateDataPointsDbAccessor(new MariaDatabase(), INDOOR_TABLE_NAME);
-    private final ClimateDataPointsDbAccessor outdoorDataPointsAccessor = new ClimateDataPointsDbAccessor(new MariaDatabase(), OUTDOOR_TABLE_NAME);
+    private final SystemActionDbAccessor airFlowDbAccessor;
+    private final ClimateDataPointsDbAccessor indoorDataPointsAccessor;
+    private final ClimateDataPointsDbAccessor outdoorDataPointsAccessor;
+
+    public AirControllerService(SystemActionDbAccessor airFlowDbAccessor, ClimateDataPointsDbAccessor indoorDataPointsAccessor,
+            ClimateDataPointsDbAccessor outdoorDataPointsAccessor) {
+        this.airFlowDbAccessor = airFlowDbAccessor;
+        this.indoorDataPointsAccessor = indoorDataPointsAccessor;
+        this.outdoorDataPointsAccessor = outdoorDataPointsAccessor;
+    }
 
     public Optional<SystemAction> getCurrentStateForFreshAir() {
         return airFlowDbAccessor.getMostCurrentSystemAction();
