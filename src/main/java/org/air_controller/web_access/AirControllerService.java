@@ -5,12 +5,13 @@ import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.air_controller.sensor_values.CarbonDioxide;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.CurrentClimateDataPoint;
-import org.air_controller.system_action.SystemAction;
-import org.air_controller.system_action.SystemActionDbAccessor;
-import org.air_controller.system_action.SystemPart;
-import org.air_controller.system_action.VentilationSystemPersistenceData;
+import org.air_controller.system_action.*;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -42,6 +43,15 @@ public class AirControllerService {
 
     public Optional<Map<String, Double>> getCurrentConfidences() {
         return airFlowDbAccessor.getMostCurrentPersistenceData().map(VentilationSystemPersistenceData::confidences);
+    }
+
+    public double getOnPercentageFromTheLast24Hours() {
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        final ZonedDateTime startTime = now.minusDays(1);
+        final List<SystemAction> actionsFromTimeToNow = airFlowDbAccessor.getActionsFromTimeToNow(startTime.minusHours(2)); // just enough data
+        final DurationCalculator durationCalculator = new DurationCalculator(actionsFromTimeToNow);
+        final Duration duration = durationCalculator.getDuration(startTime, now);
+        return (double) duration.toMinutes() / (double) Duration.ofDays(1).toMinutes();
     }
 
     private Optional<ClimateDataPointDTO> getCurrentClimateDataPoint(ClimateDataPointsDbAccessor outdoorDataPointsAccessor) {

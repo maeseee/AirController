@@ -50,6 +50,12 @@ public class SystemController {
         return generateResponse(currentConfidences);
     }
 
+    @GetMapping("/statistics/onPercentageFromTheLast24Hours")
+    public ResponseEntity<Double> getOnPercentageFromTheLast24Hours() {
+        final double onPercentage = airControllerService.getOnPercentageFromTheLast24Hours();
+        return new  ResponseEntity<>(onPercentage, HttpStatus.OK);
+    }
+
     private <T> ResponseEntity<T> generateResponse(Optional<T> resultOptional) {
         return resultOptional.map(result -> new  ResponseEntity<>(result, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
