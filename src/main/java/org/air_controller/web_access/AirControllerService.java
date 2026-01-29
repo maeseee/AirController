@@ -6,6 +6,7 @@ import org.air_controller.sensor_values.CarbonDioxide;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.CurrentClimateDataPoint;
 import org.air_controller.system_action.*;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -61,11 +62,13 @@ public class AirControllerService {
     }
 
     private Optional<ClimateDataPointDTO> mapToClimateDataPointDTO(Optional<ClimateDataPoint> dataPointOptional) {
-        return dataPointOptional.map(dataPoint -> {
-            final double celsius = dataPoint.temperature().celsius();
-            final double relativeHumidity = dataPoint.humidity().getRelativeHumidity(dataPoint.temperature());
-            final Double co2 = dataPoint.co2().map(CarbonDioxide::ppm).orElse(null);
-            return new ClimateDataPointDTO(celsius, relativeHumidity, co2);
-        });
+        return dataPointOptional.map(AirControllerService::toClimateDataPointDTO);
+    }
+
+    private static ClimateDataPointDTO toClimateDataPointDTO(ClimateDataPoint dataPoint) {
+        final double celsius = dataPoint.temperature().celsius();
+        final double relativeHumidity = dataPoint.humidity().getRelativeHumidity(dataPoint.temperature());
+        final Double co2 = dataPoint.co2().map(CarbonDioxide::ppm).orElse(null);
+        return new ClimateDataPointDTO(celsius, relativeHumidity, co2);
     }
 }
