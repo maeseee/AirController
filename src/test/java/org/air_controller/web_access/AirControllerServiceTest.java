@@ -37,4 +37,19 @@ class AirControllerServiceTest {
 
         assertThat(percentage).isCloseTo(1.0 / 12.0, within(0.1));
     }
+
+    @Test
+    void shouldOnlyGetOnPercentageFromTheLast24Hours() {
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        final List<SystemAction> actions = List.of(
+                new SystemAction(now.minusHours(13), OutputState.ON),
+                new SystemAction(now.minusHours(10), OutputState.OFF)
+        );
+        when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(actions);
+        final AirControllerService testee = new AirControllerService(airFlowDbAccessor, null, null);
+
+        final double percentage = testee.getOnPercentageFromTheLast24Hours();
+
+        assertThat(percentage).isCloseTo(2.0 / 12.0, within(0.1));
+    }
 }
