@@ -60,8 +60,8 @@ public class AirControllerService {
         return (double) duration.toMinutes() / (double) Duration.ofDays(1).toMinutes();
     }
 
-    private Optional<ClimateDataPointDTO> getCurrentClimateDataPoint(ClimateDataPointsDbAccessor outdoorDataPointsAccessor) {
-        final CurrentClimateDataPoint currentClimateDataPoint = new CurrentClimateDataPoint(outdoorDataPointsAccessor);
+    private Optional<ClimateDataPointDTO> getCurrentClimateDataPoint(ClimateDataPointsDbAccessor dataPointsAccessor) {
+        final CurrentClimateDataPoint currentClimateDataPoint = new CurrentClimateDataPoint(dataPointsAccessor);
         final Optional<ClimateDataPoint> dataPointOptional = currentClimateDataPoint.getCurrentClimateDataPoint();
         return mapToClimateDataPointDTO(dataPointOptional);
     }
