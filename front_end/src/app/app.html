@@ -28,6 +28,9 @@
         <app-metric-card [label]="conf.key" [value]="conf.value | number:'1.1-2'" />
       }
     </section>
+
+    <h3>Statistics</h3>
+    <app-metric-card label="Last 24h" [value]="data.onPercentage * 100 | number:'1.1-1'" unit="%" />
   } @else {
     <div class="loader">
       <p>Fetching climate data... Please wait.</p>

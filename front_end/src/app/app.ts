@@ -8,6 +8,7 @@ import {CurrentClimateDataPoint} from './services/data-point/current-climate-dat
 import {CurrentTotalConfidence} from './services/conficence/current-total-confidence';
 import {FreshAirConfidences} from './services/conficence/fresh-air-confidences';
 import {MetricCardComponent} from './components/metric-card/metric-card';
+import {OnPercentageFromTheLast24Hours} from './services/data-point/on-percentage-from-the-last-24hours';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ export class App {
   private dataPointService = inject(CurrentClimateDataPoint);
   private totalConfService = inject(CurrentTotalConfidence);
   private confidencesService = inject(FreshAirConfidences);
+  private onPercentageService = inject(OnPercentageFromTheLast24Hours);
 
   private refresh$ = new BehaviorSubject<void>(void 0);
 
@@ -30,7 +32,8 @@ export class App {
       indoorDataPoint: this.dataPointService.getDataPoint('indoor'),
       outdoorDataPoint: this.dataPointService.getDataPoint('outdoor'),
       totalConfidence: this.totalConfService.getTotalConfidence(),
-      confidences: this.confidencesService.getConfidences()
+      confidences: this.confidencesService.getConfidences(),
+      onPercentage: this.onPercentageService.getPercentage()
     })),
     catchError(err => {
       console.error('Batch update failed', err);
