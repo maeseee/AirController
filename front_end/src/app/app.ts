@@ -9,6 +9,7 @@ import {CurrentTotalConfidence} from './services/conficence/current-total-confid
 import {FreshAirConfidences} from './services/conficence/fresh-air-confidences';
 import {MetricCardComponent} from './components/metric-card/metric-card';
 import {OnPercentageFromTheLast24Hours} from './services/data-point/on-percentage-from-the-last-24hours';
+import {CardGroupService} from './services/cardView/CardGroupService';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,7 @@ import {OnPercentageFromTheLast24Hours} from './services/data-point/on-percentag
 export class App {
   private airService = inject(freshAirStatus);
   private dataPointService = inject(CurrentClimateDataPoint);
+  private cardGroupService = inject(CardGroupService);
   private totalConfService = inject(CurrentTotalConfidence);
   private confidencesService = inject(FreshAirConfidences);
   private onPercentageService = inject(OnPercentageFromTheLast24Hours);
@@ -30,6 +32,7 @@ export class App {
     switchMap(() => forkJoin({
       status: this.airService.getStatus().pipe(catchError(() => of('ERROR'))),
       indoorDataPoint: this.dataPointService.getDataPoint('indoor'),
+      indoorCardViews: this.cardGroupService.getCardViews('indoor'),
       outdoorDataPoint: this.dataPointService.getDataPoint('outdoor'),
       totalConfidence: this.totalConfService.getTotalConfidence(),
       confidences: this.confidencesService.getConfidences(),

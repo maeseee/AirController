@@ -16,6 +16,16 @@
       <app-metric-card label="CO2 Level" [value]="data.indoorDataPoint.co2InPpm | number:'2.0-0'" unit="ppm" />
     </section>
 
+    <h3>Indoor Sensors</h3>
+    <div>{{ data.indoorCardViews.from| date:'dd.MM.yyyy HH:mm' }}</div>
+    <section class="card-grid">
+      @for (card of data.indoorCardViews.cards; track card.name) {
+        <app-metric-card [label]="card.name" [value]="card.value | number:'2.1-1'" [unit]="card.unit" />
+      } @empty {
+        <p>Keine Karten in dieser Gruppe gefunden.</p>
+      }
+    </section>
+
     <h3>Outdoor Sensors</h3>
     <section class="card-grid">
       <app-metric-card label="Temperature" [value]="data.outdoorDataPoint.temperatureInCelsius | number:'1.1-1'" unit="°C" />
