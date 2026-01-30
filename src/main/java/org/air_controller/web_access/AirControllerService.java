@@ -13,9 +13,12 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static java.util.Collections.emptyList;
 
 @Service
 public class AirControllerService {
@@ -35,10 +38,16 @@ public class AirControllerService {
         return airFlowDbAccessor.getMostCurrentSystemAction();
     }
 
+    @Deprecated
     public Optional<ClimateDataPointDTO> getCurrentIndoorClimateDataPoint() {
         return getCurrentClimateDataPoint(indoorDataPointsAccessor);
     }
 
+    public CardGroup getIndoorCardGroup() {
+        return getCardGroup(indoorDataPointsAccessor);
+    }
+
+    @Deprecated
     public Optional<ClimateDataPointDTO> getCurrentOutdoorClimateDataPoint() {
         return getCurrentClimateDataPoint(outdoorDataPointsAccessor);
     }
@@ -60,16 +69,46 @@ public class AirControllerService {
         return (double) duration.toMinutes() / (double) Duration.ofDays(1).toMinutes();
     }
 
+    @Deprecated
     private Optional<ClimateDataPointDTO> getCurrentClimateDataPoint(ClimateDataPointsDbAccessor dataPointsAccessor) {
         final CurrentClimateDataPoint currentClimateDataPoint = new CurrentClimateDataPoint(dataPointsAccessor);
         final Optional<ClimateDataPoint> dataPointOptional = currentClimateDataPoint.getCurrentClimateDataPoint();
         return mapToClimateDataPointDTO(dataPointOptional);
     }
 
+    private CardGroup getCardGroup(ClimateDataPointsDbAccessor dataPointsAccessor) {
+        final CurrentClimateDataPoint currentClimateDataPoint = new CurrentClimateDataPoint(dataPointsAccessor);
+        final Optional<ClimateDataPoint> dataPointOptional = currentClimateDataPoint.getCurrentClimateDataPoint();
+        return mapToCardGroup(dataPointOptional);
+    }
+
+    @Deprecated
     private Optional<ClimateDataPointDTO> mapToClimateDataPointDTO(Optional<ClimateDataPoint> dataPointOptional) {
         return dataPointOptional.map(AirControllerService::toClimateDataPointDTO);
     }
 
+    private CardGroup mapToCardGroup(Optional<ClimateDataPoint> dataPointOptional) {
+        if (dataPointOptional.isEmpty()) {
+            return new CardGroup(ZonedDateTime.now(ZoneOffset.UTC), emptyList());
+        }
+        final ArrayList<CardView> cardViews = createCardViewList(dataPointOptional.get());
+        return new CardGroup(dataPointOptional.get().timestamp(), cardViews);
+    }
+
+    private ArrayList<CardView> createCardViewList(ClimateDataPoint dataPoint) {
+        final double celsius = dataPoint.temperature().celsius();
+        final double relativeHumidity = dataPoint.humidity().getRelativeHumidity(dataPoint.temperature());
+        final Double co2 = dataPoint.co2().map(CarbonDioxide::ppm).orElse(null);
+        final ArrayList<CardView> cardViews = new ArrayList<>();
+        cardViews.add(new CardView("Temperature",celsius, "°C"));
+        cardViews.add(new CardView("Humidity",relativeHumidity,"%"));
+        if (co2 != null) {
+            cardViews.add(new CardView("CO2",co2, "ppm"));
+        }
+        return cardViews;
+    }
+
+    @Deprecated
     private static ClimateDataPointDTO toClimateDataPointDTO(ClimateDataPoint dataPoint) {
         final double celsius = dataPoint.temperature().celsius();
         final double relativeHumidity = dataPoint.humidity().getRelativeHumidity(dataPoint.temperature());

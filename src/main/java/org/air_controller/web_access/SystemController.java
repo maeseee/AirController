@@ -27,12 +27,20 @@ public class SystemController {
     }
 
     @GetMapping("/currentState/indoorClimateDataPoint")
+    @Deprecated
     public ResponseEntity<ClimateDataPointDTO> getCurrentIndoorClimateDataPoint() {
         final Optional<ClimateDataPointDTO> currentClimateDataPoint = airControllerService.getCurrentIndoorClimateDataPoint();
         return generateResponse(currentClimateDataPoint);
     }
 
+    @GetMapping("/cardViews/indoor")
+    public ResponseEntity<CardGroup> getIndoorCardGroup() {
+        final CardGroup currentClimateDataPoint = airControllerService.getIndoorCardGroup();
+        return generateResponse(currentClimateDataPoint);
+    }
+
     @GetMapping("/currentState/outdoorClimateDataPoint")
+    @Deprecated
     public ResponseEntity<ClimateDataPointDTO> getCurrentOutdoorClimateDataPoint() {
         final Optional<ClimateDataPointDTO> currentClimateDataPoint = airControllerService.getCurrentOutdoorClimateDataPoint();
         return generateResponse(currentClimateDataPoint);
@@ -59,5 +67,12 @@ public class SystemController {
     private <T> ResponseEntity<T> generateResponse(Optional<T> resultOptional) {
         return resultOptional.map(result -> new ResponseEntity<>(result, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
+    private ResponseEntity<CardGroup> generateResponse(CardGroup cardGroup) {
+        if (cardGroup.cards().isEmpty()) {
+            new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(cardGroup, HttpStatus.OK);
     }
 }
