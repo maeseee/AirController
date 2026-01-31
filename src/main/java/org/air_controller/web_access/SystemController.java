@@ -51,6 +51,13 @@ public class SystemController {
         return generateResponse(currentConfidences);
     }
 
+    @GetMapping("/cardViews/confidence")
+    public ResponseEntity<CardGroup> getConfidenceCardGroup() {
+        final CardGroup currentClimateDataPoint = airControllerService.getConfidenceCardGroup();
+        return generateResponse(currentClimateDataPoint);
+    }
+
+
     @GetMapping("/statistics/onPercentageFromTheLast24Hours")
     public ResponseEntity<Double> getOnPercentageFromTheLast24Hours() {
         final double onPercentage = airControllerService.getOnPercentageFromTheLast24Hours();

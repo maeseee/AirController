@@ -7,6 +7,7 @@ import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.system.OutputState;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
+import org.air_controller.system_action.VentilationSystemPersistenceData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -15,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -115,5 +117,24 @@ class AirControllerServiceTest {
         assertThat(outdoorCardGroup.info()).contains("No cards available");
         verifyNoInteractions(indoorDataPointsAccessor);
         verifyNoInteractions(airFlowDbAccessor);
+    }
+
+    @Test
+    void shouldReturnConfidenceCards() {
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        final Map<String, Double> confidences = Map.of("MyTest", 0.5);
+        final VentilationSystemPersistenceData data = new VentilationSystemPersistenceData(OutputState.ON, 1.0, confidences, now);
+        when(airFlowDbAccessor.getMostCurrentPersistenceData()).thenReturn(Optional.of(data));
+        final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
+
+        final CardGroup confidenceCardGroup = testee.getConfidenceCardGroup();
+
+        assertThat(confidenceCardGroup.info()).isEqualTo("Total confidence of 1.00");
+        assertThat(confidenceCardGroup.cards()).hasSize(1);
+        assertThat(confidenceCardGroup.cards().getFirst().name()).isEqualTo("MyTest");
+        assertThat(confidenceCardGroup.cards().getFirst().value()).isEqualTo("0.50");
+        assertThat(confidenceCardGroup.cards().getFirst().unit()).isEqualTo("");
+        verifyNoInteractions(indoorDataPointsAccessor);
+        verifyNoInteractions(outdoorDataPointsAccessor);
     }
 }

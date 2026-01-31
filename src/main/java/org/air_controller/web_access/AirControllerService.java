@@ -1,7 +1,6 @@
 package org.air_controller.web_access;
 
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
-import org.air_controller.sensor_values.CarbonDioxide;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.CurrentClimateDataPoint;
 import org.air_controller.system_action.DurationCalculator;
@@ -55,6 +54,17 @@ public class AirControllerService {
         return airFlowDbAccessor.getMostCurrentPersistenceData().map(VentilationSystemPersistenceData::confidences);
     }
 
+    public CardGroup getConfidenceCardGroup() {
+        final Optional<VentilationSystemPersistenceData> persistenceDataOptional = airFlowDbAccessor.getMostCurrentPersistenceData();
+        if (persistenceDataOptional.isEmpty()) {
+            return new CardGroup("No confidence data available", emptyList());
+        }
+        final VentilationSystemPersistenceData persistenceData = persistenceDataOptional.get();
+        final String totalConfidence = confidenceToString(persistenceData.totalConfidence());
+        final List<CardView> confidenceCards = mapToCardView(persistenceData.confidences());
+        return new CardGroup("Total confidence of " + totalConfidence,  confidenceCards);
+    }
+
     public double getOnPercentageFromTheLast24Hours() {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final ZonedDateTime startTime = now.minusDays(1);
@@ -80,5 +90,15 @@ public class AirControllerService {
         final Duration cardAge = Duration.between(timestamp, now);
         final String info = cardAge.compareTo(INFO_DURATION) > 0 ? "Last sensor update was " + cardAge.toMinutes() + " minutes ago" : "";
         return new CardGroup(info, cardViews);
+    }
+
+    private List<CardView> mapToCardView(Map<String, Double> confidences) {
+        return confidences.entrySet().stream()
+                .map(e -> new CardView(e.getKey(), confidenceToString(e.getValue()), ""))
+                .toList();
+    }
+
+    private String confidenceToString(Double value) {
+        return String.format("%.2f", value);
     }
 }
