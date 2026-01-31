@@ -104,4 +104,16 @@ class AirControllerServiceTest {
         verifyNoInteractions(indoorDataPointsAccessor);
         verifyNoInteractions(airFlowDbAccessor);
     }
+
+    @Test
+    void shouldShowWarning_whenHavingNoSensorValues() {
+        when(outdoorDataPointsAccessor.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.empty());
+        final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
+
+        final CardGroup outdoorCardGroup = testee.getOutdoorCardGroup();
+
+        assertThat(outdoorCardGroup.info()).contains("No cards available");
+        verifyNoInteractions(indoorDataPointsAccessor);
+        verifyNoInteractions(airFlowDbAccessor);
+    }
 }
