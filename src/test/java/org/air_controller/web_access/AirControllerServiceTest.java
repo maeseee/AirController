@@ -36,7 +36,8 @@ class AirControllerServiceTest {
     private ClimateDataPointsDbAccessor outdoorDataPointsAccessor;
 
     @Test
-    void shouldGetOnPercentageFromTheLast24Hours() {
+    @Deprecated
+    void shouldGetOnPercentageFromTheLast24Hours_Old() {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final List<SystemAction> actions = List.of(
                 new SystemAction(now.minusHours(10), OutputState.ON),
@@ -47,7 +48,46 @@ class AirControllerServiceTest {
 
         final double percentage = testee.getOnPercentageFromTheLast24Hours();
 
-        assertThat(percentage).isCloseTo(1.0 / 12.0, within(0.1));
+        assertThat(percentage).isCloseTo(1.0 / 24.0 * 100.0, within(0.1));
+        verifyNoInteractions(indoorDataPointsAccessor);
+        verifyNoInteractions(outdoorDataPointsAccessor);
+    }
+
+    @Test
+    void shouldGetOnPercentageFromTheLast24Hours() {
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        final List<SystemAction> actions = List.of(
+                new SystemAction(now.minusHours(10), OutputState.ON),
+                new SystemAction(now.minusHours(9), OutputState.OFF)
+        );
+        when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(actions);
+        final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
+
+        final CardGroup statistics = testee.getStatisticsCardGroup();
+
+        assertThat(statistics.info()).isEmpty();
+        assertThat(statistics.cards()).hasSize(1);
+        assertThat(statistics.cards().getFirst().name()).contains("24h");
+        assertThat(statistics.cards().getFirst().value()).isEqualTo("4.17"); // 1/24 * 100
+        assertThat(statistics.cards().getFirst().unit()).isEqualTo("%");
+        verifyNoInteractions(indoorDataPointsAccessor);
+        verifyNoInteractions(outdoorDataPointsAccessor);
+    }
+
+    @Test
+    @Deprecated
+    void shouldOnlyGetOnPercentageFromTheLast24Hours_old() {
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        final List<SystemAction> actions = List.of(
+                new SystemAction(now.minusHours(25), OutputState.ON),
+                new SystemAction(now.minusHours(22), OutputState.OFF)
+        );
+        when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(actions);
+        final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
+
+        final double percentage = testee.getOnPercentageFromTheLast24Hours();
+
+        assertThat(percentage).isCloseTo(2.0 / 24.0 * 100.0, within(0.1));
         verifyNoInteractions(indoorDataPointsAccessor);
         verifyNoInteractions(outdoorDataPointsAccessor);
     }
@@ -56,15 +96,19 @@ class AirControllerServiceTest {
     void shouldOnlyGetOnPercentageFromTheLast24Hours() {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final List<SystemAction> actions = List.of(
-                new SystemAction(now.minusHours(13), OutputState.ON),
-                new SystemAction(now.minusHours(10), OutputState.OFF)
+                new SystemAction(now.minusHours(25), OutputState.ON),
+                new SystemAction(now.minusHours(22), OutputState.OFF)
         );
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(actions);
         final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
 
-        final double percentage = testee.getOnPercentageFromTheLast24Hours();
+        final CardGroup statistics = testee.getStatisticsCardGroup();
 
-        assertThat(percentage).isCloseTo(2.0 / 12.0, within(0.1));
+        assertThat(statistics.info()).isEmpty();
+        assertThat(statistics.cards()).hasSize(1);
+        assertThat(statistics.cards().getFirst().name()).contains("24h");
+        assertThat(statistics.cards().getFirst().value()).isEqualTo("8.33"); // 2/24 * 100
+        assertThat(statistics.cards().getFirst().unit()).isEqualTo("%");
         verifyNoInteractions(indoorDataPointsAccessor);
         verifyNoInteractions(outdoorDataPointsAccessor);
     }

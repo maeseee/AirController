@@ -52,18 +52,20 @@ public class AirControllerService {
             return new CardGroup("No confidence data available", emptyList());
         }
         final VentilationSystemPersistenceData persistenceData = persistenceDataOptional.get();
-        final String totalConfidence = confidenceToString(persistenceData.totalConfidence());
+        final String totalConfidence = doubleToString(persistenceData.totalConfidence());
         final List<CardView> confidenceCards = mapToCardView(persistenceData.confidences());
-        return new CardGroup("Total confidence of " + totalConfidence,  confidenceCards);
+        return new CardGroup("Total confidence of " + totalConfidence, confidenceCards);
     }
 
+    @Deprecated
     public double getOnPercentageFromTheLast24Hours() {
-        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        final ZonedDateTime startTime = now.minusDays(1);
-        final List<SystemAction> actionsFromTimeToNow = airFlowDbAccessor.getActionsFromTimeToNow(startTime.minusHours(2)); // just enough data
-        final DurationCalculator durationCalculator = new DurationCalculator(actionsFromTimeToNow);
-        final Duration duration = durationCalculator.getDuration(startTime, now);
-        return (double) duration.toMinutes() / (double) Duration.ofDays(1).toMinutes();
+        return getOnPercentageFromLast24Hours();
+    }
+
+    public CardGroup getStatisticsCardGroup() {
+        final double onPercentage = getOnPercentageFromLast24Hours();
+        final CardView cardView = new CardView("On during last 24h", doubleToString(onPercentage), "%");
+        return new CardGroup("", List.of(cardView));
     }
 
     private CardGroup getCardGroup(ClimateDataPointsDbAccessor dataPointsAccessor) {
@@ -86,11 +88,20 @@ public class AirControllerService {
 
     private List<CardView> mapToCardView(Map<String, Double> confidences) {
         return confidences.entrySet().stream()
-                .map(e -> new CardView(e.getKey(), confidenceToString(e.getValue()), ""))
+                .map(e -> new CardView(e.getKey(), doubleToString(e.getValue()), ""))
                 .toList();
     }
 
-    private String confidenceToString(Double value) {
+    private String doubleToString(Double value) {
         return String.format("%.2f", value);
+    }
+
+    private double getOnPercentageFromLast24Hours() {
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        final ZonedDateTime startTime = now.minusDays(1);
+        final List<SystemAction> actionsFromTimeToNow = airFlowDbAccessor.getActionsFromTimeToNow(startTime.minusHours(2)); // just enough data
+        final DurationCalculator durationCalculator = new DurationCalculator(actionsFromTimeToNow);
+        final Duration duration = durationCalculator.getDuration(startTime, now);
+        return (double) duration.toSeconds() / (double) Duration.ofDays(1).toSeconds() * 100.0;
     }
 }

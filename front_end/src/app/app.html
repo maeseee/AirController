@@ -40,7 +40,7 @@
     </section>
 
     <h3>Statistics</h3>
-    <app-metric-card label="Last 24h" [value]="data.onPercentage * 100 | number:'1.1-1'" unit="%" />
+    <app-metric-card label="Last 24h" [value]="data.onPercentage | number:'1.1-1'" unit="%" />
   } @else {
     <div class="loader">
       <p>Fetching climate data... Please wait.</p>

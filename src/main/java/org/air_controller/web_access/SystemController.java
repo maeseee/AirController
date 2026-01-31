@@ -43,11 +43,17 @@ public class SystemController {
         return generateResponse(currentClimateDataPoint);
     }
 
-
     @GetMapping("/statistics/onPercentageFromTheLast24Hours")
+    @Deprecated
     public ResponseEntity<Double> getOnPercentageFromTheLast24Hours() {
         final double onPercentage = airControllerService.getOnPercentageFromTheLast24Hours();
         return new ResponseEntity<>(onPercentage, HttpStatus.OK);
+    }
+
+    @GetMapping("/cardViews/statistics")
+    public ResponseEntity<CardGroup> getStatisticsCardGroup() {
+        final CardGroup currentClimateDataPoint = airControllerService.getStatisticsCardGroup();
+        return generateResponse(currentClimateDataPoint);
     }
 
     private <T> ResponseEntity<T> generateResponse(Optional<T> resultOptional) {
