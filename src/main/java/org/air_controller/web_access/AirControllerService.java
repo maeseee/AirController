@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -91,21 +90,8 @@ public class AirControllerService {
         if (dataPointOptional.isEmpty()) {
             return new CardGroup(ZonedDateTime.now(ZoneOffset.UTC), emptyList());
         }
-        final ArrayList<CardView> cardViews = createCardViewList(dataPointOptional.get());
+        final List<CardView> cardViews = dataPointOptional.get().getCardViews();
         return new CardGroup(dataPointOptional.get().timestamp(), cardViews);
-    }
-
-    private ArrayList<CardView> createCardViewList(ClimateDataPoint dataPoint) {
-        final ArrayList<CardView> cardViews = new ArrayList<>();
-        final CardView temperature = dataPoint.temperature().toCardView();
-        cardViews.add(temperature);
-        final CardView humidity = dataPoint.humidity().toCardView(dataPoint.temperature());
-        cardViews.add(humidity);
-        if (dataPoint.co2().isPresent()) {
-            final CardView co2 = dataPoint.co2().get().toCardView();
-            cardViews.add(co2);
-        }
-        return cardViews;
     }
 
     @Deprecated

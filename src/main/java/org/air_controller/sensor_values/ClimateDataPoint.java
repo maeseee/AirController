@@ -18,4 +18,17 @@ public record ClimateDataPoint(Temperature temperature, Humidity humidity, Optio
                 co2.map(carbonDioxide -> ", " + carbonDioxide.toCardView()).orElse("") +
                 "}";
     }
+
+    public List<CardView> getCardViews() {
+        final ArrayList<CardView> cardViews = new ArrayList<>();
+        final CardView temperatureView = temperature.toCardView();
+        cardViews.add(temperatureView);
+        final CardView humidityView = humidity.toCardView(temperature);
+        cardViews.add(humidityView);
+        if (co2.isPresent()) {
+            final CardView co2View = co2.get().toCardView();
+            cardViews.add(co2View);
+        }
+        return cardViews;
+    }
 }
