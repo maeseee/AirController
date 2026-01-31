@@ -9,11 +9,6 @@ public record CarbonDioxide(double ppm) {
         validate(ppm, IllegalArgumentException.class);
     }
 
-    @Override
-    public @NotNull String toString() {
-        return ppmString() + "ppm";
-    }
-
     public CardView toCardView() {
         return new CardView("CO2", ppmString(), "ppm");
     }

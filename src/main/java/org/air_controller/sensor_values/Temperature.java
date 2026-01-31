@@ -1,7 +1,6 @@
 package org.air_controller.sensor_values;
 
 import org.air_controller.web_access.CardView;
-import org.jetbrains.annotations.NotNull;
 
 public record Temperature(double celsius) {
 
@@ -9,11 +8,6 @@ public record Temperature(double celsius) {
 
     public Temperature {
         validate(celsius, IllegalArgumentException.class);
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return celsiusString() + "°C";
     }
 
     public double getKelvin() {
@@ -25,7 +19,7 @@ public record Temperature(double celsius) {
     }
 
     private String celsiusString() {
-        return String.format("%.2f", celsius);
+        return String.format("%.1f", celsius);
     }
 
     public static Temperature createFromCelsius(double celsius) throws InvalidArgumentException {

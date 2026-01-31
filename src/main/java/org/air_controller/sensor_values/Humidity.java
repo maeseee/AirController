@@ -1,7 +1,6 @@
 package org.air_controller.sensor_values;
 
 import org.air_controller.web_access.CardView;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @param absoluteHumidity [g/m3]
@@ -12,11 +11,6 @@ public record Humidity(double absoluteHumidity) {
 
     public Humidity {
         validate(absoluteHumidity, IllegalArgumentException.class);
-    }
-
-    @Override
-    public @NotNull String toString() {
-        return String.format("%.2fg/m3", absoluteHumidity);
     }
 
     public double getRelativeHumidity(Temperature temperature) {
@@ -31,7 +25,7 @@ public record Humidity(double absoluteHumidity) {
 
     public CardView toCardView(Temperature temperature) {
         final double relativeHumidity = getRelativeHumidity(temperature);
-        return new CardView("Humidity", String.format("%.2f", relativeHumidity), "%");
+        return new CardView("Humidity", String.format("%.1f", relativeHumidity), "%");
     }
 
     public static Humidity createFromRelative(double relativeHumidity, Temperature temperature) throws InvalidArgumentException {
