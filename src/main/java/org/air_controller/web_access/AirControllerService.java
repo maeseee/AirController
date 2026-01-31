@@ -39,18 +39,8 @@ public class AirControllerService {
         return airFlowDbAccessor.getMostCurrentSystemAction();
     }
 
-    @Deprecated
-    public Optional<ClimateDataPointDTO> getCurrentIndoorClimateDataPoint() {
-        return getCurrentClimateDataPoint(indoorDataPointsAccessor);
-    }
-
     public CardGroup getIndoorCardGroup() {
         return getCardGroup(indoorDataPointsAccessor);
-    }
-
-    @Deprecated
-    public Optional<ClimateDataPointDTO> getCurrentOutdoorClimateDataPoint() {
-        return getCurrentClimateDataPoint(outdoorDataPointsAccessor);
     }
 
     public CardGroup getOutdoorCardGroup() {
@@ -74,22 +64,10 @@ public class AirControllerService {
         return (double) duration.toMinutes() / (double) Duration.ofDays(1).toMinutes();
     }
 
-    @Deprecated
-    private Optional<ClimateDataPointDTO> getCurrentClimateDataPoint(ClimateDataPointsDbAccessor dataPointsAccessor) {
-        final CurrentClimateDataPoint currentClimateDataPoint = new CurrentClimateDataPoint(dataPointsAccessor);
-        final Optional<ClimateDataPoint> dataPointOptional = currentClimateDataPoint.getCurrentClimateDataPoint();
-        return mapToClimateDataPointDTO(dataPointOptional);
-    }
-
     private CardGroup getCardGroup(ClimateDataPointsDbAccessor dataPointsAccessor) {
         final CurrentClimateDataPoint currentClimateDataPoint = new CurrentClimateDataPoint(dataPointsAccessor);
         final Optional<ClimateDataPoint> dataPointOptional = currentClimateDataPoint.getCurrentClimateDataPoint();
         return mapToCardGroup(dataPointOptional);
-    }
-
-    @Deprecated
-    private Optional<ClimateDataPointDTO> mapToClimateDataPointDTO(Optional<ClimateDataPoint> dataPointOptional) {
-        return dataPointOptional.map(AirControllerService::toClimateDataPointDTO);
     }
 
     private CardGroup mapToCardGroup(Optional<ClimateDataPoint> dataPointOptional) {
@@ -102,13 +80,5 @@ public class AirControllerService {
         final Duration cardAge = Duration.between(timestamp, now);
         final String info = cardAge.compareTo(INFO_DURATION) > 0 ? "Last sensor update was " + cardAge.toMinutes() + " minutes ago" : "";
         return new CardGroup(info, cardViews);
-    }
-
-    @Deprecated
-    private static ClimateDataPointDTO toClimateDataPointDTO(ClimateDataPoint dataPoint) {
-        final double celsius = dataPoint.temperature().celsius();
-        final double relativeHumidity = dataPoint.humidity().getRelativeHumidity(dataPoint.temperature());
-        final Double co2 = dataPoint.co2().map(CarbonDioxide::ppm).orElse(null);
-        return new ClimateDataPointDTO(celsius, relativeHumidity, co2);
     }
 }

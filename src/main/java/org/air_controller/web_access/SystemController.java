@@ -26,23 +26,9 @@ public class SystemController {
         return generateResponse(currentOutputState);
     }
 
-    @GetMapping("/currentState/indoorClimateDataPoint")
-    @Deprecated
-    public ResponseEntity<ClimateDataPointDTO> getCurrentIndoorClimateDataPoint() {
-        final Optional<ClimateDataPointDTO> currentClimateDataPoint = airControllerService.getCurrentIndoorClimateDataPoint();
-        return generateResponse(currentClimateDataPoint);
-    }
-
     @GetMapping("/cardViews/indoor")
     public ResponseEntity<CardGroup> getIndoorCardGroup() {
         final CardGroup currentClimateDataPoint = airControllerService.getIndoorCardGroup();
-        return generateResponse(currentClimateDataPoint);
-    }
-
-    @GetMapping("/currentState/outdoorClimateDataPoint")
-    @Deprecated
-    public ResponseEntity<ClimateDataPointDTO> getCurrentOutdoorClimateDataPoint() {
-        final Optional<ClimateDataPointDTO> currentClimateDataPoint = airControllerService.getCurrentOutdoorClimateDataPoint();
         return generateResponse(currentClimateDataPoint);
     }
 
