@@ -36,6 +36,16 @@
       }
     </section>
 
+    <h3>Confidence</h3>
+    <div>{{ data.confidenceCardViews.info }}</div>
+    <section class="card-grid">
+      @for (card of data.confidenceCardViews.cards; track card.name) {
+        <app-metric-card [label]="card.name" [value]="card.value" [unit]="card.unit" />
+      } @empty {
+        <p>Keine Karten in dieser Gruppe gefunden.</p>
+      }
+    </section>
+
     <h3>Statistics</h3>
     <app-metric-card label="Last 24h" [value]="data.onPercentage * 100 | number:'1.1-1'" unit="%" />
   } @else {

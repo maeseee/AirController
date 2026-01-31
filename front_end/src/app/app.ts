@@ -33,6 +33,7 @@ export class App {
       outdoorCardViews: this.cardGroupService.getCardViews('outdoor'),
       totalConfidence: this.totalConfService.getTotalConfidence(),
       confidences: this.confidencesService.getConfidences(),
+      confidenceCardViews: this.cardGroupService.getCardViews('confidence'),
       onPercentage: this.onPercentageService.getPercentage()
     })),
     catchError(err => {

@@ -10,7 +10,7 @@ export class CardGroupService {
   private http = inject(HttpClient);
   private readonly BASE_URL = 'http://192.168.50.12:9090/cardViews';
 
-  getCardViews(location: 'indoor' | 'outdoor'): Observable<CardGroup> {
+  getCardViews(location: 'indoor' | 'outdoor' | 'confidence'): Observable<CardGroup> {
     const url = `${this.BASE_URL}/${location}`;
     return this.http.get<CardGroup>(url, {withCredentials: true});
   }
