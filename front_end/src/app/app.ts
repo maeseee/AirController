@@ -34,6 +34,7 @@ export class App {
       indoorDataPoint: this.dataPointService.getDataPoint('indoor'),
       indoorCardViews: this.cardGroupService.getCardViews('indoor'),
       outdoorDataPoint: this.dataPointService.getDataPoint('outdoor'),
+      outdoorCardViews: this.cardGroupService.getCardViews('outdoor'),
       totalConfidence: this.totalConfService.getTotalConfidence(),
       confidences: this.confidencesService.getConfidences(),
       onPercentage: this.onPercentageService.getPercentage()
