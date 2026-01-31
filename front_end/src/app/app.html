@@ -25,14 +25,7 @@
       @for (card of data.outdoorCardViews.cards; track card.name) {
         <app-metric-card [label]="card.name" [value]="card.value" [unit]="card.unit" />
       } @empty {
-        <p>Keine Karten in dieser Gruppe gefunden.</p>
-      }
-    </section>
-
-    <h3>Confidence is {{ data.totalConfidence | number:'1.1-2' }}</h3>
-    <section class="card-grid">
-      @for (conf of confidencesArray(); track conf.key) {
-        <app-metric-card [label]="conf.key" [value]="conf.value | number:'1.1-2'" />
+        <p>No cards found in dies Group.</p>
       }
     </section>
 
@@ -42,7 +35,7 @@
       @for (card of data.confidenceCardViews.cards; track card.name) {
         <app-metric-card [label]="card.name" [value]="card.value" [unit]="card.unit" />
       } @empty {
-        <p>Keine Karten in dieser Gruppe gefunden.</p>
+        <p>No cards found in dies Group.</p>
       }
     </section>
 

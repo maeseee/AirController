@@ -4,8 +4,6 @@ import {toSignal} from '@angular/core/rxjs-interop';
 import {BehaviorSubject, catchError, forkJoin, of, switchMap} from 'rxjs';
 
 import {freshAirStatus} from './services/system-status/fresh-air-status';
-import {CurrentTotalConfidence} from './services/conficence/current-total-confidence';
-import {FreshAirConfidences} from './services/conficence/fresh-air-confidences';
 import {MetricCardComponent} from './components/metric-card/metric-card';
 import {OnPercentageFromTheLast24Hours} from './services/data-point/on-percentage-from-the-last-24hours';
 import {CardGroupService} from './services/cardView/CardGroupService';
@@ -20,8 +18,6 @@ import {CardGroupService} from './services/cardView/CardGroupService';
 export class App {
   private airService = inject(freshAirStatus);
   private cardGroupService = inject(CardGroupService);
-  private totalConfService = inject(CurrentTotalConfidence);
-  private confidencesService = inject(FreshAirConfidences);
   private onPercentageService = inject(OnPercentageFromTheLast24Hours);
 
   private refresh$ = new BehaviorSubject<void>(void 0);
@@ -31,8 +27,6 @@ export class App {
       status: this.airService.getStatus().pipe(catchError(() => of('ERROR'))),
       indoorCardViews: this.cardGroupService.getCardViews('indoor'),
       outdoorCardViews: this.cardGroupService.getCardViews('outdoor'),
-      totalConfidence: this.totalConfService.getTotalConfidence(),
-      confidences: this.confidencesService.getConfidences(),
       confidenceCardViews: this.cardGroupService.getCardViews('confidence'),
       onPercentage: this.onPercentageService.getPercentage()
     })),
@@ -43,13 +37,6 @@ export class App {
   );
 
   viewModel = toSignal(this.data$, {initialValue: null});
-
-  confidencesArray = computed(() => {
-    const data = this.viewModel();
-    if (!data?.confidences) return [];
-    return Object.entries(data.confidences).map(([key, value]) => ({key, value}));
-  });
-
   refresh() {
     this.refresh$.next();
   }
