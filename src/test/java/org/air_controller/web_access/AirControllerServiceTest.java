@@ -82,7 +82,25 @@ class AirControllerServiceTest {
         final CardGroup outdoorCardGroup = testee.getOutdoorCardGroup();
 
         assertThat(outdoorCardGroup.info()).contains("11 minutes");
+        verifyNoInteractions(indoorDataPointsAccessor);
+        verifyNoInteractions(airFlowDbAccessor);
+    }
 
+    @Test
+    void shouldIgnoreInfo_whenLastUpdateIs9MinutesAgo() throws InvalidArgumentException {
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        final ZonedDateTime currentDataPointTime = now.minusMinutes(9);
+        final ClimateDataPoint currentDataPoint = new ClimateDataPointBuilder()
+                .setTemperatureCelsius(22.5)
+                .setHumidityRelative(50.0)
+                .setTime(currentDataPointTime)
+                .build();
+        when(outdoorDataPointsAccessor.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.of(currentDataPoint));
+        final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
+
+        final CardGroup outdoorCardGroup = testee.getOutdoorCardGroup();
+
+        assertThat(outdoorCardGroup.info()).isEmpty();
         verifyNoInteractions(indoorDataPointsAccessor);
         verifyNoInteractions(airFlowDbAccessor);
     }
