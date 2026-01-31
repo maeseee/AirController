@@ -48,7 +48,7 @@ public class SystemController {
 
     @GetMapping("/cardViews/outdoor")
     public ResponseEntity<CardGroup> getOutdoorCardGroup() {
-        final CardGroup currentClimateDataPoint = airControllerService.getOUtdoorCardGroup();
+        final CardGroup currentClimateDataPoint = airControllerService.getOutdoorCardGroup();
         return generateResponse(currentClimateDataPoint);
     }
 

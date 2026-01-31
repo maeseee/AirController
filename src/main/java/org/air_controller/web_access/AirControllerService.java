@@ -22,6 +22,8 @@ import static java.util.Collections.emptyList;
 @Service
 public class AirControllerService {
 
+    private static final Duration INFO_DURATION = Duration.ofMinutes(10);
+
     private final SystemActionDbAccessor airFlowDbAccessor;
     private final ClimateDataPointsDbAccessor indoorDataPointsAccessor;
     private final ClimateDataPointsDbAccessor outdoorDataPointsAccessor;
@@ -51,7 +53,7 @@ public class AirControllerService {
         return getCurrentClimateDataPoint(outdoorDataPointsAccessor);
     }
 
-    public CardGroup getOUtdoorCardGroup() {
+    public CardGroup getOutdoorCardGroup() {
         return getCardGroup(outdoorDataPointsAccessor);
     }
 
@@ -92,10 +94,14 @@ public class AirControllerService {
 
     private CardGroup mapToCardGroup(Optional<ClimateDataPoint> dataPointOptional) {
         if (dataPointOptional.isEmpty()) {
-            return new CardGroup(ZonedDateTime.now(ZoneOffset.UTC), emptyList());
+            return new CardGroup("No cards available", emptyList());
         }
         final List<CardView> cardViews = dataPointOptional.get().getCardViews();
-        return new CardGroup(dataPointOptional.get().timestamp(), cardViews);
+        final ZonedDateTime timestamp = dataPointOptional.get().timestamp();
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        final Duration cardAge = Duration.between(timestamp, now);
+        final String info = cardAge.compareTo(INFO_DURATION) > 0 ? "Last sensor update was " + cardAge.toMinutes() + " minutes ago" : "";
+        return new CardGroup(info, cardViews);
     }
 
     @Deprecated
