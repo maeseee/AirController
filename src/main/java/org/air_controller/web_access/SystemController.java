@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -36,19 +35,6 @@ public class SystemController {
     public ResponseEntity<CardGroup> getOutdoorCardGroup() {
         final CardGroup currentClimateDataPoint = airControllerService.getOutdoorCardGroup();
         return generateResponse(currentClimateDataPoint);
-    }
-
-
-    @GetMapping("/currentState/total_confidence")
-    public ResponseEntity<Double> getCurrentTotalConfidence() {
-        final Optional<Double> currentTotalConfidence = airControllerService.getCurrentTotalConfidence();
-        return generateResponse(currentTotalConfidence);
-    }
-
-    @GetMapping("/currentState/confidences")
-    public ResponseEntity<Map<String, Double>> getCurrentConfidences() {
-        final Optional<Map<String, Double>> currentConfidences = airControllerService.getCurrentConfidences();
-        return generateResponse(currentConfidences);
     }
 
     @GetMapping("/cardViews/confidence")

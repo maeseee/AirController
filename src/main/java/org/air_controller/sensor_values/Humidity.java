@@ -18,11 +18,6 @@ public record Humidity(double absoluteHumidity) {
         return absoluteHumidity * SPECIFIC_GAS_CONSTANT_FOR_WATER * temperature.getKelvin() / (saturationVaporPressure * 10);
     }
 
-    public String toRelativeHumidity(Temperature temperature) {
-        final double relativeHumidity = getRelativeHumidity(temperature);
-        return String.format("%.1f%%", relativeHumidity);
-    }
-
     public CardView toCardView(Temperature temperature) {
         final double relativeHumidity = getRelativeHumidity(temperature);
         return new CardView("Humidity", String.format("%.1f", relativeHumidity), "%");

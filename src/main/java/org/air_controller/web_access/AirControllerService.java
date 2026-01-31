@@ -46,14 +46,6 @@ public class AirControllerService {
         return getCardGroup(outdoorDataPointsAccessor);
     }
 
-    public Optional<Double> getCurrentTotalConfidence() {
-        return airFlowDbAccessor.getMostCurrentPersistenceData().map(VentilationSystemPersistenceData::totalConfidence);
-    }
-
-    public Optional<Map<String, Double>> getCurrentConfidences() {
-        return airFlowDbAccessor.getMostCurrentPersistenceData().map(VentilationSystemPersistenceData::confidences);
-    }
-
     public CardGroup getConfidenceCardGroup() {
         final Optional<VentilationSystemPersistenceData> persistenceDataOptional = airFlowDbAccessor.getMostCurrentPersistenceData();
         if (persistenceDataOptional.isEmpty()) {
