@@ -51,6 +51,10 @@ public class AirControllerService {
         return getCurrentClimateDataPoint(outdoorDataPointsAccessor);
     }
 
+    public CardGroup getOUtdoorCardGroup() {
+        return getCardGroup(outdoorDataPointsAccessor);
+    }
+
     public Optional<Double> getCurrentTotalConfidence() {
         return airFlowDbAccessor.getMostCurrentPersistenceData().map(VentilationSystemPersistenceData::totalConfidence);
     }

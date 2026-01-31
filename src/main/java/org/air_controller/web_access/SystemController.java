@@ -46,6 +46,13 @@ public class SystemController {
         return generateResponse(currentClimateDataPoint);
     }
 
+    @GetMapping("/cardViews/outdoor")
+    public ResponseEntity<CardGroup> getOutdoorCardGroup() {
+        final CardGroup currentClimateDataPoint = airControllerService.getOUtdoorCardGroup();
+        return generateResponse(currentClimateDataPoint);
+    }
+
+
     @GetMapping("/currentState/total_confidence")
     public ResponseEntity<Double> getCurrentTotalConfidence() {
         final Optional<Double> currentTotalConfidence = airControllerService.getCurrentTotalConfidence();
