@@ -20,7 +20,7 @@
     <div>{{ data.indoorCardViews.from| date:'dd.MM.yyyy HH:mm' }}</div>
     <section class="card-grid">
       @for (card of data.indoorCardViews.cards; track card.name) {
-        <app-metric-card [label]="card.name" [value]="card.value | number:'2.1-1'" [unit]="card.unit" />
+        <app-metric-card [label]="card.name" [value]="card.value" [unit]="card.unit" />
       } @empty {
         <p>Keine Karten in dieser Gruppe gefunden.</p>
       }

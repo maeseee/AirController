@@ -1,5 +1,5 @@
 export interface CardView {
   name: string;
-  value: number;
+  value: string;
   unit: string;
 }

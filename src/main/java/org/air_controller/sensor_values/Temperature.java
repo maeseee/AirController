@@ -1,22 +1,31 @@
 package org.air_controller.sensor_values;
 
+import org.air_controller.web_access.CardView;
 import org.jetbrains.annotations.NotNull;
 
 public record Temperature(double celsius) {
+
+    private static final double KELVIN_TO_CELSIUS = 273.15;
 
     public Temperature {
         validate(celsius, IllegalArgumentException.class);
     }
 
-    private static final double KELVIN_TO_CELSIUS = 273.15;
+    @Override
+    public @NotNull String toString() {
+        return celsiusString() + "°C";
+    }
 
     public double getKelvin() {
         return celsius + KELVIN_TO_CELSIUS;
     }
 
-    @Override
-    public @NotNull String toString() {
-        return String.format("%.2f°C", celsius);
+    public CardView toCardView() {
+        return new CardView("Temperature", celsiusString(), "°C");
+    }
+
+    private String celsiusString() {
+        return String.format("%.2f", celsius);
     }
 
     public static Temperature createFromCelsius(double celsius) throws InvalidArgumentException {

@@ -96,14 +96,14 @@ public class AirControllerService {
     }
 
     private ArrayList<CardView> createCardViewList(ClimateDataPoint dataPoint) {
-        final double celsius = dataPoint.temperature().celsius();
-        final double relativeHumidity = dataPoint.humidity().getRelativeHumidity(dataPoint.temperature());
-        final Double co2 = dataPoint.co2().map(CarbonDioxide::ppm).orElse(null);
         final ArrayList<CardView> cardViews = new ArrayList<>();
-        cardViews.add(new CardView("Temperature",celsius, "°C"));
-        cardViews.add(new CardView("Humidity",relativeHumidity,"%"));
-        if (co2 != null) {
-            cardViews.add(new CardView("CO2",co2, "ppm"));
+        final CardView temperature = dataPoint.temperature().toCardView();
+        cardViews.add(temperature);
+        final CardView humidity = dataPoint.humidity().toCardView(dataPoint.temperature());
+        cardViews.add(humidity);
+        if (dataPoint.co2().isPresent()) {
+            final CardView co2 = dataPoint.co2().get().toCardView();
+            cardViews.add(co2);
         }
         return cardViews;
     }

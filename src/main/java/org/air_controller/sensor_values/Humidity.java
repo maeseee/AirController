@@ -1,5 +1,6 @@
 package org.air_controller.sensor_values;
 
+import org.air_controller.web_access.CardView;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -7,15 +8,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public record Humidity(double absoluteHumidity) {
 
-    public Humidity {
-        validate(absoluteHumidity, IllegalArgumentException.class);
-    }
-
     private static final double SPECIFIC_GAS_CONSTANT_FOR_WATER = 461.5; // [J/(kg*K)]
 
-    public double getRelativeHumidity(Temperature temperature) {
-        final double saturationVaporPressure = getSaturationVaporPressure(temperature);
-        return absoluteHumidity * SPECIFIC_GAS_CONSTANT_FOR_WATER * temperature.getKelvin() / (saturationVaporPressure * 10);
+    public Humidity {
+        validate(absoluteHumidity, IllegalArgumentException.class);
     }
 
     @Override
@@ -23,9 +19,19 @@ public record Humidity(double absoluteHumidity) {
         return String.format("%.2fg/m3", absoluteHumidity);
     }
 
+    public double getRelativeHumidity(Temperature temperature) {
+        final double saturationVaporPressure = getSaturationVaporPressure(temperature);
+        return absoluteHumidity * SPECIFIC_GAS_CONSTANT_FOR_WATER * temperature.getKelvin() / (saturationVaporPressure * 10);
+    }
+
     public String toRelativeHumidity(Temperature temperature) {
         final double relativeHumidity = getRelativeHumidity(temperature);
         return String.format("%.1f%%", relativeHumidity);
+    }
+
+    public CardView toCardView(Temperature temperature) {
+        final double relativeHumidity = getRelativeHumidity(temperature);
+        return new CardView("Humidity", String.format("%.2f", relativeHumidity), "%");
     }
 
     public static Humidity createFromRelative(double relativeHumidity, Temperature temperature) throws InvalidArgumentException {

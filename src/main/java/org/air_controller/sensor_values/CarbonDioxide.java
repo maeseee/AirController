@@ -1,5 +1,6 @@
 package org.air_controller.sensor_values;
 
+import org.air_controller.web_access.CardView;
 import org.jetbrains.annotations.NotNull;
 
 public record CarbonDioxide(double ppm) {
@@ -10,7 +11,15 @@ public record CarbonDioxide(double ppm) {
 
     @Override
     public @NotNull String toString() {
-        return String.format("%.0fppm", ppm);
+        return ppmString() + "ppm";
+    }
+
+    public CardView toCardView() {
+        return new CardView("CO2", ppmString(), "ppm");
+    }
+
+    private @NotNull String ppmString() {
+        return String.format("%.0f", ppm);
     }
 
     public static CarbonDioxide createFromPpm(double ppm) throws InvalidArgumentException {
