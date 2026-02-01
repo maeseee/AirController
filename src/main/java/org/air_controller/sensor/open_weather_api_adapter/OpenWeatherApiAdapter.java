@@ -22,9 +22,4 @@ public class OpenWeatherApiAdapter extends ClimateSensor {
         }
         return JsonParser.parse(response);
     }
-
-    @Override
-    protected String sensorType() {
-        return "OpenWeatherApi";
-    }
 }

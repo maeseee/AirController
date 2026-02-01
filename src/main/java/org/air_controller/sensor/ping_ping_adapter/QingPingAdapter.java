@@ -31,11 +31,6 @@ public class QingPingAdapter extends ClimateSensor {
         return sensorReducer.reduce(dataPoints);
     }
 
-    @Override
-    protected String sensorType() {
-        return "QingPing";
-    }
-
     private List<ClimateDataPoint> parse(String response) {
         final List<ClimateDataPoint> dataPoints = new ArrayList<>();
         QingPingSensor.getDeviceList().forEach(
