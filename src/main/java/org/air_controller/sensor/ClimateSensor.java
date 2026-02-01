@@ -38,7 +38,6 @@ public abstract class ClimateSensor implements Runnable {
     protected abstract String sensorType();
 
     private void persistDataPoint(ClimateDataPoint dataPoint) {
-        log.info("Data point on {}: {}", sensorType(), dataPoint);
         persistence.persist(dataPoint);
     }
 

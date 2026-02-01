@@ -26,7 +26,6 @@ public class DingtianPin implements GpioPin {
     @Override
     public void setGpioState(boolean stateOn) {
         if (getGpioState() != stateOn) {
-            log.info("{} set to {}", name, stateOn ? "on" : "off");
             communication.setRelayState(relay.getRelayIndex(), stateOn);
         }
     }
