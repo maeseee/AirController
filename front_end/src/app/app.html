@@ -40,7 +40,14 @@
     </section>
 
     <h3>Statistics</h3>
-    <app-metric-card label="Last 24h" [value]="data.onPercentage | number:'1.1-1'" unit="%" />
+    <div>{{ data.statisticsCardViews.info }}</div>
+    <section class="card-grid">
+      @for (card of data.statisticsCardViews.cards; track card.name) {
+        <app-metric-card [label]="card.name" [value]="card.value" [unit]="card.unit" />
+      } @empty {
+        <p>No cards found in dies Group.</p>
+      }
+    </section>
   } @else {
     <div class="loader">
       <p>Fetching climate data... Please wait.</p>

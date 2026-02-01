@@ -5,7 +5,6 @@ import {BehaviorSubject, catchError, forkJoin, of, switchMap} from 'rxjs';
 
 import {freshAirStatus} from './services/system-status/fresh-air-status';
 import {MetricCardComponent} from './components/metric-card/metric-card';
-import {OnPercentageFromTheLast24Hours} from './services/data-point/on-percentage-from-the-last-24hours';
 import {CardGroupService} from './services/cardView/CardGroupService';
 
 @Component({
@@ -18,7 +17,6 @@ import {CardGroupService} from './services/cardView/CardGroupService';
 export class App {
   private airService = inject(freshAirStatus);
   private cardGroupService = inject(CardGroupService);
-  private onPercentageService = inject(OnPercentageFromTheLast24Hours);
 
   private refresh$ = new BehaviorSubject<void>(void 0);
 
@@ -28,7 +26,7 @@ export class App {
       indoorCardViews: this.cardGroupService.getCardViews('indoor'),
       outdoorCardViews: this.cardGroupService.getCardViews('outdoor'),
       confidenceCardViews: this.cardGroupService.getCardViews('confidence'),
-      onPercentage: this.onPercentageService.getPercentage()
+      statisticsCardViews: this.cardGroupService.getCardViews('statistics')
     })),
     catchError(err => {
       console.error('Batch update failed', err);
