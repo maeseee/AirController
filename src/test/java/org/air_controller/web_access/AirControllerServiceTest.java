@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.within;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -34,24 +33,6 @@ class AirControllerServiceTest {
     private ClimateDataPointsDbAccessor indoorDataPointsAccessor;
     @Mock
     private ClimateDataPointsDbAccessor outdoorDataPointsAccessor;
-
-    @Test
-    @Deprecated
-    void shouldGetOnPercentageFromTheLast24Hours_Old() {
-        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        final List<SystemAction> actions = List.of(
-                new SystemAction(now.minusHours(10), OutputState.ON),
-                new SystemAction(now.minusHours(9), OutputState.OFF)
-        );
-        when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(actions);
-        final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
-
-        final double percentage = testee.getOnPercentageFromTheLast24Hours();
-
-        assertThat(percentage).isCloseTo(1.0 / 24.0 * 100.0, within(0.1));
-        verifyNoInteractions(indoorDataPointsAccessor);
-        verifyNoInteractions(outdoorDataPointsAccessor);
-    }
 
     @Test
     void shouldGetOnPercentageFromTheLast24Hours() {
@@ -70,24 +51,6 @@ class AirControllerServiceTest {
         assertThat(statistics.cards().getFirst().name()).contains("24h");
         assertThat(statistics.cards().getFirst().value()).isEqualTo("4.17"); // 1/24 * 100
         assertThat(statistics.cards().getFirst().unit()).isEqualTo("%");
-        verifyNoInteractions(indoorDataPointsAccessor);
-        verifyNoInteractions(outdoorDataPointsAccessor);
-    }
-
-    @Test
-    @Deprecated
-    void shouldOnlyGetOnPercentageFromTheLast24Hours_old() {
-        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        final List<SystemAction> actions = List.of(
-                new SystemAction(now.minusHours(25), OutputState.ON),
-                new SystemAction(now.minusHours(22), OutputState.OFF)
-        );
-        when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(actions);
-        final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
-
-        final double percentage = testee.getOnPercentageFromTheLast24Hours();
-
-        assertThat(percentage).isCloseTo(2.0 / 24.0 * 100.0, within(0.1));
         verifyNoInteractions(indoorDataPointsAccessor);
         verifyNoInteractions(outdoorDataPointsAccessor);
     }

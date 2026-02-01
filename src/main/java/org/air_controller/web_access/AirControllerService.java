@@ -57,11 +57,6 @@ public class AirControllerService {
         return new CardGroup("Total confidence of " + totalConfidence, confidenceCards);
     }
 
-    @Deprecated
-    public double getOnPercentageFromTheLast24Hours() {
-        return getOnPercentageFromLast24Hours();
-    }
-
     public CardGroup getStatisticsCardGroup() {
         final double onPercentage = getOnPercentageFromLast24Hours();
         final CardView cardView = new CardView("On during last 24h", doubleToString(onPercentage), "%");
