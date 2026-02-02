@@ -8,14 +8,11 @@ import org.air_controller.web_access.graph.GraphItem;
 import org.air_controller.web_access.graph.GraphView;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class AirControllerService {
-
-    private static final Duration INFO_DURATION = Duration.ofMinutes(10);
 
     private final SystemActionDbAccessor airFlowDbAccessor;
     private final ClimateDataPointsDbAccessor indoorDataPointsAccessor;
