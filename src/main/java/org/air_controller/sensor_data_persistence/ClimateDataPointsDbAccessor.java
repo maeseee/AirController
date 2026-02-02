@@ -58,6 +58,20 @@ public class ClimateDataPointsDbAccessor implements ClimateDataPointPersistence 
         return dataPoints.stream().findFirst();
     }
 
+    @Override
+    public List<ClimateDataPoint> getDataPointsFromLast24Hours() {
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        final ZonedDateTime yesterday = now.minusHours(24);
+        final String sql =
+                "SELECT * FROM " + dataPointTableName + " i " +
+                        "WHERE i.EVENT_TIME > ? " +
+                        "ORDER BY i.EVENT_TIME DESC";
+        final PreparedStatementSetter setter =
+                preparedStatement -> preparedStatement.setTimestamp(1, Timestamp.valueOf(yesterday.toLocalDateTime()));
+        final EntryAdder<ClimateDataPoint> adder = this::addResultIfAvailable;
+        return database.executeQuery(sql, adder, setter);
+    }
+
     private ClimateDataPoint createDataPoint(ResultSet resultSet) throws SQLException, InvalidArgumentException {
         // Read the object as it can handle null
         return new ClimateDataPointBuilder()

@@ -16,4 +16,6 @@ public interface ClimateDataPointPersistence {
     List<ClimateDataPoint> read();
 
     Optional<ClimateDataPoint> getMostCurrentClimateDataPoint(ZonedDateTime lastValidTimestamp);
+
+    List<ClimateDataPoint> getDataPointsFromLast24Hours();
 }

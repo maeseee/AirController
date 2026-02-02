@@ -7,8 +7,10 @@ import org.air_controller.system_action.DurationCalculator;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.VentilationSystemPersistenceData;
-import org.air_controller.web_access.card.CardView;
 import org.air_controller.web_access.card.CardItem;
+import org.air_controller.web_access.card.CardView;
+import org.air_controller.web_access.graph.GraphItem;
+import org.air_controller.web_access.graph.GraphView;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -63,6 +65,17 @@ public class AirControllerService {
         final double onPercentage = getOnPercentageFromLast24Hours();
         final CardItem cardItem = new CardItem("On during last 24h", doubleToString(onPercentage), "%");
         return new CardView("", List.of(cardItem));
+    }
+
+    public GraphView getIndoorTemperatureGraph() {
+        final List<ClimateDataPoint> dataPoints = indoorDataPointsAccessor.getDataPointsFromLast24Hours();
+        final List<GraphItem> temperatureItems = dataPoints.stream()
+                .map(dataPoint -> new GraphItem(
+                        dataPoint.timestamp(),
+                        dataPoint.temperature().celsius()
+                ))
+                .toList();
+        return new GraphView("Temperature (°C)", temperatureItems);
     }
 
     private CardView getCardGroup(ClimateDataPointsDbAccessor dataPointsAccessor) {
