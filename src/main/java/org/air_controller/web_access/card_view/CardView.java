@@ -1,4 +1,4 @@
-package org.air_controller.web_access.card;
+package org.air_controller.web_access.card_view;
 
 import java.util.List;
 

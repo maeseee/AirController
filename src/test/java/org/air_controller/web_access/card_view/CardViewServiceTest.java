@@ -1,4 +1,4 @@
-package org.air_controller.web_access;
+package org.air_controller.web_access.card_view;
 
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.air_controller.sensor_values.ClimateDataPoint;
@@ -8,7 +8,6 @@ import org.air_controller.system.OutputState;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.VentilationSystemPersistenceData;
-import org.air_controller.web_access.card.CardView;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -26,7 +25,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class AirControllerServiceTest {
+class CardViewServiceTest {
 
     @Mock
     private SystemActionDbAccessor airFlowDbAccessor;
@@ -43,9 +42,9 @@ class AirControllerServiceTest {
                 new SystemAction(now.minusHours(9), OutputState.OFF)
         );
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(actions);
-        final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
+        final CardViewService testee = new CardViewService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
 
-        final CardView statistics = testee.getStatisticsCardGroup();
+        final CardView statistics = testee.getStatisticsCardView();
 
         assertThat(statistics.info()).isEmpty();
         assertThat(statistics.cards()).hasSize(1);
@@ -64,9 +63,9 @@ class AirControllerServiceTest {
                 new SystemAction(now.minusHours(22), OutputState.OFF)
         );
         when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(actions);
-        final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
+        final CardViewService testee = new CardViewService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
 
-        final CardView statistics = testee.getStatisticsCardGroup();
+        final CardView statistics = testee.getStatisticsCardView();
 
         assertThat(statistics.info()).isEmpty();
         assertThat(statistics.cards()).hasSize(1);
@@ -87,9 +86,9 @@ class AirControllerServiceTest {
                 .setTime(currentDataPointTime)
                 .build();
         when(outdoorDataPointsAccessor.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.of(currentDataPoint));
-        final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
+        final CardViewService testee = new CardViewService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
 
-        final CardView outdoorCardView = testee.getOutdoorCardGroup();
+        final CardView outdoorCardView = testee.getOutdoorCardView();
 
         assertThat(outdoorCardView.info()).contains("11 minutes");
         verifyNoInteractions(indoorDataPointsAccessor);
@@ -106,9 +105,9 @@ class AirControllerServiceTest {
                 .setTime(currentDataPointTime)
                 .build();
         when(outdoorDataPointsAccessor.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.of(currentDataPoint));
-        final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
+        final CardViewService testee = new CardViewService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
 
-        final CardView outdoorCardView = testee.getOutdoorCardGroup();
+        final CardView outdoorCardView = testee.getOutdoorCardView();
 
         assertThat(outdoorCardView.info()).isEmpty();
         verifyNoInteractions(indoorDataPointsAccessor);
@@ -118,9 +117,9 @@ class AirControllerServiceTest {
     @Test
     void shouldShowWarning_whenHavingNoSensorValues() {
         when(outdoorDataPointsAccessor.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.empty());
-        final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
+        final CardViewService testee = new CardViewService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
 
-        final CardView outdoorCardView = testee.getOutdoorCardGroup();
+        final CardView outdoorCardView = testee.getOutdoorCardView();
 
         assertThat(outdoorCardView.info()).contains("No cards available");
         verifyNoInteractions(indoorDataPointsAccessor);
@@ -133,9 +132,9 @@ class AirControllerServiceTest {
         final Map<String, Double> confidences = Map.of("MyTest", 0.5);
         final VentilationSystemPersistenceData data = new VentilationSystemPersistenceData(OutputState.ON, 1.0, confidences, now);
         when(airFlowDbAccessor.getMostCurrentPersistenceData()).thenReturn(Optional.of(data));
-        final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
+        final CardViewService testee = new CardViewService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
 
-        final CardView confidenceCardView = testee.getConfidenceCardGroup();
+        final CardView confidenceCardView = testee.getConfidenceCardView();
 
         assertThat(confidenceCardView.info()).isEqualTo("Total confidence of 1.00");
         assertThat(confidenceCardView.cards()).hasSize(1);
