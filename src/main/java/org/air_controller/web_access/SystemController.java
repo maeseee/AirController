@@ -2,7 +2,7 @@ package org.air_controller.web_access;
 
 import org.air_controller.system.OutputState;
 import org.air_controller.system_action.SystemAction;
-import org.air_controller.web_access.card.CardGroup;
+import org.air_controller.web_access.card.CardView;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,26 +27,26 @@ public class SystemController {
     }
 
     @GetMapping("/cardViews/indoor")
-    public ResponseEntity<CardGroup> getIndoorCardGroup() {
-        final CardGroup currentClimateDataPoint = airControllerService.getIndoorCardGroup();
+    public ResponseEntity<CardView> getIndoorCardGroup() {
+        final CardView currentClimateDataPoint = airControllerService.getIndoorCardGroup();
         return generateResponse(currentClimateDataPoint);
     }
 
     @GetMapping("/cardViews/outdoor")
-    public ResponseEntity<CardGroup> getOutdoorCardGroup() {
-        final CardGroup currentClimateDataPoint = airControllerService.getOutdoorCardGroup();
+    public ResponseEntity<CardView> getOutdoorCardGroup() {
+        final CardView currentClimateDataPoint = airControllerService.getOutdoorCardGroup();
         return generateResponse(currentClimateDataPoint);
     }
 
     @GetMapping("/cardViews/confidence")
-    public ResponseEntity<CardGroup> getConfidenceCardGroup() {
-        final CardGroup currentClimateDataPoint = airControllerService.getConfidenceCardGroup();
+    public ResponseEntity<CardView> getConfidenceCardGroup() {
+        final CardView currentClimateDataPoint = airControllerService.getConfidenceCardGroup();
         return generateResponse(currentClimateDataPoint);
     }
 
     @GetMapping("/cardViews/statistics")
-    public ResponseEntity<CardGroup> getStatisticsCardGroup() {
-        final CardGroup currentClimateDataPoint = airControllerService.getStatisticsCardGroup();
+    public ResponseEntity<CardView> getStatisticsCardGroup() {
+        final CardView currentClimateDataPoint = airControllerService.getStatisticsCardGroup();
         return generateResponse(currentClimateDataPoint);
     }
 
@@ -55,10 +55,10 @@ public class SystemController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
-    private ResponseEntity<CardGroup> generateResponse(CardGroup cardGroup) {
-        if (cardGroup.cards().isEmpty()) {
+    private ResponseEntity<CardView> generateResponse(CardView cardView) {
+        if (cardView.cards().isEmpty()) {
             new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(cardGroup, HttpStatus.OK);
+        return new ResponseEntity<>(cardView, HttpStatus.OK);
     }
 }

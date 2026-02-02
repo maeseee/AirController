@@ -1,6 +1,6 @@
 package org.air_controller.sensor_values;
 
-import org.air_controller.web_access.card.CardView;
+import org.air_controller.web_access.card.CardItem;
 
 public record Temperature(double celsius) {
 
@@ -14,8 +14,8 @@ public record Temperature(double celsius) {
         return celsius + KELVIN_TO_CELSIUS;
     }
 
-    public CardView toCardView() {
-        return new CardView("Temperature", celsiusString(), "°C");
+    public CardItem toCardItem() {
+        return new CardItem("Temperature", celsiusString(), "°C");
     }
 
     private String celsiusString() {

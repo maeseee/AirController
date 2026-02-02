@@ -1,6 +1,6 @@
 package org.air_controller.sensor_values;
 
-import org.air_controller.web_access.card.CardView;
+import org.air_controller.web_access.card.CardItem;
 import org.jetbrains.annotations.NotNull;
 
 public record CarbonDioxide(double ppm) {
@@ -9,8 +9,8 @@ public record CarbonDioxide(double ppm) {
         validate(ppm, IllegalArgumentException.class);
     }
 
-    public CardView toCardView() {
-        return new CardView("CO2", ppmString(), "ppm");
+    public CardItem toCardItem() {
+        return new CardItem("CO2", ppmString(), "ppm");
     }
 
     private @NotNull String ppmString() {

@@ -7,8 +7,8 @@ import org.air_controller.system_action.DurationCalculator;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.VentilationSystemPersistenceData;
-import org.air_controller.web_access.card.CardGroup;
 import org.air_controller.web_access.card.CardView;
+import org.air_controller.web_access.card.CardItem;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -40,52 +40,52 @@ public class AirControllerService {
         return airFlowDbAccessor.getMostCurrentSystemAction();
     }
 
-    public CardGroup getIndoorCardGroup() {
+    public CardView getIndoorCardGroup() {
         return getCardGroup(indoorDataPointsAccessor);
     }
 
-    public CardGroup getOutdoorCardGroup() {
+    public CardView getOutdoorCardGroup() {
         return getCardGroup(outdoorDataPointsAccessor);
     }
 
-    public CardGroup getConfidenceCardGroup() {
+    public CardView getConfidenceCardGroup() {
         final Optional<VentilationSystemPersistenceData> persistenceDataOptional = airFlowDbAccessor.getMostCurrentPersistenceData();
         if (persistenceDataOptional.isEmpty()) {
-            return new CardGroup("No confidence data available", emptyList());
+            return new CardView("No confidence data available", emptyList());
         }
         final VentilationSystemPersistenceData persistenceData = persistenceDataOptional.get();
         final String totalConfidence = doubleToString(persistenceData.totalConfidence());
-        final List<CardView> confidenceCards = mapToCardView(persistenceData.confidences());
-        return new CardGroup("Total confidence of " + totalConfidence, confidenceCards);
+        final List<CardItem> confidenceCards = mapToCardView(persistenceData.confidences());
+        return new CardView("Total confidence of " + totalConfidence, confidenceCards);
     }
 
-    public CardGroup getStatisticsCardGroup() {
+    public CardView getStatisticsCardGroup() {
         final double onPercentage = getOnPercentageFromLast24Hours();
-        final CardView cardView = new CardView("On during last 24h", doubleToString(onPercentage), "%");
-        return new CardGroup("", List.of(cardView));
+        final CardItem cardItem = new CardItem("On during last 24h", doubleToString(onPercentage), "%");
+        return new CardView("", List.of(cardItem));
     }
 
-    private CardGroup getCardGroup(ClimateDataPointsDbAccessor dataPointsAccessor) {
+    private CardView getCardGroup(ClimateDataPointsDbAccessor dataPointsAccessor) {
         final CurrentClimateDataPoint currentClimateDataPoint = new CurrentClimateDataPoint(dataPointsAccessor);
         final Optional<ClimateDataPoint> dataPointOptional = currentClimateDataPoint.getCurrentClimateDataPoint();
         return mapToCardGroup(dataPointOptional);
     }
 
-    private CardGroup mapToCardGroup(Optional<ClimateDataPoint> dataPointOptional) {
+    private CardView mapToCardGroup(Optional<ClimateDataPoint> dataPointOptional) {
         if (dataPointOptional.isEmpty()) {
-            return new CardGroup("No cards available", emptyList());
+            return new CardView("No cards available", emptyList());
         }
-        final List<CardView> cardViews = dataPointOptional.get().getCardViews();
+        final List<CardItem> cardItems = dataPointOptional.get().getCardItems();
         final ZonedDateTime timestamp = dataPointOptional.get().timestamp();
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final Duration cardAge = Duration.between(timestamp, now);
         final String info = cardAge.compareTo(INFO_DURATION) > 0 ? "Last sensor update was " + cardAge.toMinutes() + " minutes ago" : "";
-        return new CardGroup(info, cardViews);
+        return new CardView(info, cardItems);
     }
 
-    private List<CardView> mapToCardView(Map<String, Double> confidences) {
+    private List<CardItem> mapToCardView(Map<String, Double> confidences) {
         return confidences.entrySet().stream()
-                .map(e -> new CardView(e.getKey(), doubleToString(e.getValue()), ""))
+                .map(e -> new CardItem(e.getKey(), doubleToString(e.getValue()), ""))
                 .toList();
     }
 

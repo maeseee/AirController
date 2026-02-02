@@ -1,11 +1,6 @@
 package org.air_controller.web_access.card;
 
-import org.jspecify.annotations.NonNull;
+import java.util.List;
 
-public record CardView(String name, String value, String unit) {
-
-    @Override
-    public @NonNull String toString() {
-        return name + "=" + value + unit;
-    }
+public record CardView(String info, List<CardItem> cards) {
 }

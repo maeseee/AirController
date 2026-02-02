@@ -1,6 +1,6 @@
 package org.air_controller.sensor_values;
 
-import org.air_controller.web_access.card.CardView;
+import org.air_controller.web_access.card.CardItem;
 
 /**
  * @param absoluteHumidity [g/m3]
@@ -18,9 +18,9 @@ public record Humidity(double absoluteHumidity) {
         return absoluteHumidity * SPECIFIC_GAS_CONSTANT_FOR_WATER * temperature.getKelvin() / (saturationVaporPressure * 10);
     }
 
-    public CardView toCardView(Temperature temperature) {
+    public CardItem toCardItem(Temperature temperature) {
         final double relativeHumidity = getRelativeHumidity(temperature);
-        return new CardView("Humidity", String.format("%.1f", relativeHumidity), "%");
+        return new CardItem("Humidity", String.format("%.1f", relativeHumidity), "%");
     }
 
     public static Humidity createFromRelative(double relativeHumidity, Temperature temperature) throws InvalidArgumentException {
