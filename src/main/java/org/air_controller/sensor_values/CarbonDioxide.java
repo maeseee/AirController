@@ -1,6 +1,6 @@
 package org.air_controller.sensor_values;
 
-import org.air_controller.web_access.CardView;
+import org.air_controller.web_access.card.CardView;
 import org.jetbrains.annotations.NotNull;
 
 public record CarbonDioxide(double ppm) {

@@ -2,6 +2,7 @@ package org.air_controller.web_access;
 
 import org.air_controller.system.OutputState;
 import org.air_controller.system_action.SystemAction;
+import org.air_controller.web_access.card.CardGroup;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -7,6 +7,8 @@ import org.air_controller.system_action.DurationCalculator;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.VentilationSystemPersistenceData;
+import org.air_controller.web_access.card.CardGroup;
+import org.air_controller.web_access.card.CardView;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
