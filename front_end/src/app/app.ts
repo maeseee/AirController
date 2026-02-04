@@ -4,7 +4,7 @@ import {toSignal} from '@angular/core/rxjs-interop';
 import {BehaviorSubject, catchError, forkJoin, of, switchMap} from 'rxjs';
 
 import {freshAirStatus} from './services/system-status/fresh-air-status';
-import {MetricCardComponent} from './components/metric-card/metric-card';
+import {MetricCardComponent} from './components/card/metric-card';
 import {CardViewService} from './services/cardView/CardViewService';
 
 @Component({
