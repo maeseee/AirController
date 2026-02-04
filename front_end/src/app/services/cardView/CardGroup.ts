@@ -1,6 +1,6 @@
-import {CardView} from './CardView';
+import {CardItem} from './CardItem';
 
 export interface CardGroup {
   info: string;
-  cards: CardView[];
+  cards: CardItem[];
 }
