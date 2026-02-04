@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CardGroupService } from './CardGroupService';
+import { CardViewService } from './CardViewService';
 
 describe('CurrentClimateDataPoint', () => {
-  let service: CardGroupService;
+  let service: CardViewService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(CardGroupService);
+    service = TestBed.inject(CardViewService);
   });
 
   it('should be created', () => {

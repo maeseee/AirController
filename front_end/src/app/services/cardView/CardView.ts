@@ -1,6 +1,6 @@
 import {CardItem} from './CardItem';
 
-export interface CardGroup {
+export interface CardView {
   info: string;
   cards: CardItem[];
 }

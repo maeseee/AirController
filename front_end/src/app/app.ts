@@ -5,7 +5,7 @@ import {BehaviorSubject, catchError, forkJoin, of, switchMap} from 'rxjs';
 
 import {freshAirStatus} from './services/system-status/fresh-air-status';
 import {MetricCardComponent} from './components/metric-card/metric-card';
-import {CardGroupService} from './services/cardView/CardGroupService';
+import {CardViewService} from './services/cardView/CardViewService';
 
 @Component({
   selector: 'app-root',
@@ -16,17 +16,17 @@ import {CardGroupService} from './services/cardView/CardGroupService';
 })
 export class App {
   private airService = inject(freshAirStatus);
-  private cardGroupService = inject(CardGroupService);
+  private cardViewService = inject(CardViewService);
 
   private refresh$ = new BehaviorSubject<void>(void 0);
 
   private data$ = this.refresh$.pipe(
     switchMap(() => forkJoin({
       status: this.airService.getStatus().pipe(catchError(() => of('ERROR'))),
-      indoorCardViews: this.cardGroupService.getCardViews('indoor'),
-      outdoorCardViews: this.cardGroupService.getCardViews('outdoor'),
-      confidenceCardViews: this.cardGroupService.getCardViews('confidence'),
-      statisticsCardViews: this.cardGroupService.getCardViews('statistics')
+      indoorCardViews: this.cardViewService.getCardViews('indoor'),
+      outdoorCardViews: this.cardViewService.getCardViews('outdoor'),
+      confidenceCardViews: this.cardViewService.getCardViews('confidence'),
+      statisticsCardViews: this.cardViewService.getCardViews('statistics')
     })),
     catchError(err => {
       console.error('Batch update failed', err);
