@@ -6,17 +6,20 @@ import {BehaviorSubject, catchError, forkJoin, of, switchMap} from 'rxjs';
 import {freshAirStatus} from './services/system-status/fresh-air-status';
 import {MetricCardComponent} from './components/card/metric-card';
 import {CardViewService} from './services/cardView/CardViewService';
+import {GraphChartComponent} from './components/graph/graph';
+import {GraphViewService} from './services/graphView/GraphViewService';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, MetricCardComponent],
+  imports: [CommonModule, NgOptimizedImage, MetricCardComponent, GraphChartComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
   private airService = inject(freshAirStatus);
   private cardViewService = inject(CardViewService);
+  private graphViewService = inject(GraphViewService);
 
   private refresh$ = new BehaviorSubject<void>(void 0);
 
@@ -26,7 +29,8 @@ export class App {
       indoorCardViews: this.cardViewService.getCardViews('indoor'),
       outdoorCardViews: this.cardViewService.getCardViews('outdoor'),
       confidenceCardViews: this.cardViewService.getCardViews('confidence'),
-      statisticsCardViews: this.cardViewService.getCardViews('statistics')
+      statisticsCardViews: this.cardViewService.getCardViews('statistics'),
+      temperatureGraphView: this.graphViewService.getGraphData('indoortemperature')
     })),
     catchError(err => {
       console.error('Batch update failed', err);
