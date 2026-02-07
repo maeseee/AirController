@@ -30,16 +30,10 @@ export class GraphChartComponent implements OnInit {
     responsive: true,
     maintainAspectRatio: true,
     scales: {
-      yTemp: {
+      yAxisConfig: {
         type: 'linear',
         display: true,
         position: 'left',
-        title: {display: true, text: 'Temperatur (°C)'}
-      },
-      yDefault: {
-        type: 'linear',
-        display: true,
-        position: 'left'
       }
     },
     plugins: {
@@ -71,7 +65,7 @@ export class GraphChartComponent implements OnInit {
             data: graphView.items.map(item => item.value),
             borderColor: '#ff6384',
             backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            yAxisID: this.getYAxisId(graphView.nameWithUnit),
+            yAxisID: 'yAxisConfig',
             fill: false,
             tension: 0.3,
             pointRadius: 2
@@ -85,12 +79,5 @@ export class GraphChartComponent implements OnInit {
         }
       }, 0);
     });
-  }
-
-  private getYAxisId(name: string): string {
-    if (name && name.includes('°C')) {
-      return 'yTemp';
-    }
-    return 'yDefault';
   }
 }
