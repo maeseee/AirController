@@ -5,8 +5,8 @@ import {BaseChartDirective} from 'ng2-charts';
 
 @Component({
   selector: 'graph-chart-component',
-  standalone: true, // Falls du Angular 15+ nutzt
-  imports: [BaseChartDirective], // Wichtig für ng2-charts
+  standalone: true,
+  imports: [BaseChartDirective],
   template: `
     <div style="display: block; height: 400px; width: 100%;">
       <canvas baseChart
@@ -23,27 +23,27 @@ export class GraphChartComponent implements OnInit {
 
   public lineChartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
-    datasets: [
-      {
-        data: [],
-        label: 'Temperature (°C)',
-        borderColor: '#ff6384',
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-        fill: true,
-      }
-    ]
+    datasets: []
   };
 
   public lineChartOptions: ChartOptions<'line'> = {
     responsive: true,
+    maintainAspectRatio: true,
     scales: {
-      // Hier müssen die IDs stehen, die getYAxisId() liefert!
       yTemp: {
         type: 'linear',
         display: true,
         position: 'left',
-        title: { display: true, text: 'Temperatur (°C)' }
+        title: {display: true, text: 'Temperatur (°C)'}
+      },
+      yDefault: {
+        type: 'linear',
+        display: true,
+        position: 'left'
       }
+    },
+    plugins: {
+      legend: {display: true}
     }
   };
 
@@ -53,37 +53,44 @@ export class GraphChartComponent implements OnInit {
 
   ngOnInit() {
     this.graphViewService.getGraphData('indoortemperature').subscribe(graphView => {
-      console.log('API Response:', graphView.items);
-      if (graphView.items.length === 0) {
-        console.log('Exit');
+      if (!graphView || !graphView.items || graphView.items.length === 0) {
+        console.warn('No data received');
         return;
       }
 
       this.lineChartData = {
-        labels: graphView.items.map(item => item.timestamp),
+        labels: graphView.items.map(item => {
+          // Optional: Hier den ISO-String kürzen für bessere Lesbarkeit
+          // Beispiel: "2026-02-06T21:00:00" -> "21:00"
+          const date = new Date(item.time);
+          return date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+        }),
         datasets: [
           {
-            label: graphView.nameWithUnit,
+            label: graphView.nameWithUnit || 'Temperatur',
             data: graphView.items.map(item => item.value),
             borderColor: '#ff6384',
             backgroundColor: 'rgba(255, 99, 132, 0.2)',
             yAxisID: this.getYAxisId(graphView.nameWithUnit),
-            tension: 0.3
+            fill: false,
+            tension: 0.3,
+            pointRadius: 2
           }
         ]
       };
 
-      // WICHTIG: Falls der Chart sich nicht automatisch aktualisiert
-      setTimeout(() => this.chart?.update(), 50);
-      this.chart?.update();
+      setTimeout(() => {
+        if (this.chart) {
+          this.chart.update();
+        }
+      }, 0);
     });
   }
 
-// Hilfsmethode für die Achsen-Zuordnung
   private getYAxisId(name: string): string {
-    if (name.includes('°C')) return 'yTemp';
-    if (name.includes('%')) return 'yHumidity';
-    if (name.includes('hPa')) return 'yPressure';
+    if (name && name.includes('°C')) {
+      return 'yTemp';
+    }
     return 'yDefault';
   }
 }

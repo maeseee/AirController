@@ -1,4 +1,4 @@
 export interface GraphItem {
-  timestamp: string; // ISO String
+  time: string; // ISO String
   value: number;
 }
