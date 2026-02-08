@@ -1,6 +1,6 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, effect, input, OnInit, ViewChild} from '@angular/core';
 import {Chart, ChartConfiguration, ChartOptions, registerables} from 'chart.js';
-import {GraphViewService} from '../../services/graphView/GraphViewService';
+import {GraphViewService, MetricType} from '../../services/graphView/GraphViewService';
 import {BaseChartDirective} from 'ng2-charts';
 
 @Component({
@@ -18,6 +18,7 @@ import {BaseChartDirective} from 'ng2-charts';
   `
 })
 export class GraphChartComponent implements OnInit {
+  metric = input.required<MetricType>();
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
@@ -43,10 +44,13 @@ export class GraphChartComponent implements OnInit {
 
   constructor(private graphViewService: GraphViewService) {
     Chart.register(...registerables);
+    effect(() => {
+      this.loadData(this.metric());
+    });
   }
 
   ngOnInit() {
-    this.graphViewService.getGraphData('indoortemperature').subscribe(graphView => {
+    this.graphViewService.getGraphData(this.metric()).subscribe(graphView => {
       if (!graphView || !graphView.items || graphView.items.length === 0) {
         console.warn('No data received');
         return;
@@ -78,6 +82,12 @@ export class GraphChartComponent implements OnInit {
           this.chart.update();
         }
       }, 0);
+    });
+  }
+
+  private loadData(metric: MetricType) {
+    this.graphViewService.getGraphData(metric).subscribe(() => {
+      this.chart?.update();
     });
   }
 }

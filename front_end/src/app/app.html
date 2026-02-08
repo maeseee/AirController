@@ -23,9 +23,9 @@
         <p>Keine Karten in dieser Gruppe gefunden.</p>
       }
     </section>
-    @if (indoorGraphProfile()) {
+    @if (indoorGraphProfile(); as metric) {
       <div class="profile-section">
-        <graph-chart-component></graph-chart-component>
+        <graph-chart-component [metric]="metric"></graph-chart-component>
       </div>
     }
 

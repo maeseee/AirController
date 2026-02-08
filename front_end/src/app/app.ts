@@ -7,7 +7,7 @@ import {freshAirStatus} from './services/system-status/fresh-air-status';
 import {MetricCardComponent} from './components/card/metric-card';
 import {CardViewService} from './services/cardView/CardViewService';
 import {GraphChartComponent} from './components/graph/graph';
-import {GraphViewService} from './services/graphView/GraphViewService';
+import {GraphViewService, MetricType, VALID_METRICS} from './services/graphView/GraphViewService';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +23,7 @@ export class App {
 
   private refresh$ = new BehaviorSubject<void>(void 0);
 
-  indoorGraphProfile = signal<string | null>(null);
+  indoorGraphProfile = signal<MetricType | null>(null);
 
   private data$ = this.refresh$.pipe(
     switchMap(() => forkJoin({
@@ -32,7 +32,7 @@ export class App {
       outdoorCardViews: this.cardViewService.getCardViews('outdoor'),
       confidenceCardViews: this.cardViewService.getCardViews('confidence'),
       statisticsCardViews: this.cardViewService.getCardViews('statistics'),
-      temperatureGraphView: this.graphViewService.getGraphData('indoortemperature')
+      temperatureGraphView: this.graphViewService.getGraphData('temperature')
     })),
     catchError(err => {
       console.error('Batch update failed', err);
@@ -41,15 +41,20 @@ export class App {
   );
 
   viewModel = toSignal(this.data$, {initialValue: null});
+
   refresh() {
     this.refresh$.next();
   }
 
   setIndoorGraphProfile(profile: string) {
-    if (this.indoorGraphProfile() === profile) {
+    const profileString = profile.toLowerCase() as any;
+    if (!VALID_METRICS.includes(profileString)) {
+      console.error(`${profile} is not a valid metric!`);
+    }
+    if (this.indoorGraphProfile() === profileString) {
       this.indoorGraphProfile.set(null);
     } else {
-      this.indoorGraphProfile.set(profile);
+      this.indoorGraphProfile.set(profileString);
     }
     this.refresh();
   }
