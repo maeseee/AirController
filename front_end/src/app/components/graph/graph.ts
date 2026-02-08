@@ -61,7 +61,7 @@ export class GraphChartComponent implements OnInit {
         }),
         datasets: [
           {
-            label: graphView.nameWithUnit || 'Temperatur',
+            label: graphView.nameWithUnit || 'Temperature',
             data: graphView.items.map(item => item.value),
             borderColor: '#ff6384',
             backgroundColor: 'rgba(255, 99, 132, 0.2)',

@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {BehaviorSubject, catchError, forkJoin, of, switchMap} from 'rxjs';
@@ -23,6 +23,8 @@ export class App {
 
   private refresh$ = new BehaviorSubject<void>(void 0);
 
+  indoorGraphProfile = signal<string | null>(null);
+
   private data$ = this.refresh$.pipe(
     switchMap(() => forkJoin({
       status: this.airService.getStatus().pipe(catchError(() => of('ERROR'))),
@@ -41,5 +43,14 @@ export class App {
   viewModel = toSignal(this.data$, {initialValue: null});
   refresh() {
     this.refresh$.next();
+  }
+
+  setIndoorGraphProfile(profile: string) {
+    if (this.indoorGraphProfile() === profile) {
+      this.indoorGraphProfile.set(null);
+    } else {
+      this.indoorGraphProfile.set(profile);
+    }
+    this.refresh();
   }
 }

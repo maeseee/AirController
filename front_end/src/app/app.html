@@ -13,11 +13,22 @@
     <div>{{ data.indoorCardViews.info }}</div>
     <section class="card-grid">
       @for (card of data.indoorCardViews.cards; track card.name) {
-        <app-metric-card [label]="card.name" [value]="card.value" [unit]="card.unit" />
+        <app-metric-card
+          [label]="card.name"
+          [value]="card.value"
+          [unit]="card.unit"
+          (click)="setIndoorGraphProfile(card.name)"
+        />
       } @empty {
         <p>Keine Karten in dieser Gruppe gefunden.</p>
       }
     </section>
+    @if (indoorGraphProfile()) {
+      <div class="profile-section">
+        <h4>Temperature profile</h4>
+        <graph-chart-component></graph-chart-component>
+      </div>
+    }
 
     <h3>Outdoor Sensors</h3>
     <div>{{ data.outdoorCardViews.info }}</div>
@@ -53,9 +64,6 @@
       <p>Fetching climate data... Please wait.</p>
     </div>
   }
-
-  <h3>Hier kommt meine Grafikkomponente</h3>
-  <graph-chart-component></graph-chart-component>
 
   <button class="refresh-btn" (click)="refresh()">Update Status</button>
 </div>
