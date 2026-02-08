@@ -27,8 +27,27 @@ public class SystemController {
     }
 
     @GetMapping("/graph/indoortemperature")
+    @Deprecated
+    public ResponseEntity<GraphView> getIndoorTemperatureGraphOld() {
+        final GraphView graph = service.getIndoorTemperatureGraph();
+        return generateResponse(graph);
+    }
+
+    @GetMapping("/graph/indoor/temperature")
     public ResponseEntity<GraphView> getIndoorTemperatureGraph() {
         final GraphView graph = service.getIndoorTemperatureGraph();
+        return generateResponse(graph);
+    }
+
+    @GetMapping("/graph/indoor/humidity")
+    public ResponseEntity<GraphView> getIndoorHumidityGraph() {
+        final GraphView graph = service.getIndoorHumidityGraph();
+        return generateResponse(graph);
+    }
+
+    @GetMapping("/graph/indoor/co2")
+    public ResponseEntity<GraphView> getIndoorCarbonDioxidGraph() {
+        final GraphView graph = service.getIndoorCarbonDioxidGraph();
         return generateResponse(graph);
     }
 

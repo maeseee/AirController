@@ -1,6 +1,7 @@
 package org.air_controller.web_access;
 
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
+import org.air_controller.sensor_values.CarbonDioxide;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
@@ -35,5 +36,30 @@ public class AirControllerService {
                 ))
                 .toList();
         return new GraphView("Temperature (°C)", temperatureItems);
+    }
+
+    public GraphView getIndoorHumidityGraph() {
+        final List<ClimateDataPoint> dataPoints = indoorDataPointsAccessor.getDataPointsFromLast24Hours();
+        final List<GraphItem> humidityItems = dataPoints.stream()
+                .map(dataPoint -> new GraphItem(
+                        dataPoint.timestamp(),
+                        dataPoint.humidity().getRelativeHumidity(dataPoint.temperature())
+                ))
+                .toList();
+        return new GraphView("Humidity (%)", humidityItems);
+    }
+
+    public GraphView getIndoorCarbonDioxidGraph() {
+        final List<ClimateDataPoint> dataPoints = indoorDataPointsAccessor.getDataPointsFromLast24Hours();
+        final List<GraphItem> humidityItems = dataPoints.stream()
+                .filter(dataPoint -> dataPoint.co2().isPresent())
+                .map(dataPoint -> new GraphItem(
+                        dataPoint.timestamp(),
+                        dataPoint.co2()
+                                .map(CarbonDioxide::ppm)
+                                .orElseThrow()
+                ))
+                .toList();
+        return new GraphView("CO2 (ppm)", humidityItems);
     }
 }
