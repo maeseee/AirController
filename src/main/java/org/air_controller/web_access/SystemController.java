@@ -26,13 +26,6 @@ public class SystemController {
         return generateResponse(currentOutputState);
     }
 
-    @GetMapping("/graph/indoortemperature")
-    @Deprecated
-    public ResponseEntity<GraphView> getIndoorTemperatureGraphOld() {
-        final GraphView graph = service.getIndoorTemperatureGraph();
-        return generateResponse(graph);
-    }
-
     @GetMapping("/graph/indoor/temperature")
     public ResponseEntity<GraphView> getIndoorTemperatureGraph() {
         final GraphView graph = service.getIndoorTemperatureGraph();
