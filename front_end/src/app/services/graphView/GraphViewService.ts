@@ -15,7 +15,7 @@ export class GraphViewService {
   public location: 'indoor' | 'outdoor' = 'indoor';
 
   getGraphData(type: MetricType): Observable<GraphView> {
-    const url = `${this.BASE_URL}/${this.location}${type}`;
+    const url = `${this.BASE_URL}/${this.location}/${type}`;
     return this.http.get<GraphView>(url, {withCredentials: true});
   }
 }
