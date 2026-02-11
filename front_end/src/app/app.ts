@@ -1,7 +1,7 @@
 import {Component, inject, signal} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
-import {toSignal} from '@angular/core/rxjs-interop';
-import {BehaviorSubject, catchError, forkJoin, of, switchMap} from 'rxjs';
+import {toObservable, toSignal} from '@angular/core/rxjs-interop';
+import {BehaviorSubject, catchError, combineLatest, forkJoin, of, switchMap} from 'rxjs';
 
 import {freshAirStatus} from './services/system-status/fresh-air-status';
 import {MetricCardComponent} from './components/card/metric-card';
@@ -24,7 +24,10 @@ export class App {
 
   indoorGraphProfile = signal<MetricType | null>(null);
 
-  private data$ = this.refresh$.pipe(
+  private data$ = combineLatest([
+    this.refresh$,
+    toObservable(this.indoorGraphProfile)
+  ]).pipe(
     switchMap(() => forkJoin({
       status: this.airService.getStatus().pipe(catchError(() => of('ERROR'))),
       indoorCardViews: this.cardViewService.getCardViews('indoor'),
@@ -55,6 +58,5 @@ export class App {
     } else {
       this.indoorGraphProfile.set(profileString);
     }
-    this.refresh();
   }
 }
