@@ -26,7 +26,6 @@ class AirControllerServiceTest {
 
     @Test
     void shouldReturnTemperatureGraphView_whenAskedFor() throws InvalidArgumentException {
-        final ZonedDateTime time = ZonedDateTime.of(2026, 11, 2, 7, 0, 0, 0, ZoneOffset.UTC);
         final List<ClimateDataPoint> dataPoints = createClimateDataPoints();
         when(indoorDataPointsAccessor.getDataPointsFromLast24Hours()).thenReturn(dataPoints);
         final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor);

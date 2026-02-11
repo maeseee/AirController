@@ -9,9 +9,12 @@ import org.air_controller.web_access.graph.GraphItem;
 import org.air_controller.web_access.graph.GraphView;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 @Service
@@ -30,45 +33,33 @@ public class AirControllerService {
     }
 
     public GraphView getIndoorTemperatureGraph() {
-        final List<ClimateDataPoint> dataPoints = indoorDataPointsAccessor.getDataPointsFromLast24Hours();
-        final List<GraphItem> temperatureItems = dataPoints.stream()
-                .map(dataPoint -> new GraphItem(
-                        dataPoint.timestamp()
-                                .withZoneSameInstant(ZoneId.of("Europe/Berlin"))
-                                .toLocalDateTime(),
-                        dataPoint.temperature().celsius()
-                ))
-                .toList();
-        return new GraphView("Temperature (°C)", reduceNumberOfGraphItems(temperatureItems));
+        return createGraph("Temperature (°C)", dataPoint -> dataPoint.temperature().celsius());
     }
 
     public GraphView getIndoorHumidityGraph() {
-        final List<ClimateDataPoint> dataPoints = indoorDataPointsAccessor.getDataPointsFromLast24Hours();
-        final List<GraphItem> humidityItems = dataPoints.stream()
-                .map(dataPoint -> new GraphItem(
-                        dataPoint.timestamp()
-                                .withZoneSameInstant(ZoneId.of("Europe/Berlin"))
-                                .toLocalDateTime(),
-                        dataPoint.humidity().getRelativeHumidity(dataPoint.temperature())
-                ))
-                .toList();
-        return new GraphView("Humidity (%)", reduceNumberOfGraphItems(humidityItems));
+        return createGraph("Humidity (%)", dataPoint -> dataPoint.humidity().getRelativeHumidity(dataPoint.temperature()));
     }
 
     public GraphView getIndoorCarbonDioxidGraph() {
+        return createGraph("CO2 (ppm)", dataPoint -> dataPoint.co2().map(CarbonDioxide::ppm).orElse(null));
+    }
+
+    private GraphView createGraph(String title, Function<ClimateDataPoint, Double> valueExtractor) {
         final List<ClimateDataPoint> dataPoints = indoorDataPointsAccessor.getDataPointsFromLast24Hours();
-        final List<GraphItem> humidityItems = dataPoints.stream()
-                .filter(dataPoint -> dataPoint.co2().isPresent())
+        final List<GraphItem> items = dataPoints.stream()
+                .filter(dataPoint -> valueExtractor.apply(dataPoint) != null)
                 .map(dataPoint -> new GraphItem(
-                        dataPoint.timestamp()
-                                .withZoneSameInstant(ZoneId.of("Europe/Berlin"))
-                                .toLocalDateTime(),
-                        dataPoint.co2()
-                                .map(CarbonDioxide::ppm)
-                                .orElseThrow()
+                        toLocalDateTime(dataPoint.timestamp()),
+                        valueExtractor.apply(dataPoint)
                 ))
                 .toList();
-        return new GraphView("CO2 (ppm)", reduceNumberOfGraphItems(humidityItems));
+        return new GraphView(title, reduceNumberOfGraphItems(items));
+    }
+
+    private LocalDateTime toLocalDateTime(ZonedDateTime timestamp) {
+        return timestamp
+                .withZoneSameInstant(ZoneId.of("Europe/Berlin"))
+                .toLocalDateTime();
     }
 
     private List<GraphItem> reduceNumberOfGraphItems(List<GraphItem> graphItems) {
