@@ -9,6 +9,7 @@ import org.air_controller.web_access.graph.GraphItem;
 import org.air_controller.web_access.graph.GraphView;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -32,7 +33,9 @@ public class AirControllerService {
         final List<ClimateDataPoint> dataPoints = indoorDataPointsAccessor.getDataPointsFromLast24Hours();
         final List<GraphItem> temperatureItems = dataPoints.stream()
                 .map(dataPoint -> new GraphItem(
-                        dataPoint.timestamp(),
+                        dataPoint.timestamp()
+                                .withZoneSameInstant(ZoneId.of("Europe/Berlin"))
+                                .toLocalDateTime(),
                         dataPoint.temperature().celsius()
                 ))
                 .toList();
@@ -43,7 +46,9 @@ public class AirControllerService {
         final List<ClimateDataPoint> dataPoints = indoorDataPointsAccessor.getDataPointsFromLast24Hours();
         final List<GraphItem> humidityItems = dataPoints.stream()
                 .map(dataPoint -> new GraphItem(
-                        dataPoint.timestamp(),
+                        dataPoint.timestamp()
+                                .withZoneSameInstant(ZoneId.of("Europe/Berlin"))
+                                .toLocalDateTime(),
                         dataPoint.humidity().getRelativeHumidity(dataPoint.temperature())
                 ))
                 .toList();
@@ -55,7 +60,9 @@ public class AirControllerService {
         final List<GraphItem> humidityItems = dataPoints.stream()
                 .filter(dataPoint -> dataPoint.co2().isPresent())
                 .map(dataPoint -> new GraphItem(
-                        dataPoint.timestamp(),
+                        dataPoint.timestamp()
+                                .withZoneSameInstant(ZoneId.of("Europe/Berlin"))
+                                .toLocalDateTime(),
                         dataPoint.co2()
                                 .map(CarbonDioxide::ppm)
                                 .orElseThrow()
