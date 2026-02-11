@@ -7,7 +7,7 @@ import {freshAirStatus} from './services/system-status/fresh-air-status';
 import {MetricCardComponent} from './components/card/metric-card';
 import {CardViewService} from './services/cardView/CardViewService';
 import {GraphChartComponent} from './components/graph/graph';
-import {GraphViewService, MetricType, VALID_METRICS} from './services/graphView/GraphViewService';
+import {MetricType, VALID_METRICS} from './services/graphView/GraphViewService';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +19,6 @@ import {GraphViewService, MetricType, VALID_METRICS} from './services/graphView/
 export class App {
   private airService = inject(freshAirStatus);
   private cardViewService = inject(CardViewService);
-  private graphViewService = inject(GraphViewService);
 
   private refresh$ = new BehaviorSubject<void>(void 0);
 
@@ -35,7 +34,7 @@ export class App {
     })),
     catchError(err => {
       console.error('Batch update failed', err);
-      return of(null); // Return null on total failure
+      return of(null);
     })
   );
 
@@ -49,6 +48,7 @@ export class App {
     const profileString = profile.toLowerCase() as any;
     if (!VALID_METRICS.includes(profileString)) {
       console.error(`${profile} is not a valid metric!`);
+      return;
     }
     if (this.indoorGraphProfile() === profileString) {
       this.indoorGraphProfile.set(null);
