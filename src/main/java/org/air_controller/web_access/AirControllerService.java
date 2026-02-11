@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 @Service
 public class AirControllerService {
@@ -35,7 +36,7 @@ public class AirControllerService {
                         dataPoint.temperature().celsius()
                 ))
                 .toList();
-        return new GraphView("Temperature (°C)", temperatureItems);
+        return new GraphView("Temperature (°C)", reduceNumberOfGraphItems(temperatureItems));
     }
 
     public GraphView getIndoorHumidityGraph() {
@@ -46,7 +47,7 @@ public class AirControllerService {
                         dataPoint.humidity().getRelativeHumidity(dataPoint.temperature())
                 ))
                 .toList();
-        return new GraphView("Humidity (%)", humidityItems);
+        return new GraphView("Humidity (%)", reduceNumberOfGraphItems(humidityItems));
     }
 
     public GraphView getIndoorCarbonDioxidGraph() {
@@ -60,6 +61,19 @@ public class AirControllerService {
                                 .orElseThrow()
                 ))
                 .toList();
-        return new GraphView("CO2 (ppm)", humidityItems);
+        return new GraphView("CO2 (ppm)", reduceNumberOfGraphItems(humidityItems));
+    }
+
+    private List<GraphItem> reduceNumberOfGraphItems(List<GraphItem> graphItems) {
+        final int MAX_NUMBER_OF_ITEMS = 200;
+        final int consistLastItem = graphItems.size() % 2;
+        List<GraphItem> keptItems = graphItems;
+        while (graphItems.size() > MAX_NUMBER_OF_ITEMS) {
+            keptItems = IntStream.range(0, graphItems.size())
+                    .filter(i -> (i + consistLastItem) % 2 == 0)
+                    .mapToObj(graphItems::get)
+                    .toList();
+        }
+        return keptItems;
     }
 }
