@@ -33,18 +33,18 @@ public class AirControllerService {
     }
 
     public GraphView getIndoorTemperatureGraph() {
-        return createGraph("Temperature (°C)", dataPoint -> dataPoint.temperature().celsius());
+        return createIndoorGraph("Temperature (°C)", dataPoint -> dataPoint.temperature().celsius());
     }
 
     public GraphView getIndoorHumidityGraph() {
-        return createGraph("Humidity (%)", dataPoint -> dataPoint.humidity().getRelativeHumidity(dataPoint.temperature()));
+        return createIndoorGraph("Humidity (%)", dataPoint -> dataPoint.humidity().getRelativeHumidity(dataPoint.temperature()));
     }
 
     public GraphView getIndoorCarbonDioxidGraph() {
-        return createGraph("CO2 (ppm)", dataPoint -> dataPoint.co2().map(CarbonDioxide::ppm).orElse(null));
+        return createIndoorGraph("CO2 (ppm)", dataPoint -> dataPoint.co2().map(CarbonDioxide::ppm).orElse(null));
     }
 
-    private GraphView createGraph(String title, Function<ClimateDataPoint, Double> valueExtractor) {
+    private GraphView createIndoorGraph(String title, Function<ClimateDataPoint, Double> valueExtractor) {
         final List<ClimateDataPoint> dataPoints = indoorDataPointsAccessor.getDataPointsFromLast24Hours();
         final List<GraphItem> items = dataPoints.stream()
                 .filter(dataPoint -> valueExtractor.apply(dataPoint) != null)
