@@ -20,7 +20,7 @@ public record Humidity(double absoluteHumidity) {
 
     public CardItem toCardItem(Temperature temperature) {
         final double relativeHumidity = getRelativeHumidity(temperature);
-        return new CardItem("Humidity", String.format("%.1f", relativeHumidity), "%");
+        return new CardItem(MeasuredValue.HUMIDITY.name(), String.format("%.1f", relativeHumidity), "%");
     }
 
     public static Humidity createFromRelative(double relativeHumidity, Temperature temperature) throws InvalidArgumentException {

@@ -6,8 +6,8 @@ import {BehaviorSubject, catchError, combineLatest, forkJoin, of, switchMap} fro
 import {freshAirStatus} from './services/system-status/fresh-air-status';
 import {MetricCardComponent} from './components/card/metric-card';
 import {CardViewService} from './services/cardView/CardViewService';
-import {MetricType, VALID_METRICS} from './services/graphView/GraphViewService';
 import {GraphChartComponent} from './components/graph/graph';
+import {MeasuredValue} from './components/graph/MeasuredValue';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +22,7 @@ export class App {
 
   private refresh$ = new BehaviorSubject<void>(void 0);
 
-  indoorGraphProfile = signal<MetricType | null>(null);
+  indoorGraphProfile = signal<MeasuredValue | null>(null);
 
   private data$ = combineLatest([
     this.refresh$,
@@ -48,15 +48,12 @@ export class App {
   }
 
   setIndoorGraphProfile(profile: string) {
-    const profileString = profile.toLowerCase() as any;
-    if (!VALID_METRICS.includes(profileString)) {
-      console.error(`${profile} is not a valid metric!`);
-      return;
-    }
-    if (this.indoorGraphProfile() === profileString) {
+    const profileString = profile.toUpperCase() as any;
+    const value = (MeasuredValue as any)[profileString] as MeasuredValue;
+    if (this.indoorGraphProfile() === value) {
       this.indoorGraphProfile.set(null);
     } else {
-      this.indoorGraphProfile.set(profileString);
+      this.indoorGraphProfile.set(value);
     }
   }
 }

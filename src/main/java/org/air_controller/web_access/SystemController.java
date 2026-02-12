@@ -1,5 +1,6 @@
 package org.air_controller.web_access;
 
+import org.air_controller.sensor_values.MeasuredValue;
 import org.air_controller.system.OutputState;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.web_access.graph.GraphView;
@@ -36,12 +37,14 @@ public class SystemController {
     }
 
     @GetMapping("/graph/indoor/humidity")
+    @Deprecated
     public ResponseEntity<GraphView> getIndoorHumidityGraph() {
         final GraphView graph = service.getIndoorHumidityGraph();
         return generateResponse(graph);
     }
 
     @GetMapping("/graph/indoor/co2")
+    @Deprecated
     public ResponseEntity<GraphView> getIndoorCarbonDioxidGraph() {
         final GraphView graph = service.getIndoorCarbonDioxidGraph();
         return generateResponse(graph);

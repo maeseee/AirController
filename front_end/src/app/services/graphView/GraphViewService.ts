@@ -2,9 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {GraphView} from './GraphView';
-
-export type MetricType = (typeof VALID_METRICS)[number];
-export const VALID_METRICS = ['temperature', 'humidity', 'co2'] as const;
+import {MeasuredValue} from '../../components/graph/MeasuredValue';
 
 @Injectable({
   providedIn: 'root',
@@ -14,8 +12,8 @@ export class GraphViewService {
   private readonly BASE_URL = 'http://192.168.50.12:9090/graph';
   public location: 'indoor' | 'outdoor' = 'indoor';
 
-  getGraphData(type: MetricType): Observable<GraphView> {
-    const url = `${this.BASE_URL}/${this.location}/${type}`;
+  getGraphData(measuredValue: MeasuredValue, hours: number): Observable<GraphView> {
+    const url = `${this.BASE_URL}/${this.location}/${measuredValue}/${hours}`;
     return this.http.get<GraphView>(url, {withCredentials: true});
   }
 }

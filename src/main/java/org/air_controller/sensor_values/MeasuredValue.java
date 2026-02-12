@@ -1,8 +1,6 @@
-package org.air_controller.web_access;
+package org.air_controller.sensor_values;
 
 import lombok.Getter;
-import org.air_controller.sensor_values.CarbonDioxide;
-import org.air_controller.sensor_values.ClimateDataPoint;
 
 import java.util.function.Function;
 

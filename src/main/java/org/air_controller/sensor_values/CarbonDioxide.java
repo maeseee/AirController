@@ -10,7 +10,7 @@ public record CarbonDioxide(double ppm) {
     }
 
     public CardItem toCardItem() {
-        return new CardItem("CO2", ppmString(), "ppm");
+        return new CardItem(MeasuredValue.CO2.name(), ppmString(), "ppm");
     }
 
     private @NotNull String ppmString() {

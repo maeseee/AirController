@@ -25,7 +25,7 @@
     </section>
     @if (indoorGraphProfile(); as metric) {
       <div class="profile-section">
-        <graph-chart-component [metric]="metric"></graph-chart-component>
+        <graph-chart-component [measuredValueInput]="metric"></graph-chart-component>
       </div>
     }
 

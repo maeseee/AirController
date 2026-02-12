@@ -3,6 +3,7 @@ package org.air_controller.web_access;
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.air_controller.sensor_values.CarbonDioxide;
 import org.air_controller.sensor_values.ClimateDataPoint;
+import org.air_controller.sensor_values.MeasuredValue;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.web_access.graph.GraphItem;
@@ -38,10 +39,12 @@ public class AirControllerService {
         return createIndoorGraph("Temperature (°C)", dataPoint -> dataPoint.temperature().celsius());
     }
 
+    @Deprecated
     public GraphView getIndoorHumidityGraph() {
         return createIndoorGraph("Humidity (%)", dataPoint -> dataPoint.humidity().getRelativeHumidity(dataPoint.temperature()));
     }
 
+    @Deprecated
     public GraphView getIndoorCarbonDioxidGraph() {
         return createIndoorGraph("CO2 (ppm)", dataPoint -> dataPoint.co2().map(CarbonDioxide::ppm).orElse(null));
     }

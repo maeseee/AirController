@@ -1,7 +1,8 @@
 import {Component, effect, input, ViewChild} from '@angular/core';
 import {Chart, ChartConfiguration, ChartOptions, registerables} from 'chart.js';
-import {GraphViewService, MetricType} from '../../services/graphView/GraphViewService';
+import {GraphViewService} from '../../services/graphView/GraphViewService';
 import {BaseChartDirective} from 'ng2-charts';
+import {MeasuredValue} from './MeasuredValue';
 
 @Component({
   selector: 'graph-chart-component',
@@ -18,7 +19,7 @@ import {BaseChartDirective} from 'ng2-charts';
   `
 })
 export class GraphChartComponent {
-  metric = input.required<MetricType>();
+  measuredValueInput = input.required<MeasuredValue>();
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
   public lineChartData: ChartConfiguration<'line'>['data'] = {
@@ -45,15 +46,15 @@ export class GraphChartComponent {
   constructor(private graphViewService: GraphViewService) {
     Chart.register(...registerables);
     effect(() => {
-      const currentMetric = this.metric();
-      if (currentMetric) {
-        this.loadData(currentMetric);
+      const currentMeasuredValue = this.measuredValueInput();
+      if (currentMeasuredValue) {
+        this.loadData(currentMeasuredValue, 24);
       }
     });
   }
 
-  private loadData(metric: MetricType) {
-    this.graphViewService.getGraphData(metric).subscribe(graphView => {
+  private loadData(measuredValue: MeasuredValue, hours: number) {
+    this.graphViewService.getGraphData(measuredValue, hours).subscribe(graphView => {
       if (!graphView?.items?.length) {
         console.warn('No data received');
         return;

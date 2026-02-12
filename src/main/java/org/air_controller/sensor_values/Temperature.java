@@ -15,7 +15,7 @@ public record Temperature(double celsius) {
     }
 
     public CardItem toCardItem() {
-        return new CardItem("Temperature", celsiusString(), "°C");
+        return new CardItem(MeasuredValue.TEMPERATURE.name(), celsiusString(), "°C");
     }
 
     private String celsiusString() {
