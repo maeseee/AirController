@@ -1,4 +1,4 @@
-import {Component, effect, input, OnInit, ViewChild} from '@angular/core';
+import {Component, effect, input, ViewChild} from '@angular/core';
 import {Chart, ChartConfiguration, ChartOptions, registerables} from 'chart.js';
 import {GraphViewService, MetricType} from '../../services/graphView/GraphViewService';
 import {BaseChartDirective} from 'ng2-charts';
@@ -17,9 +17,8 @@ import {BaseChartDirective} from 'ng2-charts';
     </div>
   `
 })
-export class GraphChartComponent implements OnInit {
+export class GraphChartComponent {
   metric = input.required<MetricType>();
-
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
   public lineChartData: ChartConfiguration<'line'>['data'] = {
@@ -31,10 +30,10 @@ export class GraphChartComponent implements OnInit {
     responsive: true,
     maintainAspectRatio: true,
     scales: {
-      yAxisConfig: {
+      y: {
         type: 'linear',
         display: true,
-        position: 'left',
+        position: 'left'
       }
     },
     plugins: {
@@ -45,48 +44,34 @@ export class GraphChartComponent implements OnInit {
   constructor(private graphViewService: GraphViewService) {
     Chart.register(...registerables);
     effect(() => {
-      this.loadData(this.metric());
+      const currentMetric = this.metric();
+      if (currentMetric) {
+        this.loadData(currentMetric);
+      }
     });
   }
 
-  ngOnInit() {
-    this.graphViewService.getGraphData(this.metric()).subscribe(graphView => {
-      if (!graphView || !graphView.items || graphView.items.length === 0) {
+  private loadData(metric: MetricType) {
+    this.graphViewService.getGraphData(metric).subscribe(graphView => {
+      if (!graphView?.items?.length) {
         console.warn('No data received');
         return;
       }
 
       this.lineChartData = {
-        labels: graphView.items.map(item => {
-          // Optional: Hier den ISO-String kürzen für bessere Lesbarkeit
-          // Beispiel: "2026-02-06T21:00:00" -> "21:00"
-          const date = new Date(item.time);
-          return date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
-        }),
-        datasets: [
-          {
-            label: graphView.nameWithUnit || 'Temperature',
-            data: graphView.items.map(item => item.value),
-            borderColor: '#ff6384',
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            yAxisID: 'yAxisConfig',
-            fill: false,
-            tension: 0.3,
-            pointRadius: 2
-          }
-        ]
+        labels: graphView.items.map(item =>
+          new Date(item.time).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
+        ),
+        datasets: [{
+          label: graphView.nameWithUnit || 'Measurement',
+          data: graphView.items.map(item => item.value),
+          borderColor: '#ff6384',
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          tension: 0.3,
+          pointRadius: 2
+        }]
       };
 
-      setTimeout(() => {
-        if (this.chart) {
-          this.chart.update();
-        }
-      }, 0);
-    });
-  }
-
-  private loadData(metric: MetricType) {
-    this.graphViewService.getGraphData(metric).subscribe(() => {
       this.chart?.update();
     });
   }
