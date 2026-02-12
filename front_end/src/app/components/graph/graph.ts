@@ -29,6 +29,7 @@ export class GraphChartComponent {
   public lineChartOptions: ChartOptions<'line'> = {
     responsive: true,
     maintainAspectRatio: true,
+    locale: 'de-CH',
     scales: {
       y: {
         type: 'linear',
