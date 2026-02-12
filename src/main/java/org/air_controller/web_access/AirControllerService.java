@@ -9,6 +9,7 @@ import org.air_controller.web_access.graph.GraphItem;
 import org.air_controller.web_access.graph.GraphView;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -45,7 +46,7 @@ public class AirControllerService {
     }
 
     private GraphView createIndoorGraph(String title, Function<ClimateDataPoint, Double> valueExtractor) {
-        final List<ClimateDataPoint> dataPoints = indoorDataPointsAccessor.getDataPointsFromLast24Hours();
+        final List<ClimateDataPoint> dataPoints = indoorDataPointsAccessor.getDataPoints(Duration.ofHours(24));
         final List<GraphItem> items = dataPoints.stream()
                 .filter(dataPoint -> valueExtractor.apply(dataPoint) != null)
                 .map(dataPoint -> new GraphItem(

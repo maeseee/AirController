@@ -15,6 +15,7 @@ import java.time.*;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,7 +28,7 @@ class AirControllerServiceTest {
     @Test
     void shouldReturnTemperatureGraphView_whenAskedFor() throws InvalidArgumentException {
         final List<ClimateDataPoint> dataPoints = createClimateDataPoints();
-        when(indoorDataPointsAccessor.getDataPointsFromLast24Hours()).thenReturn(dataPoints);
+        when(indoorDataPointsAccessor.getDataPoints(any())).thenReturn(dataPoints);
         final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor);
 
         final GraphView graphView = testee.getIndoorTemperatureGraph();

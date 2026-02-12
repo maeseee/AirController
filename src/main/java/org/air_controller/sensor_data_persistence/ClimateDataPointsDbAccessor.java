@@ -12,6 +12,7 @@ import org.air_controller.sensor_values.InvalidArgumentException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -59,10 +60,9 @@ public class ClimateDataPointsDbAccessor implements ClimateDataPointPersistence 
     }
 
     @Override
-    // TODO unittest
-    public List<ClimateDataPoint> getDataPointsFromLast24Hours() {
+    public List<ClimateDataPoint> getDataPoints(Duration duration) {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        final ZonedDateTime yesterday = now.minusHours(24);
+        final ZonedDateTime yesterday = now.minus(duration);
         final String sql =
                 "SELECT * FROM " + dataPointTableName + " i " +
                         "WHERE i.EVENT_TIME > ? " +
