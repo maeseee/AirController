@@ -33,6 +33,7 @@ public class AirControllerService {
         return airFlowDbAccessor.getMostCurrentSystemAction();
     }
 
+    @Deprecated
     public GraphView getIndoorTemperatureGraph() {
         return createIndoorGraph("Temperature (°C)", dataPoint -> dataPoint.temperature().celsius());
     }
@@ -45,8 +46,16 @@ public class AirControllerService {
         return createIndoorGraph("CO2 (ppm)", dataPoint -> dataPoint.co2().map(CarbonDioxide::ppm).orElse(null));
     }
 
+    public GraphView getIndoorGraphOfMeasuredValue(MeasuredValue measuredValue, Duration duration) {
+        return createIndoorGraph(duration, measuredValue.getNameWithUnit(), measuredValue.getValueExtractor());
+    }
+
     private GraphView createIndoorGraph(String title, Function<ClimateDataPoint, Double> valueExtractor) {
-        final List<ClimateDataPoint> dataPoints = indoorDataPointsAccessor.getDataPoints(Duration.ofHours(24));
+        return createIndoorGraph(Duration.ofHours(24), title, valueExtractor);
+    }
+
+    private GraphView createIndoorGraph(Duration duration, String title, Function<ClimateDataPoint, Double> valueExtractor) {
+        final List<ClimateDataPoint> dataPoints = indoorDataPointsAccessor.getDataPoints(duration);
         final List<GraphItem> items = dataPoints.stream()
                 .filter(dataPoint -> valueExtractor.apply(dataPoint) != null)
                 .map(dataPoint -> new GraphItem(

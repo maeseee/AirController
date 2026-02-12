@@ -6,8 +6,10 @@ import org.air_controller.web_access.graph.GraphView;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Duration;
 import java.util.Optional;
 
 @RestController
@@ -27,6 +29,7 @@ public class SystemController {
     }
 
     @GetMapping("/graph/indoor/temperature")
+    @Deprecated
     public ResponseEntity<GraphView> getIndoorTemperatureGraph() {
         final GraphView graph = service.getIndoorTemperatureGraph();
         return generateResponse(graph);
@@ -41,6 +44,13 @@ public class SystemController {
     @GetMapping("/graph/indoor/co2")
     public ResponseEntity<GraphView> getIndoorCarbonDioxidGraph() {
         final GraphView graph = service.getIndoorCarbonDioxidGraph();
+        return generateResponse(graph);
+    }
+
+    @GetMapping("/graph/indoor/{measuredValue}/{hours}")
+    public ResponseEntity<GraphView> getIndoorTemperatureGraph(@PathVariable MeasuredValue measuredValue, @PathVariable int hours) {
+        final Duration duration = Duration.ofHours(hours);
+        final GraphView graph = service.getIndoorGraphOfMeasuredValue(measuredValue, duration);
         return generateResponse(graph);
     }
 
