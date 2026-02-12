@@ -32,7 +32,7 @@ class AirControllerServiceTest {
 
         final GraphView graphView = testee.getIndoorTemperatureGraph();
 
-        assertThat(graphView.nameWithUnit()).isEqualTo("Temperature (\u00B0C)");
+        assertThat(graphView.nameWithUnit()).isEqualTo("Temperature (°C)");
         assertThat(graphView.items()).hasSize(2);
         assertThat(graphView.items().get(0).value()).isEqualTo(20.0);
         assertThat(graphView.items().get(0).time()).isEqualTo(LocalDateTime.of(2026, 11, 2, 6 + timeDifferenceToUtc(), 0, 0));

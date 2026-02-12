@@ -6,8 +6,8 @@ import {BehaviorSubject, catchError, combineLatest, forkJoin, of, switchMap} fro
 import {freshAirStatus} from './services/system-status/fresh-air-status';
 import {MetricCardComponent} from './components/card/metric-card';
 import {CardViewService} from './services/cardView/CardViewService';
-import {GraphChartComponent} from './components/graph/graph';
 import {MetricType, VALID_METRICS} from './services/graphView/GraphViewService';
+import {GraphChartComponent} from './components/graph/graph';
 
 @Component({
   selector: 'app-root',

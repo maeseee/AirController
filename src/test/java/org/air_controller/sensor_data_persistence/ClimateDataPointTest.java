@@ -111,7 +111,7 @@ class ClimateDataPointTest {
 
         final String dataPointString = dataPoint.toString();
 
-        final String expectedString = "ClimateDataPoint{Temperature=12.3\u00B0C, Humidity=45.6%, CO2=789ppm" + "}";
+        final String expectedString = "ClimateDataPoint{Temperature=12.3°C, Humidity=45.6%, CO2=789ppm" + "}";
         assertThat(dataPointString).isEqualTo(expectedString);
     }
 
@@ -126,7 +126,7 @@ class ClimateDataPointTest {
 
         final String dataPointString = dataPoint.toString();
 
-        final String expectedString = "ClimateDataPoint{Temperature=12.3\u00B0C, Humidity=45.6%" + "}";
+        final String expectedString = "ClimateDataPoint{Temperature=12.3°C, Humidity=45.6%" + "}";
         assertThat(dataPointString).isEqualTo(expectedString);
     }
 }
