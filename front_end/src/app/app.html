@@ -120,12 +120,17 @@
     color: #880000;
   }
 
-  /* Card Grid */
   .card-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 12px;
     margin-bottom: 24px;
+  }
+
+  app-metric-card {
+    flex: 0 1 calc(33.333% - 12px);
+    min-width: 120px;
   }
 
   .confidence-box h3 {
@@ -134,7 +139,6 @@
     color: #475569;
   }
 
-  /* Button Styling */
   .refresh-btn {
     width: 100%;
     padding: 14px;
