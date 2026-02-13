@@ -1,4 +1,4 @@
-import {Component, effect, input, ViewChild} from '@angular/core';
+import {Component, effect, input, signal, ViewChild} from '@angular/core';
 import {Chart, ChartConfiguration, ChartOptions, registerables} from 'chart.js';
 import {GraphViewService} from '../../services/graphView/GraphViewService';
 import {BaseChartDirective} from 'ng2-charts';
@@ -9,7 +9,17 @@ import {MeasuredValue} from './MeasuredValue';
   standalone: true,
   imports: [BaseChartDirective],
   template: `
-    <div style="display: block; height: 100%; width: 100%;">
+    <div class="controls">
+      <label>Timeframe: </label>
+      <select (change)="updateHours($event)">
+        <option value="6">6 Hours</option>
+        <option value="12">12 Hours</option>
+        <option value="24" selected>24 Hours</option>
+        <option value="48">48 Hours</option>
+      </select>
+    </div>
+
+    <div style="display: block; height: 300px; width: 100%;">
       <canvas baseChart
               [data]="lineChartData"
               [options]="lineChartOptions"
@@ -20,6 +30,8 @@ import {MeasuredValue} from './MeasuredValue';
 })
 export class GraphChartComponent {
   measuredValueInput = input.required<MeasuredValue>();
+  selectedHours = signal<number>(24);
+
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
   public lineChartData: ChartConfiguration<'line'>['data'] = {
@@ -47,34 +59,47 @@ export class GraphChartComponent {
     Chart.register(...registerables);
     effect(() => {
       const currentMeasuredValue = this.measuredValueInput();
+      const hours = this.selectedHours();
       if (currentMeasuredValue) {
-        this.loadData(currentMeasuredValue, 24);
+        this.loadData(currentMeasuredValue, hours);
       }
     });
   }
 
+  updateHours(event: Event) {
+    const value = (event.target as HTMLSelectElement).value;
+    this.selectedHours.set(Number(value));
+  }
+
   private loadData(measuredValue: MeasuredValue, hours: number) {
     this.graphViewService.getGraphData(measuredValue, hours).subscribe(graphView => {
-      if (!graphView?.items?.length) {
+      if (!graphView?.items?.length || !this.chart?.chart) {
         console.warn('No data received');
         return;
       }
 
+      const labels = graphView.items.map(item =>
+        new Date(item.time).toLocaleTimeString('de-CH', {
+          day: '2-digit',
+          month: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit' })
+      );
+      const dataPoints = graphView.items.map(item => item.value);
+
       this.lineChartData = {
-        labels: graphView.items.map(item =>
-          new Date(item.time).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
-        ),
+        labels: labels,
         datasets: [{
+          ...this.lineChartData.datasets[0],
           label: graphView.nameWithUnit || 'Measurement',
-          data: graphView.items.map(item => item.value),
-          borderColor: '#ff6384',
-          backgroundColor: 'rgba(255, 99, 132, 0.2)',
-          tension: 0.3,
-          pointRadius: 2
+          data: dataPoints
         }]
       };
 
-      this.chart?.update();
+      const chartInstance = this.chart.chart;
+      chartInstance.data.labels = labels;
+      chartInstance.data.datasets[0].data = dataPoints;
+      chartInstance.update();
     });
   }
 }
