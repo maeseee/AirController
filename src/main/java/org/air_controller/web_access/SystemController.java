@@ -29,27 +29,6 @@ public class SystemController {
         return generateResponse(currentOutputState);
     }
 
-    @GetMapping("/graph/indoor/temperature")
-    @Deprecated
-    public ResponseEntity<GraphView> getIndoorTemperatureGraph() {
-        final GraphView graph = service.getIndoorTemperatureGraph();
-        return generateResponse(graph);
-    }
-
-    @GetMapping("/graph/indoor/humidity")
-    @Deprecated
-    public ResponseEntity<GraphView> getIndoorHumidityGraph() {
-        final GraphView graph = service.getIndoorHumidityGraph();
-        return generateResponse(graph);
-    }
-
-    @GetMapping("/graph/indoor/co2")
-    @Deprecated
-    public ResponseEntity<GraphView> getIndoorCarbonDioxidGraph() {
-        final GraphView graph = service.getIndoorCarbonDioxidGraph();
-        return generateResponse(graph);
-    }
-
     @GetMapping("/graph/indoor/{measuredValue}/{hours}")
     public ResponseEntity<GraphView> getIndoorTemperatureGraph(@PathVariable MeasuredValue measuredValue, @PathVariable int hours) {
         final Duration duration = Duration.ofHours(hours);

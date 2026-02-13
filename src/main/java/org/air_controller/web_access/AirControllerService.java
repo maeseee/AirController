@@ -1,7 +1,6 @@
 package org.air_controller.web_access;
 
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
-import org.air_controller.sensor_values.CarbonDioxide;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.MeasuredValue;
 import org.air_controller.system_action.SystemAction;
@@ -34,27 +33,8 @@ public class AirControllerService {
         return airFlowDbAccessor.getMostCurrentSystemAction();
     }
 
-    @Deprecated
-    public GraphView getIndoorTemperatureGraph() {
-        return createIndoorGraph("Temperature (°C)", dataPoint -> dataPoint.temperature().celsius());
-    }
-
-    @Deprecated
-    public GraphView getIndoorHumidityGraph() {
-        return createIndoorGraph("Humidity (%)", dataPoint -> dataPoint.humidity().getRelativeHumidity(dataPoint.temperature()));
-    }
-
-    @Deprecated
-    public GraphView getIndoorCarbonDioxidGraph() {
-        return createIndoorGraph("CO2 (ppm)", dataPoint -> dataPoint.co2().map(CarbonDioxide::ppm).orElse(null));
-    }
-
     public GraphView getIndoorGraphOfMeasuredValue(MeasuredValue measuredValue, Duration duration) {
         return createIndoorGraph(duration, measuredValue.getNameWithUnit(), measuredValue.getValueExtractor());
-    }
-
-    private GraphView createIndoorGraph(String title, Function<ClimateDataPoint, Double> valueExtractor) {
-        return createIndoorGraph(Duration.ofHours(24), title, valueExtractor);
     }
 
     private GraphView createIndoorGraph(Duration duration, String title, Function<ClimateDataPoint, Double> valueExtractor) {
