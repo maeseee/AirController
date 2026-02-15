@@ -26,6 +26,13 @@ public class SystemController {
         return generateResponse(graph);
     }
 
+    @GetMapping("/graph/outdoor/{measuredValue}/{hours}")
+    public ResponseEntity<GraphView> getOutdoorTemperatureGraph(@PathVariable MeasuredValue measuredValue, @PathVariable int hours) {
+        final Duration duration = Duration.ofHours(hours);
+        final GraphView graph = service.getOutdoorGraphOfMeasuredValues(measuredValue, duration);
+        return generateResponse(graph);
+    }
+
     private ResponseEntity<GraphView> generateResponse(GraphView graph) {
         if (graph.items().isEmpty()) {
             new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -21,20 +21,30 @@ public class AirControllerService {
     private static final int MAX_NUMBER_OF_ITEMS = 150;
 
     private final ClimateDataPointsDbAccessor indoorDataPointsAccessor;
+    private final ClimateDataPointsDbAccessor outdoorDataPointsAccessor;
 
-    public AirControllerService(ClimateDataPointsDbAccessor indoorDataPointsAccessor) {
+    public AirControllerService(ClimateDataPointsDbAccessor indoorDataPointsAccessor, ClimateDataPointsDbAccessor outdoorDataPointsAccessor) {
         this.indoorDataPointsAccessor = indoorDataPointsAccessor;
+        this.outdoorDataPointsAccessor = outdoorDataPointsAccessor;
     }
 
     public GraphView getIndoorGraphOfMeasuredValues(MeasuredValue measuredValue, Duration duration) {
-        final GraphView indoorGraph = createIndoorGraph(duration, measuredValue.getNameWithUnit(), measuredValue.getValueExtractor());
+        final List<ClimateDataPoint> dataPoints = indoorDataPointsAccessor.getDataPoints(duration);
+        final GraphView indoorGraph = createGraphView(dataPoints, measuredValue.getNameWithUnit(), measuredValue.getValueExtractor());
         log.info("Asking for indoor graph items of {} for a duration of {}. Returning a total of {} items", measuredValue.name(), duration,
                 indoorGraph.items().size());
         return indoorGraph;
     }
 
-    private GraphView createIndoorGraph(Duration duration, String title, Function<ClimateDataPoint, Double> valueExtractor) {
-        final List<ClimateDataPoint> dataPoints = indoorDataPointsAccessor.getDataPoints(duration);
+    public GraphView getOutdoorGraphOfMeasuredValues(MeasuredValue measuredValue, Duration duration) {
+        final List<ClimateDataPoint> dataPoints = outdoorDataPointsAccessor.getDataPoints(duration);
+        final GraphView outdoorGraph = createGraphView(dataPoints, measuredValue.getNameWithUnit(), measuredValue.getValueExtractor());
+        log.info("Asking for outdoor graph items of {} for a duration of {}. Returning a total of {} items", measuredValue.name(), duration,
+                outdoorGraph.items().size());
+        return outdoorGraph;
+    }
+
+    private GraphView createGraphView(List<ClimateDataPoint> dataPoints, String title, Function<ClimateDataPoint, Double> valueExtractor) {
         final List<GraphItem> items = dataPoints.stream()
                 .filter(dataPoint -> valueExtractor.apply(dataPoint) != null)
                 .map(dataPoint -> new GraphItem(

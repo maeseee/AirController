@@ -5,7 +5,6 @@ import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.ClimateDataPointBuilder;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.air_controller.sensor_values.MeasuredValue;
-import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.web_access.graph.GraphView;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,15 +21,15 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class AirControllerServiceTest {
     @Mock
-    private SystemActionDbAccessor airFlowDbAccessor;
-    @Mock
     private ClimateDataPointsDbAccessor indoorDataPointsAccessor;
+    @Mock
+    private ClimateDataPointsDbAccessor outdoorDataPointsAccessor;
 
     @Test
     void shouldReturnTemperatureGraphView_whenAskedFor() throws InvalidArgumentException {
         final List<ClimateDataPoint> dataPoints = createClimateDataPoints();
         when(indoorDataPointsAccessor.getDataPoints(any())).thenReturn(dataPoints);
-        final AirControllerService testee = new AirControllerService(indoorDataPointsAccessor);
+        final AirControllerService testee = new AirControllerService(indoorDataPointsAccessor, outdoorDataPointsAccessor);
 
         final GraphView graphView = testee.getIndoorGraphOfMeasuredValues(MeasuredValue.TEMPERATURE, Duration.ofHours(24));
 
