@@ -73,7 +73,7 @@ export class GraphChartComponent {
 
   private loadData(measuredValue: MeasuredValue, hours: number) {
     this.graphViewService.getGraphData(measuredValue, hours).subscribe(graphView => {
-      if (!graphView?.items?.length || !this.chart?.chart) {
+      if (!graphView?.items?.length) {
         console.warn('No data received');
         return;
       }
@@ -83,23 +83,27 @@ export class GraphChartComponent {
           day: '2-digit',
           month: '2-digit',
           hour: '2-digit',
-          minute: '2-digit' })
+          minute: '2-digit'
+        })
       );
       const dataPoints = graphView.items.map(item => item.value);
 
       this.lineChartData = {
         labels: labels,
-        datasets: [{
-          ...this.lineChartData.datasets[0],
-          label: graphView.nameWithUnit || 'Measurement',
-          data: dataPoints
-        }]
+        datasets: [
+          {
+            label: graphView.nameWithUnit || 'Measurement',
+            data: dataPoints,
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+          }
+        ]
       };
 
-      const chartInstance = this.chart.chart;
-      chartInstance.data.labels = labels;
-      chartInstance.data.datasets[0].data = dataPoints;
-      chartInstance.update();
+      if (this.chart?.chart) {
+        this.chart.chart.data = this.lineChartData;
+        this.chart.chart.update();
+      }
     });
   }
 }
