@@ -4,6 +4,7 @@ import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.ClimateDataPointBuilder;
 import org.air_controller.sensor_values.InvalidArgumentException;
+import org.air_controller.sensor_values.MeasuredValue;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.web_access.graph.GraphView;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ class AirControllerServiceTest {
         when(indoorDataPointsAccessor.getDataPoints(any())).thenReturn(dataPoints);
         final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor);
 
-        final GraphView graphView = testee.getIndoorTemperatureGraph();
+        final GraphView graphView = testee.getIndoorGraphOfMeasuredValue(MeasuredValue.TEMPERATURE, Duration.ofHours(24));
 
         assertThat(graphView.nameWithUnit()).isEqualTo("Temperature (°C)");
         assertThat(graphView.items()).hasSize(2);
