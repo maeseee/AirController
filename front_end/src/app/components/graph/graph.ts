@@ -21,7 +21,7 @@ import {MeasuredValue} from './MeasuredValue';
       </select>
     </div>
 
-    <div style="display: block; height: 300px; width: 100%;">
+    <div style="display: block; height: 100%; width: 100%;">
       <canvas baseChart
               [data]="lineChartData"
               [options]="lineChartOptions"
