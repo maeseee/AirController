@@ -2,8 +2,6 @@ import {Component, inject, signal} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {toObservable, toSignal} from '@angular/core/rxjs-interop';
 import {BehaviorSubject, catchError, combineLatest, forkJoin, of, switchMap} from 'rxjs';
-
-import {freshAirStatus} from './services/system-status/fresh-air-status';
 import {MetricCardComponent} from './components/card/metric-card';
 import {CardViewService} from './services/cardView/CardViewService';
 import {GraphChartComponent} from './components/graph/graph';
@@ -17,7 +15,6 @@ import {MeasuredValue} from './components/graph/MeasuredValue';
   styleUrl: './app.css'
 })
 export class App {
-  private airService = inject(freshAirStatus);
   private cardViewService = inject(CardViewService);
 
   private refresh$ = new BehaviorSubject<void>(void 0);
@@ -29,7 +26,7 @@ export class App {
     toObservable(this.indoorGraphProfile)
   ]).pipe(
     switchMap(() => forkJoin({
-      status: this.airService.getStatus().pipe(catchError(() => of('ERROR'))),
+      systemCardViews: this.cardViewService.getCardViews('system'),
       indoorCardViews: this.cardViewService.getCardViews('indoor'),
       outdoorCardViews: this.cardViewService.getCardViews('outdoor'),
       confidenceCardViews: this.cardViewService.getCardViews('confidence'),
