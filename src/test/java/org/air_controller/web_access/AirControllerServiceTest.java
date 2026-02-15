@@ -30,7 +30,7 @@ class AirControllerServiceTest {
     void shouldReturnTemperatureGraphView_whenAskedFor() throws InvalidArgumentException {
         final List<ClimateDataPoint> dataPoints = createClimateDataPoints();
         when(indoorDataPointsAccessor.getDataPoints(any())).thenReturn(dataPoints);
-        final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor);
+        final AirControllerService testee = new AirControllerService(indoorDataPointsAccessor);
 
         final GraphView graphView = testee.getIndoorGraphOfMeasuredValues(MeasuredValue.TEMPERATURE, Duration.ofHours(24));
 

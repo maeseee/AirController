@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.MeasuredValue;
-import org.air_controller.system_action.SystemAction;
-import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.web_access.graph.GraphItem;
 import org.air_controller.web_access.graph.GraphView;
 import org.springframework.stereotype.Service;
@@ -15,7 +13,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 @Service
@@ -23,16 +20,10 @@ import java.util.function.Function;
 public class AirControllerService {
     private static final int MAX_NUMBER_OF_ITEMS = 150;
 
-    private final SystemActionDbAccessor airFlowDbAccessor;
     private final ClimateDataPointsDbAccessor indoorDataPointsAccessor;
 
-    public AirControllerService(SystemActionDbAccessor airFlowDbAccessor, ClimateDataPointsDbAccessor indoorDataPointsAccessor) {
-        this.airFlowDbAccessor = airFlowDbAccessor;
+    public AirControllerService(ClimateDataPointsDbAccessor indoorDataPointsAccessor) {
         this.indoorDataPointsAccessor = indoorDataPointsAccessor;
-    }
-
-    public Optional<SystemAction> getCurrentStateForFreshAir() {
-        return airFlowDbAccessor.getMostCurrentSystemAction();
     }
 
     public GraphView getIndoorGraphOfMeasuredValues(MeasuredValue measuredValue, Duration duration) {
