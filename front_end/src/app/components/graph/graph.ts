@@ -15,7 +15,9 @@ import {MeasuredValue} from './MeasuredValue';
         <option value="6">6 Hours</option>
         <option value="12">12 Hours</option>
         <option value="24" selected>24 Hours</option>
-        <option value="48">48 Hours</option>
+        <option value="48">2 Days</option>
+        <option value="168">1 Week</option>
+        <option value="720">1 Month</option>
       </select>
     </div>
 
