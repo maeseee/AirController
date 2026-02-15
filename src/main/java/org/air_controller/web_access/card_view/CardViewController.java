@@ -19,6 +19,7 @@ public class CardViewController {
     @GetMapping("/{type}")
     public ResponseEntity<CardView> getCardGroup(@PathVariable String type) {
         final CardView data = switch (type.toLowerCase()) {
+            case "system" -> service.getSystemCardView();
             case "indoor" -> service.getIndoorCardView();
             case "outdoor" -> service.getOutdoorCardView();
             case "confidence" -> service.getConfidenceCardView();

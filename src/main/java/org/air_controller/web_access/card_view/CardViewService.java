@@ -34,12 +34,19 @@ public class CardViewService {
         this.outdoorDataPointsAccessor = outdoorDataPointsAccessor;
     }
 
+    public CardView getSystemCardView() {
+        final Optional<SystemAction> systemAction = airFlowDbAccessor.getMostCurrentSystemAction();
+        final String systemState = systemAction.map(SystemAction::outputState).map(outputState -> outputState.isOn() ? "ON" : "OFF").orElse("UNKNOWN");
+        final CardItem systemStateItem = new CardItem("System State", systemState, "");
+        return new CardView("", List.of(systemStateItem));
+    }
+
     public CardView getIndoorCardView() {
-        return getCardGroup(indoorDataPointsAccessor);
+        return getCardView(indoorDataPointsAccessor);
     }
 
     public CardView getOutdoorCardView() {
-        return getCardGroup(outdoorDataPointsAccessor);
+        return getCardView(outdoorDataPointsAccessor);
     }
 
     public CardView getConfidenceCardView() {
@@ -59,13 +66,13 @@ public class CardViewService {
         return new CardView("", List.of(cardItem));
     }
 
-    private CardView getCardGroup(ClimateDataPointsDbAccessor dataPointsAccessor) {
+    private CardView getCardView(ClimateDataPointsDbAccessor dataPointsAccessor) {
         final CurrentClimateDataPoint currentClimateDataPoint = new CurrentClimateDataPoint(dataPointsAccessor);
         final Optional<ClimateDataPoint> dataPointOptional = currentClimateDataPoint.getCurrentClimateDataPoint();
-        return mapToCardGroup(dataPointOptional);
+        return mapToCardView(dataPointOptional);
     }
 
-    private CardView mapToCardGroup(Optional<ClimateDataPoint> dataPointOptional) {
+    private CardView mapToCardView(Optional<ClimateDataPoint> dataPointOptional) {
         if (dataPointOptional.isEmpty()) {
             return new CardView("No cards available", emptyList());
         }
