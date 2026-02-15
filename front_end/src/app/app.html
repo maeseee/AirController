@@ -8,7 +8,7 @@
     <div>{{ data.systemCardViews.info }}</div>
     <section class="card-grid">
       @for (card of data.systemCardViews.cards; track card.name) {
-        <app-metric-card [label]="card.name" [value]="card.value" [unit]="card.unit" />
+        <app-metric-card [label]="card.name" [value]="card.value" [unit]="card.unit"/>
       } @empty {
         <p>No cards found in dies Group.</p>
       }
@@ -28,9 +28,12 @@
         <p>No cards found in dies Group.</p>
       }
     </section>
-    @if (indoorGraphProfile(); as metric) {
+    @if (indoorGraphProfile(); as indoorMetric) {
       <div class="profile-section">
-        <graph-chart-component [measuredValueInput]="metric"></graph-chart-component>
+        <graph-chart-component
+          [measuredValueInput]="indoorMetric"
+          [location]="'indoor'">
+        </graph-chart-component>
       </div>
     }
 
@@ -38,17 +41,34 @@
     <div>{{ data.outdoorCardViews.info }}</div>
     <section class="card-grid">
       @for (card of data.outdoorCardViews.cards; track card.name) {
-        <app-metric-card [label]="card.name" [value]="card.value" [unit]="card.unit" />
+        <app-metric-card
+          [label]="card.name"
+          [value]="card.value"
+          [unit]="card.unit"
+          (click)="setOutdoorGraphProfile(card.name)"
+        />
       } @empty {
         <p>No cards found in dies Group.</p>
       }
     </section>
+    @if (outdoorGraphProfile(); as outdoorMetric) {
+      <div class="profile-section">
+        <graph-chart-component
+          [measuredValueInput]="outdoorMetric"
+          [location]="'outdoor'">
+        </graph-chart-component>
+      </div>
+    }
 
     <h3>Confidence</h3>
     <div>{{ data.confidenceCardViews.info }}</div>
     <section class="card-grid">
       @for (card of data.confidenceCardViews.cards; track card.name) {
-        <app-metric-card [label]="card.name" [value]="card.value" [unit]="card.unit" />
+        <app-metric-card
+          [label]="card.name"
+          [value]="card.value"
+          [unit]="card.unit"
+        />
       } @empty {
         <p>No cards found in dies Group.</p>
       }
@@ -58,7 +78,7 @@
     <div>{{ data.statisticsCardViews.info }}</div>
     <section class="card-grid">
       @for (card of data.statisticsCardViews.cards; track card.name) {
-        <app-metric-card [label]="card.name" [value]="card.value" [unit]="card.unit" />
+        <app-metric-card [label]="card.name" [value]="card.value" [unit]="card.unit"/>
       } @empty {
         <p>No cards found in dies Group.</p>
       }

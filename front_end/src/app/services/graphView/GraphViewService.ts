@@ -10,10 +10,9 @@ import {MeasuredValue} from '../../components/graph/MeasuredValue';
 export class GraphViewService {
   private http = inject(HttpClient);
   private readonly BASE_URL = 'http://192.168.50.12:9090/graph';
-  public location: 'indoor' | 'outdoor' = 'indoor';
 
-  getGraphData(measuredValue: MeasuredValue, hours: number): Observable<GraphView> {
-    const url = `${this.BASE_URL}/${this.location}/${measuredValue}/${hours}`;
+  getGraphData(location:'indoor' | 'outdoor', measuredValue: MeasuredValue, hours: number): Observable<GraphView> {
+    const url = `${this.BASE_URL}/${location}/${measuredValue}/${hours}`;
     return this.http.get<GraphView>(url, {withCredentials: true});
   }
 }

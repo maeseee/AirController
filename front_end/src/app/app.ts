@@ -20,6 +20,7 @@ export class App {
   private refresh$ = new BehaviorSubject<void>(void 0);
 
   indoorGraphProfile = signal<MeasuredValue | null>(null);
+  outdoorGraphProfile = signal<MeasuredValue | null>(null);
 
   private data$ = combineLatest([
     this.refresh$,
@@ -51,6 +52,16 @@ export class App {
       this.indoorGraphProfile.set(null);
     } else {
       this.indoorGraphProfile.set(value);
+    }
+  }
+
+  setOutdoorGraphProfile(profile: string) {
+    const profileString = profile.toUpperCase() as any;
+    const value = (MeasuredValue as any)[profileString] as MeasuredValue;
+    if (this.outdoorGraphProfile() === value) {
+      this.outdoorGraphProfile.set(null);
+    } else {
+      this.outdoorGraphProfile.set(value);
     }
   }
 }

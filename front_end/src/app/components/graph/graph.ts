@@ -31,8 +31,9 @@ import {MeasuredValue} from './MeasuredValue';
   `
 })
 export class GraphChartComponent {
-  measuredValueInput = input.required<MeasuredValue>();
+  location = input<'indoor' | 'outdoor'>('indoor');
   selectedHours = signal<number>(24);
+  measuredValueInput = input.required<MeasuredValue>();
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
@@ -60,10 +61,11 @@ export class GraphChartComponent {
   constructor(private graphViewService: GraphViewService) {
     Chart.register(...registerables);
     effect(() => {
+      const location = this.location();
       const currentMeasuredValue = this.measuredValueInput();
       const hours = this.selectedHours();
       if (currentMeasuredValue) {
-        this.loadData(currentMeasuredValue, hours);
+        this.loadData(location, currentMeasuredValue, hours);
       }
     });
   }
@@ -73,8 +75,8 @@ export class GraphChartComponent {
     this.selectedHours.set(Number(value));
   }
 
-  private loadData(measuredValue: MeasuredValue, hours: number) {
-    this.graphViewService.getGraphData(measuredValue, hours).subscribe(graphView => {
+  private loadData(location:'indoor' | 'outdoor', measuredValue: MeasuredValue, hours: number) {
+    this.graphViewService.getGraphData(location, measuredValue, hours).subscribe(graphView => {
       if (!graphView?.items?.length) {
         console.warn('No data received');
         return;
