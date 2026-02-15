@@ -10,15 +10,18 @@ import org.air_controller.web_access.graph.GraphItem;
 import org.air_controller.web_access.graph.GraphView;
 import org.springframework.stereotype.Service;
 
-import java.time.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.IntStream;
 
 @Service
 @Slf4j
 public class AirControllerService {
+    private static final int MAX_NUMBER_OF_ITEMS = 150;
 
     private final SystemActionDbAccessor airFlowDbAccessor;
     private final ClimateDataPointsDbAccessor indoorDataPointsAccessor;
@@ -34,7 +37,8 @@ public class AirControllerService {
 
     public GraphView getIndoorGraphOfMeasuredValues(MeasuredValue measuredValue, Duration duration) {
         final GraphView indoorGraph = createIndoorGraph(duration, measuredValue.getNameWithUnit(), measuredValue.getValueExtractor());
-        log.info("Asking for indoor graph items of {} for a duration of {}. Returning a total of {} items", measuredValue.name(), duration, indoorGraph.items().size());
+        log.info("Asking for indoor graph items of {} for a duration of {}. Returning a total of {} items", measuredValue.name(), duration,
+                indoorGraph.items().size());
         return indoorGraph;
     }
 
@@ -47,25 +51,12 @@ public class AirControllerService {
                         valueExtractor.apply(dataPoint)
                 ))
                 .toList();
-        return new GraphView(title, reduceNumberOfGraphItems(items));
+        return new GraphView(title, ItemReducer.reduceTo(items, MAX_NUMBER_OF_ITEMS));
     }
 
     private LocalDateTime toLocalDateTime(ZonedDateTime timestamp) {
         return timestamp
                 .withZoneSameInstant(ZoneId.of("Europe/Berlin"))
                 .toLocalDateTime();
-    }
-
-    private List<GraphItem> reduceNumberOfGraphItems(List<GraphItem> graphItems) {
-        final int MAX_NUMBER_OF_ITEMS = 200;
-        final int consistLastItem = graphItems.size() % 2;
-        List<GraphItem> keptItems = graphItems;
-        while (keptItems.size() > MAX_NUMBER_OF_ITEMS) {
-            keptItems = IntStream.range(0, graphItems.size())
-                    .filter(i -> (i + consistLastItem) % 2 == 0)
-                    .mapToObj(graphItems::get)
-                    .toList();
-        }
-        return keptItems;
     }
 }
