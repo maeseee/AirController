@@ -34,7 +34,7 @@ public class AirControllerService {
 
     public GraphView getIndoorGraphOfMeasuredValues(MeasuredValue measuredValue, Duration duration) {
         final GraphView indoorGraph = createIndoorGraph(duration, measuredValue.getNameWithUnit(), measuredValue.getValueExtractor());
-        log.info("Indoor Graph of measured values is {} in a time range of {}", indoorGraph, duration);
+        log.info("Asking for indoor graph items of {} for a duration of {}. Returning a total of {} items", measuredValue.name(), duration, indoorGraph.items().size());
         return indoorGraph;
     }
 
@@ -60,7 +60,7 @@ public class AirControllerService {
         final int MAX_NUMBER_OF_ITEMS = 200;
         final int consistLastItem = graphItems.size() % 2;
         List<GraphItem> keptItems = graphItems;
-        while (graphItems.size() > MAX_NUMBER_OF_ITEMS) {
+        while (keptItems.size() > MAX_NUMBER_OF_ITEMS) {
             keptItems = IntStream.range(0, graphItems.size())
                     .filter(i -> (i + consistLastItem) % 2 == 0)
                     .mapToObj(graphItems::get)
