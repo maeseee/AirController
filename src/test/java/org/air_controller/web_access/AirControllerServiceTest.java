@@ -32,18 +32,18 @@ class AirControllerServiceTest {
         when(indoorDataPointsAccessor.getDataPoints(any())).thenReturn(dataPoints);
         final AirControllerService testee = new AirControllerService(airFlowDbAccessor, indoorDataPointsAccessor);
 
-        final GraphView graphView = testee.getIndoorGraphOfMeasuredValue(MeasuredValue.TEMPERATURE, Duration.ofHours(24));
+        final GraphView graphView = testee.getIndoorGraphOfMeasuredValues(MeasuredValue.TEMPERATURE, Duration.ofHours(24));
 
         assertThat(graphView.nameWithUnit()).isEqualTo("Temperature (°C)");
         assertThat(graphView.items()).hasSize(2);
         assertThat(graphView.items().get(0).value()).isEqualTo(20.0);
-        assertThat(graphView.items().get(0).time()).isEqualTo(LocalDateTime.of(2026, 11, 2, 6 + timeDifferenceToUtc(), 0, 0));
+        assertThat(graphView.items().get(0).time()).isEqualTo(LocalDateTime.of(2026, 1, 15, 6 + timeDifferenceToUtc(), 0, 0));
         assertThat(graphView.items().get(1).value()).isEqualTo(30.0);
-        assertThat(graphView.items().get(1).time()).isEqualTo(LocalDateTime.of(2026, 11, 2, 7 + timeDifferenceToUtc(), 0, 0));
+        assertThat(graphView.items().get(1).time()).isEqualTo(LocalDateTime.of(2026, 1, 15, 7 + timeDifferenceToUtc(), 0, 0));
     }
 
     private List<ClimateDataPoint> createClimateDataPoints() throws InvalidArgumentException {
-        final ZonedDateTime time = ZonedDateTime.of(2026, 11, 2, 7, 0, 0, 0, ZoneOffset.UTC);
+        final ZonedDateTime time = ZonedDateTime.of(2026, 1, 15, 7, 0, 0, 0, ZoneOffset.UTC);
         final ClimateDataPoint dataPoint1 = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(20.0)
                 .setHumidityRelative(80.0)

@@ -32,7 +32,7 @@ public class SystemController {
     @GetMapping("/graph/indoor/{measuredValue}/{hours}")
     public ResponseEntity<GraphView> getIndoorTemperatureGraph(@PathVariable MeasuredValue measuredValue, @PathVariable int hours) {
         final Duration duration = Duration.ofHours(hours);
-        final GraphView graph = service.getIndoorGraphOfMeasuredValue(measuredValue, duration);
+        final GraphView graph = service.getIndoorGraphOfMeasuredValues(measuredValue, duration);
         return generateResponse(graph);
     }
 

@@ -1,5 +1,6 @@
 package org.air_controller.web_access;
 
+import lombok.extern.slf4j.Slf4j;
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.MeasuredValue;
@@ -9,16 +10,14 @@ import org.air_controller.web_access.graph.GraphItem;
 import org.air_controller.web_access.graph.GraphView;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
 @Service
+@Slf4j
 public class AirControllerService {
 
     private final SystemActionDbAccessor airFlowDbAccessor;
@@ -33,8 +32,10 @@ public class AirControllerService {
         return airFlowDbAccessor.getMostCurrentSystemAction();
     }
 
-    public GraphView getIndoorGraphOfMeasuredValue(MeasuredValue measuredValue, Duration duration) {
-        return createIndoorGraph(duration, measuredValue.getNameWithUnit(), measuredValue.getValueExtractor());
+    public GraphView getIndoorGraphOfMeasuredValues(MeasuredValue measuredValue, Duration duration) {
+        final GraphView indoorGraph = createIndoorGraph(duration, measuredValue.getNameWithUnit(), measuredValue.getValueExtractor());
+        log.info("Indoor Graph of measured values is {} in a time range of {}", indoorGraph, duration);
+        return indoorGraph;
     }
 
     private GraphView createIndoorGraph(Duration duration, String title, Function<ClimateDataPoint, Double> valueExtractor) {
