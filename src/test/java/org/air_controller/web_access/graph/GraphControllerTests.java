@@ -21,8 +21,6 @@ class GraphControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
     @MockitoBean
     private GraphService graphService;
 
