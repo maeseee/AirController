@@ -55,13 +55,13 @@ public class ClimateDataPointsDbAccessor implements ClimateDataPointPersistence 
     @Override
     public List<ClimateDataPoint> getDataPoints(Duration duration) {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        final ZonedDateTime yesterday = now.minus(duration);
+        final ZonedDateTime before = now.minus(duration);
         final String sql =
                 "SELECT * FROM " + dataPointTableName + " i " +
                         "WHERE i.EVENT_TIME > ? " +
                         "ORDER BY i.EVENT_TIME ASC";
         final PreparedStatementSetter setter =
-                preparedStatement -> preparedStatement.setTimestamp(1, Timestamp.valueOf(yesterday.toLocalDateTime()));
+                preparedStatement -> preparedStatement.setTimestamp(1, Timestamp.valueOf(before.toLocalDateTime()));
         final EntryAdder<ClimateDataPoint> adder = this::addResultIfAvailable;
         return database.executeQuery(sql, adder, setter);
     }

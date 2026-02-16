@@ -18,6 +18,13 @@ public class GraphController {
         this.service = service;
     }
 
+    @GetMapping("/graph/system/airflow/{hours}")
+    public ResponseEntity<GraphView> getSystemGraph(@PathVariable int hours) {
+        final Duration duration = Duration.ofHours(hours);
+        final GraphView graph = service.getAirflowGraphValues(duration);
+        return generateResponse(graph);
+    }
+
     @GetMapping("/graph/indoor/{measuredValue}/{hours}")
     public ResponseEntity<GraphView> getIndoorTemperatureGraph(@PathVariable MeasuredValue measuredValue, @PathVariable int hours) {
         final Duration duration = Duration.ofHours(hours);

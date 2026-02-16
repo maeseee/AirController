@@ -9,6 +9,7 @@ import org.air_controller.system.OutputState;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -26,11 +27,24 @@ public class SystemActionDbAccessor {
         createTableIfNotExists();
     }
 
+    @Deprecated
     public List<SystemAction> getActionsFromTimeToNow(ZonedDateTime startDateTime) {
         final String sql = "SELECT status, action_time FROM " + systemPart.getTableName() + " i " +
                 "WHERE i.action_time > ? " +
                 "ORDER BY i.action_time;";
-        final PreparedStatementSetter setter = preparedStatement -> preparedStatement.setTimestamp(1, Timestamp.valueOf(startDateTime.toLocalDateTime()));
+        final PreparedStatementSetter setter =
+                preparedStatement -> preparedStatement.setTimestamp(1, Timestamp.valueOf(startDateTime.toLocalDateTime()));
+        final EntryAdder<SystemAction> adder = this::addSystemActionResultIfAvailable;
+        return database.executeQuery(sql, adder, setter);
+    }
+
+    public List<SystemAction> getActions(Duration duration) {
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        final ZonedDateTime before = now.minus(duration);
+        final String sql = "SELECT status, action_time FROM " + systemPart.getTableName() + " i " +
+                "WHERE i.action_time > ? " +
+                "ORDER BY i.action_time;";
+        final PreparedStatementSetter setter = preparedStatement -> preparedStatement.setTimestamp(1, Timestamp.valueOf(before.toLocalDateTime()));
         final EntryAdder<SystemAction> adder = this::addSystemActionResultIfAvailable;
         return database.executeQuery(sql, adder, setter);
     }

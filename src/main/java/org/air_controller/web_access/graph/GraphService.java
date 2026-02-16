@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.MeasuredValue;
+import org.air_controller.system_action.SystemAction;
+import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.web_access.ItemReducer;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +21,23 @@ import java.util.function.Function;
 public class GraphService {
     private static final int MAX_NUMBER_OF_ITEMS = 150;
 
+    private final SystemActionDbAccessor airFlowDbAccessor;
     private final ClimateDataPointsDbAccessor indoorDataPointsAccessor;
     private final ClimateDataPointsDbAccessor outdoorDataPointsAccessor;
 
-    public GraphService(ClimateDataPointsDbAccessor indoorDataPointsAccessor, ClimateDataPointsDbAccessor outdoorDataPointsAccessor) {
+    public GraphService(SystemActionDbAccessor airFlowDbAccessor, ClimateDataPointsDbAccessor indoorDataPointsAccessor,
+            ClimateDataPointsDbAccessor outdoorDataPointsAccessor) {
+        this.airFlowDbAccessor = airFlowDbAccessor;
         this.indoorDataPointsAccessor = indoorDataPointsAccessor;
         this.outdoorDataPointsAccessor = outdoorDataPointsAccessor;
+    }
+
+    public GraphView getAirflowGraphValues(Duration duration) {
+        final List<SystemAction> dataPoints = airFlowDbAccessor.getActions(duration);
+        final GraphView indoorGraph = createGraphView(dataPoints);
+        log.info("Asking for system fresh air status graph for a duration of {}. Returning a total of {} items", duration,
+                indoorGraph.items().size());
+        return indoorGraph;
     }
 
     public GraphView getIndoorGraphOfMeasuredValues(MeasuredValue measuredValue, Duration duration) {
@@ -41,6 +54,15 @@ public class GraphService {
         log.info("Asking for outdoor graph items of {} for a duration of {}. Returning a total of {} items", measuredValue.name(), duration,
                 outdoorGraph.items().size());
         return outdoorGraph;
+    }
+
+    private GraphView createGraphView(List<SystemAction> dataPoints) {
+        final List<GraphItem> items = dataPoints.stream()
+                .map(dataPoint -> new GraphItem(
+                        toLocalDateTime(dataPoint.actionTime()),
+                        dataPoint.outputState().isOn() ? 1.0 : 0.0))
+                .toList();
+        return new GraphView("Air flow ON/OFF", ItemReducer.reduceTo(items, MAX_NUMBER_OF_ITEMS));
     }
 
     private GraphView createGraphView(List<ClimateDataPoint> dataPoints, String title, Function<ClimateDataPoint, Double> valueExtractor) {
