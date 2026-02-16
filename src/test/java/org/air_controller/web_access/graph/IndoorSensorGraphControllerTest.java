@@ -6,7 +6,6 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -17,12 +16,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(GraphController.class)
-class GraphControllerTests {
+class IndoorSensorGraphControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
-    private GraphService graphService;
+    private IndoorSensorGraphService graphService;
 
     @Test
     void testEndpoint() throws Exception {

@@ -10,25 +10,18 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Duration;
 
 @RestController
-public class GraphController {
+public class IndoorSensorGraphController {
 
-    private final GraphService service;
+    private final IndoorSensorGraphService service;
 
-    public GraphController(GraphService service) {
+    public IndoorSensorGraphController(IndoorSensorGraphService service) {
         this.service = service;
     }
 
-    @GetMapping("/graph/system/airflow/{hours}")
-    public ResponseEntity<GraphView> getSystemGraph(@PathVariable int hours) {
+    @GetMapping("/graph/indoor/{measuredValue}/{hours}")
+    public ResponseEntity<GraphView> getIndoorTemperatureGraph(@PathVariable MeasuredValue measuredValue, @PathVariable int hours) {
         final Duration duration = Duration.ofHours(hours);
-        final GraphView graph = service.getAirflowGraphValues(duration);
-        return generateResponse(graph);
-    }
-
-    @GetMapping("/graph/outdoor/{measuredValue}/{hours}")
-    public ResponseEntity<GraphView> getOutdoorTemperatureGraph(@PathVariable MeasuredValue measuredValue, @PathVariable int hours) {
-        final Duration duration = Duration.ofHours(hours);
-        final GraphView graph = service.getOutdoorGraphOfMeasuredValues(measuredValue, duration);
+        final GraphView graph = service.getIndoorGraphOfMeasuredValues(measuredValue, duration);
         return generateResponse(graph);
     }
 

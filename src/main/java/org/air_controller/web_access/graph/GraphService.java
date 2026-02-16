@@ -22,13 +22,10 @@ public class GraphService {
     private static final int MAX_NUMBER_OF_ITEMS = 150;
 
     private final SystemActionDbAccessor airFlowDbAccessor;
-    private final ClimateDataPointsDbAccessor indoorDataPointsAccessor;
     private final ClimateDataPointsDbAccessor outdoorDataPointsAccessor;
 
-    public GraphService(SystemActionDbAccessor airFlowDbAccessor, ClimateDataPointsDbAccessor indoorDataPointsAccessor,
-            ClimateDataPointsDbAccessor outdoorDataPointsAccessor) {
+    public GraphService(SystemActionDbAccessor airFlowDbAccessor, ClimateDataPointsDbAccessor outdoorDataPointsAccessor) {
         this.airFlowDbAccessor = airFlowDbAccessor;
-        this.indoorDataPointsAccessor = indoorDataPointsAccessor;
         this.outdoorDataPointsAccessor = outdoorDataPointsAccessor;
     }
 
@@ -36,14 +33,6 @@ public class GraphService {
         final List<SystemAction> dataPoints = airFlowDbAccessor.getActions(duration);
         final GraphView indoorGraph = createGraphView(dataPoints);
         log.info("Asking for system fresh air status graph for a duration of {}. Returning a total of {} items", duration,
-                indoorGraph.items().size());
-        return indoorGraph;
-    }
-
-    public GraphView getIndoorGraphOfMeasuredValues(MeasuredValue measuredValue, Duration duration) {
-        final List<ClimateDataPoint> dataPoints = indoorDataPointsAccessor.getDataPoints(duration);
-        final GraphView indoorGraph = createGraphView(dataPoints, measuredValue.getNameWithUnit(), measuredValue.getValueExtractor());
-        log.info("Asking for indoor graph items of {} for a duration of {}. Returning a total of {} items", measuredValue.name(), duration,
                 indoorGraph.items().size());
         return indoorGraph;
     }
