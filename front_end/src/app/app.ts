@@ -19,7 +19,7 @@ export class App {
 
   private refresh$ = new BehaviorSubject<void>(void 0);
 
-  systemGraphProfile = signal<MeasuredValue | null>(null);
+  systemGraphProfile = signal<'airflow' | null>(null);
   indoorGraphProfile = signal<MeasuredValue | null>(null);
   outdoorGraphProfile = signal<MeasuredValue | null>(null);
 
@@ -45,12 +45,11 @@ export class App {
     this.refresh$.next();
   }
 
-  setSystemGraphProfile(profile: string) {
-    const profileString = profile.toLowerCase() as any;
-    if (this.systemGraphProfile() === profileString) {
+  setSystemGraphProfile(profile: 'airflow' | null) {
+    if (this.systemGraphProfile() === profile) {
       this.systemGraphProfile.set(null);
     } else {
-      this.systemGraphProfile.set(profileString);
+      this.systemGraphProfile.set(profile);
     }
   }
 
