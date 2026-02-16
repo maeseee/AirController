@@ -22,11 +22,9 @@ public class GraphService {
     private static final int MAX_NUMBER_OF_ITEMS = 150;
 
     private final SystemActionDbAccessor airFlowDbAccessor;
-    private final ClimateDataPointsDbAccessor outdoorDataPointsAccessor;
 
-    public GraphService(SystemActionDbAccessor airFlowDbAccessor, ClimateDataPointsDbAccessor outdoorDataPointsAccessor) {
+    public GraphService(SystemActionDbAccessor airFlowDbAccessor) {
         this.airFlowDbAccessor = airFlowDbAccessor;
-        this.outdoorDataPointsAccessor = outdoorDataPointsAccessor;
     }
 
     public GraphView getAirflowGraphValues(Duration duration) {
@@ -37,14 +35,6 @@ public class GraphService {
         return indoorGraph;
     }
 
-    public GraphView getOutdoorGraphOfMeasuredValues(MeasuredValue measuredValue, Duration duration) {
-        final List<ClimateDataPoint> dataPoints = outdoorDataPointsAccessor.getDataPoints(duration);
-        final GraphView outdoorGraph = createGraphView(dataPoints, measuredValue.getNameWithUnit(), measuredValue.getValueExtractor());
-        log.info("Asking for outdoor graph items of {} for a duration of {}. Returning a total of {} items", measuredValue.name(), duration,
-                outdoorGraph.items().size());
-        return outdoorGraph;
-    }
-
     private GraphView createGraphView(List<SystemAction> dataPoints) {
         final List<GraphItem> items = dataPoints.stream()
                 .map(dataPoint -> new GraphItem(
@@ -52,17 +42,6 @@ public class GraphService {
                         dataPoint.outputState().isOn() ? 1.0 : 0.0))
                 .toList();
         return new GraphView("Air flow ON/OFF", ItemReducer.reduceTo(items, MAX_NUMBER_OF_ITEMS));
-    }
-
-    private GraphView createGraphView(List<ClimateDataPoint> dataPoints, String title, Function<ClimateDataPoint, Double> valueExtractor) {
-        final List<GraphItem> items = dataPoints.stream()
-                .filter(dataPoint -> valueExtractor.apply(dataPoint) != null)
-                .map(dataPoint -> new GraphItem(
-                        toLocalDateTime(dataPoint.timestamp()),
-                        valueExtractor.apply(dataPoint)
-                ))
-                .toList();
-        return new GraphView(title, ItemReducer.reduceTo(items, MAX_NUMBER_OF_ITEMS));
     }
 
     private LocalDateTime toLocalDateTime(ZonedDateTime timestamp) {
