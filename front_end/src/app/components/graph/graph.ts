@@ -31,9 +31,9 @@ import {MeasuredValue} from './MeasuredValue';
   `
 })
 export class GraphChartComponent {
-  location = input<'indoor' | 'outdoor'>('indoor');
+  location = input<'system' | 'indoor' | 'outdoor'>('indoor');
   selectedHours = signal<number>(24);
-  measuredValueInput = input.required<MeasuredValue>();
+  measuredValueInput = input<'airflow' | 'TEMPERATURE' | 'HUMIDITY' | 'CO2'>('TEMPERATURE');
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
@@ -75,7 +75,7 @@ export class GraphChartComponent {
     this.selectedHours.set(Number(value));
   }
 
-  private loadData(location:'indoor' | 'outdoor', measuredValue: MeasuredValue, hours: number) {
+  private loadData(location: 'system' | 'indoor' | 'outdoor', measuredValue: 'airflow' | 'TEMPERATURE' | 'HUMIDITY' | 'CO2', hours: number) {
     this.graphViewService.getGraphData(location, measuredValue, hours).subscribe(graphView => {
       if (!graphView?.items?.length) {
         console.warn('No data received');

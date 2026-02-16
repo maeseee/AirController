@@ -8,11 +8,24 @@
     <div>{{ data.systemCardViews.info }}</div>
     <section class="card-grid">
       @for (card of data.systemCardViews.cards; track card.name) {
-        <app-metric-card [label]="card.name" [value]="card.value" [unit]="card.unit"/>
+        <app-metric-card
+          [label]="card.name"
+          [value]="card.value"
+          [unit]="card.unit"
+          (click)="setSystemGraphProfile('airflow')"
+        />
       } @empty {
         <p>No cards found in dies Group.</p>
       }
     </section>
+    @if (systemGraphProfile(); as systemMetric) {
+      <div class="profile-section">
+        <graph-chart-component
+          [measuredValueInput]="systemMetric"
+          [location]="'system'">
+        </graph-chart-component>
+      </div>
+    }
 
     <h3>Indoor Sensors</h3>
     <div>{{ data.indoorCardViews.info }}</div>

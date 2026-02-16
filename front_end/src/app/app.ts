@@ -1,6 +1,6 @@
 import {Component, inject, signal} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
-import {toObservable, toSignal} from '@angular/core/rxjs-interop';
+import {toSignal} from '@angular/core/rxjs-interop';
 import {BehaviorSubject, catchError, combineLatest, forkJoin, of, switchMap} from 'rxjs';
 import {MetricCardComponent} from './components/card/metric-card';
 import {CardViewService} from './services/cardView/CardViewService';
@@ -19,12 +19,12 @@ export class App {
 
   private refresh$ = new BehaviorSubject<void>(void 0);
 
+  systemGraphProfile = signal<MeasuredValue | null>(null);
   indoorGraphProfile = signal<MeasuredValue | null>(null);
   outdoorGraphProfile = signal<MeasuredValue | null>(null);
 
   private data$ = combineLatest([
     this.refresh$,
-    toObservable(this.indoorGraphProfile)
   ]).pipe(
     switchMap(() => forkJoin({
       systemCardViews: this.cardViewService.getCardViews('system'),
@@ -43,6 +43,15 @@ export class App {
 
   refresh() {
     this.refresh$.next();
+  }
+
+  setSystemGraphProfile(profile: string) {
+    const profileString = profile.toLowerCase() as any;
+    if (this.systemGraphProfile() === profileString) {
+      this.systemGraphProfile.set(null);
+    } else {
+      this.systemGraphProfile.set(profileString);
+    }
   }
 
   setIndoorGraphProfile(profile: string) {
