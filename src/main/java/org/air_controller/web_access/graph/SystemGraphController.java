@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Duration;
 
 @RestController
-public class GraphController {
+public class SystemGraphController {
 
-    private final GraphService service;
+    private final SystemGraphService service;
 
-    public GraphController(GraphService service) {
+    public SystemGraphController(SystemGraphService service) {
         this.service = service;
     }
 

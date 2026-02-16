@@ -1,9 +1,6 @@
 package org.air_controller.web_access.graph;
 
 import lombok.extern.slf4j.Slf4j;
-import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
-import org.air_controller.sensor_values.ClimateDataPoint;
-import org.air_controller.sensor_values.MeasuredValue;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.web_access.ItemReducer;
@@ -14,16 +11,15 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.function.Function;
 
 @Service
 @Slf4j
-public class GraphService {
+public class SystemGraphService {
     private static final int MAX_NUMBER_OF_ITEMS = 150;
 
     private final SystemActionDbAccessor airFlowDbAccessor;
 
-    public GraphService(SystemActionDbAccessor airFlowDbAccessor) {
+    public SystemGraphService(SystemActionDbAccessor airFlowDbAccessor) {
         this.airFlowDbAccessor = airFlowDbAccessor;
     }
 
