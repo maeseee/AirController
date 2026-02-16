@@ -36,7 +36,7 @@ class PeriodicallyAirFlowTest {
         final List<SystemAction> systemActions = new ArrayList<>();
         systemActions.add(new SystemAction(endTime.minusMinutes(onDuration), OutputState.ON));
         systemActions.add(new SystemAction(endTime, OutputState.OFF));
-        when(dbAccessor.getActionsFromTimeToNow(any())).thenReturn(systemActions);
+        when(dbAccessor.getActions(any())).thenReturn(systemActions);
         final PeriodicallyAirFlow testee = new PeriodicallyAirFlow(dbAccessor);
 
         final Confidence airFlowNeed = testee.turnOnConfidence();

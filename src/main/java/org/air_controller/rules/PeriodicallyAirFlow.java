@@ -33,10 +33,10 @@ class PeriodicallyAirFlow implements Rule {
     }
 
     public Duration getOnDurationOfLastTwoHours() {
-        final ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
-        final ZonedDateTime startTime = endTime.minusHours(3); // Just enough
-        final List<SystemAction> actionsFromLastHour = dbAccessor.getActionsFromTimeToNow(startTime);
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        final Duration duration = Duration.ofHours(3); // Just enough
+        final List<SystemAction> actionsFromLastHour = dbAccessor.getActions(duration);
         final DurationCalculator durationCalculator = new DurationCalculator(actionsFromLastHour);
-        return durationCalculator.getDuration(startTime, endTime);
+        return durationCalculator.getDuration(now.minus(duration), now);
     }
 }

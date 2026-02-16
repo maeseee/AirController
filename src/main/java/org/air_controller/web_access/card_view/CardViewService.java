@@ -96,10 +96,9 @@ public class CardViewService {
 
     private double getOnPercentageFromLast24Hours() {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        final ZonedDateTime startTime = now.minusDays(1);
-        final List<SystemAction> actionsFromTimeToNow = airFlowDbAccessor.getActionsFromTimeToNow(startTime.minusHours(2)); // just enough data
+        final List<SystemAction> actionsFromTimeToNow = airFlowDbAccessor.getActions(Duration.ofHours(26)); // just enough data
         final DurationCalculator durationCalculator = new DurationCalculator(actionsFromTimeToNow);
-        final Duration duration = durationCalculator.getDuration(startTime, now);
+        final Duration duration = durationCalculator.getDuration(now.minusDays(1), now);
         return (double) duration.toSeconds() / (double) Duration.ofDays(1).toSeconds() * 100.0;
     }
 }

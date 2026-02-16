@@ -6,6 +6,7 @@ import org.air_controller.system.OutputState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -50,7 +51,7 @@ class SystemActionDbAccessorTest {
         testee.insertAction(new VentilationSystemPersistenceData(OutputState.ON, 0.0, Collections.emptyMap(), now.minusHours(4)));
         testee.insertAction(new VentilationSystemPersistenceData(OutputState.OFF, 0.0, Collections.emptyMap(), now.minusHours(2)));
 
-        final List<SystemAction> actionsFromTimeToNow = testee.getActionsFromTimeToNow(now.minusHours(3));
+        final List<SystemAction> actionsFromTimeToNow = testee.getActions(Duration.ofHours(3));
 
         assertThat(actionsFromTimeToNow).hasSize(3);
     }

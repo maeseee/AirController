@@ -41,7 +41,7 @@ class CardViewServiceTest {
                 new SystemAction(now.minusHours(10), OutputState.ON),
                 new SystemAction(now.minusHours(9), OutputState.OFF)
         );
-        when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(actions);
+        when(airFlowDbAccessor.getActions(any())).thenReturn(actions);
         final CardViewService testee = new CardViewService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
 
         final CardView statistics = testee.getStatisticsCardView();
@@ -62,7 +62,7 @@ class CardViewServiceTest {
                 new SystemAction(now.minusHours(25), OutputState.ON),
                 new SystemAction(now.minusHours(22), OutputState.OFF)
         );
-        when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(actions);
+        when(airFlowDbAccessor.getActions(any())).thenReturn(actions);
         final CardViewService testee = new CardViewService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
 
         final CardView statistics = testee.getStatisticsCardView();

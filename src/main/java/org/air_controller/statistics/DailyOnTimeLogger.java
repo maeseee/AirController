@@ -30,7 +30,7 @@ public class DailyOnTimeLogger implements Runnable {
     Duration getTotalFromDay(LocalDate day) {
         final ZonedDateTime startTime = day.atStartOfDay(ZoneOffset.UTC);
         final ZonedDateTime endTime = ZonedDateTime.of(day.atTime(LocalTime.MAX), ZoneOffset.UTC);
-        final List<SystemAction> actionsFromLastDay = dbAccessor.getActionsFromTimeToNow(startTime.minusHours(2)); // just enough data
+        final List<SystemAction> actionsFromLastDay = dbAccessor.getActions(Duration.ofDays(1)); // just enough data
         final DurationCalculator durationCalculator = new DurationCalculator(actionsFromLastDay);
         return durationCalculator.getDuration(startTime, endTime);
     }

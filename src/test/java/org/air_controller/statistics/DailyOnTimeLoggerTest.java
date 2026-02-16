@@ -26,7 +26,7 @@ class DailyOnTimeLoggerTest {
     @Test
     void shouldReturnZero_whenNoEventYesterday() {
         final LocalDate yesterday = LocalDateTime.now().minusDays(1).toLocalDate();
-        when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(emptyList());
+        when(airFlowDbAccessor.getActions(any())).thenReturn(emptyList());
         final DailyOnTimeLogger testee = new DailyOnTimeLogger(airFlowDbAccessor);
 
         final Duration result = testee.getTotalFromDay(yesterday);
@@ -39,7 +39,7 @@ class DailyOnTimeLoggerTest {
         final LocalDate yesterday = LocalDateTime.now().minusDays(1).toLocalDate();
         final ZonedDateTime startTime = ZonedDateTime.of(yesterday.atStartOfDay(), ZoneOffset.UTC).plusHours(10);
         final SystemAction offAction = new SystemAction(startTime.plusMinutes(20), OutputState.ON);
-        when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(List.of(offAction));
+        when(airFlowDbAccessor.getActions(any())).thenReturn(List.of(offAction));
         final DailyOnTimeLogger testee = new DailyOnTimeLogger(airFlowDbAccessor);
 
         final Duration result = testee.getTotalFromDay(yesterday);
@@ -55,7 +55,7 @@ class DailyOnTimeLoggerTest {
         final SystemAction offAction1 = new SystemAction(startTime.plusMinutes(20), OutputState.OFF);
         final SystemAction onAction2 = new SystemAction(startTime.plusMinutes(40), OutputState.ON);
         final SystemAction offAction2 = new SystemAction(startTime.plusMinutes(50), OutputState.OFF);
-        when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(
+        when(airFlowDbAccessor.getActions(any())).thenReturn(
                 List.of(onAction1, offAction1, onAction2, offAction2));
         final DailyOnTimeLogger testee = new DailyOnTimeLogger(airFlowDbAccessor);
 
@@ -71,7 +71,7 @@ class DailyOnTimeLoggerTest {
         final SystemAction onAction1 = new SystemAction(startTime, OutputState.ON);
         final SystemAction offAction1 = new SystemAction(startTime.plusMinutes(10), OutputState.OFF);
         final SystemAction offAction2 = new SystemAction(startTime.plusMinutes(30), OutputState.OFF);
-        when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(List.of(onAction1, offAction1, offAction2));
+        when(airFlowDbAccessor.getActions(any())).thenReturn(List.of(onAction1, offAction1, offAction2));
         final DailyOnTimeLogger testee = new DailyOnTimeLogger(airFlowDbAccessor);
 
         final Duration result = testee.getTotalFromDay(yesterday);
@@ -86,7 +86,7 @@ class DailyOnTimeLoggerTest {
         final SystemAction onAction1 = new SystemAction(startTime, OutputState.ON);
         final SystemAction onAction2 = new SystemAction(startTime.plusMinutes(10), OutputState.ON);
         final SystemAction offAction2 = new SystemAction(startTime.plusMinutes(30), OutputState.OFF);
-        when(airFlowDbAccessor.getActionsFromTimeToNow(any())).thenReturn(List.of(onAction1, onAction2, offAction2));
+        when(airFlowDbAccessor.getActions(any())).thenReturn(List.of(onAction1, onAction2, offAction2));
         final DailyOnTimeLogger testee = new DailyOnTimeLogger(airFlowDbAccessor);
 
         final Duration result = testee.getTotalFromDay(yesterday);
