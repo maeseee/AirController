@@ -14,9 +14,6 @@ public interface ClimateDataPointPersistence {
 
     void persist(ClimateDataPoint dataPoint);
 
-    @Deprecated
-    List<ClimateDataPoint> read();
-
     Optional<ClimateDataPoint> getMostCurrentClimateDataPoint(ZonedDateTime lastValidTimestamp);
 
     List<ClimateDataPoint> getDataPoints(Duration duration);

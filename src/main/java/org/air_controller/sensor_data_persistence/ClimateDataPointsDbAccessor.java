@@ -39,13 +39,6 @@ public class ClimateDataPointsDbAccessor implements ClimateDataPointPersistence 
     }
 
     @Override
-    public List<ClimateDataPoint> read() {
-        final String sql = "SELECT * FROM " + dataPointTableName + ";";
-        final EntryAdder<ClimateDataPoint> adder = this::addResultIfAvailable;
-        return database.executeQuery(sql, adder);
-    }
-
-    @Override
     public Optional<ClimateDataPoint> getMostCurrentClimateDataPoint(ZonedDateTime lastValidTimestamp) {
         final String sql =
                 "SELECT * FROM " + dataPointTableName + " i " +
