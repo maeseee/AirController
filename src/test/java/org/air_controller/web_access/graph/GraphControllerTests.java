@@ -1,8 +1,5 @@
-package org.air_controller;
+package org.air_controller.web_access.graph;
 
-import org.air_controller.web_access.AirControllerService;
-import org.air_controller.web_access.SystemController;
-import org.air_controller.web_access.graph.GraphView;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -19,20 +16,20 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(SystemController.class)
-class SystemControllerTests {
+@WebMvcTest(GraphController.class)
+class GraphControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
     @MockitoBean
-    private AirControllerService airControllerService;
+    private GraphService graphService;
 
     @Test
     void testEndpoint() throws Exception {
         final GraphView graphView = new GraphView("Test", List.of());
-        when(airControllerService.getIndoorGraphOfMeasuredValues(any(), any())).thenReturn(graphView);
+        when(graphService.getIndoorGraphOfMeasuredValues(any(), any())).thenReturn(graphView);
 
         final MvcResult result = mockMvc.perform(get("/graph/indoor/TEMPERATURE/24"))
                 .andExpect(status().isOk())

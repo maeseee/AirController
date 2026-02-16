@@ -1,11 +1,10 @@
-package org.air_controller.web_access;
+package org.air_controller.web_access.graph;
 
 import lombok.extern.slf4j.Slf4j;
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.MeasuredValue;
-import org.air_controller.web_access.graph.GraphItem;
-import org.air_controller.web_access.graph.GraphView;
+import org.air_controller.web_access.ItemReducer;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -17,13 +16,13 @@ import java.util.function.Function;
 
 @Service
 @Slf4j
-public class AirControllerService {
+public class GraphService {
     private static final int MAX_NUMBER_OF_ITEMS = 150;
 
     private final ClimateDataPointsDbAccessor indoorDataPointsAccessor;
     private final ClimateDataPointsDbAccessor outdoorDataPointsAccessor;
 
-    public AirControllerService(ClimateDataPointsDbAccessor indoorDataPointsAccessor, ClimateDataPointsDbAccessor outdoorDataPointsAccessor) {
+    public GraphService(ClimateDataPointsDbAccessor indoorDataPointsAccessor, ClimateDataPointsDbAccessor outdoorDataPointsAccessor) {
         this.indoorDataPointsAccessor = indoorDataPointsAccessor;
         this.outdoorDataPointsAccessor = outdoorDataPointsAccessor;
     }

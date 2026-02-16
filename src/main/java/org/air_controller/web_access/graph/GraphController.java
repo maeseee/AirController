@@ -1,7 +1,6 @@
-package org.air_controller.web_access;
+package org.air_controller.web_access.graph;
 
 import org.air_controller.sensor_values.MeasuredValue;
-import org.air_controller.web_access.graph.GraphView;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,11 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Duration;
 
 @RestController
-public class SystemController {
+public class GraphController {
 
-    private final AirControllerService service;
+    private final GraphService service;
 
-    public SystemController(AirControllerService service) {
+    public GraphController(GraphService service) {
         this.service = service;
     }
 
