@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -30,13 +31,13 @@ class ClimateDataPointTest {
                 .setTemperatureCelsius(random.nextDouble() * 100)
                 .setHumidityRelative(random.nextDouble() * 100)
                 .setCo2(random.nextDouble() * 100000)
-                .setTime(ZonedDateTime.of(LocalDateTime.of(2024, 9, 27, 20, 51, 12), ZoneOffset.UTC))
+                .setTime(ZonedDateTime.now(ZoneOffset.UTC))
                 .build();
         final ClimateDataPointPersistence testee = new ClimateDataPointsDbAccessor(new LocalInMemoryDatabase(), TABLE_NAME);
-        final int initialSize = testee.read().size();
+        final int initialSize = testee.getDataPoints(Duration.ofHours(1)).size();
 
         testee.persist(inputClimateDataPoint);
-        final List<ClimateDataPoint> DataPoints = testee.read();
+        final List<ClimateDataPoint> DataPoints = testee.getDataPoints(Duration.ofHours(1));
 
         assertThat(DataPoints).size().isEqualTo(initialSize + 1);
     }
@@ -111,7 +112,7 @@ class ClimateDataPointTest {
 
         final String dataPointString = dataPoint.toString();
 
-        final String expectedString = "ClimateDataPoint{Temperature=12.3°C, Humidity=45.6%, CO2=789ppm" + "}";
+        final String expectedString = "ClimateDataPoint{TEMPERATURE=12.3°C, HUMIDITY=45.6%, CO2=789ppm" + "}";
         assertThat(dataPointString).isEqualTo(expectedString);
     }
 
@@ -126,7 +127,7 @@ class ClimateDataPointTest {
 
         final String dataPointString = dataPoint.toString();
 
-        final String expectedString = "ClimateDataPoint{Temperature=12.3°C, Humidity=45.6%" + "}";
+        final String expectedString = "ClimateDataPoint{TEMPERATURE=12.3°C, HUMIDITY=45.6%" + "}";
         assertThat(dataPointString).isEqualTo(expectedString);
     }
 }
