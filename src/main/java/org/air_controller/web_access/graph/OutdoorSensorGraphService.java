@@ -5,12 +5,10 @@ import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.MeasuredValue;
 import org.air_controller.web_access.ItemReducer;
+import org.air_controller.web_access.TimeUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.function.Function;
 
@@ -37,16 +35,10 @@ public class OutdoorSensorGraphService {
         final List<GraphItem> items = dataPoints.stream()
                 .filter(dataPoint -> valueExtractor.apply(dataPoint) != null)
                 .map(dataPoint -> new GraphItem(
-                        toLocalDateTime(dataPoint.timestamp()),
+                        TimeUtils.toLocalDateTime(dataPoint.timestamp()),
                         valueExtractor.apply(dataPoint)
                 ))
                 .toList();
         return new GraphView(title, ItemReducer.reduceTo(items, MAX_NUMBER_OF_ITEMS));
-    }
-
-    private LocalDateTime toLocalDateTime(ZonedDateTime timestamp) {
-        return timestamp
-                .withZoneSameInstant(ZoneId.of("Europe/Berlin"))
-                .toLocalDateTime();
     }
 }

@@ -4,12 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.web_access.ItemReducer;
+import org.air_controller.web_access.TimeUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -34,15 +32,9 @@ public class SystemGraphService {
     private GraphView createGraphView(List<SystemAction> dataPoints) {
         final List<GraphItem> items = dataPoints.stream()
                 .map(dataPoint -> new GraphItem(
-                        toLocalDateTime(dataPoint.actionTime()),
+                        TimeUtils.toLocalDateTime(dataPoint.actionTime()),
                         dataPoint.outputState().isOn() ? 1.0 : 0.0))
                 .toList();
         return new GraphView("Air flow ON/OFF", ItemReducer.reduceTo(items, MAX_NUMBER_OF_ITEMS));
-    }
-
-    private LocalDateTime toLocalDateTime(ZonedDateTime timestamp) {
-        return timestamp
-                .withZoneSameInstant(ZoneId.of("Europe/Berlin"))
-                .toLocalDateTime();
     }
 }
