@@ -16,7 +16,7 @@ class PeriodicallyAirFlow implements Rule {
     private static final Duration TWO_HOURLY_FRESH_AIR = Duration.ofMinutes(60);
     private static final double B = 1; // y = xm + b
     private static final double M = -B / TWO_HOURLY_FRESH_AIR.toMinutes(); // y = xm + b
-    private static final double CONFIDENCE_WEIGHT = 0.4;
+    private static final double CONFIDENCE_WEIGHT = 0.5;
 
     private final SystemActionDbAccessor dbAccessor;
 

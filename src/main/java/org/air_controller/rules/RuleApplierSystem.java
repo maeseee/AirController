@@ -14,7 +14,7 @@ import static java.util.Collections.emptyMap;
 
 @RequiredArgsConstructor
 public class RuleApplierSystem {
-    private static final double HYSTERESIS = 0.05;
+    private static final double HYSTERESIS = 0.07;
 
     @Getter
     private OutputState currentState = OutputState.INITIALIZING;
