@@ -27,8 +27,8 @@ class PeriodicallyAirFlowTest {
 
     @ParameterizedTest(name = "{index} => onDuration={0}, expectedResult={1}")
     @CsvSource({
-            "0, 0.4",
-            "120, -0.4",
+            "0, 0.5",
+            "120, -0.5",
             "60, 0"
     })
     void shouldReturnPercentage(int onDuration, double expectedResult) {

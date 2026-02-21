@@ -110,7 +110,7 @@ class RuleApplierTest {
     void shouldTurnOff_whenAirFlowOutOfHysteresis() {
         when(rule.turnOnConfidence())
                 .thenReturn(new Confidence(1.0, CONFIDENCE_WEIGHT)) // on
-                .thenReturn(new Confidence(-0.06, CONFIDENCE_WEIGHT)); // out of hysteresis
+                .thenReturn(new Confidence(-0.075, CONFIDENCE_WEIGHT)); // out of hysteresis
         freshAirRules.add(rule);
         final RuleApplier testee = new RuleApplier(ventilationSystem, ventilationSystemPersistence, freshAirRules, exchangeHumidityRules);
 
