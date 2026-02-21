@@ -26,13 +26,34 @@ class HumidityControlExchangerTest {
 
     @ParameterizedTest(name = "{index} => indoorHumidity={0}%, outdoorHumidity={1}%, expectedResult={2}")
     @CsvSource({
-            "60.0, 52.5, false",
-            "45.0, 52.5, false",
-            "45.0, 65.0, false",
-            "40.0, 27.5, true",
-            "65.0, 77.5, true",
+            "60.0, 52.5",
+            "45.0, 52.5",
+            "45.0, 65.0",
     })
-    void shouldControlHumidityExchanger(double relativeIndoorHumidity, double relativeOutdoorHumidity, boolean isPositiv)
+    void shouldControlHumidityExchanger_whenOff(double relativeIndoorHumidity, double relativeOutdoorHumidity)
+            throws InvalidArgumentException {
+        final HumidityControlExchanger testee = createHumidityControlExchanger(relativeIndoorHumidity, relativeOutdoorHumidity);
+
+        final Confidence result = testee.turnOnConfidence();
+
+        assertThat(result.value()).isNegative();
+    }
+
+    @ParameterizedTest(name = "{index} => indoorHumidity={0}%, outdoorHumidity={1}%, expectedResult={2}")
+    @CsvSource({
+            "40.0, 27.5",
+            "65.0, 77.5",
+    })
+    void shouldControlHumidityExchanger_whenOn(double relativeIndoorHumidity, double relativeOutdoorHumidity)
+            throws InvalidArgumentException {
+        final HumidityControlExchanger testee = createHumidityControlExchanger(relativeIndoorHumidity, relativeOutdoorHumidity);
+
+        final Confidence result = testee.turnOnConfidence();
+
+        assertThat(result.value()).isPositive();
+    }
+
+    private HumidityControlExchanger createHumidityControlExchanger(double relativeIndoorHumidity, double relativeOutdoorHumidity)
             throws InvalidArgumentException {
         final ClimateDataPoint indoorDataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(22.0)
@@ -45,14 +66,6 @@ class HumidityControlExchangerTest {
         when(indoor.getCurrentDataPoint()).thenReturn(Optional.of(indoorDataPoint));
         when(outdoor.getCurrentDataPoint()).thenReturn(Optional.of(outdoorClimateDataPoint));
         final ClimateSensors sensors = new ClimateSensors(indoor, outdoor);
-        final HumidityControlExchanger testee = new HumidityControlExchanger(sensors);
-
-        final Confidence result = testee.turnOnConfidence();
-
-        if (isPositiv) {
-            assertThat(result.value()).isPositive();
-        } else {
-            assertThat(result.value()).isNegative();
-        }
+        return new HumidityControlExchanger(sensors);
     }
 }
