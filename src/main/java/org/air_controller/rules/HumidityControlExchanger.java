@@ -17,7 +17,6 @@ class HumidityControlExchanger implements Rule {
 
     @Override
     public Confidence turnOnConfidence() {
-        double impact = humidityControlAirFlow.turnOnConfidence().value() < 0 ? 1 : -1;
-        return Confidence.createWeighted(impact, 1.0);
+        return humidityControlAirFlow.turnOnConfidence().invertConfidence();
     }
 }
