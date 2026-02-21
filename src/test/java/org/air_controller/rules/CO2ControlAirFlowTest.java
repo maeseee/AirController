@@ -42,6 +42,6 @@ class CO2ControlAirFlowTest {
 
         final Confidence result = testee.turnOnConfidence();
 
-        assertThat(result.getWeightedConfidenceValue()).isEqualTo(expectedConfidence);
+        assertThat(result.value()).isEqualTo(expectedConfidence);
     }
 }

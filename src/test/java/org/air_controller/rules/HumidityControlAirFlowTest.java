@@ -56,7 +56,7 @@ class HumidityControlAirFlowTest {
 
         final Confidence result = testee.turnOnConfidence();
 
-        assertThat(result.getWeightedConfidenceValue()).isCloseTo(expectedResult, within(0.01));
+        assertThat(result.value()).isCloseTo(expectedResult, within(0.01));
     }
 
     @Test
@@ -67,6 +67,6 @@ class HumidityControlAirFlowTest {
 
         final Confidence result = testee.turnOnConfidence();
 
-        assertThat(result.getWeightedConfidenceValue()).isEqualTo(0.0);
+        assertThat(result.value()).isEqualTo(0.0);
     }
 }

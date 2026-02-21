@@ -1,13 +1,16 @@
 package org.air_controller.rules;
 
-import lombok.Getter;
+public record Confidence(double value) {
 
-@Getter
-public class Confidence {
+    public static Confidence createWeighted(double value, double weight) {
+        return new Confidence(Math.max(Math.min(value, 1.0), -1.0) * weight);
+    }
 
-    private final double weightedConfidenceValue;
+    public static Confidence createEmpty() {
+        return new Confidence(0.0);
+    }
 
-    public Confidence(double confidenceValue, double weight) {
-        weightedConfidenceValue = Math.max(Math.min(confidenceValue, 1.0), -1.0) * weight;
+    public Confidence invertConfidence() {
+        return new Confidence(-value);
     }
 }

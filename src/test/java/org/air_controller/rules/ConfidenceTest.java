@@ -15,9 +15,9 @@ class ConfidenceTest {
             "10.0, 1.0",
     })
     void shouldLimitValue_whenAboveExpectation(double confidenceValue, double expectedValue) {
-        final Confidence testee = new Confidence(confidenceValue, 1.0);
+        final Confidence testee = Confidence.createWeighted(confidenceValue, 1.0);
 
-        final double weightedConfidenceValue = testee.getWeightedConfidenceValue();
+        final double weightedConfidenceValue = testee.value();
 
         assertThat(weightedConfidenceValue).isEqualTo(expectedValue);
     }
@@ -31,8 +31,8 @@ class ConfidenceTest {
             "0.0, 1.0, 0.0"
     })
     void shouldWeightConfidence(double confidenceValue, double weight, double expectedWeightedValue) {
-        final Confidence result = new Confidence(confidenceValue, weight);
+        final Confidence result = Confidence.createWeighted(confidenceValue, weight);
 
-        assertThat(result.getWeightedConfidenceValue()).isCloseTo(expectedWeightedValue, within(0.001));
+        assertThat(result.value()).isCloseTo(expectedWeightedValue, within(0.001));
     }
 }

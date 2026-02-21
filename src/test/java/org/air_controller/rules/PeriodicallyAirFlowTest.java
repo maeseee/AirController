@@ -41,6 +41,6 @@ class PeriodicallyAirFlowTest {
 
         final Confidence airFlowNeed = testee.turnOnConfidence();
 
-        assertThat(airFlowNeed.getWeightedConfidenceValue()).isCloseTo(expectedResult, within(0.01));
+        assertThat(airFlowNeed.value()).isCloseTo(expectedResult, within(0.01));
     }
 }

@@ -27,9 +27,9 @@ class CO2ControlAirFlow implements Rule {
     public Confidence turnOnConfidence() {
         final Optional<CarbonDioxide> indoorCo2 = indoorSensor.getCurrentDataPoint().flatMap(ClimateDataPoint::co2);
         if (indoorCo2.isEmpty()) {
-            return new Confidence(0.0, CONFIDENCE_WEIGHT);
+            return Confidence.createEmpty();
         }
         final double impact = M * indoorCo2.get().ppm() + B;
-        return new Confidence(impact, CONFIDENCE_WEIGHT);
+        return Confidence.createWeighted(impact, CONFIDENCE_WEIGHT);
     }
 }

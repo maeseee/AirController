@@ -48,6 +48,6 @@ class HumidityControlExchangerTest {
 
         final Confidence result = testee.turnOnConfidence();
 
-        assertThat(result.getWeightedConfidenceValue()).isCloseTo(expectedResult, within(0.01));
+        assertThat(result.value()).isCloseTo(expectedResult, within(0.01));
     }
 }

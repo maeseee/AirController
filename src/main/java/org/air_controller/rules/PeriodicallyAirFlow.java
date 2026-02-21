@@ -29,7 +29,7 @@ class PeriodicallyAirFlow implements Rule {
     public Confidence turnOnConfidence() {
         final Duration airFlowOnDurationInLastHour = getOnDurationOfLastTwoHours();
         final double impact = M * airFlowOnDurationInLastHour.toMinutes() + B;
-        return new Confidence(impact, CONFIDENCE_WEIGHT);
+        return Confidence.createWeighted(impact, CONFIDENCE_WEIGHT);
     }
 
     public Duration getOnDurationOfLastTwoHours() {

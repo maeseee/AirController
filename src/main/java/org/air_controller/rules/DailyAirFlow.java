@@ -21,7 +21,7 @@ class DailyAirFlow implements Rule {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final double seasonFactor = calculateSeasonFactor(MonthDay.from(now));
         final double confidence = getCosinus(now.toLocalTime());
-        return new Confidence(confidence * seasonFactor, CONFIDENCE_WEIGHT);
+        return Confidence.createWeighted(confidence * seasonFactor, CONFIDENCE_WEIGHT);
     }
 
     private double calculateSeasonFactor(MonthDay dateNow) {

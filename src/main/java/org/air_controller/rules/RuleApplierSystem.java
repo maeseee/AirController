@@ -45,7 +45,7 @@ public class RuleApplierSystem {
         return rules.stream().collect(
                 Collectors.toMap(
                         Rule::name,
-                        rule -> rule.turnOnConfidence().getWeightedConfidenceValue()));
+                        rule -> rule.turnOnConfidence().value()));
     }
 
     private double getTotalConfidence(Map<String, Double> confidences) {

@@ -27,7 +27,7 @@ class HumidityControlAirFlow implements Rule {
         final Optional<ClimateDataPoint> indoorDataPoint = sensors.indoor().getCurrentDataPoint();
         final Optional<ClimateDataPoint> outdoorDataPoint = sensors.outdoor().getCurrentDataPoint();
         if (indoorDataPoint.isEmpty() || outdoorDataPoint.isEmpty()) {
-            return new Confidence(0.0, CONFIDENCE_WEIGHT);
+            return Confidence.createEmpty();
         }
         return getConfidence(indoorDataPoint.get(), outdoorDataPoint.get());
     }
@@ -38,7 +38,7 @@ class HumidityControlAirFlow implements Rule {
         final double changePotential = toConfidence(indoorHumidity - IDEAL_RELATIV_HUMIDITY);
         final double outdoorHumidityOnIndoorTemperature = outdoorClimateDataPoint.humidity().getRelativeHumidity(indoorTemperature);
         final double changePower = toConfidence(indoorHumidity - outdoorHumidityOnIndoorTemperature);
-        return new Confidence(changePotential * changePower, CONFIDENCE_WEIGHT);
+        return Confidence.createWeighted(changePotential * changePower, CONFIDENCE_WEIGHT);
     }
 
     private double toConfidence(double differenceToIdeal) {
