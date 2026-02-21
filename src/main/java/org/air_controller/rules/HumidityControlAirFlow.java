@@ -2,8 +2,9 @@ package org.air_controller.rules;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.air_controller.sensor.SensorException;
-import org.air_controller.sensor_values.*;
+import org.air_controller.sensor_values.ClimateDataPoint;
+import org.air_controller.sensor_values.ClimateSensors;
+import org.air_controller.sensor_values.Temperature;
 
 import java.util.Optional;
 
@@ -32,27 +33,15 @@ class HumidityControlAirFlow implements Rule {
     }
 
     private Confidence getConfidence(ClimateDataPoint indoorDataPoint, ClimateDataPoint outdoorClimateDataPoint) {
-        final double indoorHumidity = indoorDataPoint.humidity().absoluteHumidity();
         final Temperature indoorTemperature = indoorDataPoint.temperature();
-        final double indoorToIdealDiff = indoorHumidity - absoluteHumidityFrom(IDEAL_RELATIV_HUMIDITY, indoorTemperature);
-        final double indoorToOutdoorDiff = indoorHumidity - outdoorClimateDataPoint.humidity().absoluteHumidity();
-        return calculateConfidence(indoorToIdealDiff, indoorToOutdoorDiff, indoorTemperature);
+        final double indoorHumidity = indoorDataPoint.humidity().getRelativeHumidity(indoorTemperature);
+        final double changePotential = toConfidence(indoorHumidity - IDEAL_RELATIV_HUMIDITY);
+        final double outdoorHumidityOnIndoorTemperature = outdoorClimateDataPoint.humidity().getRelativeHumidity(indoorTemperature);
+        final double changePower = toConfidence(indoorHumidity - outdoorHumidityOnIndoorTemperature);
+        return new Confidence(changePotential * changePower, CONFIDENCE_WEIGHT);
     }
 
-    private Confidence calculateConfidence(double indoorToIdealDiff, double indoorToOutdoorDiff, Temperature indoorTemperature) {
-        final double confidenceBase = absoluteHumidityFrom(UPPER_RELATIV_HUMIDITY, indoorTemperature) -
-                absoluteHumidityFrom(IDEAL_RELATIV_HUMIDITY, indoorTemperature);
-        final double indoorConfidence = indoorToIdealDiff / confidenceBase;
-        final double outdoorCorrectionFactor = indoorToOutdoorDiff / confidenceBase;
-        return new Confidence(indoorConfidence * outdoorCorrectionFactor, CONFIDENCE_WEIGHT);
-    }
-
-    private double absoluteHumidityFrom(double relativeHumidity, Temperature indoorTemperature) {
-        try {
-            return Humidity.createFromRelative(relativeHumidity, indoorTemperature).absoluteHumidity();
-        } catch (InvalidArgumentException e) {
-            log.error("Ideal humidity could not be created", e);
-            throw new SensorException("Invalid sensor values", e.getCause());
-        }
+    private double toConfidence(double differenceToIdeal) {
+        return differenceToIdeal / (UPPER_RELATIV_HUMIDITY - IDEAL_RELATIV_HUMIDITY);
     }
 }
