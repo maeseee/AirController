@@ -5,7 +5,7 @@ import org.air_controller.gpio.GpioPins;
 import org.air_controller.gpio.dingtian_relay.DingtianPin;
 import org.air_controller.gpio.dingtian_relay.DingtianRelay;
 import org.air_controller.rules.FreshAirRuleBuilder;
-import org.air_controller.rules.HumidityExchangerRuleBuilder;
+import org.air_controller.rules.HumidityExchangerRuleFactory;
 import org.air_controller.rules.Rule;
 import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor.ClimateSensorsFactory;
@@ -65,8 +65,7 @@ class ApplicationBuilder {
     }
 
     private RuleApplier createRuleApplier() {
-        final List<Rule> humidityExchangeRules =
-                new HumidityExchangerRuleBuilder().getHumidityExchangeRules(sensors);
+        final List<Rule> humidityExchangeRules = new HumidityExchangerRuleFactory().build(sensors);
         return new RuleApplier(ventilationSystem, ventilationSystemPersistence, freshAirRules, humidityExchangeRules);
     }
 
