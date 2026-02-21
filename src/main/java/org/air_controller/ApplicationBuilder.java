@@ -4,7 +4,7 @@ import lombok.Setter;
 import org.air_controller.gpio.GpioPins;
 import org.air_controller.gpio.dingtian_relay.DingtianPin;
 import org.air_controller.gpio.dingtian_relay.DingtianRelay;
-import org.air_controller.rules.FreshAirRuleBuilder;
+import org.air_controller.rules.FreshAirRuleFactory;
 import org.air_controller.rules.HumidityExchangerRuleFactory;
 import org.air_controller.rules.Rule;
 import org.air_controller.rules.RuleApplier;
@@ -74,6 +74,6 @@ class ApplicationBuilder {
     }
 
     private List<Rule> createFreshAirRules() {
-        return new FreshAirRuleBuilder().build(sensors, persistence.getVentilationSystemDbAccessors().airFlow());
+        return new FreshAirRuleFactory().build(sensors, persistence.getVentilationSystemDbAccessors().airFlow());
     }
 }
