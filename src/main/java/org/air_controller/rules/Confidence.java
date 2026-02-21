@@ -10,8 +10,4 @@ public class Confidence {
     public Confidence(double confidenceValue, double weight) {
         weightedConfidenceValue = Math.max(Math.min(confidenceValue, 1.0), -1.0) * weight;
     }
-
-    public String getWeightedConfidenceValueString() {
-        return String.format("%.2f", weightedConfidenceValue);
-    }
 }
