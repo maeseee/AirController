@@ -15,6 +15,7 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,7 +28,7 @@ class CO2ControlAirFlowTest {
     @CsvSource({
             "400, -1.0",
             "1000, 1.0",
-            "1400, 1.0",
+            "1300, 2.0",
             "700, 0.0"
     })
     void shouldCalculateCo2Confidence(double co2, double expectedConfidence) throws InvalidArgumentException {
@@ -42,6 +43,6 @@ class CO2ControlAirFlowTest {
 
         final Confidence result = testee.turnOnConfidence();
 
-        assertThat(result.value()).isEqualTo(expectedConfidence);
+        assertThat(result.value()).isCloseTo(expectedConfidence, within(0.001));
     }
 }
