@@ -1,4 +1,4 @@
-package org.air_controller.web_access;
+package org.air_controller.web_access.graph;
 
 import java.util.List;
 import java.util.stream.IntStream;

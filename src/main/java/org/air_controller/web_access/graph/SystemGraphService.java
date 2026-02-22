@@ -3,8 +3,6 @@ package org.air_controller.web_access.graph;
 import lombok.extern.slf4j.Slf4j;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
-import org.air_controller.web_access.ItemReducer;
-import org.air_controller.web_access.TimeUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
