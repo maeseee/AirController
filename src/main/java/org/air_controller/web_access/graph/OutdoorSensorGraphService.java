@@ -12,7 +12,7 @@ import java.util.function.Function;
 
 @Service
 @Slf4j
-public class OutdoorSensorGraphService {
+class OutdoorSensorGraphService {
     private static final int MAX_NUMBER_OF_ITEMS = 150;
 
     private final ClimateDataPointsDbAccessor outdoorDataPointsAccessor;
