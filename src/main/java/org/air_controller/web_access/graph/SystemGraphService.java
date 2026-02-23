@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class SystemGraphService {
+class SystemGraphService {
     private static final int MAX_NUMBER_OF_ITEMS = 150;
 
     private final SystemActionDbAccessor airFlowDbAccessor;

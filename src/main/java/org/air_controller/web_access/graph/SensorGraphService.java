@@ -3,7 +3,7 @@ package org.air_controller.web_access.graph;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public abstract class SensorGraphService {
+abstract class SensorGraphService {
 
     protected ResponseEntity<GraphView> generateResponse(GraphView graph) {
         if (graph.items().isEmpty()) {

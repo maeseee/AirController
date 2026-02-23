@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 
 @Service
 @Slf4j
-public class ManualAirFlowService {
+class ManualAirFlowService {
 
     private final ApplicationEventPublisher publisher;
 

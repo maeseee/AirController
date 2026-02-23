@@ -19,7 +19,7 @@ import java.util.Optional;
 import static java.util.Collections.emptyList;
 
 @Service
-public class CardViewService {
+class CardViewService {
 
     private static final Duration INFO_DURATION = Duration.ofMinutes(10);
 
