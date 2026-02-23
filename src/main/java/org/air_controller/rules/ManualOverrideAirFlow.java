@@ -16,7 +16,7 @@ class ManualOverrideAirFlow implements Rule {
 
     @Override
     public String name() {
-        return "Manual Override Air Flow";
+        return "Overridden Air Flow";
     }
 
     @Override

@@ -33,7 +33,7 @@ public record VentilationSystemPersistenceData(OutputState action, double totalC
 
     public String getConfidencesText() {
         return confidences.entrySet().stream()
-                .map(confidence -> confidence.getKey() + ": " + confidence.getValue())
+                .map(confidence -> confidence.getKey() + ": " + String.format("%.3f", confidence.getValue()))
                 .collect(Collectors.joining(",  "));
     }
 
