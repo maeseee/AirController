@@ -12,6 +12,7 @@ public class FreshAirRuleFactory {
         final DailyAirFlow dailyAirFlow = new DailyAirFlow();
         final HumidityControlAirFlow humidityControlAirFlow = new HumidityControlAirFlow(sensors);
         final PeriodicallyAirFlow periodicallyAirFlow = new PeriodicallyAirFlow(dbAccessor);
-        return List.of(co2ControlAirFlow, dailyAirFlow, humidityControlAirFlow, periodicallyAirFlow);
+        final ManualOverrideAirFlow manualOverrideAirFlow = new ManualOverrideAirFlow();
+        return List.of(co2ControlAirFlow, dailyAirFlow, humidityControlAirFlow, periodicallyAirFlow, manualOverrideAirFlow);
     }
 }
