@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 @Service
@@ -20,6 +21,6 @@ class ManualAirFlowService {
     }
 
     public void notifyManualAirFlowOverride(Duration duration, boolean switchOn) {
-        publisher.publishEvent(new ManualOverrideEvent(ZonedDateTime.now(), OutputState.fromIsOnState(switchOn), duration));
+        publisher.publishEvent(new ManualOverrideEvent(ZonedDateTime.now(ZoneOffset.UTC), OutputState.fromIsOnState(switchOn), duration));
     }
 }
