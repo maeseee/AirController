@@ -21,6 +21,7 @@ class ManualAirFlowService {
     }
 
     public void notifyManualAirFlowOverride(Duration duration, boolean switchOn) {
+        log.info("ManualAirFlow triggered {} for {} minutes", switchOn, duration.toMinutes());
         publisher.publishEvent(new ManualOverrideEvent(ZonedDateTime.now(ZoneOffset.UTC), OutputState.fromIsOnState(switchOn), duration));
     }
 }
