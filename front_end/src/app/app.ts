@@ -6,11 +6,12 @@ import {MetricCardComponent} from './components/card/metric-card';
 import {CardViewService} from './services/cardView/CardViewService';
 import {GraphChartComponent} from './components/graph/graph';
 import {MeasuredValue} from './components/graph/MeasuredValue';
+import {AirflowControlComponent} from './components/actions/OverrideAirFlow';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, MetricCardComponent, GraphChartComponent],
+  imports: [CommonModule, NgOptimizedImage, MetricCardComponent, GraphChartComponent, AirflowControlComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
