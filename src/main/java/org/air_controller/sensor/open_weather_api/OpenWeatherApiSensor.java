@@ -3,8 +3,9 @@ package org.air_controller.sensor.open_weather_api;
 import org.air_controller.http.HttpsGetRequest;
 import org.air_controller.secrets.Secret;
 import org.air_controller.sensor.SensorReader;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class OpenWeatherApiSensor implements SensorReader {
     private static final String LAT = "47.127459";
     private static final String LON = "8.245553";

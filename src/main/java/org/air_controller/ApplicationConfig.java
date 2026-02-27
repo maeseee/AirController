@@ -70,8 +70,7 @@ public class ApplicationConfig {
     }
 
     @Bean("outdoorSensor")
-    public ClimateSensor createOutdoorSensor(@Qualifier("outdoorPersistence") ClimateDataPointPersistence persistence) {
-        final OpenWeatherApiSensor sensor = new OpenWeatherApiSensor();
+    public ClimateSensor createOutdoorSensor(@Qualifier("outdoorPersistence") ClimateDataPointPersistence persistence, OpenWeatherApiSensor sensor) {
         return new OpenWeatherApiAdapter(persistence, sensor);
     }
 
