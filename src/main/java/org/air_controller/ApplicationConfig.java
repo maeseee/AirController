@@ -7,9 +7,12 @@ import org.air_controller.persistence.MariaDatabase;
 import org.air_controller.rules.AirFlowRule;
 import org.air_controller.rules.HumidityExchangeRule;
 import org.air_controller.rules.RuleApplier;
-import org.air_controller.sensor.IndoorSensorFactory;
-import org.air_controller.sensor.OutdoorSensorFactory;
-import org.air_controller.sensor.SensorFactory;
+import org.air_controller.sensor.ClimateSensor;
+import org.air_controller.sensor.SensorException;
+import org.air_controller.sensor.open_weather_api.OpenWeatherApiSensor;
+import org.air_controller.sensor.open_weather_api_adapter.OpenWeatherApiAdapter;
+import org.air_controller.sensor.ping_ping_adapter.QingPingAdapter;
+import org.air_controller.sensor.qing_ping.QingPingSensor;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.air_controller.sensor_data_persistence.ClimateSensorAccessors;
@@ -21,10 +24,12 @@ import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemPart;
 import org.air_controller.system_action.VentilationSystemDbAccessors;
 import org.air_controller.system_action.VentilationSystemPersistence;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -44,20 +49,44 @@ public class ApplicationConfig {
                 createSystemActionDbAccessor(SystemPart.HUMIDITY));
     }
 
-    @Bean
-    public ClimateSensorAccessors createClimateSensorAccessors() {
-        return new ClimateSensorAccessors(
-                createClimateSensorAccessor(ClimateDataPointPersistence.INDOOR_TABLE_NAME),
-                createClimateSensorAccessor(ClimateDataPointPersistence.OUTDOOR_TABLE_NAME));
+    @Bean("indoorPersistence")
+    public ClimateDataPointPersistence createIndoorClimateSensorPersistence() {
+        return createClimateSensorAccessor(ClimateDataPointPersistence.INDOOR_TABLE_NAME);
+    }
+
+    @Bean("outdoorPersistence")
+    public ClimateDataPointPersistence createOutdoorClimateSensorPersistence() {
+        return createClimateSensorAccessor(ClimateDataPointPersistence.OUTDOOR_TABLE_NAME);
     }
 
     @Bean
-    public ClimateSensors createSensors(ClimateSensorAccessors accessors) {
-        final SensorFactory indoorSensorFactory = new IndoorSensorFactory();
-        final SensorFactory outdoorSensorFactory = new OutdoorSensorFactory();
-        return new ClimateSensors(
-                indoorSensorFactory.build(accessors.indoor()),
-                outdoorSensorFactory.build(accessors.outdoor()));
+    public ClimateSensorAccessors createClimateSensorAccessors(
+            @Qualifier("indoorPersistence") ClimateDataPointPersistence indoorPersistence,
+            @Qualifier("outdoorPersistence") ClimateDataPointPersistence outdoorPersistence) {
+        return new ClimateSensorAccessors(indoorPersistence, outdoorPersistence);
+    }
+
+    @Bean("indoorSensor")
+    public ClimateSensor createIndoorSensor(@Qualifier("indoorPersistence") ClimateDataPointPersistence persistence)
+    {
+        try {
+            final QingPingSensor sensor = new QingPingSensor();
+            return new QingPingAdapter(persistence, sensor);
+        } catch (URISyntaxException e) {
+            throw new SensorException("Indoor sensor could not be created", e.getCause());
+        }
+    }
+
+    @Bean("outdoorSensor")
+    public ClimateSensor createOutdoorSensor(@Qualifier("outdoorPersistence") ClimateDataPointPersistence persistence)
+    {
+        final OpenWeatherApiSensor sensor = new OpenWeatherApiSensor();
+        return new OpenWeatherApiAdapter(persistence, sensor);
+    }
+
+    @Bean
+    public ClimateSensors createSensors(@Qualifier("indoorSensor") ClimateSensor indoor, @Qualifier("outdoorSensor") ClimateSensor outdoor) {
+        return new ClimateSensors(indoor, outdoor);
     }
 
     @Bean
