@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 import java.util.concurrent.*;
 
 @Slf4j
-class Application {
+public class Application {
     private static final Duration SENSOR_READ_PERIOD = Duration.ofMinutes(10);
     private static final Duration RULE_APPLIER_PERIOD = Duration.ofMinutes(1);
 

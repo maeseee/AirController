@@ -2,7 +2,6 @@ package org.air_controller.rules;
 
 import org.air_controller.system.OutputState;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.time.ZoneOffset;
@@ -30,10 +29,8 @@ class ManualOverrideAirFlow implements Rule {
     }
 
     @EventListener
-    @Async
     public void manualOverride(ManualOverrideEvent event) {
         validUntil = event.getTimestamp().plus(event.getDuration());
         givenState = event.getAction();
     }
-
 }

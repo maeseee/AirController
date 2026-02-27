@@ -8,15 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AirControllerApplication {
 
     static void main(String[] args) {
-        final Application application = createApplication();
-        application.run();
         final SpringApplication app = new SpringApplication(AirControllerApplication.class);
         app.setWebApplicationType(WebApplicationType.SERVLET);
         app.run(args);
-    }
-
-    private static Application createApplication() {
-        final ApplicationBuilder builder = new ApplicationBuilder();
-        return builder.build();
     }
 }
