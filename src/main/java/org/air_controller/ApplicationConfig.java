@@ -4,9 +4,8 @@ import org.air_controller.gpio.GpioPins;
 import org.air_controller.gpio.dingtian_relay.DingtianPin;
 import org.air_controller.gpio.dingtian_relay.DingtianRelay;
 import org.air_controller.persistence.MariaDatabase;
-import org.air_controller.rules.FreshAirRuleFactory;
-import org.air_controller.rules.HumidityExchangerRuleFactory;
-import org.air_controller.rules.Rule;
+import org.air_controller.rules.AirFlowRule;
+import org.air_controller.rules.HumidityExchangeRule;
 import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor.IndoorSensorFactory;
 import org.air_controller.sensor.OutdoorSensorFactory;
@@ -72,20 +71,14 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public List<Rule> createFreshAirRules(ClimateSensors sensors, VentilationSystemDbAccessors accessors) {
-        return new FreshAirRuleFactory().build(sensors, accessors.airFlow());
-    }
-
-    @Bean
     public DailyOnTimeLogger createStatistics(VentilationSystemDbAccessors accessors) {
         return new DailyOnTimeLogger(accessors.airFlow());
     }
 
     @Bean
     public RuleApplier createRuleApplier(VentilationSystem ventilationSystem, VentilationSystemPersistence ventilationSystemPersistence,
-            List<Rule> freshAirRules, ClimateSensors sensors) {
-        final List<Rule> humidityExchangeRules = new HumidityExchangerRuleFactory().build(sensors);
-        return new RuleApplier(ventilationSystem, ventilationSystemPersistence, freshAirRules, humidityExchangeRules);
+            List<AirFlowRule> airFlowRules, List<HumidityExchangeRule> humidityExchangeRules) {
+        return new RuleApplier(ventilationSystem, ventilationSystemPersistence, airFlowRules, humidityExchangeRules);
     }
 
     @Bean

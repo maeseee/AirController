@@ -1,9 +1,12 @@
 package org.air_controller.rules;
 
+import org.springframework.stereotype.Component;
+
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 
-class DailyAirFlow implements Rule {
+@Component
+class DailyAirFlow implements AirFlowRule {
 
     private static final MonthDay SUMMER_TIME_START = MonthDay.of(5, 10);
     private static final MonthDay SUMMER_TIME_END = MonthDay.of(9, 21);

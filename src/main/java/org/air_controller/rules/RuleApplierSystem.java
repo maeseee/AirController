@@ -18,7 +18,7 @@ public class RuleApplierSystem {
 
     @Getter
     private OutputState currentState = OutputState.INITIALIZING;
-    private final List<Rule> rules;
+    private final List<? extends Rule> rules;
     private final Consumer<OutputState> updateAction;
     private final Consumer<VentilationSystemPersistenceData> updatePersistence;
 

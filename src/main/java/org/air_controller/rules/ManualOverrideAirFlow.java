@@ -8,7 +8,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 @Component
-class ManualOverrideAirFlow implements Rule {
+class ManualOverrideAirFlow implements AirFlowRule {
 
     private ZonedDateTime validUntil = ZonedDateTime.now(ZoneOffset.UTC);
     private OutputState givenState = OutputState.OFF;

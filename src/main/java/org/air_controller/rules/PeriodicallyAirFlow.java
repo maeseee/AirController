@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.air_controller.system_action.DurationCalculator;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
+import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.ZoneOffset;
@@ -11,7 +12,8 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
-class PeriodicallyAirFlow implements Rule {
+@Component
+class PeriodicallyAirFlow implements AirFlowRule {
 
     private static final Duration TWO_HOURLY_FRESH_AIR = Duration.ofMinutes(60);
     private static final double B = 1; // y = xm + b

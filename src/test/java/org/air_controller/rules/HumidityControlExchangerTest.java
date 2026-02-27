@@ -32,7 +32,7 @@ class HumidityControlExchangerTest {
     })
     void shouldControlHumidityExchanger_whenOff(double relativeIndoorHumidity, double relativeOutdoorHumidity)
             throws InvalidArgumentException {
-        final HumidityControlExchanger testee = createHumidityControlExchanger(relativeIndoorHumidity, relativeOutdoorHumidity);
+        final HumidityExchangeExchanger testee = createHumidityControlExchanger(relativeIndoorHumidity, relativeOutdoorHumidity);
 
         final Confidence result = testee.turnOnConfidence();
 
@@ -46,14 +46,14 @@ class HumidityControlExchangerTest {
     })
     void shouldControlHumidityExchanger_whenOn(double relativeIndoorHumidity, double relativeOutdoorHumidity)
             throws InvalidArgumentException {
-        final HumidityControlExchanger testee = createHumidityControlExchanger(relativeIndoorHumidity, relativeOutdoorHumidity);
+        final HumidityExchangeExchanger testee = createHumidityControlExchanger(relativeIndoorHumidity, relativeOutdoorHumidity);
 
         final Confidence result = testee.turnOnConfidence();
 
         assertThat(result.value()).isPositive();
     }
 
-    private HumidityControlExchanger createHumidityControlExchanger(double relativeIndoorHumidity, double relativeOutdoorHumidity)
+    private HumidityExchangeExchanger createHumidityControlExchanger(double relativeIndoorHumidity, double relativeOutdoorHumidity)
             throws InvalidArgumentException {
         final ClimateDataPoint indoorDataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(22.0)
@@ -66,6 +66,6 @@ class HumidityControlExchangerTest {
         when(indoor.getCurrentDataPoint()).thenReturn(Optional.of(indoorDataPoint));
         when(outdoor.getCurrentDataPoint()).thenReturn(Optional.of(outdoorClimateDataPoint));
         final ClimateSensors sensors = new ClimateSensors(indoor, outdoor);
-        return new HumidityControlExchanger(sensors);
+        return new HumidityExchangeExchanger(sensors);
     }
 }

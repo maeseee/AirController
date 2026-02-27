@@ -5,12 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.ClimateSensors;
 import org.air_controller.sensor_values.Temperature;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
-class HumidityControlAirFlow implements Rule {
+@Component
+class HumidityControlAirFlow implements AirFlowRule {
     private static final double UPPER_RELATIV_HUMIDITY = 65.0;
     private static final double IDEAL_RELATIV_HUMIDITY = 52.0;
     private static final double CONFIDENCE_WEIGHT = 0.8;
