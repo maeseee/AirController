@@ -62,6 +62,7 @@ class RuleApplierTest {
     void shouldTurnHumidityExchangerOn_whenPositivConfidenceForHumidityAndAirFlow() {
         when(airFlowRule.turnOnConfidence()).thenReturn(Confidence.createWeighted(1.0, CONFIDENCE_WEIGHT));
         airFlowRules.add(airFlowRule);
+        when(humidityExchangeRule.turnOnConfidence()).thenReturn(Confidence.createWeighted(0.7, CONFIDENCE_WEIGHT));
         humidityExchangeRules.add(humidityExchangeRule);
         final RuleApplier testee = new RuleApplier(ventilationSystem, ventilationSystemPersistence, airFlowRules, humidityExchangeRules);
 

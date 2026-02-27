@@ -25,7 +25,7 @@ public class VentilationSystemPersistenceDataTest {
 
         final String confidencesText = testee.getConfidencesText();
 
-        assertThat(confidencesText).isEqualTo("MyConfidence: 0.5");
+        assertThat(confidencesText).isEqualTo("MyConfidence: 0.500");
     }
 
     @Test
@@ -39,7 +39,7 @@ public class VentilationSystemPersistenceDataTest {
 
         final String confidencesText = testee.getConfidencesText();
 
-        assertThat(confidencesText).isEqualTo("MyConfidence: 0.2,  Con2: 0.4");
+        assertThat(confidencesText).isEqualTo("MyConfidence: 0.200,  Con2: 0.400");
     }
 
     @Test
