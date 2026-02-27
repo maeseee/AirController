@@ -8,7 +8,6 @@ import org.air_controller.rules.AirFlowRule;
 import org.air_controller.rules.HumidityExchangeRule;
 import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor.ClimateSensor;
-import org.air_controller.sensor.SensorException;
 import org.air_controller.sensor.open_weather_api.OpenWeatherApiSensor;
 import org.air_controller.sensor.open_weather_api_adapter.OpenWeatherApiAdapter;
 import org.air_controller.sensor.ping_ping_adapter.QingPingAdapter;
@@ -29,7 +28,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -67,19 +65,12 @@ public class ApplicationConfig {
     }
 
     @Bean("indoorSensor")
-    public ClimateSensor createIndoorSensor(@Qualifier("indoorPersistence") ClimateDataPointPersistence persistence)
-    {
-        try {
-            final QingPingSensor sensor = new QingPingSensor();
-            return new QingPingAdapter(persistence, sensor);
-        } catch (URISyntaxException e) {
-            throw new SensorException("Indoor sensor could not be created", e.getCause());
-        }
+    public ClimateSensor createIndoorSensor(@Qualifier("indoorPersistence") ClimateDataPointPersistence persistence, QingPingSensor sensor) {
+        return new QingPingAdapter(persistence, sensor);
     }
 
     @Bean("outdoorSensor")
-    public ClimateSensor createOutdoorSensor(@Qualifier("outdoorPersistence") ClimateDataPointPersistence persistence)
-    {
+    public ClimateSensor createOutdoorSensor(@Qualifier("outdoorPersistence") ClimateDataPointPersistence persistence) {
         final OpenWeatherApiSensor sensor = new OpenWeatherApiSensor();
         return new OpenWeatherApiAdapter(persistence, sensor);
     }

@@ -2,6 +2,7 @@ package org.air_controller.sensor.qing_ping;
 
 import lombok.extern.slf4j.Slf4j;
 import org.air_controller.sensor.SensorReader;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URI;
@@ -9,6 +10,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 @Slf4j
+@Component
 public class QingPingSensor implements SensorReader {
     private final AccessToken accessToken;
     private final ListDevicesRequest listDevicesRequest;
