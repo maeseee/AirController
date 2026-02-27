@@ -30,12 +30,6 @@ public class MockApplicationConfig {
                 createSystemActionDbAccessorWithLocalDb(SystemPart.HUMIDITY));
     }
 
-    @Bean
-    @Primary
-    public ApplicationPersistence createMockApplicationPersistence(VentilationSystemDbAccessors accessors) {
-        return new ApplicationPersistence(accessors);
-    }
-
     private static SystemActionDbAccessor createSystemActionDbAccessorWithLocalDb(SystemPart systemPart) {
         return new SystemActionDbAccessor(new LocalInMemoryDatabase(), systemPart);
     }
