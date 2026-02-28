@@ -10,14 +10,13 @@ import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor.open_weather_api.OpenWeatherApiSensor;
 import org.air_controller.sensor.open_weather_api_adapter.OpenWeatherApiAdapter;
-import org.air_controller.sensor.qing_ping_adapter.QingPingAdapter;
 import org.air_controller.sensor.qing_ping.QingPingSensor;
+import org.air_controller.sensor.qing_ping_adapter.QingPingAdapter;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.air_controller.sensor_data_persistence.ClimateSensorAccessors;
 import org.air_controller.sensor_values.ClimateSensors;
 import org.air_controller.statistics.DailyOnTimeLogger;
-import org.air_controller.system.ControlledVentilationSystem;
 import org.air_controller.system.VentilationSystem;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemPart;
@@ -77,11 +76,6 @@ public class ApplicationConfig {
     @Bean
     public ClimateSensors createSensors(@Qualifier("indoorSensor") ClimateSensor indoor, @Qualifier("outdoorSensor") ClimateSensor outdoor) {
         return new ClimateSensors(indoor, outdoor);
-    }
-
-    @Bean
-    public VentilationSystem createVentilationSystem(GpioPins gpios) {
-        return new ControlledVentilationSystem(gpios);
     }
 
     @Bean

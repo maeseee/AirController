@@ -2,8 +2,10 @@ package org.air_controller.system;
 
 import lombok.RequiredArgsConstructor;
 import org.air_controller.gpio.GpioPins;
+import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
+@Component
 public class ControlledVentilationSystem implements VentilationSystem {
 
     private final GpioPins gpioPins;
