@@ -6,7 +6,6 @@ import org.air_controller.gpio.MockGpioPin;
 import org.air_controller.persistence.LocalInMemoryDatabase;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemPart;
-import org.air_controller.system_action.VentilationSystemDbAccessors;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -22,12 +21,17 @@ public class MockApplicationConfig {
         return new GpioPins(airFlow, humidityExchanger);
     }
 
-    @Bean
+    @Bean("airFlowAccessor")
     @Primary
-    public VentilationSystemDbAccessors createSystemActionDbAccessorsWithLocalDb() {
-        return new VentilationSystemDbAccessors(
-                createSystemActionDbAccessorWithLocalDb(SystemPart.AIR_FLOW),
-                createSystemActionDbAccessorWithLocalDb(SystemPart.HUMIDITY));
+
+    public SystemActionDbAccessor createAirFlowSystemActionDbAccessor() {
+        return createSystemActionDbAccessorWithLocalDb(SystemPart.AIR_FLOW);
+    }
+
+    @Bean("humidityAccessor")
+    @Primary
+    public SystemActionDbAccessor createHumiditySystemActionDbAccessor() {
+        return createSystemActionDbAccessorWithLocalDb(SystemPart.HUMIDITY);
     }
 
     private static SystemActionDbAccessor createSystemActionDbAccessorWithLocalDb(SystemPart systemPart) {

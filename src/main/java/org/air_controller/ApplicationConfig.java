@@ -20,7 +20,6 @@ import org.air_controller.statistics.DailyOnTimeLogger;
 import org.air_controller.system.VentilationSystem;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemPart;
-import org.air_controller.system_action.VentilationSystemDbAccessors;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -46,13 +45,6 @@ public class ApplicationConfig {
     @Bean("humidityAccessor")
     public SystemActionDbAccessor createHumiditySystemActionDbAccessor() {
         return createSystemActionDbAccessor(SystemPart.HUMIDITY);
-    }
-
-    @Bean
-    public VentilationSystemDbAccessors createSystemActionDbAccessors(
-            @Qualifier("airFlowAccessor") SystemActionDbAccessor airflow,
-            @Qualifier("humidityAccessor") SystemActionDbAccessor humidity) {
-        return new VentilationSystemDbAccessors(airflow, humidity);
     }
 
     @Bean("indoorPersistence")
@@ -88,8 +80,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public DailyOnTimeLogger createStatistics(VentilationSystemDbAccessors accessors) {
-        return new DailyOnTimeLogger(accessors.airFlow());
+    public DailyOnTimeLogger createStatistics(@Qualifier("airFlowAccessor") SystemActionDbAccessor airflow) {
+        return new DailyOnTimeLogger(airflow);
     }
 
     @Bean
