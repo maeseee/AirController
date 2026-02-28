@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Slf4j
-@Component
+@Component("outdoorSensor")
 public class OpenWeatherApiAdapter extends ClimateSensor {
     public OpenWeatherApiAdapter(@Qualifier("outdoorPersistence") ClimateDataPointPersistence persistence, OpenWeatherApiSensor sensor) {
         super(persistence, sensor);

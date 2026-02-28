@@ -54,16 +54,6 @@ public class ApplicationConfig {
         return new ClimateSensorAccessors(indoorPersistence, outdoorPersistence);
     }
 
-    @Bean("indoorSensor")
-    public ClimateSensor createIndoorSensor(@Qualifier("indoorPersistence") ClimateDataPointPersistence persistence, QingPingSensor sensor) {
-        return new QingPingAdapter(persistence, sensor);
-    }
-
-    @Bean("outdoorSensor")
-    public ClimateSensor createOutdoorSensor(@Qualifier("outdoorPersistence") ClimateDataPointPersistence persistence, OpenWeatherApiSensor sensor) {
-        return new OpenWeatherApiAdapter(persistence, sensor);
-    }
-
     @Bean
     public ClimateSensors createSensors(@Qualifier("indoorSensor") ClimateSensor indoor, @Qualifier("outdoorSensor") ClimateSensor outdoor) {
         return new ClimateSensors(indoor, outdoor);

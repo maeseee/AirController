@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@Component
+@Component("indoorSensor")
 public class QingPingAdapter extends ClimateSensor {
     private final SensorReducer sensorReducer;
     private final ListDevicesJsonParser parser;
