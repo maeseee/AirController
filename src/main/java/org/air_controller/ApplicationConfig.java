@@ -16,12 +16,8 @@ import org.air_controller.sensor_values.ClimateSensors;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemPart;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 @Configuration
 public class ApplicationConfig {
@@ -71,17 +67,6 @@ public class ApplicationConfig {
     @Bean
     public ClimateSensors createSensors(@Qualifier("indoorSensor") ClimateSensor indoor, @Qualifier("outdoorSensor") ClimateSensor outdoor) {
         return new ClimateSensors(indoor, outdoor);
-    }
-
-    @Bean
-    public Application createApplication(ClimateSensors sensors) {
-        final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        return new Application(sensors, executor);
-    }
-
-    @Bean
-    public CommandLineRunner runApplication(Application application) {
-        return _ -> application.run();
     }
 
     private SystemActionDbAccessor createSystemActionDbAccessor(SystemPart systemPart) {

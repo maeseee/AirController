@@ -42,7 +42,7 @@ class QingPingAdaptorTest {
 
         final QingPingAdapter testee = new QingPingAdapter(persistence, sensor, reducer, parser);
 
-        testee.run();
+        testee.runAtTenMinuteIntervals();
 
         verify(sensor).readData();
         verify(persistence).persist(indoorDataPointArgumentCaptor.capture());
@@ -56,7 +56,7 @@ class QingPingAdaptorTest {
         when(sensor.readData()).thenReturn("");
         final QingPingAdapter testee = new QingPingAdapter(persistence, sensor);
 
-        testee.run();
+        testee.runAtTenMinuteIntervals();
 
         verifyNoInteractions(persistence);
     }

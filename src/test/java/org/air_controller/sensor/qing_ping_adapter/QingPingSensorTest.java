@@ -41,7 +41,7 @@ class QingPingSensorTest {
         when(reducer.reduce(any())).thenReturn(Optional.of(dataPoint));
         final QingPingAdapter testee = new QingPingAdapter(persistence, sensor, reducer, parser);
 
-        testee.run();
+        testee.runAtTenMinuteIntervals();
 
         verify(parser).parseDeviceListResponse(response, MAC_AIR_PRESSURE_DEVICE);
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_1);
@@ -57,7 +57,7 @@ class QingPingSensorTest {
         when(parser.parseDeviceListResponse(eq(response), any())).thenReturn(Optional.empty());
         final QingPingAdapter testee = new QingPingAdapter(persistence, sensor, new SensorReducer(), parser);
 
-        testee.run();
+        testee.runAtTenMinuteIntervals();
 
         verify(parser).parseDeviceListResponse(response, MAC_AIR_PRESSURE_DEVICE);
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_1);

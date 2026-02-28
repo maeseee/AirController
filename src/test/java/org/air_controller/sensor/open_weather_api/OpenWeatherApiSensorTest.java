@@ -50,7 +50,7 @@ class OpenWeatherApiSensorTest {
         final OpenWeatherApiSensor sensor = new OpenWeatherApiSensor(httpsGetRequest);
         final OpenWeatherApiAdapter testee = new OpenWeatherApiAdapter(persistence, sensor);
 
-        testee.run();
+        testee.runAtTenMinuteIntervals();
 
         verify(persistence).persist(outdoorDataPointArgumentCaptor.capture());
         final ClimateDataPoint dataPoint = outdoorDataPointArgumentCaptor.getValue();
@@ -67,7 +67,7 @@ class OpenWeatherApiSensorTest {
         final OpenWeatherApiSensor sensor = new OpenWeatherApiSensor(httpsGetRequest);
         final OpenWeatherApiAdapter testee = new OpenWeatherApiAdapter(persistence, sensor);
 
-        testee.run();
+        testee.runAtTenMinuteIntervals();
 
         verifyNoInteractions(persistence);
     }
