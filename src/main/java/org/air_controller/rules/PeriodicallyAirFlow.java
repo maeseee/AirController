@@ -1,9 +1,9 @@
 package org.air_controller.rules;
 
-import lombok.RequiredArgsConstructor;
 import org.air_controller.system_action.DurationCalculator;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -11,7 +11,6 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-@RequiredArgsConstructor
 @Component
 class PeriodicallyAirFlow implements AirFlowRule {
 
@@ -21,6 +20,10 @@ class PeriodicallyAirFlow implements AirFlowRule {
     private static final double CONFIDENCE_WEIGHT = 0.5;
 
     private final SystemActionDbAccessor dbAccessor;
+
+    PeriodicallyAirFlow(@Qualifier("airFlowAccessor")SystemActionDbAccessor dbAccessor) {
+        this.dbAccessor = dbAccessor;
+    }
 
     @Override
     public String name() {
