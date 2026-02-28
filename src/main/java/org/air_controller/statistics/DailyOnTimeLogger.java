@@ -5,6 +5,7 @@ import org.air_controller.system_action.DurationCalculator;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.*;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class DailyOnTimeLogger implements Runnable {
+public class DailyOnTimeLogger {
 
     private final SystemActionDbAccessor dbAccessor;
 
@@ -20,8 +21,8 @@ public class DailyOnTimeLogger implements Runnable {
         this.dbAccessor = dbAccessor;
     }
 
-    @Override
-    public void run() {
+    @Scheduled(cron = "0 0 0 * * ?", zone = "UTC")
+    public void runAtMidnightUtc() {
         try {
             final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
             final LocalDate yesterday = now.toLocalDate().minusDays(1);

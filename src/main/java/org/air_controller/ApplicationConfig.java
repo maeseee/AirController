@@ -90,9 +90,9 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public Application createApplication(ClimateSensors sensors, RuleApplier ruleApplier, DailyOnTimeLogger statistics) {
+    public Application createApplication(ClimateSensors sensors, RuleApplier ruleApplier) {
         final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        return new Application(sensors, ruleApplier, statistics, executor);
+        return new Application(sensors, ruleApplier, executor);
     }
 
     @Bean

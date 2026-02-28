@@ -29,8 +29,6 @@ class ApplicationTest {
     @Mock
     private RuleApplier ruleApplier;
     @Mock
-    private DailyOnTimeLogger statistics;
-    @Mock
     private ScheduledExecutorService executor;
 
     @BeforeEach
@@ -40,7 +38,7 @@ class ApplicationTest {
 
     @Test
     void testWhenCreateApplicationThenScheduleExecutor() {
-        final Application testee = new Application(sensors, ruleApplier, statistics, executor);
+        final Application testee = new Application(sensors, ruleApplier, executor);
 
         testee.run();
 

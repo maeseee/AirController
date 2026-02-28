@@ -3,11 +3,8 @@ package org.air_controller;
 import lombok.extern.slf4j.Slf4j;
 import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor_values.ClimateSensors;
-import org.air_controller.statistics.DailyOnTimeLogger;
 
 import java.time.Duration;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.concurrent.*;
 
 @Slf4j
@@ -17,14 +14,12 @@ public class Application {
 
     private final ClimateSensors sensors;
     private final RuleApplier ruleApplier;
-    private final DailyOnTimeLogger statistics;
     private final ScheduledExecutorService executor;
     private final ExecutorService worker = Executors.newCachedThreadPool();
 
-    Application(ClimateSensors sensors, RuleApplier ruleApplier, DailyOnTimeLogger statistics, ScheduledExecutorService executor) {
+    Application(ClimateSensors sensors, RuleApplier ruleApplier, ScheduledExecutorService executor) {
         this.sensors = sensors;
         this.ruleApplier = ruleApplier;
-        this.statistics = statistics;
         this.executor = executor;
     }
 
@@ -32,11 +27,6 @@ public class Application {
         addThreadExecutorWithTimeout("Outdoorsensor", sensors.outdoor(), Duration.ZERO, SENSOR_READ_PERIOD);
         addThreadExecutorWithTimeout("Indoorsensor", sensors.indoor(), Duration.ZERO, SENSOR_READ_PERIOD);
         addThreadExecutorWithTimeout("RuleApplier", ruleApplier, Duration.ZERO, RULE_APPLIER_PERIOD);
-
-        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        final ZonedDateTime midnight = ZonedDateTime.of(now.toLocalDate().atStartOfDay().plusDays(1), ZoneOffset.UTC);
-        final Duration initialDelay = Duration.between(now, midnight).plusSeconds(1);
-        addThreadExecutorWithTimeout("Statistics", statistics, initialDelay, Duration.ofDays(1));
 
         log.info("All setup and running...");
     }
