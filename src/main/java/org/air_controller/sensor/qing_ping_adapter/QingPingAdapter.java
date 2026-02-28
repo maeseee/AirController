@@ -1,21 +1,26 @@
-package org.air_controller.sensor.ping_ping_adapter;
+package org.air_controller.sensor.qing_ping_adapter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor.qing_ping.QingPingSensor;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.ClimateDataPoint;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
+@Component
 public class QingPingAdapter extends ClimateSensor {
     private final SensorReducer sensorReducer;
     private final ListDevicesJsonParser parser;
 
-    public QingPingAdapter(ClimateDataPointPersistence persistence, QingPingSensor sensor) {
+    @Autowired
+    public QingPingAdapter(@Qualifier("indoorPersistence") ClimateDataPointPersistence persistence, QingPingSensor sensor) {
         this(persistence, sensor, new SensorReducer(), new ListDevicesJsonParser());
     }
 

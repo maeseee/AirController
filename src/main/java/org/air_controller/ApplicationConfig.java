@@ -10,7 +10,7 @@ import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor.open_weather_api.OpenWeatherApiSensor;
 import org.air_controller.sensor.open_weather_api_adapter.OpenWeatherApiAdapter;
-import org.air_controller.sensor.ping_ping_adapter.QingPingAdapter;
+import org.air_controller.sensor.qing_ping_adapter.QingPingAdapter;
 import org.air_controller.sensor.qing_ping.QingPingSensor;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;

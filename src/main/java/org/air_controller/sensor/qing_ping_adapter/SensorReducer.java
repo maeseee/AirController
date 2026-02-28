@@ -1,7 +1,8 @@
-package org.air_controller.sensor.ping_ping_adapter;
+package org.air_controller.sensor.qing_ping_adapter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.air_controller.sensor_values.*;
+import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.ZoneOffset;
@@ -11,6 +12,7 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 
 @Slf4j
+@Component
 class SensorReducer {
     private static final Duration SENSOR_INVALIDATION_TIME = Duration.ofHours(1);
 

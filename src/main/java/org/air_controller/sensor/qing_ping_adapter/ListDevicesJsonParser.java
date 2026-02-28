@@ -1,4 +1,4 @@
-package org.air_controller.sensor.ping_ping_adapter;
+package org.air_controller.sensor.qing_ping_adapter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.air_controller.sensor_values.ClimateDataPoint;
@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -19,6 +20,7 @@ import java.util.OptionalDouble;
 import java.util.OptionalLong;
 
 @Slf4j
+@Component
 class ListDevicesJsonParser {
     public Optional<ClimateDataPoint> parseDeviceListResponse(String jsonString, String macAddress) {
         // https://developer.qingping.co/main/openApi
