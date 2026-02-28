@@ -30,7 +30,7 @@ class ManualOverrideAirFlow implements AirFlowRule {
 
     @EventListener
     public void manualOverride(ManualOverrideEvent event) {
-        validUntil = event.getTimestamp().plus(event.getDuration());
-        givenState = event.getAction();
+        validUntil = event.timestamp().plus(event.duration());
+        givenState = event.action();
     }
 }

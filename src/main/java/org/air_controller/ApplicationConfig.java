@@ -80,11 +80,6 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public DailyOnTimeLogger createStatistics(@Qualifier("airFlowAccessor") SystemActionDbAccessor airflow) {
-        return new DailyOnTimeLogger(airflow);
-    }
-
-    @Bean
     public RuleApplier createRuleApplier(
             VentilationSystem ventilationSystem,
             @Qualifier("airFlowAccessor") SystemActionDbAccessor airflow,

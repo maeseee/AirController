@@ -1,18 +1,24 @@
 package org.air_controller.statistics;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.air_controller.system_action.DurationCalculator;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.time.*;
 import java.util.List;
 
-@RequiredArgsConstructor
 @Slf4j
+@Component
 public class DailyOnTimeLogger implements Runnable {
+
     private final SystemActionDbAccessor dbAccessor;
+
+    public DailyOnTimeLogger(@Qualifier("airFlowAccessor") SystemActionDbAccessor dbAccessor) {
+        this.dbAccessor = dbAccessor;
+    }
 
     @Override
     public void run() {
