@@ -1,9 +1,12 @@
 package org.air_controller.controllers;
 
-import org.air_controller.rules.*;
+import org.air_controller.rules.AirFlowRule;
+import org.air_controller.rules.Confidence;
+import org.air_controller.rules.HumidityExchangeRule;
+import org.air_controller.rules.RuleApplier;
 import org.air_controller.system.OutputState;
 import org.air_controller.system.VentilationSystem;
-import org.air_controller.system_action.VentilationSystemPersistence;
+import org.air_controller.system_action.SystemActionDbAccessor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -17,10 +20,14 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class RuleApplierTest {
 
+    private static final double CONFIDENCE_WEIGHT = 1.0;
+
     @Mock
     private VentilationSystem ventilationSystem;
     @Mock
-    private VentilationSystemPersistence ventilationSystemPersistence;
+    private SystemActionDbAccessor airFlowDbAccessor;
+    @Mock
+    private SystemActionDbAccessor humidityDbAccessor;
     @Mock
     private AirFlowRule airFlowRule;
     @Mock
@@ -28,34 +35,33 @@ class RuleApplierTest {
 
     private final List<AirFlowRule> airFlowRules = new ArrayList<>();
     private final List<HumidityExchangeRule> humidityExchangeRules = new ArrayList<>();
-    private static final double CONFIDENCE_WEIGHT = 1.0;
 
     @Test
     void shouldTurnAirFlowOn_whenPositivConfidence() {
         when(airFlowRule.turnOnConfidence()).thenReturn(Confidence.createWeighted(1.0, CONFIDENCE_WEIGHT));
         airFlowRules.add(airFlowRule);
-        final RuleApplier testee = new RuleApplier(ventilationSystem, ventilationSystemPersistence, airFlowRules, humidityExchangeRules);
+        final RuleApplier testee = new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules);
 
         testee.run();
 
         verify(ventilationSystem).setAirFlowOn(OutputState.ON);
-        verify(ventilationSystemPersistence).persistAirFlowData(any());
+        verify(airFlowDbAccessor).insertAction(any());
         verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
-        verify(ventilationSystemPersistence).persistHumidityExchangerData(any());
+        verify(humidityDbAccessor).insertAction(any());
     }
 
     @Test
     void shouldNotTurnAirFlowOn_whenNegativConfidence() {
         when(airFlowRule.turnOnConfidence()).thenReturn(Confidence.createWeighted(-1.0, CONFIDENCE_WEIGHT));
         airFlowRules.add(airFlowRule);
-        final RuleApplier testee = new RuleApplier(ventilationSystem, ventilationSystemPersistence, airFlowRules, humidityExchangeRules);
+        final RuleApplier testee = new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules);
 
         testee.run();
 
         verify(ventilationSystem).setAirFlowOn(OutputState.OFF);
-        verify(ventilationSystemPersistence).persistAirFlowData(any());
+        verify(airFlowDbAccessor).insertAction(any());
         verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
-        verify(ventilationSystemPersistence).persistHumidityExchangerData(any());
+        verify(humidityDbAccessor).insertAction(any());
     }
 
     @Test
@@ -64,14 +70,14 @@ class RuleApplierTest {
         airFlowRules.add(airFlowRule);
         when(humidityExchangeRule.turnOnConfidence()).thenReturn(Confidence.createWeighted(0.7, CONFIDENCE_WEIGHT));
         humidityExchangeRules.add(humidityExchangeRule);
-        final RuleApplier testee = new RuleApplier(ventilationSystem, ventilationSystemPersistence, airFlowRules, humidityExchangeRules);
+        final RuleApplier testee = new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules);
 
         testee.run();
 
         verify(ventilationSystem).setAirFlowOn(OutputState.ON);
-        verify(ventilationSystemPersistence).persistAirFlowData(any());
+        verify(airFlowDbAccessor).insertAction(any());
         verify(ventilationSystem).setHumidityExchangerOn(OutputState.ON);
-        verify(ventilationSystemPersistence).persistHumidityExchangerData(any());
+        verify(humidityDbAccessor).insertAction(any());
     }
 
     @Test
@@ -79,14 +85,14 @@ class RuleApplierTest {
         when(airFlowRule.turnOnConfidence()).thenReturn(Confidence.createWeighted(-1.0, CONFIDENCE_WEIGHT));
         airFlowRules.add(airFlowRule);
         humidityExchangeRules.add(humidityExchangeRule);
-        final RuleApplier testee = new RuleApplier(ventilationSystem, ventilationSystemPersistence, airFlowRules, humidityExchangeRules);
+        final RuleApplier testee = new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules);
 
         testee.run();
 
         verify(ventilationSystem).setAirFlowOn(OutputState.OFF);
-        verify(ventilationSystemPersistence).persistAirFlowData(any());
+        verify(airFlowDbAccessor).insertAction(any());
         verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
-        verify(ventilationSystemPersistence).persistHumidityExchangerData(any());
+        verify(humidityDbAccessor).insertAction(any());
     }
 
     @Test
@@ -95,15 +101,15 @@ class RuleApplierTest {
                 .thenReturn(Confidence.createWeighted(1.0, CONFIDENCE_WEIGHT)) // on
                 .thenReturn(Confidence.createWeighted(-0.04, CONFIDENCE_WEIGHT)); // in hysteresis
         airFlowRules.add(airFlowRule);
-        final RuleApplier testee = new RuleApplier(ventilationSystem, ventilationSystemPersistence, airFlowRules, humidityExchangeRules);
+        final RuleApplier testee = new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules);
 
         testee.run(); // on
         testee.run(); // nothing
 
         verify(ventilationSystem).setAirFlowOn(OutputState.ON);
-        verify(ventilationSystemPersistence, times(2)).persistAirFlowData(any());
+        verify(airFlowDbAccessor, times(2)).insertAction(any());
         verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
-        verify(ventilationSystemPersistence, times(2)).persistHumidityExchangerData(any());
+        verify(humidityDbAccessor, times(2)).insertAction(any());
     }
 
     @Test
@@ -112,15 +118,15 @@ class RuleApplierTest {
                 .thenReturn(Confidence.createWeighted(1.0, CONFIDENCE_WEIGHT)) // on
                 .thenReturn(Confidence.createWeighted(-0.075, CONFIDENCE_WEIGHT)); // out of hysteresis
         airFlowRules.add(airFlowRule);
-        final RuleApplier testee = new RuleApplier(ventilationSystem, ventilationSystemPersistence, airFlowRules, humidityExchangeRules);
+        final RuleApplier testee = new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules);
 
         testee.run(); // on
         testee.run(); // off
 
         verify(ventilationSystem).setAirFlowOn(OutputState.ON);
         verify(ventilationSystem).setAirFlowOn(OutputState.OFF);
-        verify(ventilationSystemPersistence, times(2)).persistAirFlowData(any());
+        verify(airFlowDbAccessor, times(2)).insertAction(any());
         verify(ventilationSystem).setHumidityExchangerOn(OutputState.OFF);
-        verify(ventilationSystemPersistence, times(2)).persistHumidityExchangerData(any());
+        verify(humidityDbAccessor, times(2)).insertAction(any());
     }
 }

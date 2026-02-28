@@ -21,7 +21,6 @@ import org.air_controller.system.VentilationSystem;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemPart;
 import org.air_controller.system_action.VentilationSystemDbAccessors;
-import org.air_controller.system_action.VentilationSystemPersistence;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -39,11 +38,21 @@ public class ApplicationConfig {
         return new GpioPins(new DingtianPin(DingtianRelay.AIR_FLOW, true), new DingtianPin(DingtianRelay.HUMIDITY_EXCHANGER, false));
     }
 
+    @Bean("airFlowAccessor")
+    public SystemActionDbAccessor createAirFlowSystemActionDbAccessor() {
+        return createSystemActionDbAccessor(SystemPart.AIR_FLOW);
+    }
+
+    @Bean("humidityAccessor")
+    public SystemActionDbAccessor createHumiditySystemActionDbAccessor() {
+        return createSystemActionDbAccessor(SystemPart.HUMIDITY);
+    }
+
     @Bean
-    public VentilationSystemDbAccessors createSystemActionDbAccessors() {
-        return new VentilationSystemDbAccessors(
-                createSystemActionDbAccessor(SystemPart.AIR_FLOW),
-                createSystemActionDbAccessor(SystemPart.HUMIDITY));
+    public VentilationSystemDbAccessors createSystemActionDbAccessors(
+            @Qualifier("airFlowAccessor") SystemActionDbAccessor airflow,
+            @Qualifier("humidityAccessor") SystemActionDbAccessor humidity) {
+        return new VentilationSystemDbAccessors(airflow, humidity);
     }
 
     @Bean("indoorPersistence")
@@ -79,19 +88,18 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public VentilationSystemPersistence createVentilationSystemPersistence(VentilationSystemDbAccessors accessors) {
-        return new VentilationSystemPersistence(accessors);
-    }
-
-    @Bean
     public DailyOnTimeLogger createStatistics(VentilationSystemDbAccessors accessors) {
         return new DailyOnTimeLogger(accessors.airFlow());
     }
 
     @Bean
-    public RuleApplier createRuleApplier(VentilationSystem ventilationSystem, VentilationSystemPersistence ventilationSystemPersistence,
-            List<AirFlowRule> airFlowRules, List<HumidityExchangeRule> humidityExchangeRules) {
-        return new RuleApplier(ventilationSystem, ventilationSystemPersistence, airFlowRules, humidityExchangeRules);
+    public RuleApplier createRuleApplier(
+            VentilationSystem ventilationSystem,
+            @Qualifier("airFlowAccessor") SystemActionDbAccessor airflow,
+            @Qualifier("humidityAccessor") SystemActionDbAccessor humidity,
+            List<AirFlowRule> airFlowRules,
+            List<HumidityExchangeRule> humidityExchangeRules) {
+        return new RuleApplier(ventilationSystem, airflow, humidity, airFlowRules, humidityExchangeRules);
     }
 
     @Bean
