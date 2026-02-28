@@ -5,13 +5,8 @@ import org.air_controller.gpio.dingtian_relay.DingtianPin;
 import org.air_controller.gpio.dingtian_relay.DingtianRelay;
 import org.air_controller.persistence.MariaDatabase;
 import org.air_controller.sensor.ClimateSensor;
-import org.air_controller.sensor.open_weather_api.OpenWeatherApiSensor;
-import org.air_controller.sensor.open_weather_api_adapter.OpenWeatherApiAdapter;
-import org.air_controller.sensor.qing_ping.QingPingSensor;
-import org.air_controller.sensor.qing_ping_adapter.QingPingAdapter;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
-import org.air_controller.sensor_data_persistence.ClimateSensorAccessors;
 import org.air_controller.sensor_values.ClimateSensors;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemPart;
@@ -45,13 +40,6 @@ public class ApplicationConfig {
     @Bean("outdoorPersistence")
     public ClimateDataPointPersistence createOutdoorClimateSensorPersistence() {
         return createClimateSensorAccessor(ClimateDataPointPersistence.OUTDOOR_TABLE_NAME);
-    }
-
-    @Bean
-    public ClimateSensorAccessors createClimateSensorAccessors(
-            @Qualifier("indoorPersistence") ClimateDataPointPersistence indoorPersistence,
-            @Qualifier("outdoorPersistence") ClimateDataPointPersistence outdoorPersistence) {
-        return new ClimateSensorAccessors(indoorPersistence, outdoorPersistence);
     }
 
     @Bean
