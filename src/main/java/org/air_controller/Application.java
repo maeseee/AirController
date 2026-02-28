@@ -1,7 +1,6 @@
 package org.air_controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor_values.ClimateSensors;
 
 import java.time.Duration;
@@ -10,23 +9,19 @@ import java.util.concurrent.*;
 @Slf4j
 public class Application {
     private static final Duration SENSOR_READ_PERIOD = Duration.ofMinutes(10);
-    private static final Duration RULE_APPLIER_PERIOD = Duration.ofMinutes(1);
 
     private final ClimateSensors sensors;
-    private final RuleApplier ruleApplier;
     private final ScheduledExecutorService executor;
     private final ExecutorService worker = Executors.newCachedThreadPool();
 
-    Application(ClimateSensors sensors, RuleApplier ruleApplier, ScheduledExecutorService executor) {
+    Application(ClimateSensors sensors, ScheduledExecutorService executor) {
         this.sensors = sensors;
-        this.ruleApplier = ruleApplier;
         this.executor = executor;
     }
 
     public void run() {
         addThreadExecutorWithTimeout("Outdoorsensor", sensors.outdoor(), Duration.ZERO, SENSOR_READ_PERIOD);
         addThreadExecutorWithTimeout("Indoorsensor", sensors.indoor(), Duration.ZERO, SENSOR_READ_PERIOD);
-        addThreadExecutorWithTimeout("RuleApplier", ruleApplier, Duration.ZERO, RULE_APPLIER_PERIOD);
 
         log.info("All setup and running...");
     }

@@ -42,7 +42,7 @@ class RuleApplierTest {
         airFlowRules.add(airFlowRule);
         final RuleApplier testee = new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules);
 
-        testee.run();
+        testee.runEveryMinute();
 
         verify(ventilationSystem).setAirFlowOn(OutputState.ON);
         verify(airFlowDbAccessor).insertAction(any());
@@ -56,7 +56,7 @@ class RuleApplierTest {
         airFlowRules.add(airFlowRule);
         final RuleApplier testee = new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules);
 
-        testee.run();
+        testee.runEveryMinute();
 
         verify(ventilationSystem).setAirFlowOn(OutputState.OFF);
         verify(airFlowDbAccessor).insertAction(any());
@@ -72,7 +72,7 @@ class RuleApplierTest {
         humidityExchangeRules.add(humidityExchangeRule);
         final RuleApplier testee = new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules);
 
-        testee.run();
+        testee.runEveryMinute();
 
         verify(ventilationSystem).setAirFlowOn(OutputState.ON);
         verify(airFlowDbAccessor).insertAction(any());
@@ -87,7 +87,7 @@ class RuleApplierTest {
         humidityExchangeRules.add(humidityExchangeRule);
         final RuleApplier testee = new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules);
 
-        testee.run();
+        testee.runEveryMinute();
 
         verify(ventilationSystem).setAirFlowOn(OutputState.OFF);
         verify(airFlowDbAccessor).insertAction(any());
@@ -103,8 +103,8 @@ class RuleApplierTest {
         airFlowRules.add(airFlowRule);
         final RuleApplier testee = new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules);
 
-        testee.run(); // on
-        testee.run(); // nothing
+        testee.runEveryMinute(); // on
+        testee.runEveryMinute(); // nothing
 
         verify(ventilationSystem).setAirFlowOn(OutputState.ON);
         verify(airFlowDbAccessor, times(2)).insertAction(any());
@@ -120,8 +120,8 @@ class RuleApplierTest {
         airFlowRules.add(airFlowRule);
         final RuleApplier testee = new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules);
 
-        testee.run(); // on
-        testee.run(); // off
+        testee.runEveryMinute(); // on
+        testee.runEveryMinute(); // off
 
         verify(ventilationSystem).setAirFlowOn(OutputState.ON);
         verify(ventilationSystem).setAirFlowOn(OutputState.OFF);

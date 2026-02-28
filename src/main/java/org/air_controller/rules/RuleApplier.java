@@ -5,16 +5,24 @@ import org.air_controller.system.OutputState;
 import org.air_controller.system.VentilationSystem;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.VentilationSystemPersistenceData;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.function.Consumer;
 
 @Slf4j
-public class RuleApplier implements Runnable {
+@Component
+public class RuleApplier {
     private final RuleApplierSystem airFlowSystem;
     private final RuleApplierSystem humidityExchangerSystem;
 
-    public RuleApplier(VentilationSystem ventilationSystem, SystemActionDbAccessor airFlow, SystemActionDbAccessor humidity, List<AirFlowRule> airFlowRules,
+    public RuleApplier(
+            VentilationSystem ventilationSystem,
+            @Qualifier("airFlowAccessor") SystemActionDbAccessor airFlow,
+            @Qualifier("humidityAccessor")SystemActionDbAccessor humidity,
+            List<AirFlowRule> airFlowRules,
             List<HumidityExchangeRule> humidityExchangeRules) {
         final Consumer<OutputState> airFlowUpdateAction = ventilationSystem::setAirFlowOn;
         final Consumer<VentilationSystemPersistenceData> airFlowSystemPersistence = airFlow::insertAction;
@@ -25,8 +33,8 @@ public class RuleApplier implements Runnable {
         this.humidityExchangerSystem = new RuleApplierSystem(humidityExchangeRules, humidityExchangerAction, humidityExchangerSystemPersistence);
     }
 
-    @Override
-    public void run() {
+    @Scheduled(cron = "0 * * * * ?")
+    public void runEveryMinute() {
         try {
             doRun();
         } catch (Exception exception) {

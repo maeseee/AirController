@@ -4,9 +4,6 @@ import org.air_controller.gpio.GpioPins;
 import org.air_controller.gpio.dingtian_relay.DingtianPin;
 import org.air_controller.gpio.dingtian_relay.DingtianRelay;
 import org.air_controller.persistence.MariaDatabase;
-import org.air_controller.rules.AirFlowRule;
-import org.air_controller.rules.HumidityExchangeRule;
-import org.air_controller.rules.RuleApplier;
 import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor.open_weather_api.OpenWeatherApiSensor;
 import org.air_controller.sensor.open_weather_api_adapter.OpenWeatherApiAdapter;
@@ -16,8 +13,6 @@ import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.air_controller.sensor_data_persistence.ClimateSensorAccessors;
 import org.air_controller.sensor_values.ClimateSensors;
-import org.air_controller.statistics.DailyOnTimeLogger;
-import org.air_controller.system.VentilationSystem;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemPart;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,7 +20,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -80,19 +74,9 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public RuleApplier createRuleApplier(
-            VentilationSystem ventilationSystem,
-            @Qualifier("airFlowAccessor") SystemActionDbAccessor airflow,
-            @Qualifier("humidityAccessor") SystemActionDbAccessor humidity,
-            List<AirFlowRule> airFlowRules,
-            List<HumidityExchangeRule> humidityExchangeRules) {
-        return new RuleApplier(ventilationSystem, airflow, humidity, airFlowRules, humidityExchangeRules);
-    }
-
-    @Bean
-    public Application createApplication(ClimateSensors sensors, RuleApplier ruleApplier) {
+    public Application createApplication(ClimateSensors sensors) {
         final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        return new Application(sensors, ruleApplier, executor);
+        return new Application(sensors, executor);
     }
 
     @Bean
