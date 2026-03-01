@@ -3,6 +3,7 @@
   background: #f8fafc;
   border-radius: 16px;
   display: inline-block;
+  border: 1px solid #f1f5f9;
 }
 
 .control-group {

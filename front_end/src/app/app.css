@@ -42,8 +42,3 @@ app-metric-card {
   min-width: 120px;
 }
 
-.confidence-box h3 {
-  font-size: 0.9rem;
-  margin-top: 0;
-  color: #475569;
-}
