@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor_values.CarbonDioxide;
 import org.air_controller.sensor_values.ClimateDataPoint;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @RequiredArgsConstructor
-class CO2ControlAirFlow implements Rule {
+@Component
+class CO2ControlAirFlow implements AirFlowRule {
 
     private static final double UPPER_LIMIT = 1000;
     private static final double LOWER_LIMIT = 400;
