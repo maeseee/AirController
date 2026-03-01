@@ -4,8 +4,8 @@ import {OverrideAirFlowService} from '../../services/actions/OverrideAirFlowServ
 @Component({
   selector: 'override-airflow-state',
   template: `
-    <button (click)="setOn()">On 15m</button>
-    <button (click)="setOff()">Off 15m</button>
+    <button class="refresh-btn" (click)="setOn()">On 15m</button>
+    <button class="refresh-btn" (click)="setOff()">Off 15m</button>
   `
 })
 export class AirflowControlComponent {
