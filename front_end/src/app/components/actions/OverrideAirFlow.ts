@@ -29,7 +29,7 @@ import { FormsModule } from '@angular/forms';
       </button>
     </div>
   `,
-  styleUrls: ['../../app.css']
+  styleUrls: ['./OverrideAirFlow.css']
 })
 export class AirflowControlComponent {
   durations = [
