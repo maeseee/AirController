@@ -6,29 +6,7 @@ import { FormsModule } from '@angular/forms';
   selector: 'override-airflow-state',
   standalone: true,
   imports: [FormsModule],
-  template: `
-    <div class="override-row">
-      <select class="duration-select" [(ngModel)]="duration">
-        @for (d of durations; track d.value) {
-          <option [ngValue]="d.value">{{ d.label }}</option>
-        }
-      </select>
-
-      <button
-        class="override-btn override-on"
-        (click)="setOn(duration)"
-        title="Turn on for selected duration">
-        <span class="override-btn__action">On</span>
-      </button>
-
-      <button
-        class="override-btn override-off"
-        (click)="setOff(duration)"
-        title="Turn off for selected duration">
-        <span class="override-btn__action">Off</span>
-      </button>
-    </div>
-  `,
+  templateUrl: './OverrideAirFlow.html',
   styleUrls: ['./OverrideAirFlow.css']
 })
 export class AirflowControlComponent {
@@ -37,9 +15,9 @@ export class AirflowControlComponent {
     { value: 15, label: '15m' },
     { value: 30, label: '30m' },
     { value: 60, label: '1h' },
-    { value: 120, label: '2h' }
+    { value: 120, label: '2h' },
+    { value: 240, label: '4h' }
   ];
-
   duration = 15;
 
   constructor(private service: OverrideAirFlowService) {}

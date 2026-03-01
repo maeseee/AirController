@@ -1,0 +1,26 @@
+<div class="control-panel">
+  <div class="control-group">
+
+    <div class="select-container">
+      <label class="select-label">Duration</label>
+      <div class="select-wrapper">
+        <select class="duration-select" [(ngModel)]="duration">
+          @for (d of durations; track d.value) {
+            <option [ngValue]="d.value">{{ d.label }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button class="override-btn btn-on" (click)="setOn(duration)" title="Turn on">
+        <span class="btn-dot"></span> On
+      </button>
+
+      <button class="override-btn btn-off" (click)="setOff(duration)" title="Turn off">
+        <span class="btn-dot"></span> Off
+      </button>
+    </div>
+
+  </div>
+</div>
