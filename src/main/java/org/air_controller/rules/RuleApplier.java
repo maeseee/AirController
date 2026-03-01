@@ -6,8 +6,6 @@ import org.air_controller.system.VentilationSystem;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.VentilationSystemPersistenceData;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.event.EventListener;
-import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -41,16 +39,6 @@ public class RuleApplier {
             doRun();
         } catch (Exception exception) {
             log.error("Exception in RuleApplier loop:", exception);
-        }
-    }
-
-    @Order
-    @EventListener
-    public void onAnyEvent(Object ignoredEvent) {
-        try {
-            doRun();
-        } catch (Exception exception) {
-            log.error("Exception in RuleApplier onAnyEvent:", exception);
         }
     }
 
