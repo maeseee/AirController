@@ -29,14 +29,6 @@ header h1 {
   margin-bottom: 0;
 }
 
-.card-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
 app-metric-card {
   flex: 0 1 calc(33.333% - 12px);
   min-width: 120px;

@@ -1,0 +1,23 @@
+<h3>{{ title }}</h3>
+<div>{{ info }}</div>
+<section class="card-grid">
+  @for (card of cards; track card.name) {
+    <app-metric-card
+      [label]="card.name"
+      [value]="card.value"
+      [unit]="card.unit"
+      (click)="onCardClick(card.name)"
+    />
+  } @empty {
+    <p>No cards found in this group.</p>
+  }
+</section>
+
+@if (activeGraphMetric) {
+  <div class="profile-section">
+    <graph-chart-component
+      [measuredValueInput]="activeGraphMetric"
+      [location]="location">
+    </graph-chart-component>
+  </div>
+}

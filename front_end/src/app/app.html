@@ -5,107 +5,37 @@
   </header>
 
   @if (viewModel(); as data) {
-    <div>{{ data.systemCardViews.info }}</div>
-    <section class="card-grid">
-      @for (card of data.systemCardViews.cards; track card.name) {
-        <app-metric-card
-          [label]="card.name"
-          [value]="card.value"
-          [unit]="card.unit"
-          (click)="setSystemGraphProfile('airflow')"
-        />
-      } @empty {
-        <p>No cards found in dies Group.</p>
-      }
-    </section>
-    @if (systemGraphProfile(); as systemMetric) {
-      <div class="profile-section">
-        <graph-chart-component
-          [measuredValueInput]="systemMetric"
-          [location]="'system'">
-        </graph-chart-component>
-      </div>
-    }
 
-    <h3>Indoor Sensors</h3>
-    <div>{{ data.indoorCardViews.info }}</div>
-    <section class="card-grid">
-      @for (card of data.indoorCardViews.cards; track card.name) {
-        <app-metric-card
-          [label]="card.name"
-          [value]="card.value"
-          [unit]="card.unit"
-          (click)="setIndoorGraphProfile(card.name)"
-        />
-      } @empty {
-        <p>No cards found in dies Group.</p>
-      }
-    </section>
-    @if (indoorGraphProfile(); as indoorMetric) {
-      <div class="profile-section">
-        <graph-chart-component
-          [measuredValueInput]="indoorMetric"
-          [location]="'indoor'">
-        </graph-chart-component>
-      </div>
-    }
+    <app-dashboard-section
+      title="System"
+      [info]="data.systemCardViews.info"
+      [cards]="data.systemCardViews.cards"
+      [activeGraphMetric]="systemGraphProfile()"
+      (cardSelected)="setSystemGraphProfile('airflow')" />
 
-    <h3>Outdoor Sensors</h3>
-    <div>{{ data.outdoorCardViews.info }}</div>
-    <section class="card-grid">
-      @for (card of data.outdoorCardViews.cards; track card.name) {
-        <app-metric-card
-          [label]="card.name"
-          [value]="card.value"
-          [unit]="card.unit"
-          (click)="setOutdoorGraphProfile(card.name)"
-        />
-      } @empty {
-        <p>No cards found in dies Group.</p>
-      }
-    </section>
-    @if (outdoorGraphProfile(); as outdoorMetric) {
-      <div class="profile-section">
-        <graph-chart-component
-          [measuredValueInput]="outdoorMetric"
-          [location]="'outdoor'">
-        </graph-chart-component>
-      </div>
-    }
+    <app-dashboard-section
+      title="Indoor Sensors"
+      location="indoor"
+      [info]="data.indoorCardViews.info"
+      [cards]="data.indoorCardViews.cards"
+      [activeGraphMetric]="indoorGraphProfile()"
+      (cardSelected)="setIndoorGraphProfile($event)" />
 
-    <h3>Confidence</h3>
-    <div>{{ data.confidenceCardViews.info }}</div>
-    <section class="card-grid">
-      @for (card of data.confidenceCardViews.cards; track card.name) {
-        <app-metric-card
-          [label]="card.name"
-          [value]="card.value"
-          [unit]="card.unit"
-        />
-      } @empty {
-        <p>No cards found in dies Group.</p>
-      }
-    </section>
+    <app-dashboard-section
+      title="Outdoor Sensors"
+      location="outdoor"
+      [info]="data.outdoorCardViews.info"
+      [cards]="data.outdoorCardViews.cards"
+      [activeGraphMetric]="outdoorGraphProfile()"
+      (cardSelected)="setOutdoorGraphProfile($event)" />
 
-    <h3>Statistics</h3>
-    <div>{{ data.statisticsCardViews.info }}</div>
-    <section class="card-grid">
-      @for (card of data.statisticsCardViews.cards; track card.name) {
-        <app-metric-card [label]="card.name" [value]="card.value" [unit]="card.unit"/>
-      } @empty {
-        <p>No cards found in dies Group.</p>
-      }
-    </section>
+    <app-dashboard-section title="Confidence" [cards]="data.confidenceCardViews.cards" />
+    <app-dashboard-section title="Statistics" [cards]="data.statisticsCardViews.cards" />
+
   } @else {
-    <div class="loader">
-      <p>Fetching climate data... Please wait.</p>
-    </div>
+    <div class="loader"><p>Fetching climate data...</p></div>
   }
 
   <h3>Manual overrides</h3>
   <override-airflow-state></override-airflow-state>
 </div>
-
-<style>
-
-</style>

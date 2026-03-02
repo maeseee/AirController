@@ -7,11 +7,12 @@ import {CardViewService} from './services/cardView/CardViewService';
 import {GraphChartComponent} from './components/graph/graph';
 import {MeasuredValue} from './components/graph/MeasuredValue';
 import {AirflowControlComponent} from './components/actions/OverrideAirFlow';
+import {DashboardSectionComponent} from './components/metric-dashboard/metric-dashboard';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, MetricCardComponent, GraphChartComponent, AirflowControlComponent],
+  imports: [CommonModule, NgOptimizedImage, MetricCardComponent, GraphChartComponent, AirflowControlComponent, DashboardSectionComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
