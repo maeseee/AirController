@@ -29,8 +29,3 @@ header h1 {
   margin-bottom: 0;
 }
 
-app-metric-card {
-  flex: 0 1 calc(33.333% - 12px);
-  min-width: 120px;
-}
-
