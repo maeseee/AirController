@@ -1,12 +1,12 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {MetricCardComponent} from '../card/metric-card';
 import {GraphChartComponent} from '../graph/graph';
 import {CommonModule} from '@angular/common';
+import {MetricCardComponent} from '../card/metric-card';
 
 @Component({
   selector: 'app-dashboard-section',
   standalone: true,
-  imports: [MetricCardComponent, GraphChartComponent, CommonModule],
+  imports: [GraphChartComponent, CommonModule, MetricCardComponent],
   templateUrl: './metric-dashboard.html',
   styleUrl: './metric-dashboard.css'
 })

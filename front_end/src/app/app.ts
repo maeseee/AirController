@@ -2,9 +2,7 @@ import {Component, inject, signal} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {BehaviorSubject, catchError, combineLatest, forkJoin, of, switchMap} from 'rxjs';
-import {MetricCardComponent} from './components/card/metric-card';
 import {CardViewService} from './services/cardView/CardViewService';
-import {GraphChartComponent} from './components/graph/graph';
 import {MeasuredValue} from './components/graph/MeasuredValue';
 import {AirflowControlComponent} from './components/actions/OverrideAirFlow';
 import {DashboardSectionComponent} from './components/metric-dashboard/metric-dashboard';
@@ -12,7 +10,7 @@ import {DashboardSectionComponent} from './components/metric-dashboard/metric-da
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, NgOptimizedImage, MetricCardComponent, GraphChartComponent, AirflowControlComponent, DashboardSectionComponent],
+  imports: [CommonModule, NgOptimizedImage, AirflowControlComponent, DashboardSectionComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
