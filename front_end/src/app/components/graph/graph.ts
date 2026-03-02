@@ -8,27 +8,7 @@ import {MeasuredValue} from './MeasuredValue';
   selector: 'graph-chart-component',
   standalone: true,
   imports: [BaseChartDirective],
-  template: `
-    <div class="controls">
-      <label>Timeframe: </label>
-      <select (change)="updateHours($event)">
-        <option value="6">6 Hours</option>
-        <option value="12">12 Hours</option>
-        <option value="24" selected>24 Hours</option>
-        <option value="48">2 Days</option>
-        <option value="168">1 Week</option>
-        <option value="720">1 Month</option>
-      </select>
-    </div>
-
-    <div style="display: block; height: 100%; width: 100%;">
-      <canvas baseChart
-              [data]="lineChartData"
-              [options]="lineChartOptions"
-              [type]="'line'">
-      </canvas>
-    </div>
-  `
+  templateUrl: './graph.html',
 })
 export class GraphChartComponent {
   location = input.required<'system' | 'indoor' | 'outdoor'>();
