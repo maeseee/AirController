@@ -3,6 +3,9 @@ import {Chart, ChartConfiguration, ChartOptions, registerables} from 'chart.js';
 import {GraphViewService} from '../../services/graphView/GraphViewService';
 import {BaseChartDirective} from 'ng2-charts';
 import {MeasuredValue} from './MeasuredValue';
+import 'chartjs-adapter-date-fns';
+import {TimeScale, LinearScale, PointElement, LineElement, LineController, Tooltip, Legend} from 'chart.js';
+import {de} from 'date-fns/locale';
 
 @Component({
   selector: 'graph-chart-component',
@@ -25,8 +28,25 @@ export class GraphChartComponent {
   public lineChartOptions: ChartOptions<'line'> = {
     responsive: true,
     maintainAspectRatio: true,
-    locale: 'de-CH',
     scales: {
+      x: {
+        type: 'time',
+        time: {
+          unit: 'hour',
+          displayFormats: {
+            hour: 'dd.MM. HH:mm'
+          }
+        },
+        adapters: {
+          date: {
+            locale: de
+          }
+        },
+        title: {
+          display: true,
+          text: 'Time'
+        }
+      },
       y: {
         type: 'linear',
         display: true,
@@ -51,7 +71,7 @@ export class GraphChartComponent {
   }
 
   updateHours(event: Event) {
-    const value = (event.target as HTMLSelectElement).value;
+      const value = (event.target as HTMLSelectElement).value;
     this.selectedHours.set(Number(value));
   }
 
@@ -62,18 +82,12 @@ export class GraphChartComponent {
         return;
       }
 
-      const labels = graphView.items.map(item =>
-        new Date(item.time).toLocaleTimeString('de-CH', {
-          day: '2-digit',
-          month: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      );
-      const dataPoints = graphView.items.map(item => item.value);
+      const dataPoints = graphView.items.map(item => ({
+        x: new Date(item.time).getTime(),
+        y: item.value
+      }));
 
       this.lineChartData = {
-        labels: labels,
         datasets: [
           {
             label: graphView.nameWithUnit || 'Measurement',
