@@ -37,6 +37,11 @@
 
   <h3>Manual overrides</h3>
   <override-airflow-state></override-airflow-state>
+  } @else if (hasError()) {
+  <div class="error">
+    <p>Failed to load data.</p>
+    <button class="refresh-btn" (click)="refresh()">Retry</button>
+  </div>
   } @else {
   <div class="loader"><p>Fetching climate data...</p></div>
   }

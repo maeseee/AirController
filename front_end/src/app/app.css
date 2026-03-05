@@ -29,3 +29,14 @@ header h1 {
   margin-bottom: 0;
 }
 
+.refresh-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: #4BC0C0;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}

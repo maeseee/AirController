@@ -1,7 +1,7 @@
 import {Component, inject, signal} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {toSignal} from '@angular/core/rxjs-interop';
-import {BehaviorSubject, catchError, combineLatest, forkJoin, of, switchMap} from 'rxjs';
+import {BehaviorSubject, catchError, combineLatest, forkJoin, of, switchMap, tap } from 'rxjs';
 import {CardViewService} from './services/cardView/CardViewService';
 import {MeasuredValue} from './components/graph/MeasuredValue';
 import {AirflowControlComponent} from './components/actions/OverrideAirFlow';
@@ -22,10 +22,10 @@ export class App {
   systemGraphProfile = signal<'airflow' | null>(null);
   indoorGraphProfile = signal<MeasuredValue | null>(null);
   outdoorGraphProfile = signal<MeasuredValue | null>(null);
+  hasError = signal<boolean>(false);
 
-  private data$ = combineLatest([
-    this.refresh$,
-  ]).pipe(
+  private data$ = this.refresh$.pipe(
+    tap(() => this.hasError.set(false)),
     switchMap(() => forkJoin({
       systemCardViews: this.cardViewService.getCardViews('system'),
       indoorCardViews: this.cardViewService.getCardViews('indoor'),
@@ -35,6 +35,7 @@ export class App {
     })),
     catchError(err => {
       console.error('Batch update failed', err);
+      this.hasError.set(true);
       return of(null);
     })
   );
