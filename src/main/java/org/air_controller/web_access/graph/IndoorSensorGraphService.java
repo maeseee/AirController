@@ -23,7 +23,7 @@ class IndoorSensorGraphService {
 
     public GraphView getIndoorGraphOfMeasuredValues(MeasuredValue measuredValue, Duration duration) {
         final List<ClimateDataPoint> dataPoints = indoorDataPointsAccessor.getDataPoints(duration);
-        final GraphView indoorGraph = createGraphView(dataPoints, measuredValue.getNameWithUnit(), measuredValue.getValueExtractor());
+        final GraphView indoorGraph = createGraphView(dataPoints, measuredValue.nameWithUnit(), measuredValue.getValueExtractor());
         log.info("Asking for indoor graph items of {} for a duration of {}. Returning a total of {} items", measuredValue.name(), duration,
                 indoorGraph.items().size());
         return indoorGraph;

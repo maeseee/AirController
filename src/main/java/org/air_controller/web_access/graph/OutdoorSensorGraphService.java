@@ -23,7 +23,7 @@ class OutdoorSensorGraphService {
 
     public GraphView getOutdoorGraphOfMeasuredValues(MeasuredValue measuredValue, Duration duration) {
         final List<ClimateDataPoint> dataPoints = outdoorDataPointsAccessor.getDataPoints(duration);
-        final GraphView outdoorGraph = createGraphView(dataPoints, measuredValue.getNameWithUnit(), measuredValue.getValueExtractor());
+        final GraphView outdoorGraph = createGraphView(dataPoints, measuredValue.nameWithUnit(), measuredValue.getValueExtractor());
         log.info("Asking for outdoor graph items of {} for a duration of {}. Returning a total of {} items", measuredValue.name(), duration,
                 outdoorGraph.items().size());
         return outdoorGraph;
