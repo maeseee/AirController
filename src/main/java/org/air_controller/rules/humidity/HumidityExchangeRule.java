@@ -1,4 +1,4 @@
-package org.air_controller.rules.airflow;
+package org.air_controller.rules.humidity;
 
 import org.air_controller.rules.Rule;
 

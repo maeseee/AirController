@@ -1,6 +1,7 @@
 package org.air_controller.rules.airflow;
 
 import lombok.extern.slf4j.Slf4j;
+import org.air_controller.rules.humidity.HumidityExchangeRule;
 import org.air_controller.system.OutputState;
 import org.air_controller.system.VentilationSystem;
 import org.air_controller.system_action.SystemActionDbAccessor;

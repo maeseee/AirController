@@ -20,7 +20,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.within;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class HumidityControlAirFlowTest {
+class HumidityControlTest {
 
     @Mock
     private ClimateSensor indoor;
@@ -53,7 +53,7 @@ class HumidityControlAirFlowTest {
         when(indoor.getCurrentDataPoint()).thenReturn(Optional.of(indoorClimateDataPoint));
         when(outdoor.getCurrentDataPoint()).thenReturn(Optional.of(outdoorClimateDataPoint));
         final ClimateSensors sensors = new ClimateSensors(indoor, outdoor);
-        final HumidityControlAirFlow testee = new HumidityControlAirFlow(sensors);
+        final HumidityControl testee = new HumidityControl(sensors);
 
         final Confidence result = testee.turnOnConfidence();
 
@@ -64,7 +64,7 @@ class HumidityControlAirFlowTest {
     void shouldReturn0_whenCurrentDataPointNotAvailable() {
         when(indoor.getCurrentDataPoint()).thenReturn(Optional.empty());
         final ClimateSensors sensors = new ClimateSensors(indoor, outdoor);
-        final HumidityControlAirFlow testee = new HumidityControlAirFlow(sensors);
+        final HumidityControl testee = new HumidityControl(sensors);
 
         final Confidence result = testee.turnOnConfidence();
 

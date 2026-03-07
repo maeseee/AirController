@@ -13,7 +13,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 @Component
-class HumidityControlAirFlow implements AirFlowRule {
+public class HumidityControl implements AirFlowRule {
     private static final double UPPER_RELATIV_HUMIDITY = 65.0;
     private static final double IDEAL_RELATIV_HUMIDITY = 52.0;
     private static final double CONFIDENCE_WEIGHT = 0.8;

@@ -1,4 +1,4 @@
-package org.air_controller.rules.airflow;
+package org.air_controller.rules.humidity;
 
 import org.air_controller.rules.Confidence;
 import org.air_controller.sensor.ClimateSensor;
@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class HumidityControlExchangerTest {
+class HumidityExchangeTest {
 
     @Mock
     private ClimateSensor indoor;
@@ -33,7 +33,7 @@ class HumidityControlExchangerTest {
     })
     void shouldControlHumidityExchanger_whenOff(double relativeIndoorHumidity, double relativeOutdoorHumidity)
             throws InvalidArgumentException {
-        final HumidityControlRule testee = createHumidityControlExchanger(relativeIndoorHumidity, relativeOutdoorHumidity);
+        final HumidityExchange testee = createHumidityControlExchanger(relativeIndoorHumidity, relativeOutdoorHumidity);
 
         final Confidence result = testee.turnOnConfidence();
 
@@ -47,14 +47,14 @@ class HumidityControlExchangerTest {
     })
     void shouldControlHumidityExchanger_whenOn(double relativeIndoorHumidity, double relativeOutdoorHumidity)
             throws InvalidArgumentException {
-        final HumidityControlRule testee = createHumidityControlExchanger(relativeIndoorHumidity, relativeOutdoorHumidity);
+        final HumidityExchange testee = createHumidityControlExchanger(relativeIndoorHumidity, relativeOutdoorHumidity);
 
         final Confidence result = testee.turnOnConfidence();
 
         assertThat(result.value()).isPositive();
     }
 
-    private HumidityControlRule createHumidityControlExchanger(double relativeIndoorHumidity, double relativeOutdoorHumidity)
+    private HumidityExchange createHumidityControlExchanger(double relativeIndoorHumidity, double relativeOutdoorHumidity)
             throws InvalidArgumentException {
         final ClimateDataPoint indoorDataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(22.0)
@@ -67,6 +67,6 @@ class HumidityControlExchangerTest {
         when(indoor.getCurrentDataPoint()).thenReturn(Optional.of(indoorDataPoint));
         when(outdoor.getCurrentDataPoint()).thenReturn(Optional.of(outdoorClimateDataPoint));
         final ClimateSensors sensors = new ClimateSensors(indoor, outdoor);
-        return new HumidityControlRule(sensors);
+        return new HumidityExchange(sensors);
     }
 }

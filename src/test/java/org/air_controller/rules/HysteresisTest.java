@@ -1,6 +1,5 @@
-package org.air_controller.rules.airflow;
+package org.air_controller.rules;
 
-import org.air_controller.rules.airflow.Hysteresis;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

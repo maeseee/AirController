@@ -2,7 +2,7 @@ package org.air_controller.controllers;
 
 import org.air_controller.rules.Confidence;
 import org.air_controller.rules.airflow.AirFlowRule;
-import org.air_controller.rules.airflow.HumidityExchangeRule;
+import org.air_controller.rules.humidity.HumidityExchangeRule;
 import org.air_controller.rules.airflow.RuleApplier;
 import org.air_controller.system.OutputState;
 import org.air_controller.system.VentilationSystem;

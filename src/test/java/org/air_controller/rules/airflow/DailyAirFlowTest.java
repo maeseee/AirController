@@ -32,7 +32,7 @@ class DailyAirFlowTest {
     void shouldCalculateFreshAirConfidenceAccordingToTime(String dateTimeString, double expectedResult) {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm X");
         final ZonedDateTime dateTime = ZonedDateTime.parse(dateTimeString, formatter);
-        final DailyAirFlow testee = new DailyAirFlow();
+        final Daily testee = new Daily();
         try (MockedStatic<ZonedDateTime> mocked = mockStatic(ZonedDateTime.class)) {
             mocked.when(() -> ZonedDateTime.now(ZoneOffset.UTC)).thenReturn(dateTime);
 
@@ -58,7 +58,7 @@ class DailyAirFlowTest {
     void shouldCalculateFreshAirConfidenceAccordingToSeason(String dateTimeString, double expectedResult) {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm X");
         final ZonedDateTime dateTime = ZonedDateTime.parse(dateTimeString, formatter);
-        final DailyAirFlow testee = new DailyAirFlow();
+        final Daily testee = new Daily();
         try (MockedStatic<ZonedDateTime> mocked = mockStatic(ZonedDateTime.class)) {
             mocked.when(() -> ZonedDateTime.now(ZoneOffset.UTC)).thenReturn(dateTime);
 

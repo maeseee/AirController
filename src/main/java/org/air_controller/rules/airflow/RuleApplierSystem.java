@@ -2,6 +2,7 @@ package org.air_controller.rules.airflow;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.air_controller.rules.Hysteresis;
 import org.air_controller.rules.Rule;
 import org.air_controller.system.OutputState;
 import org.air_controller.system_action.VentilationSystemPersistenceData;
