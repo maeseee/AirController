@@ -4,7 +4,6 @@ import {GraphViewService} from '../../services/graphView/GraphViewService';
 import {BaseChartDirective} from 'ng2-charts';
 import {MeasuredValue} from './MeasuredValue';
 import 'chartjs-adapter-date-fns';
-import {TimeScale, LinearScale, PointElement, LineElement, LineController, Tooltip, Legend} from 'chart.js';
 import {de} from 'date-fns/locale';
 
 @Component({
