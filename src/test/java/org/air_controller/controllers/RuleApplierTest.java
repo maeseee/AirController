@@ -1,9 +1,9 @@
 package org.air_controller.controllers;
 
-import org.air_controller.rules.AirFlowRule;
 import org.air_controller.rules.Confidence;
-import org.air_controller.rules.HumidityExchangeRule;
-import org.air_controller.rules.RuleApplier;
+import org.air_controller.rules.airflow.AirFlowRule;
+import org.air_controller.rules.airflow.HumidityExchangeRule;
+import org.air_controller.rules.airflow.RuleApplier;
 import org.air_controller.system.OutputState;
 import org.air_controller.system.VentilationSystem;
 import org.air_controller.system_action.SystemActionDbAccessor;

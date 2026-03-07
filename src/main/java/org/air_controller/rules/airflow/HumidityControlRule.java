@@ -1,14 +1,15 @@
-package org.air_controller.rules;
+package org.air_controller.rules.airflow;
 
+import org.air_controller.rules.Confidence;
 import org.air_controller.sensor_values.ClimateSensors;
 import org.springframework.stereotype.Component;
 
 @Component
-class HumidityExchangeExchanger implements HumidityExchangeRule {
+class HumidityControlRule implements HumidityExchangeRule {
 
     private final HumidityControlAirFlow humidityControlAirFlow;
 
-    public HumidityExchangeExchanger(ClimateSensors sensors) {
+    public HumidityControlRule(ClimateSensors sensors) {
         this.humidityControlAirFlow = new HumidityControlAirFlow(sensors);
     }
 

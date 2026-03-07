@@ -1,4 +1,4 @@
-package org.air_controller.rules;
+package org.air_controller.rules.airflow;
 
 import lombok.RequiredArgsConstructor;
 

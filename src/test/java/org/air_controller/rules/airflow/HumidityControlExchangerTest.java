@@ -1,5 +1,6 @@
-package org.air_controller.rules;
+package org.air_controller.rules.airflow;
 
+import org.air_controller.rules.Confidence;
 import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.ClimateDataPointBuilder;
@@ -32,7 +33,7 @@ class HumidityControlExchangerTest {
     })
     void shouldControlHumidityExchanger_whenOff(double relativeIndoorHumidity, double relativeOutdoorHumidity)
             throws InvalidArgumentException {
-        final HumidityExchangeExchanger testee = createHumidityControlExchanger(relativeIndoorHumidity, relativeOutdoorHumidity);
+        final HumidityControlRule testee = createHumidityControlExchanger(relativeIndoorHumidity, relativeOutdoorHumidity);
 
         final Confidence result = testee.turnOnConfidence();
 
@@ -46,14 +47,14 @@ class HumidityControlExchangerTest {
     })
     void shouldControlHumidityExchanger_whenOn(double relativeIndoorHumidity, double relativeOutdoorHumidity)
             throws InvalidArgumentException {
-        final HumidityExchangeExchanger testee = createHumidityControlExchanger(relativeIndoorHumidity, relativeOutdoorHumidity);
+        final HumidityControlRule testee = createHumidityControlExchanger(relativeIndoorHumidity, relativeOutdoorHumidity);
 
         final Confidence result = testee.turnOnConfidence();
 
         assertThat(result.value()).isPositive();
     }
 
-    private HumidityExchangeExchanger createHumidityControlExchanger(double relativeIndoorHumidity, double relativeOutdoorHumidity)
+    private HumidityControlRule createHumidityControlExchanger(double relativeIndoorHumidity, double relativeOutdoorHumidity)
             throws InvalidArgumentException {
         final ClimateDataPoint indoorDataPoint = new ClimateDataPointBuilder()
                 .setTemperatureCelsius(22.0)
@@ -66,6 +67,6 @@ class HumidityControlExchangerTest {
         when(indoor.getCurrentDataPoint()).thenReturn(Optional.of(indoorDataPoint));
         when(outdoor.getCurrentDataPoint()).thenReturn(Optional.of(outdoorClimateDataPoint));
         final ClimateSensors sensors = new ClimateSensors(indoor, outdoor);
-        return new HumidityExchangeExchanger(sensors);
+        return new HumidityControlRule(sensors);
     }
 }

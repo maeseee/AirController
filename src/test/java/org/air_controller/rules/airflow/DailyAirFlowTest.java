@@ -1,5 +1,6 @@
-package org.air_controller.rules;
+package org.air_controller.rules.airflow;
 
+import org.air_controller.rules.Confidence;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.MockedStatic;

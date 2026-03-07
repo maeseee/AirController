@@ -1,5 +1,6 @@
-package org.air_controller.rules;
+package org.air_controller.rules.airflow;
 
+import org.air_controller.rules.Confidence;
 import org.air_controller.system_action.DurationCalculator;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;

@@ -1,6 +1,7 @@
-package org.air_controller.rules;
+package org.air_controller.rules.airflow;
 
 import lombok.RequiredArgsConstructor;
+import org.air_controller.rules.Confidence;
 import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor_values.CarbonDioxide;
 import org.air_controller.sensor_values.ClimateDataPoint;
@@ -10,7 +11,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
-class CO2ControlAirFlow implements AirFlowRule {
+class CO2Control implements AirFlowRule {
 
     private static final double UPPER_LIMIT = 1000;
     private static final double LOWER_LIMIT = 400;

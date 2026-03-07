@@ -1,7 +1,7 @@
 package org.air_controller.web_access.actions;
 
 import lombok.extern.slf4j.Slf4j;
-import org.air_controller.rules.ManualOverrideEvent;
+import org.air_controller.rules.airflow.ManualOverrideEvent;
 import org.air_controller.system.OutputState;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;

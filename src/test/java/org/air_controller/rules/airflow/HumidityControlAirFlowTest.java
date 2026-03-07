@@ -1,9 +1,10 @@
-package org.air_controller.rules;
+package org.air_controller.rules.airflow;
 
+import org.air_controller.rules.Confidence;
 import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor_values.ClimateDataPoint;
-import org.air_controller.sensor_values.ClimateSensors;
 import org.air_controller.sensor_values.ClimateDataPointBuilder;
+import org.air_controller.sensor_values.ClimateSensors;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

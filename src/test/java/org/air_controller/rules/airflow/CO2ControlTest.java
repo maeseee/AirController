@@ -1,5 +1,6 @@
-package org.air_controller.rules;
+package org.air_controller.rules.airflow;
 
+import org.air_controller.rules.Confidence;
 import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.ClimateDataPointBuilder;
@@ -19,7 +20,7 @@ import static org.assertj.core.api.Assertions.within;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CO2ControlAirFlowTest {
+class CO2ControlTest {
 
     @Mock
     private ClimateSensor indoor;
@@ -39,7 +40,7 @@ class CO2ControlAirFlowTest {
                 .setTime(ZonedDateTime.now(ZoneOffset.UTC))
                 .build();
         when(indoor.getCurrentDataPoint()).thenReturn(Optional.of(dataPoint));
-        final CO2ControlAirFlow testee = new CO2ControlAirFlow(indoor);
+        final CO2Control testee = new CO2Control(indoor);
 
         final Confidence result = testee.turnOnConfidence();
 

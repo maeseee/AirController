@@ -1,0 +1,6 @@
+package org.air_controller.rules.airflow;
+
+import org.air_controller.rules.Rule;
+
+public interface AirFlowRule extends Rule {
+}
