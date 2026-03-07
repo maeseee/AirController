@@ -6,44 +6,52 @@
 
   @if (viewModel(); as data) {
 
-  <app-dashboard-section
-    title="System"
-    [info]="data.systemCardViews.info"
-    [cards]="data.systemCardViews.cards"
-    [activeGraphMetric]="systemGraphProfile()"
-    (cardSelected)="setSystemGraphProfile('airflow')">
-  </app-dashboard-section>
+    <app-dashboard-section
+      title="System"
+      [info]="data.systemCardViews.info"
+      [cards]="data.systemCardViews.cards"
+      [activeGraphMetric]="systemGraphProfile()"
+      (cardSelected)="setSystemGraphProfile('airflow')">
+    </app-dashboard-section>
 
-  <app-dashboard-section
-    title="Indoor Sensors"
-    location="indoor"
-    [info]="data.indoorCardViews.info"
-    [cards]="data.indoorCardViews.cards"
-    [activeGraphMetric]="indoorGraphProfile()"
-    (cardSelected)="setIndoorGraphProfile($event)">
-  </app-dashboard-section>
+    <app-dashboard-section
+      title="Indoor Sensors"
+      location="indoor"
+      [info]="data.indoorCardViews.info"
+      [cards]="data.indoorCardViews.cards"
+      [activeGraphMetric]="indoorGraphProfile()"
+      (cardSelected)="setIndoorGraphProfile($event)">
+    </app-dashboard-section>
 
-  <app-dashboard-section
-    title="Outdoor Sensors"
-    location="outdoor"
-    [info]="data.outdoorCardViews.info"
-    [cards]="data.outdoorCardViews.cards"
-    [activeGraphMetric]="outdoorGraphProfile()"
-    (cardSelected)="setOutdoorGraphProfile($event)">
-  </app-dashboard-section>
+    <app-dashboard-section
+      title="Outdoor Sensors"
+      location="outdoor"
+      [info]="data.outdoorCardViews.info"
+      [cards]="data.outdoorCardViews.cards"
+      [activeGraphMetric]="outdoorGraphProfile()"
+      (cardSelected)="setOutdoorGraphProfile($event)">
+    </app-dashboard-section>
 
-  <app-dashboard-section title="Confidence" [cards]="data.confidenceCardViews.cards"></app-dashboard-section>
-  <app-dashboard-section title="Statistics" [cards]="data.statisticsCardViews.cards"></app-dashboard-section>
+    <app-dashboard-section
+      title="Confidence"
+      [info]="data.confidenceCardViews.info"
+      [cards]="data.confidenceCardViews.cards"
+    ></app-dashboard-section>
 
-  <h3>Manual overrides</h3>
-  <override-airflow-state></override-airflow-state>
+    <app-dashboard-section
+      title="Statistics"
+      [cards]="data.statisticsCardViews.cards">
+    </app-dashboard-section>
+
+    <h3>Manual overrides</h3>
+    <override-airflow-state></override-airflow-state>
   } @else if (hasError()) {
-  <div class="error">
-    <p>Failed to load data.</p>
-    <button class="refresh-btn" (click)="refresh()">Retry</button>
-  </div>
+    <div class="error">
+      <p>Failed to load data.</p>
+      <button class="refresh-btn" (click)="refresh()">Retry</button>
+    </div>
   } @else {
-  <div class="loader"><p>Fetching climate data...</p></div>
+    <div class="loader"><p>Fetching climate data...</p></div>
   }
 
 </div>
