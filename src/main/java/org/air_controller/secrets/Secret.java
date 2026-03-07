@@ -1,7 +1,6 @@
 package org.air_controller.secrets;
 
 import lombok.NoArgsConstructor;
-import org.air_controller.sensor_data_persistence.ParseException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
