@@ -31,4 +31,12 @@ public record ClimateDataPoint(Temperature temperature, Humidity humidity, Optio
         }
         return cardItems;
     }
+
+    public Double getValue(MeasuredValue measuredValue) {
+        return switch (measuredValue) {
+            case TEMPERATURE -> temperature.celsius();
+            case HUMIDITY -> humidity.getRelativeHumidity(temperature);
+            case CO2 -> co2.map(CarbonDioxide::ppm).orElse(null);
+        };
+    }
 }

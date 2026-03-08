@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.function.Function;
 
 @Service
 @Slf4j
@@ -23,20 +22,20 @@ class OutdoorSensorGraphService {
 
     public GraphView getOutdoorGraphOfMeasuredValues(MeasuredValue measuredValue, Duration duration) {
         final List<ClimateDataPoint> dataPoints = outdoorDataPointsAccessor.getDataPoints(duration);
-        final GraphView outdoorGraph = createGraphView(dataPoints, measuredValue.nameWithUnit(), measuredValue.getValueExtractor());
+        final GraphView outdoorGraph = createGraphView(dataPoints, measuredValue);
         log.info("Asking for outdoor graph items of {} for a duration of {}. Returning a total of {} items", measuredValue.name(), duration,
                 outdoorGraph.items().size());
         return outdoorGraph;
     }
 
-    private GraphView createGraphView(List<ClimateDataPoint> dataPoints, String title, Function<ClimateDataPoint, Double> valueExtractor) {
+    private GraphView createGraphView(List<ClimateDataPoint> dataPoints, MeasuredValue measuredValue) {
         final List<GraphItem> items = dataPoints.stream()
-                .filter(dataPoint -> valueExtractor.apply(dataPoint) != null)
+                .filter(dataPoint -> dataPoint.getValue(measuredValue) != null)
                 .map(dataPoint -> new GraphItem(
                         TimeUtils.toLocalDateTime(dataPoint.timestamp()),
-                        valueExtractor.apply(dataPoint)
+                        dataPoint.getValue(measuredValue)
                 ))
                 .toList();
-        return new GraphView(title, ItemReducer.reduceTo(items, MAX_NUMBER_OF_ITEMS));
+        return new GraphView(measuredValue.nameWithUnit(), ItemReducer.reduceTo(items, MAX_NUMBER_OF_ITEMS));
     }
 }
