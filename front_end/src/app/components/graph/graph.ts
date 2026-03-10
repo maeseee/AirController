@@ -82,7 +82,7 @@ export class GraphChartComponent {
       }
 
       const dataPoints = graphView.items.map(item => ({
-        x: new Date(item.time).getTime(),
+        x: new Date(item.timeStamp).getTime(),
         y: item.value
       }));
 
@@ -91,8 +91,10 @@ export class GraphChartComponent {
           {
             label: graphView.nameWithUnit || 'Measurement',
             data: dataPoints,
-            borderColor: 'rgb(75, 192, 192)',
-            tension: 0.1
+            tension: 0.1,
+            borderColor: 'rgb(75, 192, 192)',       // The line color
+            backgroundColor: 'rgb(0, 0, 0)', // The fill color (if enabled) or legend square
+            pointBackgroundColor: 'rgb(75, 192, 192)'
           }
         ]
       };

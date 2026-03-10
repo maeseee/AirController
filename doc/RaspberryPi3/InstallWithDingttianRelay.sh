@@ -21,7 +21,7 @@ echo "export mariaDdPassword=<secret>" >> /home/pi/.bashrc
 cd AirController || exit
 # Add variables to airController.service as well
 sudo cp doc/RaspberryPi3/airController.service /etc/systemd/system/
-sudo systemctl enable airController.service # Enable the service to start at boot time
+sudo systemctl enable airController.service # Enable the service to start at boot timeStamp
 chmod +x run.shj
 
 # See the log of the systemd service

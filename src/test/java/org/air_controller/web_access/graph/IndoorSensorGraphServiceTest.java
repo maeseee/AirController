@@ -33,9 +33,9 @@ class IndoorSensorGraphServiceTest {
         assertThat(graphView.nameWithUnit()).isEqualTo("Temperature (°C)");
         assertThat(graphView.items()).hasSize(2);
         assertThat(graphView.items().get(0).value()).isEqualTo(20.0);
-        assertThat(graphView.items().get(0).time()).isEqualTo(LocalDateTime.of(2026, 1, 15, 6 + timeDifferenceToUtc(), 0, 0));
+        assertThat(graphView.items().get(0).timeStamp()).isEqualTo(LocalDateTime.of(2026, 1, 15, 6 + timeDifferenceToUtc(), 0, 0));
         assertThat(graphView.items().get(1).value()).isEqualTo(30.0);
-        assertThat(graphView.items().get(1).time()).isEqualTo(LocalDateTime.of(2026, 1, 15, 7 + timeDifferenceToUtc(), 0, 0));
+        assertThat(graphView.items().get(1).timeStamp()).isEqualTo(LocalDateTime.of(2026, 1, 15, 7 + timeDifferenceToUtc(), 0, 0));
     }
 
     private List<ClimateDataPoint> createClimateDataPoints() throws InvalidArgumentException {

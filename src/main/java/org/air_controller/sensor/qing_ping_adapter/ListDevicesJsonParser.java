@@ -79,7 +79,7 @@ class ListDevicesJsonParser {
     }
 
     private void validateTimeStamp(JSONObject deviceData) throws InvalidArgumentException {
-        // QingPing sometimes has a strange time. Therefor I just only if it is about the current time
+        // QingPing sometimes has a strange timeStamp. Therefor I just only if it is about the current timeStamp
         final Duration errorTolerance = Duration.ofHours(3);
         final long timeFromEpoch = getTimestamp(deviceData)
                 .orElseThrow(() -> new InvalidArgumentException("Invalid timestamp"));

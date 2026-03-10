@@ -38,6 +38,17 @@ public class SystemActionDbAccessor {
         return database.executeQuery(sql, adder, setter);
     }
 
+    public List<VentilationSystemPersistenceData> getPersistenceData(Duration duration) {
+        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        final ZonedDateTime before = now.minus(duration);
+        final String sql = "SELECT * FROM " + systemPart.getTableName() + " i " +
+                "WHERE i.action_time > ? " +
+                "ORDER BY i.action_time;";
+        final PreparedStatementSetter setter = preparedStatement -> preparedStatement.setTimestamp(1, Timestamp.valueOf(before.toLocalDateTime()));
+        final EntryAdder<VentilationSystemPersistenceData> adder = this::addPersistenceDataResultIfAvailable;
+        return database.executeQuery(sql, adder, setter);
+    }
+
     public Optional<SystemAction> getMostCurrentSystemAction() {
         final String sql = "SELECT status, action_time FROM " + systemPart.getTableName() + " i " +
                 "ORDER BY i.action_time DESC " +

@@ -27,7 +27,7 @@ public class DailyOnTimeLogger {
             final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
             final LocalDate yesterday = now.toLocalDate().minusDays(1);
             final Duration totalAirFlowYesterday = getTotalFromDay(yesterday);
-            log.info("The daily switch-on time of {} was {} minutes ({} %)", yesterday, totalAirFlowYesterday.toMinutes(),
+            log.info("The daily switch-on timeStamp of {} was {} minutes ({} %)", yesterday, totalAirFlowYesterday.toMinutes(),
                     getOnPercentage(totalAirFlowYesterday));
         } catch (Exception e) {
             log.error("Exception occurred while running VentilationSystemTimeKeeper! ", e);

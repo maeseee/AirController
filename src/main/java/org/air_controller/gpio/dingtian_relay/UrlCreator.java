@@ -16,7 +16,7 @@ class UrlCreator {
                 "?type=" + ActionType.ON_OFF.getIndex() +
                 "&relay=" + relay +
                 "&on=" + action.getIndex() +
-                "&time=0" + // time in ms for jogging, delay and flash
+                "&timeStamp=0" + // timeStamp in ms for jogging, delay and flash
                 "&pwd=0" + // relay password
                 "&";
     }
