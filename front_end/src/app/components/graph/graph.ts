@@ -70,7 +70,7 @@ export class GraphChartComponent {
   }
 
   updateHours(event: Event) {
-      const value = (event.target as HTMLSelectElement).value;
+    const value = (event.target as HTMLSelectElement).value;
     this.selectedHours.set(Number(value));
   }
 
@@ -86,15 +86,17 @@ export class GraphChartComponent {
         y: item.value
       }));
 
+      const pointColors = graphView.items.map(item => item.dataPointColor);
+
       this.lineChartData = {
         datasets: [
           {
             label: graphView.nameWithUnit || 'Measurement',
             data: dataPoints,
             tension: 0.1,
-            borderColor: 'rgb(75, 192, 192)',       // The line color
-            backgroundColor: 'rgb(0, 0, 0)', // The fill color (if enabled) or legend square
-            pointBackgroundColor: 'rgb(75, 192, 192)'
+            borderColor: 'rgb(75, 192, 192)',
+            pointBackgroundColor: pointColors,
+            pointBorderColor: pointColors,
           }
         ]
       };
