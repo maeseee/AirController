@@ -7,8 +7,7 @@ $ProjectMap = @{
     "Dockerfile" = "air-controller-backend"
     "front_end" = "air-controller-frontend"
     "compose.yaml" = ""
-#    ".env" = ""
-    "target\AirController-1.2-SNAPSHOT.jar" = "air-controller-backend"
+    "target\AirController-1.2-SNAPSHOT.jar" = "air-controller-backend/target"
 }
 
 cd $ProjectBase

@@ -6,4 +6,8 @@ FROM amazoncorretto:25-al2023-jdk
 
 WORKDIR /app
 
+COPY target/AirController-1.2-SNAPSHOT.jar /app/AirController.jar
+
+RUN chmod 644 /app/AirController.jar
+
 CMD ["java", "-jar", "AirController.jar"]
