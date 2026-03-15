@@ -26,7 +26,7 @@ class ManualOverrideAirFlow implements AirFlowRule {
             return Confidence.createEmpty();
         }
         final int stateSign = givenState.isOn() ? 1 : -1;
-        return Confidence.createWeighted(stateSign, 10);
+        return Confidence.createWeighted(stateSign, 1);
     }
 
     @EventListener
