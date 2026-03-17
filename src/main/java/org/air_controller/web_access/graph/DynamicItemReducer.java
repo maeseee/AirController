@@ -20,8 +20,8 @@ public class DynamicItemReducer {
     private List<GraphItem> reduceItems(List<GraphItem> items) {
         final double smallestDiff = calculateSmallestDiffToNextValue(items);
 
-        return IntStream.range(1, items.size())
-                .filter(index -> isSimilarToPreviousAndNextItem(items, index, smallestDiff))
+        return IntStream.range(0, items.size())
+                .filter(index -> index == 0 || !isSimilarToPreviousItem(items, index, smallestDiff * DIFFERENCE_INCREASE_FACTOR))
                 .mapToObj(items::get)
                 .toList();
     }
@@ -33,18 +33,19 @@ public class DynamicItemReducer {
                 .min(Double::compareTo).orElse(Double.MAX_VALUE);
     }
 
-    private boolean isSimilarToPreviousAndNextItem(List<GraphItem> items, int index, double smallestDiff) {
+    private boolean isSimilarToPreviousItem(List<GraphItem> items, int index, double difference) {
         final GraphItem previousItem = items.get(index - 1);
         final GraphItem currentItem = items.get(index);
-        return itemsHavingSameStates(previousItem, currentItem) &&
-                itemsInDifferenceRange(previousItem, currentItem, smallestDiff * DIFFERENCE_INCREASE_FACTOR);
+        final boolean sameItemState = itemsHavingSameStates(previousItem, currentItem);
+        final boolean differenceWithinRange = itemDifferenceWithinRange(previousItem, currentItem, difference);
+        return sameItemState && differenceWithinRange;
     }
 
     private boolean itemsHavingSameStates(GraphItem previousItem, GraphItem currentItem) {
         return currentItem.dataPointColor().equals(previousItem.dataPointColor());
     }
 
-    private boolean itemsInDifferenceRange(GraphItem previousItem, GraphItem currentItem, double difference) {
+    private boolean itemDifferenceWithinRange(GraphItem previousItem, GraphItem currentItem, double difference) {
         return calculateDiff(currentItem.value(), previousItem.value()) < difference;
     }
 
