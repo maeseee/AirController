@@ -21,7 +21,7 @@ public class DynamicItemReducer {
         final double smallestDiff = calculateSmallestDiffToNextValue(items);
 
         return IntStream.range(0, items.size())
-                .filter(index -> index == 0 || !isSimilarToPreviousItem(items, index, smallestDiff * DIFFERENCE_INCREASE_FACTOR))
+                .filter(index -> !isSimilarToPreviousItem(items, index, smallestDiff * DIFFERENCE_INCREASE_FACTOR))
                 .mapToObj(items::get)
                 .toList();
     }
@@ -34,11 +34,18 @@ public class DynamicItemReducer {
     }
 
     private boolean isSimilarToPreviousItem(List<GraphItem> items, int index, double difference) {
+        if (isEdgeOfList(items, index)) {
+            return false;
+        }
         final GraphItem previousItem = items.get(index - 1);
         final GraphItem currentItem = items.get(index);
         final boolean sameItemState = itemsHavingSameStates(previousItem, currentItem);
         final boolean differenceWithinRange = itemDifferenceWithinRange(previousItem, currentItem, difference);
         return sameItemState && differenceWithinRange;
+    }
+
+    private boolean isEdgeOfList(List<GraphItem> items, int index) {
+        return index == 0 || index == items.size() - 1;
     }
 
     private boolean itemsHavingSameStates(GraphItem previousItem, GraphItem currentItem) {

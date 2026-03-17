@@ -44,4 +44,25 @@ class DynamicItemReducerTest {
         assertThat(reducedItems.get(2).value()).isEqualTo(2.0);
         assertThat(reducedItems.get(3).value()).isEqualTo(2.5);
     }
+
+    @Test
+    void shouldKeepFirstAndLastItem() {
+        final DynamicItemReducer testee = new DynamicItemReducer(4);
+        final LocalDateTime time = LocalDateTime.now();
+        final List<GraphItem> list = List.of(
+                new GraphItem(time, 1.0, "#4bc0c0"),
+                new GraphItem(time, 1.1, "#4bc0c0"),
+                new GraphItem(time, 2.0, "#4bc0c0"),
+                new GraphItem(time, 2.9, "#4bc0c0"),
+                new GraphItem(time, 3.0, "#4bc0c0")
+        );
+
+        final List<GraphItem> reducedItems = testee.reduce(list);
+
+        assertThat(reducedItems).hasSize(4);
+        assertThat(reducedItems.get(0).value()).isEqualTo(1.0);
+        assertThat(reducedItems.get(1).value()).isEqualTo(2.0);
+        assertThat(reducedItems.get(2).value()).isEqualTo(2.9);
+        assertThat(reducedItems.get(3).value()).isEqualTo(3.0);
+    }
 }
