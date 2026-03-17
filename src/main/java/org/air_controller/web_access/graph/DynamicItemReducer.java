@@ -20,16 +20,16 @@ public class DynamicItemReducer {
     private List<GraphItem> reduceItems(List<GraphItem> items) {
         final double smallestDiff = calculateSmallestDiffToNextValue(items);
 
-        return IntStream.range(1, items.size() - 1)
+        return IntStream.range(1, items.size())
                 .filter(index -> isSimilarToPreviousAndNextItem(items, index, smallestDiff))
                 .mapToObj(items::get)
                 .toList();
     }
 
     private Double calculateSmallestDiffToNextValue(List<GraphItem> items) {
-        return IntStream.range(1, items.size() - 1)
+        return IntStream.range(1, items.size())
                 .filter(index -> itemsHavingSameStates(items.get(index - 1), items.get(index)))
-                .mapToObj(index -> calculateDiff(items.get(index).value(), items.get(index + 1).value()))
+                .mapToObj(index -> calculateDiff(items.get(index - 1).value(), items.get(index).value()))
                 .min(Double::compareTo).orElse(Double.MAX_VALUE);
     }
 
