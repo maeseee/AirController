@@ -7,7 +7,7 @@ import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 public class DynamicItemReducer {
-    public static final double DIFFERENCE_INCREASE_FACTOR = 1.1;
+    public static final double DIFFERENCE_INCREASE_FACTOR = 1.05;
     private final double maxNrOfItems;
 
     public List<GraphItem> reduce(List<GraphItem> items) {
