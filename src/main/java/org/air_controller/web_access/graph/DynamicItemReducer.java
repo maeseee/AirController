@@ -11,8 +11,13 @@ public class DynamicItemReducer {
     private final double maxNrOfItems;
 
     public List<GraphItem> reduce(List<GraphItem> items) {
-        while (items.size() > maxNrOfItems) {
+        int listSize = items.size();
+        while (listSize > maxNrOfItems) {
             items = reduceItems(items);
+            if (listSize == items.size()) {
+                break;
+            }
+            listSize = items.size();
         }
         return items;
     }
