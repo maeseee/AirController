@@ -1,6 +1,7 @@
 package org.air_controller.rules.airflow;
 
 import lombok.extern.slf4j.Slf4j;
+import org.air_controller.ControlledTask;
 import org.air_controller.rules.humidity.HumidityExchangeRule;
 import org.air_controller.system.OutputState;
 import org.air_controller.system.VentilationSystem;
@@ -18,13 +19,15 @@ import java.util.function.Consumer;
 public class RuleApplier {
     private final RuleApplierSystem airFlowSystem;
     private final RuleApplierSystem humidityExchangerSystem;
+    private final ControlledTask task;
 
     public RuleApplier(
             VentilationSystem ventilationSystem,
             @Qualifier("airFlowAccessor") SystemActionDbAccessor airFlow,
             @Qualifier("humidityAccessor") SystemActionDbAccessor humidity,
             List<AirFlowRule> airFlowRules,
-            List<HumidityExchangeRule> humidityExchangeRules) {
+            List<HumidityExchangeRule> humidityExchangeRules,
+            ControlledTask task) {
         final Consumer<OutputState> airFlowUpdateAction = ventilationSystem::setAirFlowOn;
         final Consumer<VentilationSystemPersistenceData> airFlowSystemPersistence = airFlow::insertAction;
         this.airFlowSystem = new RuleApplierSystem(airFlowRules, airFlowUpdateAction, airFlowSystemPersistence);
@@ -32,15 +35,12 @@ public class RuleApplier {
         final Consumer<OutputState> humidityExchangerAction = ventilationSystem::setHumidityExchangerOn;
         final Consumer<VentilationSystemPersistenceData> humidityExchangerSystemPersistence = humidity::insertAction;
         this.humidityExchangerSystem = new RuleApplierSystem(humidityExchangeRules, humidityExchangerAction, humidityExchangerSystemPersistence);
+        this.task = task;
     }
 
     @Scheduled(cron = "0 * * * * ?")
     public void runEveryMinute() {
-        try {
-            doRun();
-        } catch (Exception exception) {
-            log.error("Exception in RuleApplier loop:", exception);
-        }
+        task.execute(this.getClass().getSimpleName(), this::doRun);
     }
 
     private void doRun() {

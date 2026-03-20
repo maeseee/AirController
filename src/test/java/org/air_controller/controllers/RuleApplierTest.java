@@ -1,37 +1,40 @@
 package org.air_controller.controllers;
 
+import org.air_controller.ControlledTask;
 import org.air_controller.rules.Confidence;
 import org.air_controller.rules.airflow.AirFlowRule;
-import org.air_controller.rules.humidity.HumidityExchangeRule;
 import org.air_controller.rules.airflow.RuleApplier;
+import org.air_controller.rules.humidity.HumidityExchangeRule;
 import org.air_controller.system.OutputState;
 import org.air_controller.system.VentilationSystem;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class RuleApplierTest {
 
     private static final double CONFIDENCE_WEIGHT = 1.0;
 
-    @Mock
+    @MockitoBean
     private VentilationSystem ventilationSystem;
-    @Mock
+    @MockitoBean(name = "airFlowAccessor")
     private SystemActionDbAccessor airFlowDbAccessor;
-    @Mock
+    @MockitoBean(name = "humidityAccessor")
     private SystemActionDbAccessor humidityDbAccessor;
-    @Mock
+    @MockitoBean(name = "Daily")
     private AirFlowRule airFlowRule;
-    @Mock
+    @MockitoBean
     private HumidityExchangeRule humidityExchangeRule;
+    @Autowired
+    private ControlledTask task;
 
     private final List<AirFlowRule> airFlowRules = new ArrayList<>();
     private final List<HumidityExchangeRule> humidityExchangeRules = new ArrayList<>();
@@ -40,7 +43,8 @@ class RuleApplierTest {
     void shouldTurnAirFlowOn_whenPositivConfidence() {
         when(airFlowRule.turnOnConfidence()).thenReturn(Confidence.createWeighted(1.0, CONFIDENCE_WEIGHT));
         airFlowRules.add(airFlowRule);
-        final RuleApplier testee = new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules);
+        final RuleApplier testee =
+                new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules, task);
 
         testee.runEveryMinute();
 
@@ -54,7 +58,8 @@ class RuleApplierTest {
     void shouldNotTurnAirFlowOn_whenNegativConfidence() {
         when(airFlowRule.turnOnConfidence()).thenReturn(Confidence.createWeighted(-1.0, CONFIDENCE_WEIGHT));
         airFlowRules.add(airFlowRule);
-        final RuleApplier testee = new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules);
+        final RuleApplier testee =
+                new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules, task);
 
         testee.runEveryMinute();
 
@@ -70,7 +75,8 @@ class RuleApplierTest {
         airFlowRules.add(airFlowRule);
         when(humidityExchangeRule.turnOnConfidence()).thenReturn(Confidence.createWeighted(0.7, CONFIDENCE_WEIGHT));
         humidityExchangeRules.add(humidityExchangeRule);
-        final RuleApplier testee = new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules);
+        final RuleApplier testee =
+                new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules, task);
 
         testee.runEveryMinute();
 
@@ -85,7 +91,8 @@ class RuleApplierTest {
         when(airFlowRule.turnOnConfidence()).thenReturn(Confidence.createWeighted(-1.0, CONFIDENCE_WEIGHT));
         airFlowRules.add(airFlowRule);
         humidityExchangeRules.add(humidityExchangeRule);
-        final RuleApplier testee = new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules);
+        final RuleApplier testee =
+                new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules, task);
 
         testee.runEveryMinute();
 
@@ -101,7 +108,8 @@ class RuleApplierTest {
                 .thenReturn(Confidence.createWeighted(1.0, CONFIDENCE_WEIGHT)) // on
                 .thenReturn(Confidence.createWeighted(-0.04, CONFIDENCE_WEIGHT)); // in hysteresis
         airFlowRules.add(airFlowRule);
-        final RuleApplier testee = new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules);
+        final RuleApplier testee =
+                new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules, task);
 
         testee.runEveryMinute(); // on
         testee.runEveryMinute(); // nothing
@@ -118,7 +126,8 @@ class RuleApplierTest {
                 .thenReturn(Confidence.createWeighted(1.0, CONFIDENCE_WEIGHT)) // on
                 .thenReturn(Confidence.createWeighted(-0.075, CONFIDENCE_WEIGHT)); // out of hysteresis
         airFlowRules.add(airFlowRule);
-        final RuleApplier testee = new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules);
+        final RuleApplier testee =
+                new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules, task);
 
         testee.runEveryMinute(); // on
         testee.runEveryMinute(); // off

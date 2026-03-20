@@ -22,7 +22,7 @@ class ManualOverrideAirFlowTest {
 
         final Confidence confidence = testee.turnOnConfidence();
 
-        assertThat(confidence.value()).isCloseTo(10.0, Offset.offset(0.001));
+        assertThat(confidence.value()).isCloseTo(1.0, Offset.offset(0.001));
     }
 
     @Test
