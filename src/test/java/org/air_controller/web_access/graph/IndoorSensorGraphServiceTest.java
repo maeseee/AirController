@@ -26,9 +26,9 @@ class IndoorSensorGraphServiceTest {
     void shouldReturnTemperatureGraphView_whenAskedFor() throws InvalidArgumentException {
         final List<ClimateDataPoint> dataPoints = createClimateDataPoints();
         when(persistence.getDataPoints(any())).thenReturn(dataPoints);
-        final SensorGraphService testee = new SensorGraphService("Test", persistence);
+        final SensorGraphService testee = new SensorGraphService(persistence);
 
-        final GraphView graphView = testee.getGraphView(MeasuredValue.TEMPERATURE, Duration.ofHours(24));
+        final GraphView graphView = testee.getGraphView(MeasuredValue.TEMPERATURE, Duration.ofHours(24), "Test");
 
         assertThat(graphView.nameWithUnit()).isEqualTo("Temperature (°C)");
         assertThat(graphView.items()).hasSize(2);

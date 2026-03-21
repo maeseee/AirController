@@ -23,7 +23,7 @@ public class IndoorSensorGraphController extends SensorGraphController {
     @GetMapping("/{measuredValue}/{hours}")
     public ResponseEntity<GraphView> getIndoorTemperatureGraph(@PathVariable MeasuredValue measuredValue, @PathVariable int hours) {
         final Duration duration = Duration.ofHours(hours);
-        final GraphView graph = service.getGraphView(measuredValue, duration);
+        final GraphView graph = service.getGraphView(measuredValue, duration, "indoor");
         return generateResponse(graph);
     }
 }

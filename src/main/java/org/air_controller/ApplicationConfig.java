@@ -50,12 +50,12 @@ public class ApplicationConfig {
 
     @Bean("indoorGraphService")
     public SensorGraphService createIndoorGraphService(@Qualifier("indoorDataPointsAccessor") ClimateDataPointsDbAccessor dbAccessor) {
-        return new SensorGraphService("indoorGraphService", dbAccessor);
+        return new SensorGraphService(dbAccessor);
     }
 
     @Bean("outdoorGraphService")
     public SensorGraphService createOutdoorGraphService(@Qualifier("outdoorDataPointsAccessor") ClimateDataPointsDbAccessor dbAccessor) {
-        return new SensorGraphService("outdoorGraphService", dbAccessor);
+        return new SensorGraphService(dbAccessor);
     }
 
     private SystemActionDbAccessor createSystemActionDbAccessor(SystemPart systemPart) {

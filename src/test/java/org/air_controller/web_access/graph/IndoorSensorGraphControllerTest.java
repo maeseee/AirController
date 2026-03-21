@@ -12,6 +12,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,7 +29,7 @@ class IndoorSensorGraphControllerTest {
     @Test
     void testEndpoint() throws Exception {
         final GraphView graphView = new GraphView("Test", List.of());
-        when(graphService.getGraphView(any(), any())).thenReturn(graphView);
+        when(graphService.getGraphView(any(), any(), anyString())).thenReturn(graphView);
 
         final MvcResult result = mockMvc.perform(get("/graph/indoor/TEMPERATURE/24"))
                 .andExpect(status().isOk())

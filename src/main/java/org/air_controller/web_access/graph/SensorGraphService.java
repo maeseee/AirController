@@ -12,18 +12,16 @@ import java.util.List;
 @Service
 @Slf4j
 public class SensorGraphService {
-    private final String serviceName;
     private final ClimateDataPointPersistence dbAccessor;
 
-    public SensorGraphService(String serviceName, ClimateDataPointPersistence dbAccessor) {
-        this.serviceName = serviceName;
+    public SensorGraphService(ClimateDataPointPersistence dbAccessor) {
         this.dbAccessor = dbAccessor;
     }
 
-    public GraphView getGraphView(MeasuredValue measuredValue, Duration duration) {
+    public GraphView getGraphView(MeasuredValue measuredValue, Duration duration, String name) {
         final List<ClimateDataPoint> dataPoints = dbAccessor.getDataPoints(duration);
         final GraphView indoorGraph = createGraphView(dataPoints, measuredValue);
-        log.info("Asking for {} graph items of type {} for a duration of {}. Returning a total of {} items", serviceName, measuredValue.name(), duration,
+        log.info("Asking for {} graph items of type {} for a duration of {}. Returning a total of {} items", name, measuredValue.name(), duration,
                 indoorGraph.items().size());
         return indoorGraph;
     }
