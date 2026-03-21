@@ -12,8 +12,6 @@ import java.util.List;
 @Service
 @Slf4j
 class SystemGraphService {
-    private static final int MAX_NUMBER_OF_ITEMS = 150;
-
     private final SystemActionDbAccessor airFlowDbAccessor;
 
     public SystemGraphService(SystemActionDbAccessor airFlowDbAccessor) {
@@ -35,7 +33,7 @@ class SystemGraphService {
                         dataPoint.totalConfidence(),
                         GraphItem.toColorString(dataPoint.action().isOn() ? Color.GREEN : Color.RED)))
                 .toList();
-        final DynamicItemReducer itemReducer = new DynamicItemReducer(MAX_NUMBER_OF_ITEMS);
+        final DynamicItemReducer itemReducer = new DynamicItemReducer(DynamicItemReducer.MAX_NUMBER_OF_ITEMS);
         return new GraphView("Air flow ON/OFF", itemReducer.reduce(items));
     }
 }

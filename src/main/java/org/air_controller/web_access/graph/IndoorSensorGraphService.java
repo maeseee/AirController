@@ -12,8 +12,6 @@ import java.util.List;
 @Service
 @Slf4j
 class IndoorSensorGraphService {
-    private static final int MAX_NUMBER_OF_ITEMS = 150;
-
     private final ClimateDataPointsDbAccessor indoorDataPointsAccessor;
 
     public IndoorSensorGraphService(ClimateDataPointsDbAccessor indoorDataPointsAccessor) {
@@ -36,7 +34,7 @@ class IndoorSensorGraphService {
                         dataPoint.getValue(measuredValue),
                         "#4bc0c0"))
                 .toList();
-        final DynamicItemReducer itemReducer = new DynamicItemReducer(MAX_NUMBER_OF_ITEMS);
+        final DynamicItemReducer itemReducer = new DynamicItemReducer(DynamicItemReducer.MAX_NUMBER_OF_ITEMS);
         return new GraphView(measuredValue.nameWithUnit(), itemReducer.reduce(items));
     }
 }
