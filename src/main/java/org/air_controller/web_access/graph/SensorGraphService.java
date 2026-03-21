@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.MeasuredValue;
-import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.List;
