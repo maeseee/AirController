@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.MeasuredValue;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -12,17 +11,19 @@ import java.util.List;
 
 @Service
 @Slf4j
-class IndoorSensorGraphService {
-    private final ClimateDataPointPersistence persistence;
+public class SensorGraphService {
+    private final String serviceName;
+    private final ClimateDataPointPersistence dbAccessor;
 
-    public IndoorSensorGraphService(@Qualifier("indoorPersistence") ClimateDataPointPersistence persistence) {
-        this.persistence = persistence;
+    public SensorGraphService(String serviceName, ClimateDataPointPersistence dbAccessor) {
+        this.serviceName = serviceName;
+        this.dbAccessor = dbAccessor;
     }
 
-    public GraphView getIndoorGraphOfMeasuredValues(MeasuredValue measuredValue, Duration duration) {
-        final List<ClimateDataPoint> dataPoints = persistence.getDataPoints(duration);
+    public GraphView getGraphView(MeasuredValue measuredValue, Duration duration) {
+        final List<ClimateDataPoint> dataPoints = dbAccessor.getDataPoints(duration);
         final GraphView indoorGraph = createGraphView(dataPoints, measuredValue);
-        log.info("Asking for indoor graph items of {} for a duration of {}. Returning a total of {} items", measuredValue.name(), duration,
+        log.info("Asking for {} graph items of type {} for a duration of {}. Returning a total of {} items", serviceName, measuredValue.name(), duration,
                 indoorGraph.items().size());
         return indoorGraph;
     }

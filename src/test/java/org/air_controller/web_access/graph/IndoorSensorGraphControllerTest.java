@@ -23,12 +23,12 @@ class IndoorSensorGraphControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
-    private IndoorSensorGraphService graphService;
+    private SensorGraphService graphService;
 
     @Test
     void testEndpoint() throws Exception {
         final GraphView graphView = new GraphView("Test", List.of());
-        when(graphService.getIndoorGraphOfMeasuredValues(any(), any())).thenReturn(graphView);
+        when(graphService.getGraphView(any(), any())).thenReturn(graphView);
 
         final MvcResult result = mockMvc.perform(get("/graph/indoor/TEMPERATURE/24"))
                 .andExpect(status().isOk())

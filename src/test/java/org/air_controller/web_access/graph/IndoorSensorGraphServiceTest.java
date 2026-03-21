@@ -1,6 +1,6 @@
 package org.air_controller.web_access.graph;
 
-import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
+import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.ClimateDataPointBuilder;
 import org.air_controller.sensor_values.InvalidArgumentException;
@@ -20,15 +20,15 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class IndoorSensorGraphServiceTest {
     @Mock
-    private ClimateDataPointsDbAccessor indoorDataPointsAccessor;
+    private ClimateDataPointPersistence persistence;
 
     @Test
     void shouldReturnTemperatureGraphView_whenAskedFor() throws InvalidArgumentException {
         final List<ClimateDataPoint> dataPoints = createClimateDataPoints();
-        when(indoorDataPointsAccessor.getDataPoints(any())).thenReturn(dataPoints);
-        final IndoorSensorGraphService testee = new IndoorSensorGraphService(indoorDataPointsAccessor);
+        when(persistence.getDataPoints(any())).thenReturn(dataPoints);
+        final SensorGraphService testee = new SensorGraphService("Test", persistence);
 
-        final GraphView graphView = testee.getIndoorGraphOfMeasuredValues(MeasuredValue.TEMPERATURE, Duration.ofHours(24));
+        final GraphView graphView = testee.getGraphView(MeasuredValue.TEMPERATURE, Duration.ofHours(24));
 
         assertThat(graphView.nameWithUnit()).isEqualTo("Temperature (°C)");
         assertThat(graphView.items()).hasSize(2);
