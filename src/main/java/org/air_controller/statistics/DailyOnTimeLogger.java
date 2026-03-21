@@ -1,6 +1,7 @@
 package org.air_controller.statistics;
 
 import lombok.extern.slf4j.Slf4j;
+import org.air_controller.ControlledTask;
 import org.air_controller.system_action.DurationCalculator;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
@@ -16,13 +17,21 @@ import java.util.List;
 public class DailyOnTimeLogger {
 
     private final SystemActionDbAccessor dbAccessor;
+    private final ControlledTask task;
 
-    public DailyOnTimeLogger(@Qualifier("airFlowAccessor") SystemActionDbAccessor dbAccessor) {
+    public DailyOnTimeLogger(
+            @Qualifier("airFlowAccessor") SystemActionDbAccessor dbAccessor,
+            ControlledTask task) {
         this.dbAccessor = dbAccessor;
+        this.task = task;
     }
 
     @Scheduled(cron = "0 0 0 * * ?", zone = "UTC")
     public void runAtMidnightUtc() {
+        task.execute(this.getClass().getSimpleName(), this::doRun);
+    }
+
+    private void doRun() {
         try {
             final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
             final LocalDate yesterday = now.toLocalDate().minusDays(1);
