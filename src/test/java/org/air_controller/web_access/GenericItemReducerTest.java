@@ -1,6 +1,6 @@
 package org.air_controller.web_access;
 
-import org.air_controller.web_access.graph.ItemReducer;
+import org.air_controller.web_access.graph.GenericItemReducer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-class ItemReducerTest {
+class GenericItemReducerTest {
 
     @Test
     void shouldReturnOriginalData_whenMaxHigher() {
@@ -19,7 +19,7 @@ class ItemReducerTest {
                 .boxed()
                 .toList();
 
-        final List<Integer> integers = ItemReducer.reduceTo(items, 150);
+        final List<Integer> integers = GenericItemReducer.reduceTo(items, 150);
 
         assertThat(integers).isEqualTo(items);
     }
@@ -30,7 +30,7 @@ class ItemReducerTest {
                 .boxed()
                 .toList();
 
-        final List<Integer> integers = ItemReducer.reduceTo(items, 25);
+        final List<Integer> integers = GenericItemReducer.reduceTo(items, 25);
 
         assertThat(integers.size()).isEqualTo(25);
         assertThat(integers.getLast()).isEqualTo(100);
@@ -42,7 +42,7 @@ class ItemReducerTest {
                 .boxed()
                 .toList();
 
-        final List<Integer> integers = ItemReducer.reduceTo(items, 25);
+        final List<Integer> integers = GenericItemReducer.reduceTo(items, 25);
 
         assertThat(integers.size()).isEqualTo(25);
         assertThat(integers.getLast()).isEqualTo(98);

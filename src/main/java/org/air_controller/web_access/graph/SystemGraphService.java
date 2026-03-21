@@ -35,6 +35,6 @@ class SystemGraphService {
                         dataPoint.totalConfidence(),
                         GraphItem.toColorString(dataPoint.action().isOn() ? Color.GREEN : Color.RED)))
                 .toList();
-        return new GraphView("Air flow ON/OFF", ItemReducer.reduceTo(items, MAX_NUMBER_OF_ITEMS));
+        return new GraphView("Air flow ON/OFF", GenericItemReducer.reduceTo(items, MAX_NUMBER_OF_ITEMS));
     }
 }

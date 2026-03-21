@@ -3,7 +3,7 @@ package org.air_controller.web_access.graph;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class ItemReducer {
+public class GenericItemReducer {
 
     public static <T> List<T> reduceTo(List<T> items, int maxNumberOfItems) {
         if (items.size() <= maxNumberOfItems) {
