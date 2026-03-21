@@ -13,7 +13,7 @@ import java.time.Duration;
 @RestController
 @RequestMapping("/graph/outdoor")
 @RequiredArgsConstructor
-public class OutdoorSensorGraphController extends SensorGraphService{
+public class OutdoorSensorGraphController extends SensorGraphController {
 
     private final OutdoorSensorGraphService service;
 

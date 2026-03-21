@@ -13,7 +13,7 @@ import java.time.Duration;
 @RestController
 @RequestMapping("/graph/indoor")
 @RequiredArgsConstructor
-public class IndoorSensorGraphController extends SensorGraphService {
+public class IndoorSensorGraphController extends SensorGraphController {
 
     private final IndoorSensorGraphService service;
 
