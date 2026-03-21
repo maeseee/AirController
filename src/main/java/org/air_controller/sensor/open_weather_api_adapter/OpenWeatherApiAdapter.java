@@ -1,6 +1,7 @@
 package org.air_controller.sensor.open_weather_api_adapter;
 
 import lombok.extern.slf4j.Slf4j;
+import org.air_controller.ControlledTask;
 import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor.open_weather_api.OpenWeatherApiSensor;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
@@ -13,8 +14,11 @@ import java.util.Optional;
 @Slf4j
 @Component("outdoorSensor")
 public class OpenWeatherApiAdapter extends ClimateSensor {
-    public OpenWeatherApiAdapter(@Qualifier("outdoorPersistence") ClimateDataPointPersistence persistence, OpenWeatherApiSensor sensor) {
-        super(persistence, sensor);
+    public OpenWeatherApiAdapter(
+            @Qualifier("outdoorPersistence") ClimateDataPointPersistence persistence,
+            OpenWeatherApiSensor sensor,
+            ControlledTask task) {
+        super(persistence, sensor, task);
     }
 
     @Override

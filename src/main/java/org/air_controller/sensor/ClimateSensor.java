@@ -2,6 +2,7 @@ package org.air_controller.sensor;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.air_controller.ControlledTask;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,9 +19,14 @@ public abstract class ClimateSensor {
 
     protected final ClimateDataPointPersistence persistence;
     protected final SensorReader sensor;
+    private final ControlledTask task;
 
     @Scheduled(cron = "0 0/10 * * * ?")
     public void runAtTenMinuteIntervals() {
+        task.execute(this.getClass().getSimpleName(), this::doRun);
+    }
+
+    private void doRun() {
         try {
             final String response = sensor.readData();
             Optional<ClimateDataPoint> dataPoint = parseResponse(response);

@@ -1,6 +1,7 @@
 package org.air_controller.sensor.qing_ping_adapter;
 
 import lombok.extern.slf4j.Slf4j;
+import org.air_controller.ControlledTask;
 import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor.qing_ping.QingPingSensor;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
@@ -20,12 +21,21 @@ public class QingPingAdapter extends ClimateSensor {
     private final ListDevicesJsonParser parser;
 
     @Autowired
-    public QingPingAdapter(@Qualifier("indoorPersistence") ClimateDataPointPersistence persistence, QingPingSensor sensor) {
-        this(persistence, sensor, new SensorReducer(), new ListDevicesJsonParser());
+    public QingPingAdapter(
+            @Qualifier("indoorPersistence") ClimateDataPointPersistence persistence,
+            QingPingSensor sensor,
+            ControlledTask task) {
+        this(persistence, sensor, task, new SensorReducer(), new ListDevicesJsonParser());
     }
 
-    QingPingAdapter(ClimateDataPointPersistence persistence, QingPingSensor sensor, SensorReducer sensorReducer, ListDevicesJsonParser parser) {
-        super(persistence, sensor);
+    QingPingAdapter(
+            ClimateDataPointPersistence persistence,
+            QingPingSensor sensor,
+            ControlledTask task,
+            SensorReducer sensorReducer,
+            ListDevicesJsonParser parser
+            ) {
+        super(persistence, sensor, task);
         this.sensorReducer = sensorReducer;
         this.parser = parser;
     }

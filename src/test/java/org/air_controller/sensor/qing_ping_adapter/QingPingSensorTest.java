@@ -1,14 +1,15 @@
 package org.air_controller.sensor.qing_ping_adapter;
 
+import org.air_controller.ControlledTask;
 import org.air_controller.sensor.qing_ping.QingPingSensor;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.ClimateDataPointBuilder;
 import org.air_controller.sensor_values.InvalidArgumentException;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.Optional;
 
@@ -17,17 +18,19 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class QingPingSensorTest {
 
-    @Mock
+    @MockitoBean(name = "indoorPersistence")
     private ClimateDataPointPersistence persistence;
-    @Mock
+    @MockitoBean
     private QingPingSensor sensor;
-    @Mock
+    @MockitoBean
     private SensorReducer reducer;
-    @Mock
+    @MockitoBean
     private ListDevicesJsonParser parser;
+    @Autowired
+    private ControlledTask task;
 
     @Test
     void shouldParseSensorList() throws InvalidArgumentException {
@@ -39,7 +42,7 @@ class QingPingSensorTest {
                 .build();
         when(parser.parseDeviceListResponse(eq(response), any())).thenReturn(Optional.of(dataPoint));
         when(reducer.reduce(any())).thenReturn(Optional.of(dataPoint));
-        final QingPingAdapter testee = new QingPingAdapter(persistence, sensor, reducer, parser);
+        final QingPingAdapter testee = new QingPingAdapter(persistence, sensor, task, reducer, parser);
 
         testee.runAtTenMinuteIntervals();
 
@@ -55,7 +58,7 @@ class QingPingSensorTest {
         final String response = "response";
         when(sensor.readData()).thenReturn(response);
         when(parser.parseDeviceListResponse(eq(response), any())).thenReturn(Optional.empty());
-        final QingPingAdapter testee = new QingPingAdapter(persistence, sensor, new SensorReducer(), parser);
+        final QingPingAdapter testee = new QingPingAdapter(persistence, sensor, task, new SensorReducer(), parser);
 
         testee.runAtTenMinuteIntervals();
 

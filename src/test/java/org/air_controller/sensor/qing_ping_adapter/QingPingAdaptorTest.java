@@ -1,5 +1,6 @@
 package org.air_controller.sensor.qing_ping_adapter;
 
+import org.air_controller.ControlledTask;
 import org.air_controller.sensor.qing_ping.QingPingSensor;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.*;
@@ -7,25 +8,30 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class QingPingAdaptorTest {
 
-    @Mock
+    @MockitoBean(name = "indoorPersistence")
     private ClimateDataPointPersistence persistence;
-    @Mock
+    @MockitoBean
     private QingPingSensor sensor;
-    @Mock
+    @MockitoBean
     private SensorReducer reducer;
-    @Mock
+    @MockitoBean
     private ListDevicesJsonParser parser;
+    @Autowired
+    private ControlledTask task;
 
     @Captor
     private ArgumentCaptor<ClimateDataPoint> indoorDataPointArgumentCaptor;
@@ -40,7 +46,7 @@ class QingPingAdaptorTest {
         when(parser.parseDeviceListResponse(any(), any())).thenReturn(Optional.of(dataPoint));
         when(reducer.reduce(any())).thenReturn(Optional.of(dataPoint));
 
-        final QingPingAdapter testee = new QingPingAdapter(persistence, sensor, reducer, parser);
+        final QingPingAdapter testee = new QingPingAdapter(persistence, sensor, task, reducer, parser);
 
         testee.runAtTenMinuteIntervals();
 
@@ -54,7 +60,7 @@ class QingPingAdaptorTest {
     @Test
     void shouldNotPersistDataPoint_whenInvalidDataPoint() {
         when(sensor.readData()).thenReturn("");
-        final QingPingAdapter testee = new QingPingAdapter(persistence, sensor);
+        final QingPingAdapter testee = new QingPingAdapter(persistence, sensor, task);
 
         testee.runAtTenMinuteIntervals();
 
