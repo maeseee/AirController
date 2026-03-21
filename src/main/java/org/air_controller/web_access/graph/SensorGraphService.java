@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.List;
 
-@Service
 @Slf4j
 public class SensorGraphService {
     private final ClimateDataPointPersistence dbAccessor;
