@@ -1,9 +1,10 @@
 package org.air_controller.web_access.graph;
 
 import lombok.extern.slf4j.Slf4j;
-import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
+import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.MeasuredValue;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -12,14 +13,14 @@ import java.util.List;
 @Service
 @Slf4j
 class IndoorSensorGraphService {
-    private final ClimateDataPointsDbAccessor indoorDataPointsAccessor;
+    private final ClimateDataPointPersistence persistence;
 
-    public IndoorSensorGraphService(ClimateDataPointsDbAccessor indoorDataPointsAccessor) {
-        this.indoorDataPointsAccessor = indoorDataPointsAccessor;
+    public IndoorSensorGraphService(@Qualifier("indoorPersistence") ClimateDataPointPersistence persistence) {
+        this.persistence = persistence;
     }
 
     public GraphView getIndoorGraphOfMeasuredValues(MeasuredValue measuredValue, Duration duration) {
-        final List<ClimateDataPoint> dataPoints = indoorDataPointsAccessor.getDataPoints(duration);
+        final List<ClimateDataPoint> dataPoints = persistence.getDataPoints(duration);
         final GraphView indoorGraph = createGraphView(dataPoints, measuredValue);
         log.info("Asking for indoor graph items of {} for a duration of {}. Returning a total of {} items", measuredValue.name(), duration,
                 indoorGraph.items().size());
