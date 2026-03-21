@@ -17,9 +17,15 @@ export class DashboardSectionComponent {
   @Input() location: 'system' | 'indoor' | 'outdoor' = 'system';
   @Input() activeGraphMetric: any = null;
 
+  isMaximized = false;
+
   @Output() cardSelected = new EventEmitter<string>();
 
   onCardClick(name: string) {
     this.cardSelected.emit(name);
+  }
+
+  toggleZoom() {
+    this.isMaximized = !this.isMaximized;
   }
 }
