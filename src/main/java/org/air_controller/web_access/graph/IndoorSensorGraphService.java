@@ -36,6 +36,7 @@ class IndoorSensorGraphService {
                         dataPoint.getValue(measuredValue),
                         "#4bc0c0"))
                 .toList();
-        return new GraphView(measuredValue.nameWithUnit(), GenericItemReducer.reduceTo(items, MAX_NUMBER_OF_ITEMS));
+        final DynamicItemReducer itemReducer = new DynamicItemReducer(MAX_NUMBER_OF_ITEMS);
+        return new GraphView(measuredValue.nameWithUnit(), itemReducer.reduce(items));
     }
 }
