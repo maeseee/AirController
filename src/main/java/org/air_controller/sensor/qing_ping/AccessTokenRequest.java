@@ -31,8 +31,8 @@ class AccessTokenRequest {
                 log.error("Wrong response code! responseCode={} responseMessage={}", responseCode, connection.getResponseMessage());
             }
             connection.disconnect();
-        } catch (IOException e) {
-            log.error("QingPingAccessTokenRequest failed! {}", e.getMessage());
+        } catch (IOException exception) {
+            log.error("QingPingAccessTokenRequest failed!", exception);
         }
         return Optional.ofNullable(responseFromUrl);
     }

@@ -28,8 +28,8 @@ public class QingPingSensor implements SensorReader {
         try {
             final String token = accessToken.readToken();
             return listDevicesRequest.sendRequest(token);
-        } catch (CommunicationException | IOException | URISyntaxException e) {
-            log.error("QingPingSensor readData error", e);
+        } catch (CommunicationException | IOException | URISyntaxException exception) {
+            log.error("QingPingSensor readData error", exception);
             return "";
         }
     }

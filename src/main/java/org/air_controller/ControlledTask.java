@@ -24,14 +24,14 @@ public class ControlledTask {
         final Future<?> future = taskScheduler.submit(task);
         try {
             future.get(TIMEOUT.toSeconds(), TimeUnit.SECONDS);
-        } catch (TimeoutException e) {
-            log.error("Task {} timed out and will get stopped", taskName);
+        } catch (TimeoutException exception) {
+            log.error("Task {} timed out and will get stopped.", taskName, exception);
             future.cancel(true);
-        } catch (InterruptedException e) {
-            log.error("Task {} interrupted", taskName);
+        } catch (InterruptedException exception) {
+            log.error("Task {} interrupted", taskName, exception);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
-            log.error("Task {} failed with the exception", taskName, e);
+        } catch (ExecutionException exception) {
+            log.error("Task {} failed with the exception", taskName, exception);
         }
     }
 }

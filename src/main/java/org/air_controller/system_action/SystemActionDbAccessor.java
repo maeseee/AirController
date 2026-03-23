@@ -108,8 +108,8 @@ public class SystemActionDbAccessor {
     private void addPersistenceDataResultIfAvailable(List<VentilationSystemPersistenceData> entries, ResultSet resultSet) {
         try {
             entries.add(createSystemPersistenceData(resultSet));
-        } catch (SQLException e) {
-            log.error("Persistence data entry could not be loaded! {}", e.getMessage());
+        } catch (SQLException exception) {
+            log.error("Persistence data entry could not be loaded!", exception);
         }
     }
 

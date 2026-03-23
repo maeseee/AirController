@@ -23,8 +23,8 @@ public abstract class DatabaseConnection {
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             setter.setParameters(preparedStatement);
             preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            log.error("SQL Exception on executeUpdate! {}", e.getMessage());
+        } catch (SQLException exception) {
+            log.error("SQL Exception on executeUpdate!", exception);
         }
     }
 
@@ -45,8 +45,8 @@ public abstract class DatabaseConnection {
                     adder.addResultIfAvailable(entries, resultSet);
                 }
             }
-        } catch (SQLException e) {
-            log.error("SQL Exception on executeQuery! {}", e.getMessage());
+        } catch (SQLException exception) {
+            log.error("SQL Exception on executeQuery!", exception);
         }
         return entries;
     }
