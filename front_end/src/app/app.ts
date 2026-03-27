@@ -5,7 +5,7 @@ import {BehaviorSubject, catchError, forkJoin, of, switchMap, tap } from 'rxjs';
 import {CardViewService} from './services/cardView/CardViewService';
 import {MeasuredValue} from './components/graph/MeasuredValue';
 import {AirflowControlComponent} from './components/actions/OverrideAirFlow';
-import {DashboardSectionComponent} from './components/metric-dashboard/metric-dashboard';
+import {DashboardSectionComponent} from './components/graph-dashboard/graph-dashboard';
 
 @Component({
   selector: 'app-root',

@@ -7,8 +7,8 @@ import {MetricCardComponent} from '../card/metric-card';
   selector: 'app-dashboard-section',
   standalone: true,
   imports: [GraphChartComponent, CommonModule, MetricCardComponent],
-  templateUrl: './metric-dashboard.html',
-  styleUrl: './metric-dashboard.css'
+  templateUrl: './graph-dashboard.html',
+  styleUrl: './graph-dashboard.css'
 })
 export class DashboardSectionComponent {
   @Input({required: true}) title!: string;
