@@ -1,4 +1,4 @@
-import {Component, effect, input, signal, ViewChild} from '@angular/core';
+import {Component, effect, input, ViewChild} from '@angular/core';
 import {Chart, ChartConfiguration, ChartOptions, registerables} from 'chart.js';
 import {GraphViewService} from '../../services/graphView/GraphViewService';
 import {BaseChartDirective} from 'ng2-charts';
@@ -14,8 +14,8 @@ import {de} from 'date-fns/locale';
 })
 export class GraphChartComponent {
   location = input.required<'system' | 'indoor' | 'outdoor'>();
-  selectedHours = signal<number>(24);
   measuredValueInput = input.required<'airflow' | MeasuredValue>();
+  hours = input<number>(24);
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
@@ -62,16 +62,11 @@ export class GraphChartComponent {
     effect(() => {
       const location = this.location();
       const currentMeasuredValue = this.measuredValueInput();
-      const hours = this.selectedHours();
+      const currentHours = this.hours();
       if (currentMeasuredValue) {
-        this.loadData(location, currentMeasuredValue, hours);
+        this.loadData(location, currentMeasuredValue, currentHours);
       }
     });
-  }
-
-  updateHours(event: Event) {
-    const value = (event.target as HTMLSelectElement).value;
-    this.selectedHours.set(Number(value));
   }
 
   private loadData(location: 'system' | 'indoor' | 'outdoor', measuredValue: 'airflow' | MeasuredValue, hours: number) {

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, signal} from '@angular/core';
 import {GraphChartComponent} from '../graph/graph';
 import {CommonModule} from '@angular/common';
 import {MetricCardComponent} from '../card/metric-card';
@@ -17,12 +17,19 @@ export class DashboardSectionComponent {
   @Input() location: 'system' | 'indoor' | 'outdoor' = 'system';
   @Input() activeGraphMetric: any = null;
 
+  selectedHours = signal<number>(24);
   isMaximized = false;
+
 
   @Output() cardSelected = new EventEmitter<string>();
 
   onCardClick(name: string) {
     this.cardSelected.emit(name);
+  }
+
+  updateHours(event: Event) {
+    const value = (event.target as HTMLSelectElement).value;
+    this.selectedHours.set(Number(value));
   }
 
   toggleZoom() {
