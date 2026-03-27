@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 
 @Component({
-  selector: 'app-metric-card',
+  selector: 'metric-card',
   standalone: true,
   templateUrl: './metric-card.html',
   styleUrls: ['./metric-card.css']

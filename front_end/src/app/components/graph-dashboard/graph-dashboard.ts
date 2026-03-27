@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, Output, signal} from '@angular/core';
 import {GraphChartComponent} from '../graph/graph';
 import {CommonModule} from '@angular/common';
-import {MetricCardComponent} from '../card/metric-card';
+import {MetricCardComponent} from '../metric-card/metric-card';
 
 @Component({
   selector: 'app-dashboard-section',

@@ -18,7 +18,7 @@
   color: #1e293b;
 }
 
-app-metric-card {
+metric-card {
   flex: 0 1 calc(33.333% - 12px);
   min-width: 120px;
 }

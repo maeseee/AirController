@@ -2,12 +2,12 @@
 <div>{{ info }}</div>
 <section class="card-grid">
   @for (card of cards; track card.name) {
-    <app-metric-card
+    <metric-card
       [label]="card.name"
       [value]="card.value"
       [unit]="card.unit"
       (click)="onCardClick(card.name)">
-    </app-metric-card>
+    </metric-card>
   } @empty {
     <p>No cards found in this group.</p>
   }
