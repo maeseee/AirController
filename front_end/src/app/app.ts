@@ -1,7 +1,7 @@
 import {Component, inject, signal} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {toSignal} from '@angular/core/rxjs-interop';
-import {BehaviorSubject, catchError, combineLatest, forkJoin, of, switchMap, tap } from 'rxjs';
+import {BehaviorSubject, catchError, forkJoin, of, switchMap, tap } from 'rxjs';
 import {CardViewService} from './services/cardView/CardViewService';
 import {MeasuredValue} from './components/graph/MeasuredValue';
 import {AirflowControlComponent} from './components/actions/OverrideAirFlow';
