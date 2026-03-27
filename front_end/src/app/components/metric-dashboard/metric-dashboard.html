@@ -15,10 +15,10 @@
 
 @if (activeGraphMetric) {
   <div class="profile-section" [class.fullscreen-mode]="isMaximized">
-    <graph-chart-component
+    <graph-component
       [measuredValueInput]="activeGraphMetric"
       [location]="location"
       (click)="toggleZoom()">
-    </graph-chart-component>
+    </graph-component>
   </div>
 }

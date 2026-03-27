@@ -7,7 +7,7 @@ import 'chartjs-adapter-date-fns';
 import {de} from 'date-fns/locale';
 
 @Component({
-  selector: 'graph-chart-component',
+  selector: 'graph-component',
   standalone: true,
   imports: [BaseChartDirective],
   templateUrl: './graph.html',
