@@ -21,11 +21,13 @@ public class ControlledTask {
     }
 
     public void execute(String taskName, Runnable task) {
-        final Future<?> future = taskScheduler.submit(task);
+        final TrackableRunnable wrappedTask = new TrackableRunnable(task);
+        final Future<?> future = taskScheduler.submit(wrappedTask);
         try {
             future.get(TIMEOUT.toSeconds(), TimeUnit.SECONDS);
         } catch (TimeoutException exception) {
-            log.error("Task {} timed out and will get stopped.", taskName, exception);
+            final String currentThreadCallStack = wrappedTask.getCurrentThreadCallStack();
+            log.error("Task {} timed out and will get stopped.\nTask Callback is:\n{}", taskName, currentThreadCallStack, exception);
             future.cancel(true);
         } catch (InterruptedException exception) {
             log.error("Task {} interrupted", taskName, exception);
