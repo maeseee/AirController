@@ -26,14 +26,18 @@ public class ControlledTask {
         try {
             future.get(TIMEOUT.toSeconds(), TimeUnit.SECONDS);
         } catch (TimeoutException exception) {
-            final String currentThreadCallStack = wrappedTask.getCurrentThreadCallStack();
-            log.error("Task {} timed out and will get stopped.\nTask Callback is:\n{}", taskName, currentThreadCallStack, exception);
+            log.error("Task {} timed out and will get stopped.\n{}", taskName, getCurrentThreadCallStack(wrappedTask), exception);
             future.cancel(true);
         } catch (InterruptedException exception) {
-            log.error("Task {} interrupted", taskName, exception);
+            log.error("Task {} interrupted.\n{}", taskName, getCurrentThreadCallStack(wrappedTask), exception);
             Thread.currentThread().interrupt();
         } catch (ExecutionException exception) {
-            log.error("Task {} failed with the exception", taskName, exception);
+            log.error("Task {} failed with the exception.\n{}", taskName, getCurrentThreadCallStack(wrappedTask), exception);
         }
+    }
+
+    private String getCurrentThreadCallStack(TrackableRunnable wrappedTask) {
+        final String currentThreadCallStack = wrappedTask.getCurrentThreadCallStack();
+        return "Task Callback is:\n" + currentThreadCallStack;
     }
 }
