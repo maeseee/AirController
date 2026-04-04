@@ -54,7 +54,7 @@ class IndoorSensorGraphServiceTest {
     }
 
     private int timeDifferenceToUtc() {
-        final ZonedDateTime time = ZonedDateTime.now(ZoneOffset.UTC);
+        final ZonedDateTime time = ZonedDateTime.of(2026, 1, 15, 7, 0, 0, 0, ZoneOffset.UTC);
         return (int) Duration.between(time.toLocalDateTime(), time.withZoneSameInstant(ZoneId.of("Europe/Berlin")).toLocalDateTime()).toHours();
     }
 }
