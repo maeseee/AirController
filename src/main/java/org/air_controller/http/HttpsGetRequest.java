@@ -12,7 +12,6 @@ import java.net.URI;
 @Slf4j
 public class HttpsGetRequest {
     public String sendRequest(String url) {
-        String responseFromUrl = "";
         try {
             final URI uri = new URI(url);
             final HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
@@ -20,13 +19,12 @@ public class HttpsGetRequest {
 
             final int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                responseFromUrl = readResponseFromServer(connection.getInputStream());
+                return readResponseFromServer(connection.getInputStream());
             }
         } catch (Exception exception) {
             log.error("HttpsGetRequest failure: ", exception);
-            return "";
         }
-        return responseFromUrl;
+        return "";
     }
 
     private String readResponseFromServer(InputStream inputStream) throws IOException {
