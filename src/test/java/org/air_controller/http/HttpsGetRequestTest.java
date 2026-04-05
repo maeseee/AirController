@@ -8,7 +8,7 @@ class HttpsGetRequestTest {
 
     @Test
     void testWhenUrlCalledThenReturnContent() {
-        final String url = "https://example.com";
+        final String url = "https://www.google.com";
         final HttpsGetRequest testee = new HttpsGetRequest();
 
         final String result = testee.sendRequest(url);
@@ -18,7 +18,7 @@ class HttpsGetRequestTest {
 
     @Test
     void testWhenUrlCalledTwiceThenReturnContentTwice() {
-        final String url = "https://example.com";
+        final String url = "https://www.google.com";
         final HttpsGetRequest testee = new HttpsGetRequest();
 
         final String result = testee.sendRequest(url);
