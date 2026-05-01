@@ -124,7 +124,7 @@ class RuleApplierTest {
     void shouldTurnOff_whenAirFlowOutOfHysteresis() {
         when(airFlowRule.turnOnConfidence())
                 .thenReturn(Confidence.createWeighted(1.0, CONFIDENCE_WEIGHT)) // on
-                .thenReturn(Confidence.createWeighted(-0.075, CONFIDENCE_WEIGHT)); // out of hysteresis
+                .thenReturn(Confidence.createWeighted(-0.13, CONFIDENCE_WEIGHT)); // out of hysteresis
         airFlowRules.add(airFlowRule);
         final RuleApplier testee =
                 new RuleApplier(ventilationSystem, airFlowDbAccessor, humidityDbAccessor, airFlowRules, humidityExchangeRules, task);
