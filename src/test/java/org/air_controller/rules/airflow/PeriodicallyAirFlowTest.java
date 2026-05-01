@@ -29,8 +29,8 @@ class PeriodicallyAirFlowTest {
     @ParameterizedTest(name = "{index} => onDuration={0}, expectedResult={1}")
     @CsvSource({
             "0, 0.3",
-            "120, -0.3",
-            "60, 0"
+            "180, -0.3",
+            "90, 0"
     })
     void shouldReturnPercentage(int onDuration, double expectedResult) {
         final ZonedDateTime endTime = ZonedDateTime.now(ZoneOffset.UTC);
