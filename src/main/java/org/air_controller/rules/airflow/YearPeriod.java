@@ -20,10 +20,7 @@ public class YearPeriod {
         if (isYearWrap(lowFactorDate, peakFactorDate)) {
             return isInQuarterForYearWrap(date);
         }
-        if (isOnEdgeDay(date)) {
-            return true;
-        }
-        return isBetweenLowAndPeakDate(date);
+        return isOnEdgeDay(date) || isBetweenLowAndPeakDate(date);
     }
 
     public double getSeasonFactor(MonthDay dateNow) {
