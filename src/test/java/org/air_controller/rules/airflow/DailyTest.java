@@ -38,7 +38,7 @@ class DailyTest {
 
             final Confidence result = testee.turnOnConfidence();
 
-            assertThat(result.value()).isCloseTo(expectedResult * 0.5, within(0.01));
+            assertThat(result.value()).isCloseTo(expectedResult * Daily.CONFIDENCE_WEIGHT, within(0.01));
         }
     }
 

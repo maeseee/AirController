@@ -9,7 +9,7 @@ import java.time.temporal.ChronoUnit;
 @Component
 class Daily implements AirFlowRule {
 
-    public static final double CONFIDENCE_WEIGHT = 0.5;
+    public static final double CONFIDENCE_WEIGHT = 0.8;
 
     private static final QuarterYear QUARTER_YEAR = new QuarterYear();
     private static final LocalTime HEAT_PEAK_TIME_UTC = LocalTime.of(2, 0, 0);
