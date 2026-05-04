@@ -4,15 +4,15 @@ import org.air_controller.rules.Confidence;
 import org.springframework.stereotype.Component;
 
 import java.time.*;
-import java.time.temporal.ChronoUnit;
 
 @Component
 class Daily implements AirFlowRule {
 
     public static final double CONFIDENCE_WEIGHT = 0.8;
 
-    private static final QuarterYear QUARTER_YEAR = new QuarterYear();
     private static final LocalTime HEAT_PEAK_TIME_UTC = LocalTime.of(2, 0, 0);
+
+    private final QuarterYear quarterYear = new QuarterYear();
 
     @Override
     public String name() {
@@ -22,7 +22,7 @@ class Daily implements AirFlowRule {
     @Override
     public Confidence turnOnConfidence() {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        final double seasonFactor = QUARTER_YEAR.getSeasonFactor(MonthDay.from(now));
+        final double seasonFactor = quarterYear.getSeasonFactor(MonthDay.from(now));
         final double confidence = getCosinus(now.toLocalTime());
         return Confidence.createWeighted(confidence * seasonFactor, CONFIDENCE_WEIGHT);
     }
@@ -33,11 +33,5 @@ class Daily implements AirFlowRule {
         final Duration cosPeriodDuration = Duration.ofDays(1);
         final double b = 2 * Math.PI / cosPeriodDuration.toHours();
         return Math.cos(b * hoursToPeak);
-    }
-
-    static void main(final String[] args) {
-        LocalDate date = LocalDate.of(2026, 9, 22);
-        LocalDate editedDate = date.plusDays(31);
-        System.out.println(editedDate);
     }
 }

@@ -18,16 +18,12 @@ public class YearPeriod {
 
     public boolean isInQuarter(MonthDay date) {
         if (isYearWrap(lowFactorDate, peakFactorDate)) {
-            return peakFactorDate.isAfter(date) || lowFactorDate.isBefore(date);
+            return isInQuarterForYearWrap(date);
         }
-        if (lowFactorDate.equals(date) || peakFactorDate.equals(date)) {
+        if (isOnEdgeDay(date)) {
             return true;
         }
-        if (lowFactorDate.isAfter(peakFactorDate)) {
-            return peakFactorDate.isBefore(date) && lowFactorDate.isAfter(date);
-        } else {
-            return peakFactorDate.isAfter(date) && lowFactorDate.isBefore(date);
-        }
+        return isBetweenLowAndPeakDate(date);
     }
 
     public double getSeasonFactor(MonthDay dateNow) {
@@ -46,5 +42,25 @@ public class YearPeriod {
         final long daysInBetween = Math.abs(ChronoUnit.DAYS.between(lowFactorDate.atYear(REFERENCE_YEAR), peakFactorDate.atYear(REFERENCE_YEAR)));
         final long daysInHalfAYear = 180;
         return daysInBetween > daysInHalfAYear;
+    }
+
+    private boolean isOnEdgeDay(MonthDay date) {
+        return lowFactorDate.equals(date) || peakFactorDate.equals(date);
+    }
+
+    private boolean isInQuarterForYearWrap(MonthDay date) {
+        return peakFactorDate.isAfter(date) || lowFactorDate.isBefore(date);
+    }
+
+    private boolean isBetweenLowAndPeakDate(MonthDay date) {
+        if (lowFactorDate.isBefore(peakFactorDate)) {
+            return isBetween(lowFactorDate, peakFactorDate, date);
+        } else {
+            return isBetween(peakFactorDate, lowFactorDate, date);
+        }
+    }
+
+    private boolean isBetween(MonthDay startDate, MonthDay EndDate, MonthDay testDate) {
+        return startDate.isBefore(testDate) && EndDate.isAfter(testDate);
     }
 }
