@@ -5,6 +5,7 @@ import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.ClimateDataPointBuilder;
 import org.air_controller.sensor_values.InvalidArgumentException;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,5 +47,15 @@ class CO2ControlTest {
         final Confidence result = testee.turnOnConfidence();
 
         assertThat(result.value()).isCloseTo(expectedConfidence, within(0.001));
+    }
+
+    @Test
+    void shouldReturnName() {
+        final CO2Control testee = new CO2Control(indoor);
+
+        final String name = testee.name();
+
+        verifyNoInteractions(indoor);
+        assertThat(name).isEqualTo("CO2 air flow control");
     }
 }

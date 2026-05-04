@@ -1,6 +1,8 @@
 package org.air_controller.rules.airflow;
 
 import org.air_controller.rules.Confidence;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.MockedStatic;
@@ -72,5 +74,14 @@ class DailyTest {
 
             assertThat(result.value()).isCloseTo(expectedResult * Daily.CONFIDENCE_WEIGHT, within(0.01));
         }
+    }
+
+    @Test
+    void shouldReturnName() {
+        final Daily testee = new Daily();
+
+        final String name = testee.name();
+
+        Assertions.assertThat(name).isEqualTo("Daily air flow control");
     }
 }

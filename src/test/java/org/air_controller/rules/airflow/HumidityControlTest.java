@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.within;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -69,5 +70,17 @@ class HumidityControlTest {
         final Confidence result = testee.turnOnConfidence();
 
         assertThat(result.value()).isEqualTo(0.0);
+    }
+
+    @Test
+    void shouldReturnName() {
+        final ClimateSensors sensors = new ClimateSensors(indoor, outdoor);
+        final HumidityControl testee = new HumidityControl(sensors);
+
+        final String name = testee.name();
+
+        verifyNoInteractions(indoor);
+        verifyNoInteractions(outdoor);
+        assertThat(name).isEqualTo("Humidity air flow control");
     }
 }

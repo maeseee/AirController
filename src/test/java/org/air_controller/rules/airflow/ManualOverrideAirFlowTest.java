@@ -36,4 +36,13 @@ class ManualOverrideAirFlowTest {
 
         assertThat(confidence.value()).isCloseTo(0.0, Offset.offset(0.001));
     }
+
+    @Test
+    void shouldReturnName() {
+        final ManualOverrideAirFlow testee = new ManualOverrideAirFlow();
+
+        final String name = testee.name();
+
+        assertThat(name).isEqualTo("Overridden Air Flow");
+    }
 }
