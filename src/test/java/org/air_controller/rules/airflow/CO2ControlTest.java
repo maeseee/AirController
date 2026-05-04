@@ -50,6 +50,22 @@ class CO2ControlTest {
     }
 
     @Test
+    void shouldDisableCo2Control_whenNoCo2ValueAvailable() throws InvalidArgumentException {
+        final ClimateDataPoint dataPoint = new ClimateDataPointBuilder()
+                .setTemperatureCelsius(21.0)
+                .setHumidityRelative(50.0)
+                .setCo2((Double) null)
+                .setTime(ZonedDateTime.now(ZoneOffset.UTC))
+                .build();
+        when(indoor.getCurrentDataPoint()).thenReturn(Optional.of(dataPoint));
+        final CO2Control testee = new CO2Control(indoor);
+
+        final Confidence result = testee.turnOnConfidence();
+
+        assertThat(result.value()).isCloseTo(0.0, within(0.001));
+    }
+
+    @Test
     void shouldReturnName() {
         final CO2Control testee = new CO2Control(indoor);
 
