@@ -33,7 +33,7 @@ class JsonParserTest {
                 }
                 """;
 
-        final Optional<ClimateDataPoint> result = JsonParser.parse(sampleHttpResponse);
+        final Optional<ClimateDataPoint> result = JsonParser.parseDataPoint(sampleHttpResponse);
 
         assertThat(result).isPresent();
         final Temperature temperature = result.get().temperature();
@@ -62,7 +62,7 @@ class JsonParserTest {
                 }
                 """;
 
-        final Optional<ClimateDataPoint> result = JsonParser.parse(sampleHttpResponse);
+        final Optional<ClimateDataPoint> result = JsonParser.parseDataPoint(sampleHttpResponse);
 
         assertThat(result).isEmpty();
     }
@@ -88,7 +88,7 @@ class JsonParserTest {
                 }
                 """;
 
-        final Optional<ClimateDataPoint> result = JsonParser.parse(sampleHttpResponse);
+        final Optional<ClimateDataPoint> result = JsonParser.parseDataPoint(sampleHttpResponse);
 
         assertThat(result).isEmpty();
     }

@@ -11,7 +11,7 @@ import java.util.Optional;
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 class JsonParser {
 
-    public static Optional<ClimateDataPoint> parse(String jsonString) {
+    public static Optional<ClimateDataPoint> parseDataPoint(String jsonString) {
         try {
             final JSONTokener tokener = new JSONTokener(jsonString);
             final JSONObject jsonObject = new JSONObject(tokener);

@@ -27,6 +27,6 @@ public class OpenWeatherApiAdapter extends ClimateSensor {
             log.error("Outdoor sensor request failed");
             return Optional.empty();
         }
-        return JsonParser.parse(response);
+        return JsonParser.parseDataPoint(response);
     }
 }
