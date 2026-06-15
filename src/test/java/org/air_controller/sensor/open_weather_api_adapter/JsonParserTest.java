@@ -1,10 +1,13 @@
 package org.air_controller.sensor.open_weather_api_adapter;
 
-import org.air_controller.sensor_values.Humidity;
 import org.air_controller.sensor_values.ClimateDataPoint;
+import org.air_controller.sensor_values.Humidity;
 import org.air_controller.sensor_values.Temperature;
 import org.junit.jupiter.api.Test;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -91,5 +94,36 @@ class JsonParserTest {
         final Optional<ClimateDataPoint> result = JsonParser.parseDataPoint(sampleHttpResponse);
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void testParsingSolarEvents() {
+        final String sampleHttpResponse = """
+                {
+                "coord":{"lon":8.2456,"lat":47.1275},
+                "weather":[{"id":802,"main":"Clouds","description":"scattered clouds","icon":"03d"}],
+                "base":"stations",
+                "main":{"temp":292.29,"feels_like":291.57,"temp_min":292.29,"temp_max":292.29,"pressure":1016,"humidity":50,"sea_level":1016,"grnd_level":941},
+                "visibility":10000,
+                "wind":{"speed":1.15,"deg":251,"gust":1.39},
+                "clouds":{"all":38},
+                "dt":1781548841,
+                "sys":{"type":2,"id":2010942,"country":"CH","sunrise":1781494253,"sunset":1781551448},
+                "timezone":7200,
+                "id":7286081,
+                "name":"Hildisrieden",
+                "cod":200
+                }
+                """;
+
+        final Optional<SolarEvent> result = JsonParser.parsesSolarEvent(sampleHttpResponse);
+
+        assertThat(result).isPresent();
+        assertThat(result.get().sunrise())
+                .isCloseTo(ZonedDateTime.of(2026, 6, 15, 5, 30, 53, 0, ZoneId.of("Europe/Berlin")),
+                        within(1, ChronoUnit.MINUTES));
+        assertThat(result.get().sunset())
+                .isCloseTo(ZonedDateTime.of(2026, 6, 15, 21, 24, 28, 0, ZoneId.of("Europe/Berlin")),
+                        within(1, ChronoUnit.MINUTES));
     }
 }
