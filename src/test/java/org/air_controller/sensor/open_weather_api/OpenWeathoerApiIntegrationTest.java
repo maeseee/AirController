@@ -15,5 +15,6 @@ class OpenWeatherApiIntegrationTest {
         final String response = testee.readData();
 
         assertThat(response).isNotNull();
+        assertThat(response).isNotEmpty();
     }
 }
