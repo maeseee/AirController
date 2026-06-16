@@ -6,14 +6,19 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public record SolarEvent(ZonedDateTime sunrise, ZonedDateTime sunset) {
 
-    public CardItem sunriseToCardItem() {
+    public List<CardItem> getCardItems() {
+        return List.of(sunriseToCardItem(), sunsetToCardItem());
+    }
+
+    private CardItem sunriseToCardItem() {
         return new CardItem("Sunrise", eventTime(sunrise), "");
     }
 
-    public CardItem sunsetToCardItem() {
+    private CardItem sunsetToCardItem() {
         return new CardItem("Sunset", eventTime(sunset), "");
     }
 
