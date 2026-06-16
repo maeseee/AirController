@@ -1,4 +1,4 @@
-package org.air_controller.sensor.open_weather_api_adapter;
+package org.air_controller.sensor.solar_events;
 
 import org.air_controller.web_access.card_view.CardItem;
 

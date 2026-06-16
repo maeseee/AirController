@@ -1,6 +1,7 @@
 package org.air_controller.sensor.open_weather_api_adapter;
 
 import lombok.NoArgsConstructor;
+import org.air_controller.sensor.solar_events.SolarEvent;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.air_controller.sensor_values.ClimateDataPointBuilder;
 import org.json.JSONObject;
