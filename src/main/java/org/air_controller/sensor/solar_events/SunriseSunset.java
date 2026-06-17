@@ -4,6 +4,7 @@ import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 import com.luckycatlabs.sunrisesunset.dto.Location;
 import org.air_controller.sensor.MyPosition;
 
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
@@ -12,19 +13,23 @@ import java.util.GregorianCalendar;
 // https://github.com/mikereedell/sunrisesunsetlib-java
 public class SunriseSunset {
 
-    public SolarEvent solarEventsFrom(ZonedDateTime date) {
-        Location location = new Location(MyPosition.latitude(), MyPosition.longitude());
-        SunriseSunsetCalculator calculator = new SunriseSunsetCalculator(location, "UTC");
-        Calendar calendar = GregorianCalendar.from(date);
-
-        Calendar sunsetCalendar = calculator.getOfficialSunsetCalendarForDate(calendar);
-        ZonedDateTime sunset = sunsetCalendar.toInstant()
-                .atZone(ZoneId.of("UTC"));
-
-        Calendar sunriseCalendar = calculator.getOfficialSunriseCalendarForDate(calendar);
-        ZonedDateTime sunrise = sunriseCalendar.toInstant()
-                .atZone(ZoneId.of("UTC"));
-
+    public SolarEvent solarEventsFrom(LocalDate date) {
+        final Location location = new Location(MyPosition.latitude(), MyPosition.longitude());
+        final SunriseSunsetCalculator calculator = new SunriseSunsetCalculator(location, "UTC");
+        final Calendar calendarDate = toCalendar(date);
+        final ZonedDateTime sunset = toZonedDate(calculator.getOfficialSunsetCalendarForDate(calendarDate));
+        final ZonedDateTime sunrise = toZonedDate(calculator.getOfficialSunriseCalendarForDate(calendarDate));
         return new SolarEvent(sunrise, sunset);
+    }
+
+    private Calendar toCalendar(LocalDate date) {
+        final ZonedDateTime zonedDate = date.atTime(12, 0)
+                .atZone(ZoneId.of("UTC"));
+        return GregorianCalendar.from(zonedDate);
+    }
+
+
+    private ZonedDateTime toZonedDate(Calendar eventTime) {
+        return eventTime.toInstant().atZone(ZoneId.of("UTC"));
     }
 }
