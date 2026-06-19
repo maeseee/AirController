@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.3</version>
+        <version>4.1.0</version>
         <relativePath/>
     </parent>
     <groupId>org.air_controller</groupId>
@@ -59,13 +59,13 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20251224</version>
+            <version>20260522</version>
         </dependency>
         <!-- Database -->
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
-            <version>3.5.7</version>
+            <version>3.5.9</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
