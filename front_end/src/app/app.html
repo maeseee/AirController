@@ -43,8 +43,10 @@
       [cards]="data.statisticsCardViews.cards">
     </app-dashboard-section>
 
-    <h3>Manual overrides</h3>
-    <override-airflow-state></override-airflow-state>
+    <app-dashboard-section
+      title="Manual overrides">
+      <override-airflow-state></override-airflow-state>
+    </app-dashboard-section>
   } @else if (hasError()) {
     <div class="error">
       <p>Failed to load data.</p>

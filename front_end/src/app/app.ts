@@ -31,7 +31,8 @@ export class App {
       indoorCardViews: this.cardViewService.getCardViews('indoor'),
       outdoorCardViews: this.cardViewService.getCardViews('outdoor'),
       confidenceCardViews: this.cardViewService.getCardViews('confidence'),
-      statisticsCardViews: this.cardViewService.getCardViews('statistics')
+      statisticsCardViews: this.cardViewService.getCardViews('statistics'),
+      solarEventsCardViews: this.cardViewService.getCardViews('solar_events')
     })),
     catchError(err => {
       console.error('Batch update failed', err);
