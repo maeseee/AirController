@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-class SystemCardViewService implements InterfaceService {
+class SystemCardViewService implements CardViewService {
 
     private final SystemActionDbAccessor airFlowDbAccessor;
 

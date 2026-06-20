@@ -11,7 +11,7 @@ import java.util.Optional;
 import static java.util.Collections.emptyList;
 
 @Service
-class ConfidenceCardViewService implements InterfaceService {
+class ConfidenceCardViewService implements CardViewService {
 
     private final SystemActionDbAccessor airFlowDbAccessor;
 

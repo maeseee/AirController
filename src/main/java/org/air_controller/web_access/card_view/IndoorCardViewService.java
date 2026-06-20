@@ -4,7 +4,7 @@ import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.springframework.stereotype.Service;
 
 @Service
-class IndoorCardViewService implements InterfaceService{
+class IndoorCardViewService implements CardViewService {
 
     private final ClimateDataPointsDbAccessor indoorDataPointsAccessor;
 

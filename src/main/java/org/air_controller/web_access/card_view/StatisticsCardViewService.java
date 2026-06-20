@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
-class StatisticsCardViewService implements InterfaceService {
+class StatisticsCardViewService implements CardViewService {
 
     private final SystemActionDbAccessor airFlowDbAccessor;
 
