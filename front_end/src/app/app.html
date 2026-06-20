@@ -44,6 +44,11 @@
     </app-dashboard-section>
 
     <app-dashboard-section
+      title="Solar Events"
+      [cards]="data.solarEventsCardViews.cards">
+    </app-dashboard-section>
+
+    <app-dashboard-section
       title="Manual overrides">
       <override-airflow-state></override-airflow-state>
     </app-dashboard-section>
