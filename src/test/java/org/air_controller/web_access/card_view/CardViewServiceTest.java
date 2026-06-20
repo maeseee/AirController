@@ -42,7 +42,7 @@ class CardViewServiceTest {
                 new SystemAction(now.minusHours(9), OutputState.OFF)
         );
         when(airFlowDbAccessor.getActions(any())).thenReturn(actions);
-        final CardViewService testee = new CardViewService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
+        final CardViewService testee = new CardViewService(airFlowDbAccessor);
 
         final CardView statistics = testee.getStatisticsCardView();
 
@@ -63,7 +63,7 @@ class CardViewServiceTest {
                 new SystemAction(now.minusHours(22), OutputState.OFF)
         );
         when(airFlowDbAccessor.getActions(any())).thenReturn(actions);
-        final CardViewService testee = new CardViewService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
+        final CardViewService testee = new CardViewService(airFlowDbAccessor);
 
         final CardView statistics = testee.getStatisticsCardView();
 
@@ -86,9 +86,9 @@ class CardViewServiceTest {
                 .setTime(currentDataPointTime)
                 .build();
         when(outdoorDataPointsAccessor.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.of(currentDataPoint));
-        final CardViewService testee = new CardViewService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
+        final OutdoorCardViewService testee = new OutdoorCardViewService(outdoorDataPointsAccessor);
 
-        final CardView outdoorCardView = testee.getOutdoorCardView();
+        final CardView outdoorCardView = testee.getCardView();
 
         assertThat(outdoorCardView.info()).contains("11 minutes");
         verifyNoInteractions(indoorDataPointsAccessor);
@@ -105,9 +105,9 @@ class CardViewServiceTest {
                 .setTime(currentDataPointTime)
                 .build();
         when(outdoorDataPointsAccessor.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.of(currentDataPoint));
-        final CardViewService testee = new CardViewService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
+        final OutdoorCardViewService testee = new OutdoorCardViewService(outdoorDataPointsAccessor);
 
-        final CardView outdoorCardView = testee.getOutdoorCardView();
+        final CardView outdoorCardView = testee.getCardView();
 
         assertThat(outdoorCardView.info()).isEmpty();
         verifyNoInteractions(indoorDataPointsAccessor);
@@ -117,9 +117,9 @@ class CardViewServiceTest {
     @Test
     void shouldShowWarning_whenHavingNoSensorValues() {
         when(outdoorDataPointsAccessor.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.empty());
-        final CardViewService testee = new CardViewService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
+        final OutdoorCardViewService testee = new OutdoorCardViewService(outdoorDataPointsAccessor);
 
-        final CardView outdoorCardView = testee.getOutdoorCardView();
+        final CardView outdoorCardView = testee.getCardView();
 
         assertThat(outdoorCardView.info()).contains("No cards available");
         verifyNoInteractions(indoorDataPointsAccessor);
@@ -132,7 +132,7 @@ class CardViewServiceTest {
         final Map<String, Double> confidences = Map.of("MyTest", 0.5);
         final VentilationSystemPersistenceData data = new VentilationSystemPersistenceData(OutputState.ON, 1.0, confidences, now);
         when(airFlowDbAccessor.getMostCurrentPersistenceData()).thenReturn(Optional.of(data));
-        final CardViewService testee = new CardViewService(airFlowDbAccessor, indoorDataPointsAccessor, outdoorDataPointsAccessor);
+        final CardViewService testee = new CardViewService(airFlowDbAccessor);
 
         final CardView confidenceCardView = testee.getConfidenceCardView();
 

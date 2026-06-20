@@ -1,8 +1,5 @@
 package org.air_controller.web_access.card_view;
 
-import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
-import org.air_controller.sensor_values.ClimateDataPoint;
-import org.air_controller.sensor_values.CurrentClimateDataPoint;
 import org.air_controller.system_action.DurationCalculator;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
@@ -24,14 +21,9 @@ class CardViewService {
     private static final Duration INFO_DURATION = Duration.ofMinutes(10);
 
     private final SystemActionDbAccessor airFlowDbAccessor;
-    private final ClimateDataPointsDbAccessor indoorDataPointsAccessor;
-    private final ClimateDataPointsDbAccessor outdoorDataPointsAccessor;
 
-    public CardViewService(SystemActionDbAccessor airFlowDbAccessor, ClimateDataPointsDbAccessor indoorDataPointsAccessor,
-            ClimateDataPointsDbAccessor outdoorDataPointsAccessor) {
+    public CardViewService(SystemActionDbAccessor airFlowDbAccessor) {
         this.airFlowDbAccessor = airFlowDbAccessor;
-        this.indoorDataPointsAccessor = indoorDataPointsAccessor;
-        this.outdoorDataPointsAccessor = outdoorDataPointsAccessor;
     }
 
     public CardView getSystemCardView() {
@@ -39,14 +31,6 @@ class CardViewService {
         final String systemState = systemAction.map(SystemAction::outputState).map(outputState -> outputState.isOn() ? "ON" : "OFF").orElse("UNKNOWN");
         final CardItem systemStateItem = new CardItem("System State", systemState, "");
         return new CardView("", List.of(systemStateItem));
-    }
-
-    public CardView getIndoorCardView() {
-        return getCardView(indoorDataPointsAccessor);
-    }
-
-    public CardView getOutdoorCardView() {
-        return getCardView(outdoorDataPointsAccessor);
     }
 
     public CardView getConfidenceCardView() {
@@ -64,24 +48,6 @@ class CardViewService {
         final double onPercentage = getOnPercentageFromLast24Hours();
         final CardItem cardItem = new CardItem("On during last 24h", doubleToString(onPercentage), "%");
         return new CardView("", List.of(cardItem));
-    }
-
-    private CardView getCardView(ClimateDataPointsDbAccessor dataPointsAccessor) {
-        final CurrentClimateDataPoint currentClimateDataPoint = new CurrentClimateDataPoint(dataPointsAccessor);
-        final Optional<ClimateDataPoint> dataPointOptional = currentClimateDataPoint.getCurrentClimateDataPoint();
-        return mapToCardView(dataPointOptional);
-    }
-
-    private CardView mapToCardView(Optional<ClimateDataPoint> dataPointOptional) {
-        if (dataPointOptional.isEmpty()) {
-            return new CardView("No cards available", emptyList());
-        }
-        final List<CardItem> cardItems = dataPointOptional.get().getCardItems();
-        final ZonedDateTime timestamp = dataPointOptional.get().timestamp();
-        final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        final Duration cardAge = Duration.between(timestamp, now);
-        final String info = cardAge.compareTo(INFO_DURATION) > 0 ? "Last sensor update was " + cardAge.toMinutes() + " minutes ago" : "";
-        return new CardView(info, cardItems);
     }
 
     private List<CardItem> mapToCardView(Map<String, Double> confidences) {

@@ -13,13 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class CardViewController {
 
     private final CardViewService service;
+    private final IndoorCardViewService indoorService;
+    private final IndoorCardViewService outdoorService;
 
     @GetMapping("/{type}")
     public ResponseEntity<CardView> getCardGroup(@PathVariable String type) {
         final CardView data = switch (type.toLowerCase()) {
             case "system" -> service.getSystemCardView();
-            case "indoor" -> service.getIndoorCardView();
-            case "outdoor" -> service.getOutdoorCardView();
+            case "indoor" -> indoorService.getCardView();
+            case "outdoor" -> outdoorService.getCardView();
             case "confidence" -> service.getConfidenceCardView();
             case "statistics" -> service.getStatisticsCardView();
             default -> null;
