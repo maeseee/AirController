@@ -16,17 +16,16 @@ import java.util.Optional;
 import static java.util.Collections.emptyList;
 
 @Service
-class CardViewService {
-
-    private static final Duration INFO_DURATION = Duration.ofMinutes(10);
+class SystemCardViewService implements InterfaceService {
 
     private final SystemActionDbAccessor airFlowDbAccessor;
 
-    public CardViewService(SystemActionDbAccessor airFlowDbAccessor) {
+    public SystemCardViewService(SystemActionDbAccessor airFlowDbAccessor) {
         this.airFlowDbAccessor = airFlowDbAccessor;
     }
 
-    public CardView getSystemCardView() {
+    @Override
+    public CardView getCardView() {
         final Optional<SystemAction> systemAction = airFlowDbAccessor.getMostCurrentSystemAction();
         final String systemState = systemAction.map(SystemAction::outputState).map(outputState -> outputState.isOn() ? "ON" : "OFF").orElse("UNKNOWN");
         final CardItem systemStateItem = new CardItem("System State", systemState, "");

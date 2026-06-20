@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CardViewController {
 
-    private final CardViewService service;
+    private final SystemCardViewService service;
     private final IndoorCardViewService indoorService;
     private final IndoorCardViewService outdoorService;
 
