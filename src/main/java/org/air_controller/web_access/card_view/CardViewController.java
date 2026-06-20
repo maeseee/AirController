@@ -17,6 +17,7 @@ public class CardViewController {
     private final StatisticsCardViewService statisticsCardViewService;
     private final IndoorCardViewService indoorService;
     private final IndoorCardViewService outdoorService;
+    private final SolarEventsService solarEventsService;
 
     @GetMapping("/{type}")
     public ResponseEntity<CardView> getCardGroup(@PathVariable String type) {
@@ -26,6 +27,7 @@ public class CardViewController {
             case "statistics" -> statisticsCardViewService.getCardView();
             case "indoor" -> indoorService.getCardView();
             case "outdoor" -> outdoorService.getCardView();
+            case "solar_events" -> solarEventsService.getCardView();
             default -> null;
         };
         if (data == null) {
