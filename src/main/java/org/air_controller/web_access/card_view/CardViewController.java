@@ -12,18 +12,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CardViewController {
 
-    private final SystemCardViewService service;
+    private final SystemCardViewService systemService;
+    private final ConfidenceCardViewService confidenceCardViewService;
+    private final StatisticsCardViewService statisticsCardViewService;
     private final IndoorCardViewService indoorService;
     private final IndoorCardViewService outdoorService;
 
     @GetMapping("/{type}")
     public ResponseEntity<CardView> getCardGroup(@PathVariable String type) {
         final CardView data = switch (type.toLowerCase()) {
-            case "system" -> service.getSystemCardView();
+            case "system" -> systemService.getCardView();
+            case "confidence" -> confidenceCardViewService.getCardView();
+            case "statistics" -> statisticsCardViewService.getCardView();
             case "indoor" -> indoorService.getCardView();
             case "outdoor" -> outdoorService.getCardView();
-            case "confidence" -> service.getConfidenceCardView();
-            case "statistics" -> service.getStatisticsCardView();
             default -> null;
         };
         if (data == null) {

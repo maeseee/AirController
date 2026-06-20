@@ -42,9 +42,9 @@ class CardViewServiceTest {
                 new SystemAction(now.minusHours(9), OutputState.OFF)
         );
         when(airFlowDbAccessor.getActions(any())).thenReturn(actions);
-        final SystemCardViewService testee = new SystemCardViewService(airFlowDbAccessor);
+        final StatisticsCardViewService testee = new StatisticsCardViewService(airFlowDbAccessor);
 
-        final CardView statistics = testee.getStatisticsCardView();
+        final CardView statistics = testee.getCardView();
 
         assertThat(statistics.info()).isEmpty();
         assertThat(statistics.cards()).hasSize(1);
@@ -63,9 +63,9 @@ class CardViewServiceTest {
                 new SystemAction(now.minusHours(22), OutputState.OFF)
         );
         when(airFlowDbAccessor.getActions(any())).thenReturn(actions);
-        final SystemCardViewService testee = new SystemCardViewService(airFlowDbAccessor);
+        final StatisticsCardViewService testee = new StatisticsCardViewService(airFlowDbAccessor);
 
-        final CardView statistics = testee.getStatisticsCardView();
+        final CardView statistics = testee.getCardView();
 
         assertThat(statistics.info()).isEmpty();
         assertThat(statistics.cards()).hasSize(1);
@@ -132,9 +132,9 @@ class CardViewServiceTest {
         final Map<String, Double> confidences = Map.of("MyTest", 0.5);
         final VentilationSystemPersistenceData data = new VentilationSystemPersistenceData(OutputState.ON, 1.0, confidences, now);
         when(airFlowDbAccessor.getMostCurrentPersistenceData()).thenReturn(Optional.of(data));
-        final SystemCardViewService testee = new SystemCardViewService(airFlowDbAccessor);
+        final ConfidenceCardViewService testee = new ConfidenceCardViewService(airFlowDbAccessor);
 
-        final CardView confidenceCardView = testee.getConfidenceCardView();
+        final CardView confidenceCardView = testee.getCardView();
 
         assertThat(confidenceCardView.info()).isEqualTo("Total confidence of 1.00");
         assertThat(confidenceCardView.cards()).hasSize(1);
