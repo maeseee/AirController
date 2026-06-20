@@ -18,16 +18,13 @@ class ClimateDataPointsToCardView {
 
     CardView toCardView(ClimateDataPointsDbAccessor dataPointsAccessor) {
         final CurrentClimateDataPoint currentClimateDataPoint = new CurrentClimateDataPoint(dataPointsAccessor);
-        final Optional<ClimateDataPoint> dataPointOptional = currentClimateDataPoint.getCurrentClimateDataPoint();
-        return mapToCardView(dataPointOptional);
+        final Optional<ClimateDataPoint> dataPoint = currentClimateDataPoint.getCurrentClimateDataPoint();
+        return dataPoint.map(this::mapToCardView).orElseGet(() -> new CardView("No cards available", emptyList()));
     }
 
-    private CardView mapToCardView(Optional<ClimateDataPoint> dataPointOptional) {
-        if (dataPointOptional.isEmpty()) {
-            return new CardView("No cards available", emptyList());
-        }
-        final List<CardItem> cardItems = dataPointOptional.get().getCardItems();
-        final ZonedDateTime timestamp = dataPointOptional.get().timestamp();
+    private CardView mapToCardView(ClimateDataPoint dataPoint) {
+        final List<CardItem> cardItems = dataPoint.getCardItems();
+        final ZonedDateTime timestamp = dataPoint.timestamp();
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final Duration cardAge = Duration.between(timestamp, now);
         final String info = cardAge.compareTo(INFO_DURATION) > 0 ? "Last sensor update was " + cardAge.toMinutes() + " minutes ago" : "";
