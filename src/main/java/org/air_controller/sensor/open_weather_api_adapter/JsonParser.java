@@ -39,7 +39,6 @@ class JsonParser {
         } catch (Exception e) {
             return Optional.empty();
         }
-
     }
 
     private static ZonedDateTime epochSecondsToLocalDate(long epochSeconds) {

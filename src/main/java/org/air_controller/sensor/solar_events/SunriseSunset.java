@@ -28,7 +28,6 @@ public class SunriseSunset {
         return GregorianCalendar.from(zonedDate);
     }
 
-
     private ZonedDateTime toZonedDate(Calendar eventTime) {
         return eventTime.toInstant().atZone(ZoneId.of("UTC"));
     }
