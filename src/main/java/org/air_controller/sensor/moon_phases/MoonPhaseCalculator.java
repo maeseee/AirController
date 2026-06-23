@@ -1,5 +1,7 @@
 package org.air_controller.sensor.moon_phases;
 
+import org.air_controller.web_access.card_view.CardItem;
+
 import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -10,6 +12,11 @@ public class MoonPhaseCalculator {
     private static final ZonedDateTime FULL_MOON_REFERENCE = ZonedDateTime.parse("2024-01-25T17:54:00Z");
     private static final long lunarMonthDurationMs = getLunarMonthDuration().toMillis();
 
+    public CardItem nextFullMoonCardItem() {
+        final ZonedDateTime fullMoon = nextFullMoon(ZonedDateTime.now());
+        return new CardItem("Next full moon", toDateString(fullMoon), "");
+    }
+
     public ZonedDateTime nextFullMoon(ZonedDateTime fromDate) {
         final double diffInMs = Duration.between(FULL_MOON_REFERENCE, fromDate).toMillis();
         final double cyclesPassed = diffInMs / lunarMonthDurationMs;
@@ -18,7 +25,7 @@ public class MoonPhaseCalculator {
         return FULL_MOON_REFERENCE.plus(Duration.ofMillis(msToNextFullMoon));
     }
 
-    public String toDateString(ZonedDateTime date) {
+    String toDateString(ZonedDateTime date) {
         final DateTimeFormatter formatter = DateTimeFormatter
                 .ofPattern("dd.MM.yyyy")
                 .withZone(ZoneId.of("Europe/Berlin"));
