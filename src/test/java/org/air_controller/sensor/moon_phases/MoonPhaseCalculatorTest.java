@@ -1,5 +1,6 @@
 package org.air_controller.sensor.moon_phases;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -25,5 +26,16 @@ public class MoonPhaseCalculatorTest {
 
         final ZonedDateTime expectedFullMoon = ZonedDateTime.parse(expectedNextFullMoonString);
         assertThat(fullMoon).isCloseTo(expectedFullMoon, within(Duration.ofHours(16))); // Toleranz for current calculation
+    }
+
+    @Test
+    public void shouldReturnDateStringOfNextFullMoonInOurTimeZone() {
+        final ZonedDateTime fromDate = ZonedDateTime.parse("2026-06-23T00:00:00Z");
+        final MoonPhaseCalculator testee = new MoonPhaseCalculator();
+
+        final ZonedDateTime fullMoon = testee.nextFullMoon(fromDate);
+        final String fullMoonString = testee.toDateString(fullMoon);
+
+        assertThat(fullMoonString).isEqualTo("29.06.2026");
     }
 }
