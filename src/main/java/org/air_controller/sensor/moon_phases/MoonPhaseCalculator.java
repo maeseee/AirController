@@ -17,7 +17,8 @@ public class MoonPhaseCalculator {
         return new CardItem("Next full moon", toDateString(fullMoon), "");
     }
 
-    public ZonedDateTime nextFullMoon(ZonedDateTime fromDate) {
+    public ZonedDateTime nextFullMoon(ZonedDateTime today) {
+        final ZonedDateTime fromDate = today.minusDays(1); // Make sure that todays full moon is included
         final double diffInMs = Duration.between(FULL_MOON_REFERENCE, fromDate).toMillis();
         final double cyclesPassed = diffInMs / lunarMonthDurationMs;
         final long nextCycle = (long) Math.ceil(cyclesPassed);
@@ -27,7 +28,7 @@ public class MoonPhaseCalculator {
 
     String toDateString(ZonedDateTime date) {
         final DateTimeFormatter formatter = DateTimeFormatter
-                .ofPattern("dd.MM.yyyy")
+                .ofPattern("dd.MM.yy")
                 .withZone(ZoneId.of("Europe/Berlin"));
         return date.format(formatter);
     }

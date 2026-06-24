@@ -36,6 +36,6 @@ public class MoonPhaseCalculatorTest {
         final ZonedDateTime fullMoon = testee.nextFullMoon(fromDate);
         final String fullMoonString = testee.toDateString(fullMoon);
 
-        assertThat(fullMoonString).isEqualTo("29.06.2026");
+        assertThat(fullMoonString).isEqualTo("29.06.26");
     }
 }
