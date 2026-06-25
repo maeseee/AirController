@@ -5,7 +5,7 @@ import com.luckycatlabs.sunrisesunset.dto.Location;
 import org.air_controller.sensor.MyPosition;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -24,11 +24,11 @@ public class SunriseSunset {
 
     private Calendar toCalendar(LocalDate date) {
         final ZonedDateTime zonedDate = date.atTime(12, 0)
-                .atZone(ZoneId.of("UTC"));
+                .atZone(ZoneOffset.UTC);
         return GregorianCalendar.from(zonedDate);
     }
 
     private ZonedDateTime toZonedDate(Calendar eventTime) {
-        return eventTime.toInstant().atZone(ZoneId.of("UTC"));
+        return eventTime.toInstant().atZone(ZoneOffset.UTC);
     }
 }

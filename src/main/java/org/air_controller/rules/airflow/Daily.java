@@ -10,7 +10,7 @@ class Daily implements AirFlowRule {
 
     public static final double CONFIDENCE_WEIGHT = 1.0;
 
-    private static final LocalTime HEAT_PEAK_TIME_UTC = LocalTime.of(4, 0, 0);
+    private static final LocalTime HEAT_PEAK_TIME_UTC = LocalTime.of(2, 0, 0);
 
     private final QuarterYear quarterYear = new QuarterYear();
 
@@ -23,7 +23,8 @@ class Daily implements AirFlowRule {
     public Confidence turnOnConfidence() {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final double seasonFactor = quarterYear.getSeasonFactor(MonthDay.from(now));
-        final double confidence = getCosinus(now.toLocalTime());
+        final LocalTime localNowTime = now.withZoneSameInstant(ZoneOffset.UTC).toLocalTime();
+        final double confidence = getCosinus(localNowTime);
         return Confidence.createWeighted(confidence * seasonFactor, CONFIDENCE_WEIGHT);
     }
 

@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.time.Instant;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
@@ -44,6 +44,6 @@ class JsonParser {
     private static ZonedDateTime epochSecondsToLocalDate(long epochSeconds) {
         return ZonedDateTime.ofInstant(
                 Instant.ofEpochSecond(epochSeconds),
-                ZoneId.of("UTC"));
+                ZoneOffset.UTC);
     }
 }
