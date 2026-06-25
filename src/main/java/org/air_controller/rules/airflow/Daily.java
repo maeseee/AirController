@@ -8,9 +8,9 @@ import java.time.*;
 @Component
 class Daily implements AirFlowRule {
 
-    public static final double CONFIDENCE_WEIGHT = 0.8;
+    public static final double CONFIDENCE_WEIGHT = 1.0;
 
-    private static final LocalTime HEAT_PEAK_TIME_UTC = LocalTime.of(2, 0, 0);
+    private static final LocalTime HEAT_PEAK_TIME_UTC = LocalTime.of(4, 0, 0);
 
     private final QuarterYear quarterYear = new QuarterYear();
 
