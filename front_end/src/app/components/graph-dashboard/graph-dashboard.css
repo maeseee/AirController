@@ -14,11 +14,20 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2rem;
+  overflow: hidden;
 }
 
 .profile-section.fullscreen-mode graph-component {
-  width: 100%;
-  max-width: 2000px;
-  height: 80vh;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Rotate the graph on screens that are taller than wide (e.g. phones) */
+@media (orientation: portrait) and (max-aspect-ratio: 1/1) {
+  .profile-section.fullscreen-mode graph-component {
+    width: 100vh;
+    height: 100vw;
+    transform: rotate(90deg);
+    transform-origin: center center;
+  }
 }
