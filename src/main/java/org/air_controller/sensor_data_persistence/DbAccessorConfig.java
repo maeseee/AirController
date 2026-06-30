@@ -1,7 +1,6 @@
-package org.air_controller.web_access;
+package org.air_controller.sensor_data_persistence;
 
 import org.air_controller.persistence.MariaDatabase;
-import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemPart;
 import org.springframework.context.annotation.Bean;
