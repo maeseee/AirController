@@ -10,7 +10,6 @@ import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.air_controller.sensor_values.ClimateSensors;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.SystemPart;
-import org.air_controller.web_access.graph.SensorGraphService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,16 +45,6 @@ public class ApplicationConfig {
     @Bean
     public ClimateSensors createSensors(@Qualifier("indoorSensor") ClimateSensor indoor, @Qualifier("outdoorSensor") ClimateSensor outdoor) {
         return new ClimateSensors(indoor, outdoor);
-    }
-
-    @Bean("indoorGraphService")
-    public SensorGraphService createIndoorGraphService(@Qualifier("indoorDataPointsAccessor") ClimateDataPointsDbAccessor dbAccessor) {
-        return new SensorGraphService(dbAccessor);
-    }
-
-    @Bean("outdoorGraphService")
-    public SensorGraphService createOutdoorGraphService(@Qualifier("outdoorDataPointsAccessor") ClimateDataPointsDbAccessor dbAccessor) {
-        return new SensorGraphService(dbAccessor);
     }
 
     private SystemActionDbAccessor createSystemActionDbAccessor(SystemPart systemPart) {
