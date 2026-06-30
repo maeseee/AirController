@@ -2,7 +2,7 @@ package org.air_controller.web_access.card_view;
 
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 
-public class ClimateDataPointCardViewService implements CardViewService {
+class ClimateDataPointCardViewService implements CardViewService {
 
     private final ClimateDataPointsDbAccessor climateDataPointAccessor;
 
