@@ -15,14 +15,11 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CardViewServiceTest {
+class OutdoorCardViewServiceTest {
 
-    @Mock
-    private ClimateDataPointsDbAccessor indoorDataPointsAccessor;
     @Mock
     private ClimateDataPointsDbAccessor outdoorDataPointsAccessor;
 
@@ -41,7 +38,6 @@ class CardViewServiceTest {
         final CardView outdoorCardView = testee.getCardView();
 
         assertThat(outdoorCardView.info()).contains("11 minutes");
-        verifyNoInteractions(indoorDataPointsAccessor);
     }
 
     @Test
@@ -59,7 +55,6 @@ class CardViewServiceTest {
         final CardView outdoorCardView = testee.getCardView();
 
         assertThat(outdoorCardView.info()).isEmpty();
-        verifyNoInteractions(indoorDataPointsAccessor);
     }
 
     @Test
@@ -70,6 +65,5 @@ class CardViewServiceTest {
         final CardView outdoorCardView = testee.getCardView();
 
         assertThat(outdoorCardView.info()).contains("No cards available");
-        verifyNoInteractions(indoorDataPointsAccessor);
     }
 }
