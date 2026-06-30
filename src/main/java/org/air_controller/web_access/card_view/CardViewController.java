@@ -16,7 +16,7 @@ public class CardViewController {
     private final ConfidenceCardViewService confidenceCardViewService;
     private final StatisticsCardViewService statisticsCardViewService;
     private final IndoorCardViewService indoorService;
-    private final IndoorCardViewService outdoorService;
+    private final OutdoorCardViewService outdoorService;
     private final SolarEventsService solarEventsService;
 
     @GetMapping("/{type}")
