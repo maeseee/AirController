@@ -18,10 +18,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class OutdoorCardViewServiceTest {
+class ClimateDataPointCardViewServiceTest {
 
     @Mock
-    private ClimateDataPointsDbAccessor outdoorDataPointsAccessor;
+    private ClimateDataPointsDbAccessor climateDataPointsDbAccessor;
 
     @Test
     void shouldShowInfo_whenLastUpdateIs11MinutesAgo() throws InvalidArgumentException {
@@ -32,8 +32,8 @@ class OutdoorCardViewServiceTest {
                 .setHumidityRelative(50.0)
                 .setTime(currentDataPointTime)
                 .build();
-        when(outdoorDataPointsAccessor.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.of(currentDataPoint));
-        final OutdoorCardViewService testee = new OutdoorCardViewService(outdoorDataPointsAccessor);
+        when(climateDataPointsDbAccessor.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.of(currentDataPoint));
+        final ClimateDataPointCardViewService testee = new ClimateDataPointCardViewService(climateDataPointsDbAccessor);
 
         final CardView outdoorCardView = testee.getCardView();
 
@@ -49,8 +49,8 @@ class OutdoorCardViewServiceTest {
                 .setHumidityRelative(50.0)
                 .setTime(currentDataPointTime)
                 .build();
-        when(outdoorDataPointsAccessor.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.of(currentDataPoint));
-        final OutdoorCardViewService testee = new OutdoorCardViewService(outdoorDataPointsAccessor);
+        when(climateDataPointsDbAccessor.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.of(currentDataPoint));
+        final ClimateDataPointCardViewService testee = new ClimateDataPointCardViewService(climateDataPointsDbAccessor);
 
         final CardView outdoorCardView = testee.getCardView();
 
@@ -59,8 +59,8 @@ class OutdoorCardViewServiceTest {
 
     @Test
     void shouldShowWarning_whenHavingNoSensorValues() {
-        when(outdoorDataPointsAccessor.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.empty());
-        final OutdoorCardViewService testee = new OutdoorCardViewService(outdoorDataPointsAccessor);
+        when(climateDataPointsDbAccessor.getMostCurrentClimateDataPoint(any())).thenReturn(Optional.empty());
+        final ClimateDataPointCardViewService testee = new ClimateDataPointCardViewService(climateDataPointsDbAccessor);
 
         final CardView outdoorCardView = testee.getCardView();
 
