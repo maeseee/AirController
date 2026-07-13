@@ -42,8 +42,8 @@ class OpenWeatherApiSensorTest {
             }
             """;
 
-    @MockitoBean(name = "indoorPersistence")
-    private ClimateDataPointPersistence persistence;
+    @MockitoBean
+    private ClimateDataPointPersistence indoorClimatePersistence;
     @Autowired
     private ControlledTask task;
     @Captor
@@ -54,11 +54,11 @@ class OpenWeatherApiSensorTest {
         final HttpsGetRequest httpsGetRequest = mock(HttpsGetRequest.class);
         when(httpsGetRequest.sendRequest(any())).thenReturn(SAMPLE_HTTP_RESPONSE);
         final OpenWeatherApiSensor sensor = new OpenWeatherApiSensor(httpsGetRequest);
-        final OpenWeatherApiAdapter testee = new OpenWeatherApiAdapter(persistence, sensor, task);
+        final OpenWeatherApiAdapter testee = new OpenWeatherApiAdapter(indoorClimatePersistence, sensor, task);
 
         testee.runAtTenMinuteIntervals();
 
-        verify(persistence).persist(outdoorDataPointArgumentCaptor.capture());
+        verify(indoorClimatePersistence).persist(outdoorDataPointArgumentCaptor.capture());
         final ClimateDataPoint dataPoint = outdoorDataPointArgumentCaptor.getValue();
         final Temperature temperature = dataPoint.temperature();
         assertEquals(10.53, temperature.celsius(), 0.1);
@@ -71,10 +71,10 @@ class OpenWeatherApiSensorTest {
         final HttpsGetRequest httpsGetRequest = mock(HttpsGetRequest.class);
         when(httpsGetRequest.sendRequest(any())).thenReturn("");
         final OpenWeatherApiSensor sensor = new OpenWeatherApiSensor(httpsGetRequest);
-        final OpenWeatherApiAdapter testee = new OpenWeatherApiAdapter(persistence, sensor, task);
+        final OpenWeatherApiAdapter testee = new OpenWeatherApiAdapter(indoorClimatePersistence, sensor, task);
 
         testee.runAtTenMinuteIntervals();
 
-        verifyNoInteractions(persistence);
+        verifyNoInteractions(indoorClimatePersistence);
     }
 }

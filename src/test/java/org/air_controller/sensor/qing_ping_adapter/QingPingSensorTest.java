@@ -21,8 +21,8 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 class QingPingSensorTest {
 
-    @MockitoBean(name = "indoorPersistence")
-    private ClimateDataPointPersistence persistence;
+    @MockitoBean
+    private ClimateDataPointPersistence indoorClimatePersistence;
     @MockitoBean
     private QingPingSensor sensor;
     @MockitoBean
@@ -42,7 +42,7 @@ class QingPingSensorTest {
                 .build();
         when(parser.parseDeviceListResponse(eq(response), any())).thenReturn(Optional.of(dataPoint));
         when(reducer.reduce(any())).thenReturn(Optional.of(dataPoint));
-        final QingPingAdapter testee = new QingPingAdapter(persistence, sensor, task, reducer, parser);
+        final QingPingAdapter testee = new QingPingAdapter(indoorClimatePersistence, sensor, task, reducer, parser);
 
         testee.runAtTenMinuteIntervals();
 
@@ -50,7 +50,7 @@ class QingPingSensorTest {
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_1);
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_2);
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_3);
-        verify(persistence).persist(eq(dataPoint));
+        verify(indoorClimatePersistence).persist(eq(dataPoint));
     }
 
     @Test
@@ -58,7 +58,7 @@ class QingPingSensorTest {
         final String response = "response";
         when(sensor.readData()).thenReturn(response);
         when(parser.parseDeviceListResponse(eq(response), any())).thenReturn(Optional.empty());
-        final QingPingAdapter testee = new QingPingAdapter(persistence, sensor, task, new SensorReducer(), parser);
+        final QingPingAdapter testee = new QingPingAdapter(indoorClimatePersistence, sensor, task, new SensorReducer(), parser);
 
         testee.runAtTenMinuteIntervals();
 
@@ -66,6 +66,6 @@ class QingPingSensorTest {
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_1);
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_2);
         verify(parser).parseDeviceListResponse(response, MAC_CO2_DEVICE_3);
-        verifyNoInteractions(persistence);
+        verifyNoInteractions(indoorClimatePersistence);
     }
 }

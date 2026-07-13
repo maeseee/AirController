@@ -20,8 +20,8 @@ public class ApplicationConfig {
         return new GpioPins(new DingtianPin(DingtianRelay.AIR_FLOW, true), new DingtianPin(DingtianRelay.HUMIDITY_EXCHANGER, false));
     }
 
-    @Bean("indoorPersistence")
-    public ClimateDataPointPersistence createIndoorClimateSensorPersistence() {
+    @Bean
+    public ClimateDataPointPersistence indoorClimatePersistence() {
         return createClimateSensorAccessor(ClimateDataPointPersistence.INDOOR_TABLE_NAME);
     }
 

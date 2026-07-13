@@ -22,8 +22,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class QingPingAdaptorTest {
 
-    @MockitoBean(name = "indoorPersistence")
-    private ClimateDataPointPersistence persistence;
+    @MockitoBean
+    private ClimateDataPointPersistence indoorClimatePersistence;
     @MockitoBean
     private QingPingSensor sensor;
     @MockitoBean
@@ -46,12 +46,12 @@ class QingPingAdaptorTest {
         when(parser.parseDeviceListResponse(any(), any())).thenReturn(Optional.of(dataPoint));
         when(reducer.reduce(any())).thenReturn(Optional.of(dataPoint));
 
-        final QingPingAdapter testee = new QingPingAdapter(persistence, sensor, task, reducer, parser);
+        final QingPingAdapter testee = new QingPingAdapter(indoorClimatePersistence, sensor, task, reducer, parser);
 
         testee.runAtTenMinuteIntervals();
 
         verify(sensor).readData();
-        verify(persistence).persist(indoorDataPointArgumentCaptor.capture());
+        verify(indoorClimatePersistence).persist(indoorDataPointArgumentCaptor.capture());
         final ClimateDataPoint indoorClimateDataPointCapture = indoorDataPointArgumentCaptor.getValue();
         assertThat(indoorClimateDataPointCapture.temperature()).isEqualTo(Temperature.createFromCelsius(23.0));
         assertThat(indoorClimateDataPointCapture.humidity()).isEqualTo(Humidity.createFromAbsolute(10.0));
@@ -60,10 +60,10 @@ class QingPingAdaptorTest {
     @Test
     void shouldNotPersistDataPoint_whenInvalidDataPoint() {
         when(sensor.readData()).thenReturn("");
-        final QingPingAdapter testee = new QingPingAdapter(persistence, sensor, task);
+        final QingPingAdapter testee = new QingPingAdapter(indoorClimatePersistence, sensor, task);
 
         testee.runAtTenMinuteIntervals();
 
-        verifyNoInteractions(persistence);
+        verifyNoInteractions(indoorClimatePersistence);
     }
 }

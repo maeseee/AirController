@@ -7,7 +7,6 @@ import org.air_controller.sensor.qing_ping.QingPingSensor;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.ClimateDataPoint;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -22,20 +21,20 @@ public class QingPingAdapter extends ClimateSensor {
 
     @Autowired
     public QingPingAdapter(
-            @Qualifier("indoorPersistence") ClimateDataPointPersistence persistence,
+            ClimateDataPointPersistence indoorClimatePersistence,
             QingPingSensor sensor,
             ControlledTask task) {
-        this(persistence, sensor, task, new SensorReducer(), new ListDevicesJsonParser());
+        this(indoorClimatePersistence, sensor, task, new SensorReducer(), new ListDevicesJsonParser());
     }
 
     QingPingAdapter(
-            ClimateDataPointPersistence persistence,
+            ClimateDataPointPersistence indoorClimatePersistence,
             QingPingSensor sensor,
             ControlledTask task,
             SensorReducer sensorReducer,
             ListDevicesJsonParser parser
             ) {
-        super(persistence, sensor, task);
+        super(indoorClimatePersistence, sensor, task);
         this.sensorReducer = sensorReducer;
         this.parser = parser;
     }
