@@ -1,8 +1,7 @@
-package org.air_controller.sensor_data_persistence;
+package org.air_controller.system_action;
 
 import org.air_controller.persistence.MariaDatabase;
-import org.air_controller.system_action.SystemActionDbAccessor;
-import org.air_controller.system_action.SystemPart;
+import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,11 +9,16 @@ import static org.air_controller.sensor_data_persistence.ClimateDataPointPersist
 import static org.air_controller.sensor_data_persistence.ClimateDataPointPersistence.OUTDOOR_TABLE_NAME;
 
 @Configuration
-public class DbAccessorConfig {
+public class SystemActionConfig {
 
     @Bean
     public SystemActionDbAccessor airFlowDbAccessor() {
-        return new SystemActionDbAccessor(new MariaDatabase(), SystemPart.AIR_FLOW);
+        return createSystemActionDbAccessor(SystemPart.AIR_FLOW);
+    }
+
+    @Bean
+    public SystemActionDbAccessor humidityDbAccessor() {
+        return createSystemActionDbAccessor(SystemPart.HUMIDITY);
     }
 
     @Bean
@@ -25,5 +29,9 @@ public class DbAccessorConfig {
     @Bean
     public ClimateDataPointsDbAccessor outdoorDataPointsAccessor() {
         return new ClimateDataPointsDbAccessor(new MariaDatabase(), OUTDOOR_TABLE_NAME);
+    }
+
+    private SystemActionDbAccessor createSystemActionDbAccessor(SystemPart systemPart) {
+        return new SystemActionDbAccessor(new MariaDatabase(), systemPart);
     }
 }

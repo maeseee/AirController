@@ -21,16 +21,15 @@ public class MockApplicationConfig {
         return new GpioPins(airFlow, humidityExchanger);
     }
 
-    @Bean("airFlowAccessor")
+    @Bean
     @Primary
-
-    public SystemActionDbAccessor createAirFlowSystemActionDbAccessor() {
+    public SystemActionDbAccessor airFlowDbAccessor() {
         return createSystemActionDbAccessorWithLocalDb(SystemPart.AIR_FLOW);
     }
 
-    @Bean("humidityAccessor")
+    @Bean
     @Primary
-    public SystemActionDbAccessor createHumiditySystemActionDbAccessor() {
+    public SystemActionDbAccessor humidityDbAccessor() {
         return createSystemActionDbAccessorWithLocalDb(SystemPart.HUMIDITY);
     }
 

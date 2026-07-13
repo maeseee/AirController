@@ -4,7 +4,6 @@ import org.air_controller.rules.Confidence;
 import org.air_controller.system_action.DurationCalculator;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -20,10 +19,10 @@ class PeriodicallyAirFlow implements AirFlowRule {
     private static final double M = -B / (THREE_HOURLY_FRESH_AIR.toMinutes() / 2.0); // y = xm + b
     private static final double CONFIDENCE_WEIGHT = 0.3;
 
-    private final SystemActionDbAccessor dbAccessor;
+    private final SystemActionDbAccessor airFlowDbAccessor;
 
-    PeriodicallyAirFlow(@Qualifier("airFlowAccessor")SystemActionDbAccessor dbAccessor) {
-        this.dbAccessor = dbAccessor;
+    PeriodicallyAirFlow(SystemActionDbAccessor airFlowDbAccessor) {
+        this.airFlowDbAccessor = airFlowDbAccessor;
     }
 
     @Override
@@ -41,7 +40,7 @@ class PeriodicallyAirFlow implements AirFlowRule {
     public Duration getOnDuration(Duration onDuration) {
         final ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         final Duration duration = onDuration.plus(Duration.ofHours(1)); // Just a little bit more
-        final List<SystemAction> actionsFromLastHour = dbAccessor.getActions(duration);
+        final List<SystemAction> actionsFromLastHour = airFlowDbAccessor.getActions(duration);
         final DurationCalculator durationCalculator = new DurationCalculator(actionsFromLastHour);
         return durationCalculator.getDuration(now.minus(duration), now);
     }

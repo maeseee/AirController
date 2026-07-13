@@ -8,8 +8,6 @@ import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
 import org.air_controller.sensor_values.ClimateSensors;
-import org.air_controller.system_action.SystemActionDbAccessor;
-import org.air_controller.system_action.SystemPart;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,16 +18,6 @@ public class ApplicationConfig {
     @Bean
     public GpioPins createDingtianPins() {
         return new GpioPins(new DingtianPin(DingtianRelay.AIR_FLOW, true), new DingtianPin(DingtianRelay.HUMIDITY_EXCHANGER, false));
-    }
-
-    @Bean("airFlowAccessor")
-    public SystemActionDbAccessor createAirFlowSystemActionDbAccessor() {
-        return createSystemActionDbAccessor(SystemPart.AIR_FLOW);
-    }
-
-    @Bean("humidityAccessor")
-    public SystemActionDbAccessor createHumiditySystemActionDbAccessor() {
-        return createSystemActionDbAccessor(SystemPart.HUMIDITY);
     }
 
     @Bean("indoorPersistence")
@@ -45,10 +33,6 @@ public class ApplicationConfig {
     @Bean
     public ClimateSensors createSensors(@Qualifier("indoorSensor") ClimateSensor indoor, @Qualifier("outdoorSensor") ClimateSensor outdoor) {
         return new ClimateSensors(indoor, outdoor);
-    }
-
-    private SystemActionDbAccessor createSystemActionDbAccessor(SystemPart systemPart) {
-        return new SystemActionDbAccessor(new MariaDatabase(), systemPart);
     }
 
     private ClimateDataPointPersistence createClimateSensorAccessor(String tableName) {

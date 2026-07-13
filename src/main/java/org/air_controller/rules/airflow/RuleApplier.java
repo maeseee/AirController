@@ -7,7 +7,6 @@ import org.air_controller.system.OutputState;
 import org.air_controller.system.VentilationSystem;
 import org.air_controller.system_action.SystemActionDbAccessor;
 import org.air_controller.system_action.VentilationSystemPersistenceData;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -23,17 +22,17 @@ public class RuleApplier {
 
     public RuleApplier(
             VentilationSystem ventilationSystem,
-            @Qualifier("airFlowAccessor") SystemActionDbAccessor airFlow,
-            @Qualifier("humidityAccessor") SystemActionDbAccessor humidity,
+            SystemActionDbAccessor airFlowDbAccessor,
+            SystemActionDbAccessor humidityDbAccessor,
             List<AirFlowRule> airFlowRules,
             List<HumidityExchangeRule> humidityExchangeRules,
             ControlledTask task) {
         final Consumer<OutputState> airFlowUpdateAction = ventilationSystem::setAirFlowOn;
-        final Consumer<VentilationSystemPersistenceData> airFlowSystemPersistence = airFlow::insertAction;
+        final Consumer<VentilationSystemPersistenceData> airFlowSystemPersistence = airFlowDbAccessor::insertAction;
         this.airFlowSystem = new RuleApplierSystem(airFlowRules, airFlowUpdateAction, airFlowSystemPersistence);
 
         final Consumer<OutputState> humidityExchangerAction = ventilationSystem::setHumidityExchangerOn;
-        final Consumer<VentilationSystemPersistenceData> humidityExchangerSystemPersistence = humidity::insertAction;
+        final Consumer<VentilationSystemPersistenceData> humidityExchangerSystemPersistence = humidityDbAccessor::insertAction;
         this.humidityExchangerSystem = new RuleApplierSystem(humidityExchangeRules, humidityExchangerAction, humidityExchangerSystemPersistence);
         this.task = task;
     }

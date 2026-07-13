@@ -5,7 +5,6 @@ import org.air_controller.ControlledTask;
 import org.air_controller.system_action.DurationCalculator;
 import org.air_controller.system_action.SystemAction;
 import org.air_controller.system_action.SystemActionDbAccessor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,13 +15,13 @@ import java.util.List;
 @Component
 public class DailyOnTimeLogger {
 
-    private final SystemActionDbAccessor dbAccessor;
+    private final SystemActionDbAccessor airFlowDbAccessor;
     private final ControlledTask task;
 
     public DailyOnTimeLogger(
-            @Qualifier("airFlowAccessor") SystemActionDbAccessor dbAccessor,
+            SystemActionDbAccessor airFlowDbAccessor,
             ControlledTask task) {
-        this.dbAccessor = dbAccessor;
+        this.airFlowDbAccessor = airFlowDbAccessor;
         this.task = task;
     }
 
@@ -46,7 +45,7 @@ public class DailyOnTimeLogger {
     Duration getTotalFromDay(LocalDate day) {
         final ZonedDateTime startTime = day.atStartOfDay(ZoneOffset.UTC);
         final ZonedDateTime endTime = ZonedDateTime.of(day.atTime(LocalTime.MAX), ZoneOffset.UTC);
-        final List<SystemAction> actionsFromLastDay = dbAccessor.getActions(Duration.ofDays(1)); // just enough data
+        final List<SystemAction> actionsFromLastDay = airFlowDbAccessor.getActions(Duration.ofDays(1)); // just enough data
         final DurationCalculator durationCalculator = new DurationCalculator(actionsFromLastDay);
         return durationCalculator.getDuration(startTime, endTime);
     }

@@ -25,9 +25,9 @@ class RuleApplierTest {
 
     @MockitoBean
     private VentilationSystem ventilationSystem;
-    @MockitoBean(name = "airFlowAccessor")
+    @MockitoBean
     private SystemActionDbAccessor airFlowDbAccessor;
-    @MockitoBean(name = "humidityAccessor")
+    @MockitoBean
     private SystemActionDbAccessor humidityDbAccessor;
     @MockitoBean(name = "Daily")
     private AirFlowRule airFlowRule;
