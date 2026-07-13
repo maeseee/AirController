@@ -6,7 +6,6 @@ import org.air_controller.sensor.ClimateSensor;
 import org.air_controller.sensor.open_weather_api.OpenWeatherApiSensor;
 import org.air_controller.sensor_data_persistence.ClimateDataPointPersistence;
 import org.air_controller.sensor_values.ClimateDataPoint;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -15,10 +14,10 @@ import java.util.Optional;
 @Component("outdoorSensor")
 public class OpenWeatherApiAdapter extends ClimateSensor {
     public OpenWeatherApiAdapter(
-            @Qualifier("outdoorPersistence") ClimateDataPointPersistence persistence,
+            ClimateDataPointPersistence outdoorClimatePersistence,
             OpenWeatherApiSensor sensor,
             ControlledTask task) {
-        super(persistence, sensor, task);
+        super(outdoorClimatePersistence, sensor, task);
     }
 
     @Override

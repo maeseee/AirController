@@ -25,8 +25,8 @@ public class ApplicationConfig {
         return createClimateSensorAccessor(ClimateDataPointPersistence.INDOOR_TABLE_NAME);
     }
 
-    @Bean("outdoorPersistence")
-    public ClimateDataPointPersistence createOutdoorClimateSensorPersistence() {
+    @Bean
+    public ClimateDataPointPersistence outdoorClimatePersistence() {
         return createClimateSensorAccessor(ClimateDataPointPersistence.OUTDOOR_TABLE_NAME);
     }
 
