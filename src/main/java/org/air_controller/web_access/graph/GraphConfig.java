@@ -1,7 +1,6 @@
 package org.air_controller.web_access.graph;
 
 import org.air_controller.sensor_data_persistence.ClimateDataPointsDbAccessor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,12 +8,12 @@ import org.springframework.context.annotation.Configuration;
 public class GraphConfig {
 
     @Bean("indoorGraphService")
-    SensorGraphService createIndoorGraphService(@Qualifier("indoorDataPointsAccessor") ClimateDataPointsDbAccessor dbAccessor) {
-        return new SensorGraphService(dbAccessor);
+    SensorGraphService createIndoorGraphService(ClimateDataPointsDbAccessor indoorDataPointsAccessor) {
+        return new SensorGraphService(indoorDataPointsAccessor);
     }
 
     @Bean("outdoorGraphService")
-    SensorGraphService createOutdoorGraphService(@Qualifier("outdoorDataPointsAccessor") ClimateDataPointsDbAccessor dbAccessor) {
-        return new SensorGraphService(dbAccessor);
+    SensorGraphService createOutdoorGraphService(ClimateDataPointsDbAccessor outdoorDataPointsAccessor) {
+        return new SensorGraphService(outdoorDataPointsAccessor);
     }
 }
