@@ -33,12 +33,13 @@ export class App {
       confidenceCardViews: this.cardViewService.getCardViews('confidence'),
       statisticsCardViews: this.cardViewService.getCardViews('statistics'),
       solarEventsCardViews: this.cardViewService.getCardViews('solar_events')
-    })),
-    catchError(err => {
-      console.error('Batch update failed', err);
-      this.hasError.set(true);
-      return of(null);
-    })
+    }).pipe(
+      catchError(err => {
+        console.error('Batch update failed', err);
+        this.hasError.set(true);
+        return of(null);
+      })
+    ))
   );
 
   viewModel = toSignal(this.data$, {initialValue: null});
